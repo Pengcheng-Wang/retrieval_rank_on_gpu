@@ -7,7 +7,7 @@ from rrbench.filters import InvertedFilter, conservative_positive, evaluate, exa
 from rrbench.metrics import latency_summary, recall_at_k, single_positive_metrics
 from rrbench.quantization import quantize_symmetric
 from rrbench.synthetic import generate_catalog
-from rrbench.io import bind_run_config
+from rrbench.io import bind_run_config, write_json
 
 
 def test_recall_ignores_padding_and_duplicates():
@@ -104,3 +104,9 @@ def test_legacy_completed_artifact_cannot_be_rebound(tmp_path):
     (tmp_path / "completed.json").write_text('{"complete": true}')
     with pytest.raises(ValueError, match="retain it read-only"):
         bind_run_config(tmp_path, {"seed": 17})
+
+
+def test_json_artifacts_have_platform_independent_line_endings(tmp_path):
+    path = tmp_path / "artifact.json"
+    write_json(path, {"value": 17})
+    assert b"\r" not in path.read_bytes()

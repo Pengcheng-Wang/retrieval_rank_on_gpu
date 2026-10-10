@@ -66,7 +66,7 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         return
     fields = sorted({key for row in rows for key, value in row.items() if not isinstance(value, (dict, list))})
     with path.open("w", newline="", encoding="utf-8") as stream:
-        writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
+        writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 

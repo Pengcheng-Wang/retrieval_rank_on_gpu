@@ -18,7 +18,7 @@ def sha256(path: Path) -> str:
 def write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    with temporary.open("w", encoding="utf-8") as stream:
+    with temporary.open("w", encoding="utf-8", newline="\n") as stream:
         json.dump(value, stream, indent=2, allow_nan=False)
         stream.write("\n")
         stream.flush()
@@ -28,7 +28,7 @@ def write_json(path: Path, value: Any) -> None:
 
 def append_jsonl(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as stream:
+    with path.open("a", encoding="utf-8", newline="\n") as stream:
         stream.write(json.dumps(value, allow_nan=False) + "\n")
         stream.flush()
         os.fsync(stream.fileno())
