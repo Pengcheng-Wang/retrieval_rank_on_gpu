@@ -78,7 +78,7 @@ def validate_completed(directory: Path, rows: int, start: int) -> dict[str, Any]
     if ids.dtype != np.int64 or ids.shape != (rows,) or not np.array_equal(ids, np.arange(start, start + rows)):
         raise ValueError("Embedding IDs do not match the exact global shard row mapping.")
     representations = [{
-        "file": "vectors.npy", "dimension": completed["native_dimension"],
+        "file": "vectors.npy", "dimension": completed.get("stored_dimension", completed["native_dimension"]),
         "sha256": completed["vectors_sha256"],
     }, *completed["mrl_representations"].values()]
     for representation in representations:
@@ -144,7 +144,7 @@ def merge_corpus(tasks: list[dict[str, Any]], output: Path, dimension: int) -> d
     temporary.replace(output / "vectors.npy")
     np.save(output / "ids.npy", np.arange(position, dtype=np.int64))
     result = {
-        "complete": True, "rows": position, "native_dimension": dimension,
+        "complete": True, "rows": position, "native_dimension": receipts[0][1]["native_dimension"],
         "stored_dimension": dimension, "stored_dtype": "float16",
         "vectors_sha256": sha256(output / "vectors.npy"), "ids_sha256": sha256(output / "ids.npy"),
         "mrl_representations": {}, "source_shards": binding["sources"],

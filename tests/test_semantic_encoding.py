@@ -97,3 +97,20 @@ def test_merge_refuses_a_missing_shard_and_preserves_global_row_mapping(tmp_path
         np.asarray([[1, 0], [0, 1], [0.6, 0.8], [0.8, 0.6]], dtype=np.float16),
     )
     assert json.loads((tmp_path / "merged" / "completed.json").read_text())["complete"]
+
+
+def test_merged_mrl_matrix_width_is_not_relabelled_as_the_encoder_native_dimension(tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    np.save(source / "ids.npy", np.array([0], dtype=np.int64))
+    np.save(source / "vectors.npy", np.array([[1, 0, 0, 0]], dtype=np.float16))
+    np.save(source / "vectors_mrl2.npy", np.array([[1, 0]], dtype=np.float16))
+    write_json(source / "completed.json", {
+        "complete": True, "rows": 1, "native_dimension": 4,
+        "ids_sha256": sha256(source / "ids.npy"), "vectors_sha256": sha256(source / "vectors.npy"),
+        "mrl_representations": {"2": {"file": "vectors_mrl2.npy", "dimension": 2, "sha256": sha256(source / "vectors_mrl2.npy")}},
+    })
+    result = merge_corpus([{"output": str(source), "start": 0, "rows": 1}], tmp_path / "merged", 2)
+    assert result["native_dimension"] == 4
+    assert result["stored_dimension"] == 2
+    assert validate_completed(tmp_path / "merged", 1, 0)["stored_dimension"] == 2

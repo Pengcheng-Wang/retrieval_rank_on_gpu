@@ -56,7 +56,8 @@ def prepare_history_panels(
         "history": "Admitted training exposure items only; upper<=target lower; no label filtering or heldoutappend.",
         "history_text_order": "Most recently exposed first.",
         "reranker_query_token_cap": 160,
-        "required_phase_names": ["fit", "validation", "test"], "panel_schema_version": 3,
+        "required_phase_names": ["fit", "validation", "test"], "panel_schema_version": 4,
+        "catalog_ids_sha256": manifest["ids_sha256"],
     }
     bind_run_config(output, binding)
     if (output / "completed.json").exists():
@@ -137,6 +138,8 @@ def prepare_history_panels(
                 "history_contract": binding["history"],
                 "target_condition": "Positive-target membership in the frozen catalog and nonempty admissible training exposure history.",
                 "no_seen_item_exclusion": "Repeated-video targets remain valid; no unseen-only recommendation claim.",
+                "catalog_sha256": manifest["catalog_sha256"], "catalog_ids_sha256": manifest["ids_sha256"],
+                "catalog_items": len(original),
             }
             write_json(output / (name + ".json"), panel)
             counters[name] = {

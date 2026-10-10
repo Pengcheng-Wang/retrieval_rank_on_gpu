@@ -208,8 +208,10 @@ which PyTorch allocator peaks alone do not.
 
 The lexical reference is SQLite FTS5 BM25 over the full passage corpus
 (`k1=1.2`, `b=0.75`, Unicode61 without stemming), not a claimed replica of
-Anserini's tokenizer. Query operators are escaped into an OR-of-literal-term
-request. Semantic and lexical candidate unions are formed before relevance
+Anserini's tokenizer. Query terms come from the **same FTS5 Unicode61 tokenizer** through its
+vocabulary interface, then become an OR-of-quoted-literal-term request;
+Python case-folding is not substituted for index tokenization. Semantic
+and lexical candidate unions are formed before relevance
 labels, without injecting positives. Supervised fitting can add the
 training qrel positives, but final retrieval pools never do.
 
@@ -220,6 +222,19 @@ semantic LM retrieval. Semantic MLP/TorchRec models are fit separately for
 the recommendation catalog, preserving their trained encoder, cluster
 codebook, token features and query instruction; equal vector dimensions
 alone do not justify cross-model or cross-catalog checkpoint reuse.
+
+### Historical FAISS precision-label correction
+
+The earlier harness passed `GpuClonerOptions.useFloat16=True` while cloning
+an IVFFlat index. The pinned FAISS 1.14.1 cloner does **not** use that flag
+to change IVFFlat item storage. An actual GPU-to-CPU round-trip probe found
+four bytes per stored item value despite the requested half flag.[^8]
+Preserve the old archives, but do not treat their half-flag rows as verified
+FP16-storage measurements. The prior FP32 comparisons are unaffected.
+The new explicit IVF scalar-quantizer half arm stores two bytes per value,
+verified in both the CPU index and actual GPU native/MRL correctness probes.
+It is a separately named representation, not a retrospective relabeling of
+the old runs.
 
 ## 🧪 Evaluation and execution gates
 
@@ -259,3 +274,4 @@ and corresponding hardware peak would be required.
 [^5]: KuaiRand field documentation and unresolved timestamp semantics. https://github.com/chongminggao/KuaiRand/blob/main/README.md ; https://github.com/chongminggao/KuaiRand/issues/4
 [^6]: Qwen3 embedding card at the pinned revision; model-family paper. https://huggingface.co/Qwen/Qwen3-Embedding-8B/blob/1d8ad4ca9b3dd8059ad90a75d4983776a23d44af/README.md ; https://arxiv.org/abs/2506.05176
 [^7]: Qwen3 reranker card at the pinned revision, including candidate-pool evaluation conditions. https://huggingface.co/Qwen/Qwen3-Reranker-8B/blob/77d193c791ed757ca307ee72715aa132723da912/README.md
+[^8]: Pinned FAISS GPU cloning implementation. https://github.com/facebookresearch/faiss/blob/v1.14.1/faiss/gpu/GpuCloner.cpp
