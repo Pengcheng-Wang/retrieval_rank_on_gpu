@@ -1,0 +1,468 @@
+{
+  "repository": "https://github.com/meta-recsys/silvertorch",
+  "commit": "22c2007ed5d28ec8304de081cc2393778708ad12",
+  "license": "Apache-2.0",
+  "original_file_count": 53,
+  "files": [
+    {
+      "path": [
+        "CODE_OF_CONDUCT.md"
+      ],
+      "sha256": "aa521dfb2da67e77b0720ac7b86049fe4f0165e1474f871c10e575a11f72c30d"
+    },
+    {
+      "path": [
+        "CONTRIBUTING.md"
+      ],
+      "sha256": "9ab39aa9f72434b13c90f88b5f1020ea48d59895bc12661b4579b221b91e11ea"
+    },
+    {
+      "path": [
+        "LICENSE"
+      ],
+      "sha256": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6"
+    },
+    {
+      "path": [
+        "pyproject.toml"
+      ],
+      "sha256": "d576b52ebb916a242257507bbe7b30af197a0144ef9c241cd7720d2a6ea78237"
+    },
+    {
+      "path": [
+        "README.md"
+      ],
+      "sha256": "3371a887f8e9744d1fc0c75627939837fc60afc0ef7b5f3ed4ef97e2ea8dd97f"
+    },
+    {
+      "path": [
+        "setup.py"
+      ],
+      "sha256": "3fadfe4e8a1b5078b1b1879a5bd5c10e0e347a0fcfbd98387b7d8893226773ce"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "__init__.py"
+      ],
+      "sha256": "0847f8a36b401f45b3e2c09c87bd3a6ee0a1630eb213978acff930868c625ff1"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "modules",
+        "__init__.py"
+      ],
+      "sha256": "28ad68f154b45fc00b247efafb2100caf15a0331a59602d42cb41b5290da3d67"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "modules",
+        "bloom_index_search_module.py"
+      ],
+      "sha256": "e1d14fc13dbeb0e611e5eb7804f81cb1dbc7291ac2d25892e35c3fad4bc79f7e"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "modules",
+        "bloom_index_search_module_builder.py"
+      ],
+      "sha256": "1aa861353aaed7cfe045287d20414911cb7022c8583fecb541cde30781a39002"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "modules",
+        "filter_query_parser_module.py"
+      ],
+      "sha256": "b8d2561af2eb7090b4ee102084e3d48994a416e322672eae2cbf2bcff6c046ae"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "modules",
+        "filter_query_parser_module_builder.py"
+      ],
+      "sha256": "c2df3a3b3ef5a700842daf737101d5412c702b4b217b7e20bcc83fb3b7be5a4b"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "modules",
+        "tests",
+        "__init__.py"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "modules",
+        "tests",
+        "test_bloom_index_search_module.py"
+      ],
+      "sha256": "e3e38d199ca9a76a8c67cdab8bbd609e023c82065044c191d62b2d629557df89"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "modules",
+        "tests",
+        "test_filter_query_parser_module.py"
+      ],
+      "sha256": "a6ac83aa10583d0cd39c8e1996141bfe49572c8928d409599154f94749c875ec"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "__init__.py"
+      ],
+      "sha256": "0847f8a36b401f45b3e2c09c87bd3a6ee0a1630eb213978acff930868c625ff1"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "_load_ops.py"
+      ],
+      "sha256": "b6f85c31eebc5fe4ccdc11c0e7262a78fab67f85c6b5a0aa89b931862cef46e1"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_index_search.cpp"
+      ],
+      "sha256": "50f3ac7426534395e97466d843fc0332ef2d1b7d853c4eb4e6a04391562c194c"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_index_search.h"
+      ],
+      "sha256": "ea5ecb7f6912d9b49f12e755616b0e0e0949cee8b928a0874bcfb981883082f1"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_index_search_cuda.cu"
+      ],
+      "sha256": "8c4f349aa739c0c2eb540b53157c00519b929e337b4910772eedbb7eadc5aff1"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_index_util.cpp"
+      ],
+      "sha256": "b9f70e19e418da6abca2e89b720f91eaeb944e2345a8d05b6e4184fffb865abb"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_index_util.cuh"
+      ],
+      "sha256": "86f8a37793c8ecc7fee81a1131712a0d55e6a4eeffe06a8ae8ac3d0c9ce8ad35"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_index_util.h"
+      ],
+      "sha256": "ec1d606c709eb08d90bfb0137c2057a3407cb098faa3db7dce23e269a8e6e48d"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_indexer.cpp"
+      ],
+      "sha256": "6471e74aa0c41a9915711b5952422e82ed55b711f9838cea5b71ed18c5686851"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_indexer.cuh"
+      ],
+      "sha256": "4226a54fdd15c21e9db9f046923f6e37fddbfe40c499e1c3bcba9f1890ead56c"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_indexer.h"
+      ],
+      "sha256": "d3b81f389c0476442765afee3d24b17877313830091f1b326b00f2172b6bca8d"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "bloom_indexer_cuda.cu"
+      ],
+      "sha256": "d3b26408c54871294e31cbe7a6bd06feb1012513d97cf52891c942b35b41fa13"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "expression_query_parser.cpp"
+      ],
+      "sha256": "3f9b29df886c60c40f3949a1cf40a83997f15962347bb13299a4a34e3fef4038"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "expression_query_parser.h"
+      ],
+      "sha256": "af831718c995cb4bb60eb11da6dbde20f6293a9e4d15de9dc6a5a8dc480665c6"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "expression_query_parser_cuda.cu"
+      ],
+      "sha256": "a4655935b90ed98a52fa689937d059776d760c0faa6d56a57d3b1310c353397f"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "EXPRESSION_SYNTAX.md"
+      ],
+      "sha256": "d7747fbfdf2c9db1771a74b7f08f2f6eadca77d5512686022021b3a0eb65234b"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "faster_repeat_interleave.cu"
+      ],
+      "sha256": "3c19e1bf29bbcf391988e770bb5fc8ce9469eadefa060fa1bbb209cb2a86fcbb"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "faster_repeat_interleave.cuh"
+      ],
+      "sha256": "9f05614bbe37133b1167b62e35577adba4b7d077d4d49eb0a8f476817399a7ed"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "faster_repeat_interleave_helper.h"
+      ],
+      "sha256": "e32a4ea2b2c09d77d33a0b565dfaac84d300efba935aa74a5661ae769fd46a3f"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "fresh_index_post_processing.cpp"
+      ],
+      "sha256": "1fb4a771761211f08b549960625d519d4fa5dac144f3ed8d20fbb478ae0b8184"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "fresh_index_post_processing.cu"
+      ],
+      "sha256": "fa3cb88bca50deeddd476a1c83db5b03f09a5937252ebf32f9ea5610cd621a96"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "fused_kmean_ann.cpp"
+      ],
+      "sha256": "8ee07f56fc198d900b95443b6a64a9ff92bbd03a58562f24399148dae8fd860d"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "fused_kmean_ann.cuh"
+      ],
+      "sha256": "77775b5759572b2bbd7727b4185b4ea7fecc89c5da2dc1d454564459b341246c"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "fused_kmean_ann_cuda.cu"
+      ],
+      "sha256": "a4dfb1f40c5772a9c85e9f899ecd3074ae40d1041eac539d1dd80d4ee02204c3"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "index_mm_helpers.cuh"
+      ],
+      "sha256": "68726d28729f68ed0ffe875f1cfeabe147d2af8a346e37e7cd3e4e0521a1c5e8"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "is_topk.cpp"
+      ],
+      "sha256": "f07d92eb2034829f8809eb33fdd93a05563c838286d1fb25491aed42118126f1"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "is_topk.cu"
+      ],
+      "sha256": "3f5c9174246e8a9a9009c255714833ea88101f392d577d8de0df9c1e945f4446"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "simple_index_mm.cuh"
+      ],
+      "sha256": "81cf2a8f48c5c3c2883d4924fcf46deb6451a8d9b6deddf088df0b9d130d9f08"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "__init__.py"
+      ],
+      "sha256": "0847f8a36b401f45b3e2c09c87bd3a6ee0a1630eb213978acff930868c625ff1"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "bloom_index_bench.py"
+      ],
+      "sha256": "5953aff1252fa6ac929e44ca193876e631123d905fc1746459426fe7bb276154"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "test_bloom_index_search.py"
+      ],
+      "sha256": "d51b275f70cbb7548c47431c6206a3730bfd35aea7d39b3f68b8338b1a60abaf"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "test_bloom_indexer.py"
+      ],
+      "sha256": "eba9c5776a12a3cf4b27135d3896c0aa1040f83d035528884b6a4fc5df44ba75"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "test_bloom_search_integration.py"
+      ],
+      "sha256": "6f734cb5705d3986544a6c1da1d826f4cb499a5a86dee39db3b596238621ef4a"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "test_expression_query_parser.py"
+      ],
+      "sha256": "9508dd5d5e8f7c349aefd21f28594e3c631e5d52a5c8152ee77dd803731cc4ab"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "test_fresh_index_post_processing.py"
+      ],
+      "sha256": "7bf147c28e0bff56728ae495d5b402d47537278b8ad8c746e2165d92614729e1"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "test_fused_kmean_ann.py"
+      ],
+      "sha256": "892374db120dc00d21e20e2f4bd9e82eb28bd8115a14cad3fb4d42cc4cf4eb9b"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "test_is_topk.py"
+      ],
+      "sha256": "03adb4861a4a70142362fa42315a4389f3714bdd575fc4271c30628329dc6437"
+    },
+    {
+      "path": [
+        "silvertorch",
+        "ops",
+        "csrc",
+        "tests",
+        "test_oss_imports.py"
+      ],
+      "sha256": "ad736b64c7180712a1c893cc8561b5058cf6e1482fce5579d613d9b967b5cb36"
+    }
+  ]
+}

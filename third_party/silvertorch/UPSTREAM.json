@@ -1,0 +1,12 @@
+{
+  "repository": "https://github.com/meta-recsys/silvertorch",
+  "commit": "22c2007ed5d28ec8304de081cc2393778708ad12",
+  "commit_date": "2026-09-08",
+  "retrieved_at": "2026-10-10",
+  "license": "Apache-2.0",
+  "import_method": "git archive of the pinned upstream commit",
+  "modifications": [],
+  "original_file_count": 53,
+  "import_verification": "All 53 original files byte-identical to the pinned git archive before commit.",
+  "scope": "Full public source snapshot. Not Meta production models, datasets, services, or load generators."
+}

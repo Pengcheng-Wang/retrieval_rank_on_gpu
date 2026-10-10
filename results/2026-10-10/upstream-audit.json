@@ -1,0 +1,80 @@
+[
+  {
+    "upstream_commit": "22c2007ed5d28ec8304de081cc2393778708ad12",
+    "environment": {
+      "python": "3.12.3",
+      "platform": "Linux",
+      "packages": {
+        "torch": "2.13.0+cu129",
+        "triton": "3.7.1",
+        "numpy": "2.2.6",
+        "faiss-gpu-cu12": "1.14.1.post1",
+        "faiss-cpu": null,
+        "torchrec": "1.8.0",
+        "fbgemm-gpu": "1.8.0+cu126"
+      },
+      "torch_cuda": "12.9",
+      "tf32": false,
+      "cpu_threads": 4,
+      "gpu": {
+        "name": "NVIDIA A100-SXM4-80GB",
+        "memory_bytes": 85093777408,
+        "compute_capability": [
+          8,
+          0
+        ],
+        "multiprocessors": 108
+      }
+    },
+    "bloom_not": {
+      "fixture_items": 4096,
+      "multiplier": 1.1,
+      "exact_matches": 3976,
+      "raw_false_negatives": 382,
+      "conservative_false_negatives": 0,
+      "interpretation": "Forced collisions; not a production false-negative-rate estimate."
+    },
+    "native_int8_half_divisor": {
+      "raw_dot_product": 2064512,
+      "divisor": 128,
+      "native_nonfinite_valid_scores": 32,
+      "fp32_rescale_nonfinite_scores": 0,
+      "fp32_rescale_expected_score": 16129,
+      "adapter_policy": "Raw INT32 kernel outputs followed by FP32 item/query rescaling; cost included."
+    },
+    "cpu_partial_mask": {
+      "zero_mask_cpu_valid_items": 32,
+      "zero_mask_gpu_valid_items": 0,
+      "adapter_policy": "Independent exact Boolean oracle; CPU partial-mask implementation is not an oracle."
+    },
+    "packed_full_mask": {
+      "expected_synthetic_ids": [
+        0,
+        31,
+        32,
+        63,
+        64,
+        65,
+        99
+      ],
+      "cpu_synthetic_ids": [
+        0,
+        31,
+        32,
+        63,
+        92
+      ],
+      "gpu_synthetic_ids": [
+        0,
+        31,
+        32,
+        63,
+        64,
+        65,
+        99
+      ],
+      "gpu_full_mask_is_compatible": true,
+      "policy": "Use native GPU full-mask baseline; CPU full-mask path has a different bit convention."
+    }
+  }
+]
