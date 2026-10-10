@@ -31,6 +31,18 @@ def frozen_exposure_history(
     return np.array(item_rows[max(0, boundary - maximum):boundary], dtype=np.int64)
 
 
+def validate_history_panels(output: Path) -> dict[str, Any]:
+    completed = json.loads((output / "completed.json").read_text(encoding="utf-8"))
+    if not completed["complete"] or set(completed["panel_sha256"]) != {"fit", "validation", "test"}:
+        raise ValueError("Recommendation completion lacks the required fit/validation/test panel set.")
+    for name, digest in completed["panel_sha256"].items():
+        if sha256(output / (name + ".json")) != digest:
+            raise ValueError("Frozen recommendation query/history panel bytes changed.")
+    if sha256(output / "training-history.json") != completed["training_history_sha256"]:
+        raise ValueError("Frozen training exposure-history bytes changed.")
+    return completed
+
+
 def prepare_history_panels(
     catalog: Path, output: Path, maximum_history: int = 12, blocks_per_user: int = 12, seed: int = 20261010,
 ) -> dict[str, Any]:
@@ -42,14 +54,13 @@ def prepare_history_panels(
         "database_sha256": sha256(catalog / "private-catalog.sqlite"),
         "maximum_history": maximum_history, "blocks_per_user_per_phase": blocks_per_user, "seed": seed,
         "history": "Admitted training exposure items only; upper<=target lower; no label filtering or heldoutappend.",
+        "history_text_order": "Most recently exposed first.",
+        "reranker_query_token_cap": 160,
+        "required_phase_names": ["fit", "validation", "test"], "panel_schema_version": 3,
     }
     bind_run_config(output, binding)
     if (output / "completed.json").exists():
-        completed = json.loads((output / "completed.json").read_text(encoding="utf-8"))
-        for name, digest in completed["panel_sha256"].items():
-            if sha256(output / (name + ".json")) != digest:
-                raise ValueError("Frozen history query panel bytes changed.")
-        return completed
+        return validate_history_panels(output)
     original = np.load(catalog / "original_ids.npy", mmap_mode="r")
     mapped = {int(item): row for row, item in enumerate(original)}
     store = PassageStore(catalog / "catalog.tsv", catalog / "catalog_offsets.npy")
@@ -68,7 +79,7 @@ def prepare_history_panels(
         }
         del histories
         panels, counters = {}, {}
-        for phase, name in ((2, "validation"), (3, "test")):
+        for phase, name in ((1, "fit"), (2, "validation"), (3, "test")):
             selected = defaultdict(list)
             source_blocks = 0
             for user, timestamp, lower in connection.execute(
@@ -106,7 +117,7 @@ def prepare_history_panels(
                 permitted = upper_bounds <= lower
                 if not permitted.any():
                     raise RuntimeError("A frozen history query was published without prior training exposure blocks.")
-                text = "\n".join(f"Previously exposed video: {value}" for value in store.fetch(history))
+                text = "\n".join(f"Previously exposed video: {value}" for value in store.fetch(history[::-1]))
                 identifier = f"{phase}:{user}:{timestamp}"
                 ids.append(identifier)
                 queries.append(text)
@@ -121,6 +132,8 @@ def prepare_history_panels(
                 "qrels": qrels, "binary_threshold": 1, "users": users,
                 "history_item_rows": histories_used, "target_clock_lower": query_lower,
                 "history_instruction": HISTORY_INSTRUCTION,
+                "history_text_order": "Most recently exposed first; prefix truncation retains recent rather than oldest selected items.",
+                "reranker_query_token_cap": 160,
                 "history_contract": binding["history"],
                 "target_condition": "Positive-target membership in the frozen catalog and nonempty admissible training exposure history.",
                 "no_seen_item_exclusion": "Repeated-video targets remain valid; no unseen-only recommendation claim.",

@@ -26,6 +26,9 @@ def validate_query_panel(output: Path, panel: Path, specification: dict[str, Any
         raise ValueError("Query completion is bound to a different panel text/order.")
     if completed["query_ids"] != source["query_ids"] or completed["rows"] != len(source["query_ids"]):
         raise ValueError("Query embedding rows do not align with the exact source query IDs.")
+    effective_instruction = source.get("history_instruction", specification.get("query_instruction", ""))
+    if completed.get("query_instruction") != effective_instruction:
+        raise ValueError("Query completion uses a different effective query instruction.")
     validate_encoding_contract(specification, completed)
     representations = [{
         "file": "vectors.npy", "dimension": completed["native_dimension"],
@@ -51,11 +54,13 @@ def encode_query_panel(
     specification = encoder.specification
     source = json.loads(panel.read_text(encoding="utf-8"))
     queries, ids = source["queries"], source["query_ids"]
+    effective_instruction = source.get("history_instruction", specification["query_instruction"])
     if not queries or len(queries) != len(ids) or len(set(ids)) != len(ids) or batch_size <= 0:
         raise ValueError("Query panel must contain aligned unique IDs and a positive batch size.")
     bind_run_config(output, {
         "panel_sha256": sha256(panel), "specification_sha256": configuration_digest(specification),
         "batch_size": batch_size, "stored_dtype": "float16", "mode": "model-cardqueryinstruction",
+        "effective_query_instruction": effective_instruction,
     })
     if (output / "completed.json").exists():
         return validate_query_panel(output, panel, specification)
@@ -73,13 +78,13 @@ def encode_query_panel(
     measured, started = [], time.perf_counter()
     for position in range(0, len(queries), batch_size):
         batch = queries[position:position + batch_size]
-        formatted = encoder.format_texts(batch, query=True)
+        formatted = encoder.format_texts(batch, query=True, instruction=effective_instruction)
         raw = encoder.tokenizer(
             formatted, padding=False, truncation=False, return_length=True,
             return_attention_mask=False, return_token_type_ids=False,
         )
         lengths[position:position + len(batch)] = raw["length"]
-        encoded, stats = encoder.encode(batch, query=True)
+        encoded, stats = encoder.encode(batch, query=True, instruction=effective_instruction)
         vectors[position:position + len(batch)] = encoded.cpu().numpy().astype(np.float16)
         for dimension, representation in mrl.items():
             representation[position:position + len(batch)] = mrl_prefix(encoded, dimension).cpu().numpy().astype(np.float16)
@@ -101,8 +106,11 @@ def encode_query_panel(
     for count in (1, 16):
         batch = (queries * count)[:count]
         for _ in range(5):
-            encoder.encode(batch, query=True)
-        samples = [encoder.encode(batch, query=True)[1].seconds * 1000 for _ in range(30)]
+            encoder.encode(batch, query=True, instruction=effective_instruction)
+        samples = [
+            encoder.encode(batch, query=True, instruction=effective_instruction)[1].seconds * 1000
+            for _ in range(30)
+        ]
         latency[str(count)] = latency_summary(samples, count)
     completed = {
         "complete": True, "rows": len(queries), "query_ids": ids,
@@ -110,7 +118,7 @@ def encode_query_panel(
         "model": specification["model"], "revision": specification["revision"],
         "native_dimension": encoder.native_dimension, "vectors_sha256": sha256(output / "vectors.npy"),
         "mrl_representations": reduced, "stored_dtype": "float16", "compute_dtype": "bfloat16",
-        "query_instruction": specification["query_instruction"], "length_audit": length_summary(
+        "query_instruction": effective_instruction, "length_audit": length_summary(
             lengths, specification["max_tokens"],
         ),
         "elapsed_seconds": time.perf_counter() - started, "batch_stats": measured,
@@ -130,7 +138,18 @@ def main() -> None:
     parser.add_argument("--cache", required=True)
     parser.add_argument("--smoke", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--start-gate")
+    parser.add_argument("--lease-owner")
+    parser.add_argument("--parent", type=int)
+    parser.add_argument("--parent-start", type=int)
     args = parser.parse_args()
+    if args.start_gate:
+        from rrbench.process_lease import guard_worker_parent, wait_for_start_gate
+
+        if args.lease_owner is None or args.parent is None or args.parent_start is None:
+            parser.error("start-gate requires lease-owner, parent and parent-start")
+        guard_worker_parent(args.parent, args.parent_start)
+        wait_for_start_gate(Path(args.start_gate), args.lease_owner, -2, args.parent, args.parent_start)
     configure(17, 4)
     registry = json.loads(Path(args.registry).read_text(encoding="utf-8"))
     specification = registry["models"][args.model]

@@ -23,6 +23,9 @@ retrieval inventory. The new study counts actual usable unique catalog items.
 MS MARCO passage v1 supplies 8,841,823 real passages and official query/qrel
 splits. It is an information-retrieval benchmark with noncommercial research
 terms; it is not personalized recommendation.[^1]
+Inputs retain the official raw UTF-8 passage text. No additional mojibake
+repair or passage normalization is applied; this preprocessing choice is
+part of the reproducible input contract.
 
 KuaiRand-1K supplies a roughly 4.37M-video metadata inventory and about 11.7M
 standard-policy events for 1,000 users. Its official 2026 caption/category
@@ -105,6 +108,49 @@ GPU efficiency can fund richer online query/history encoders, but corpus
 encoding is primarily offline. Larger models are not guaranteed better;
 quality, latency, storage and amortized build costs must all be measured.
 
+### What makes these models competitive
+
+These are trained semantic retrieval models, not arbitrary hidden-state
+features from an instruction chatbot. Qwen's pinned card reports the
+following **publisher benchmark scores**, which justify the model family
+choice but are not results from this repository.[^6]
+
+| Publisher benchmark | Qwen embedding 0.6B | Qwen embedding 8B |
+| --- | ---: | ---: |
+| MTEB English v2 retrieval | 61.83 | 69.44 |
+| C-MTEB Chinese retrieval | 71.03 | 78.21 |
+| Multilingual mean task score | 64.33 | 70.58 |
+
+The card's multilingual first-place statement is dated **June 5, 2025**;
+it is not a claim of current October 2026 leadership. Leaderboard aggregates
+do not predict personalized video recommendation quality, nor establish
+native-versus-1024D MRL or INT8 equivalence.
+
+The reranking card reports English retrieval-subset scores of 57.03 for
+BGE-v2-m3, 65.80 for Qwen 0.6B and 69.02 for Qwen 8B, on top-100 candidates
+retrieved by Qwen's 0.6B encoder. It also reports **69.76 for the 4B
+reranker**, higher than the 8B arm on that English aggregate, while 8B is
+stronger on the Chinese aggregate. This is a concrete reason not to treat
+parameter count as a universal quality ranking. The primary matrix remains
+fixed; a 4B cost/quality follow-up is credible, not a retrospectively selected
+test winner.[^7]
+
+### Input and serving costs
+
+The completed all-record token audit found 2,012 of 8,841,823 MS MARCO texts
+above MiniLM's 256-token limit; BGE and Qwen had 11 and 70 respectively above
+512. Each Qwen tokenizer found 4,942 of 1,798,875 recommendation texts above
+512. These are measured raw overflow counts, not a proxy from character
+length or counts of exactly-at-cap outputs.
+
+Recommendation histories retain recent exposures first. A separately
+recorded 160-token query cap for text reranking prevents a long history from
+consuming the entire 512-token query/document budget. Short official IR
+queries are unchanged by this optional guard. Query truncation and document
+truncation are model/input constraints to report, not evidence that a model
+is weak. The Qwen family supports 32K context; this study's explicit 512-token
+workload is not a maximum-capability evaluation.[^6][^7]
+
 ## 🏗️ Architecture and model controls
 
 ```mermaid
@@ -146,6 +192,34 @@ CPU feature/text fetch, serialization, H2D input and final selection. Do not
 invent network latency or imply that an 8B transformer is fused into the
 SilverTorch ANN kernel. Call the result a local cascade unless real RPC is
 implemented and timed.
+The current local-cascade control serializes and stages data inside one
+process; it is not an interprocess or network service benchmark. FAISS GPU
+can also feed a GPU-resident scorer, so its resident pipeline is a necessary
+control: GPU residency is not an exclusive capability of SilverTorch.
+
+The full online boundary experiment loads the **actual query encoder,
+retrieval index and reranker together on one GPU**, and includes query
+tokenization/encoding, complete ANN, text/feature fetch, scoring and final
+selection. A separate incremental cached-boundary timer isolates the
+transfer/fetch difference; it cannot stand in for end-to-end latency.
+Unsupported native dimensions or co-resident memory configurations receive
+explicit receipts. Device-level memory samples include FAISS's allocations,
+which PyTorch allocator peaks alone do not.
+
+The lexical reference is SQLite FTS5 BM25 over the full passage corpus
+(`k1=1.2`, `b=0.75`, Unicode61 without stemming), not a claimed replica of
+Anserini's tokenizer. Query operators are escaped into an OR-of-literal-term
+request. Semantic and lexical candidate unions are formed before relevance
+labels, without injecting positives. Supervised fitting can add the
+training qrel positives, but final retrieval pools never do.
+
+Recommendation controls include an actual 128D user/item MF trained only on
+the admitted logged long-view exposures and a training-only positive-count
+popularity baseline. Their raw inner-product geometry is not relabeled as
+semantic LM retrieval. Semantic MLP/TorchRec models are fit separately for
+the recommendation catalog, preserving their trained encoder, cluster
+codebook, token features and query instruction; equal vector dimensions
+alone do not justify cross-model or cross-catalog checkpoint reuse.
 
 ## 🧪 Evaluation and execution gates
 
@@ -183,3 +257,5 @@ and corresponding hardware peak would be required.
 [^3]: Encoder model cards. https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2 ; https://huggingface.co/BAAI/bge-large-en-v1.5 ; https://huggingface.co/Qwen/Qwen3-Embedding-0.6B ; https://huggingface.co/Qwen/Qwen3-Embedding-8B
 [^4]: Reranker model cards and official score examples. https://huggingface.co/BAAI/bge-reranker-v2-m3 ; https://huggingface.co/Qwen/Qwen3-Reranker-0.6B ; https://huggingface.co/Qwen/Qwen3-Reranker-8B ; https://github.com/QwenLM/Qwen3-Embedding
 [^5]: KuaiRand field documentation and unresolved timestamp semantics. https://github.com/chongminggao/KuaiRand/blob/main/README.md ; https://github.com/chongminggao/KuaiRand/issues/4
+[^6]: Qwen3 embedding card at the pinned revision; model-family paper. https://huggingface.co/Qwen/Qwen3-Embedding-8B/blob/1d8ad4ca9b3dd8059ad90a75d4983776a23d44af/README.md ; https://arxiv.org/abs/2506.05176
+[^7]: Qwen3 reranker card at the pinned revision, including candidate-pool evaluation conditions. https://huggingface.co/Qwen/Qwen3-Reranker-8B/blob/77d193c791ed757ca307ee72715aa132723da912/README.md

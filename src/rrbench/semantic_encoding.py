@@ -113,6 +113,15 @@ def merge_corpus(tasks: list[dict[str, Any]], output: Path, dimension: int) -> d
         position += task["rows"]
     if position == 0:
         raise ValueError("Cannot publish an empty merged semantic catalog.")
+    model_identity = {
+        name: receipts[0][1].get(name)
+        for name in ("model", "revision", "specification_sha256")
+    }
+    if any(
+        {name: receipt.get(name) for name in model_identity} != model_identity
+        for _, receipt, _ in receipts
+    ):
+        raise ValueError("Merged semantic shards use different encoder/model specifications.")
     binding = {
         "dimension": dimension, "rows": position,
         "sources": [
@@ -140,6 +149,11 @@ def merge_corpus(tasks: list[dict[str, Any]], output: Path, dimension: int) -> d
         "vectors_sha256": sha256(output / "vectors.npy"), "ids_sha256": sha256(output / "ids.npy"),
         "mrl_representations": {}, "source_shards": binding["sources"],
         "normalization": "Unmodified normalized FP16 shard vectors; exact oracle uses these stored values.",
+        "encoder_native_dimension": receipts[0][1]["native_dimension"],
+        "representation": {
+            **model_identity, "stored_dimension": dimension, "stored_dtype": "float16",
+            "normalization": "FP32 unit normalization then canonicalFP16storage; MRLprefix re-normalized beforestorage.",
+        },
     }
     write_json(output / "completed.json", result)
     return result

@@ -16,6 +16,7 @@ def test_query_completion_binds_exact_query_text_order_and_native_mrl_dimensions
         "complete": True, "rows": 2, "query_ids": ["q1", "q2"],
         "panel_sha256": sha256(panel), "specification_sha256": configuration_digest(spec),
         "native_dimension": 4, "vectors_sha256": sha256(tmp_path / "vectors.npy"),
+        "query_instruction": "",
         "mrl_representations": {"2": {"file": "vectors_mrl2.npy", "dimension": 2, "sha256": sha256(tmp_path / "vectors_mrl2.npy")}},
     })
     assert validate_query_panel(tmp_path, panel, spec)["rows"] == 2

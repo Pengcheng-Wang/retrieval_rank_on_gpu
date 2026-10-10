@@ -99,6 +99,20 @@ def validate_journal(
     return verified
 
 
+def validate_complete_ann(
+    output: Path, items: int, dimension: int, queries: int, expected: set[str],
+) -> dict[str, Any]:
+    completed = json.loads((output / "completed.json").read_text(encoding="utf-8"))
+    if not completed["complete"] or sha256(output / "ann.jsonl") != completed["ann_sha256"]:
+        raise ValueError("Complete ANN result journal checksum changed; refusing to recertify its metrics/timings.")
+    if (
+        completed["catalog_items"] != items or completed["dimension"] != dimension
+        or completed["panel_queries"] != queries or completed["conditions"] != sorted(expected)
+    ):
+        raise ValueError("Complete ANN receipt does not cover the exact declared scope/condition grid.")
+    return completed
+
+
 def make_shared_ivf(items: np.ndarray, partition: Partition, half: bool = False):
     import faiss
 
@@ -292,6 +306,12 @@ def benchmark(
     if journal.exists():
         records = [json.loads(line) for line in journal.read_text(encoding="utf-8").splitlines()]
     completed_conditions = validate_journal(records, output, expected_conditions, len(queries), len(items))
+    if (output / "completed.json").exists():
+        validate_complete_ann(output, len(items), items.shape[1], len(queries), expected_conditions)
+        if completed_conditions != expected_conditions:
+            raise ValueError("Completed ANN experiment has missing conditions.")
+        print("COMPLETE_REAL_SEMANTIC_ANN_REUSED_WITH_VERIFIED_JOURNAL_AND_ARTIFACTS", flush=True)
+        return
     for backend in names:
         started = time.perf_counter()
         if backend in unsupported and backend in completed_conditions:

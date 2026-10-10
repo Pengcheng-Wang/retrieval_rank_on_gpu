@@ -14,6 +14,56 @@ from rrbench.io import bind_run_config, sha256, write_json
 from rrbench.runtime import configure, environment_manifest, require_cuda
 
 
+def query_representation(query_file: Path) -> dict[str, Any]:
+    completed = json.loads((query_file.parent / "completed.json").read_text(encoding="utf-8"))
+    values = np.load(query_file, mmap_mode="r")
+    if query_file.name == "vectors.npy":
+        expected = completed["vectors_sha256"]
+        dimension = completed["native_dimension"]
+    else:
+        match = next(
+            (representation for representation in completed["mrl_representations"].values()
+             if representation["file"] == query_file.name), None,
+        )
+        if match is None:
+            raise ValueError("Query vector file is not a measured native/MRL representation.")
+        expected, dimension = match["sha256"], match["dimension"]
+    if not completed["complete"] or values.dtype != np.float16 or values.shape != (completed["rows"], dimension):
+        raise ValueError("Query representation payload is incomplete or has an invalid shape/dtype.")
+    if sha256(query_file) != expected:
+        raise ValueError("Query representation payload checksum changed.")
+    return {
+        "model": completed["model"], "revision": completed["revision"],
+        "specification_sha256": completed["specification_sha256"],
+        "stored_dimension": dimension, "stored_dtype": "float16",
+        "normalization": "FP32 unit normalization then canonicalFP16storage; MRLprefix re-normalized beforestorage.",
+        "query_instruction": completed["query_instruction"],
+    }
+
+
+def validate_checkpoint_features(
+    binding: dict[str, Any], items: Path, partition: Path, lengths: Path,
+    representation: dict[str, Any],
+) -> None:
+    if binding.get("representation") != representation:
+        raise ValueError("Checkpoint uses a different semantic encoder/representation/query instruction.")
+    for name, path in (("items", items), ("partition", partition), ("token_lengths", lengths)):
+        if binding["sources"].get(name) != sha256(path):
+            raise ValueError(f"Checkpoint {name} feature source differs from the trained catalog/codebook.")
+
+
+def validate_fitting_query_alignment(query_file: Path, panel_file: Path) -> None:
+    completed = json.loads((query_file.parent / "completed.json").read_text(encoding="utf-8"))
+    panel = json.loads(panel_file.read_text(encoding="utf-8"))
+    values = np.load(query_file, mmap_mode="r")
+    if (
+        not completed["complete"] or completed["panel_sha256"] != sha256(panel_file)
+        or completed["query_ids"] != panel["query_ids"] or completed["rows"] != len(panel["query_ids"])
+        or len(values) != len(panel["query_ids"])
+    ):
+        raise ValueError("Fitting query-vector/label panel alignment differs in source bytes, IDs or row order.")
+
+
 def semantic_features(query: torch.Tensor, item: torch.Tensor) -> torch.Tensor:
     if query.ndim != 2 or query.shape != item.shape:
         raise ValueError("Semantic ranker requires aligned query/item feature matrices.")
@@ -118,13 +168,24 @@ def train_ranker(
     queries = np.load(query_file, mmap_mode="r")
     candidates = np.load(candidates_file, mmap_mode="r")
     partition = np.load(partition_file)
+    assignments, centroids = partition["assignments"], partition["centroids"]
     lengths = np.load(token_lengths_file, mmap_mode="r")
     panel = json.loads(panel_file.read_text(encoding="utf-8"))
-    if panel["name"] != "fit" or items.shape[1] != queries.shape[1] or lengths.shape != (len(items),):
+    if panel["name"] not in ("fit", "kuairand-fit") or items.shape[1] != queries.shape[1] or lengths.shape != (len(items),):
         raise ValueError("Cached ranker may fit only matching training query/corpus features.")
+    representation = query_representation(query_file)
+    validate_fitting_query_alignment(query_file, panel_file)
+    item_receipt = json.loads((item_file.parent / "completed.json").read_text(encoding="utf-8"))
+    expected_items = {key: value for key, value in representation.items() if key != "query_instruction"}
+    if (
+        not item_receipt["complete"] or item_receipt.get("representation") != expected_items
+        or sha256(item_file) != item_receipt["vectors_sha256"]
+    ):
+        raise ValueError("Fitting query and item vectors use different or unattested encoder representations.")
     binding = {
         "model": name, "seed": seed, "epochs": epochs, "batch_size": batch_size,
-        "dimension": items.shape[1], "clusters": len(partition["centroids"]),
+        "dimension": items.shape[1], "clusters": len(centroids),
+        "representation": representation,
         "sources": {
             key: sha256(path) for key, path in {
                 "items": item_file, "queries": query_file, "panel": panel_file, "candidates": candidates_file,
@@ -142,16 +203,16 @@ def train_ranker(
             raise ValueError("Complete fitted ranker checkpoint changed.")
         return completed
     rows = prepare_pairs(panel, candidates, seed)
-    centroids = torch.as_tensor(partition["centroids"], device=device)
+    centroid_gpu = torch.as_tensor(centroids, device=device)
     query_cluster = np.empty(len(queries), dtype=np.int64)
     for start in range(0, len(queries), 512):
         query = torch.as_tensor(np.array(queries[start:start + 512], dtype=np.float32), device=device)
-        query_cluster[start:start + len(query)] = (query @ centroids.T).argmax(dim=1).cpu().numpy()
-    del centroids, query
-    model = make_cached_ranker(name, items.shape[1], len(partition["centroids"]), device, seed)
+        query_cluster[start:start + len(query)] = (query @ centroid_gpu.T).argmax(dim=1).cpu().numpy()
+    del centroid_gpu, query
+    model = make_cached_ranker(name, items.shape[1], len(centroids), device, seed)
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.0001)
     model.train()
-    started, epoch_start, losses = time.perf_counter(), 0, []
+    started, epoch_start, losses, previous_training_seconds = time.perf_counter(), 0, [], 0.0
     checkpoint = output / "training-state.pt"
     if checkpoint.exists():
         state = torch.load(checkpoint, map_location=device, weights_only=True)
@@ -160,6 +221,9 @@ def train_ranker(
         model.load_state_dict(state["model"])
         optimizer.load_state_dict(state["optimizer"])
         epoch_start, losses = state["completed_epochs"], state["losses"]
+        if "training_elapsed_seconds" not in state:
+            raise ValueError("Training resume checkpoint lacks measured accumulated runtime; use a new run.")
+        previous_training_seconds = state["training_elapsed_seconds"]
     for epoch in range(epoch_start, epochs):
         order = np.random.default_rng(seed + epoch).permutation(len(rows))
         total_loss, count = 0.0, 0
@@ -169,7 +233,7 @@ def train_ranker(
             query = torch.as_tensor(np.array(queries[qids], dtype=np.float32), device=device)
             item = torch.as_tensor(np.array(items[item_ids], dtype=np.float32), device=device)
             sparse = torch.as_tensor(np.column_stack((
-                query_cluster[qids], partition["assignments"][item_ids],
+                query_cluster[qids], assignments[item_ids],
                 np.minimum(np.floor(np.log2(np.maximum(lengths[item_ids], 1))).astype(np.int64), 31),
             )), device=device, dtype=torch.long)
             target = torch.as_tensor(selected[:, 2], device=device, dtype=torch.float32)
@@ -187,6 +251,7 @@ def train_ranker(
         torch.save({
             "model": model.state_dict(), "optimizer": optimizer.state_dict(), "binding": binding,
             "completed_epochs": epoch + 1, "losses": losses,
+            "training_elapsed_seconds": previous_training_seconds + time.perf_counter() - started,
         }, temporary)
         temporary.replace(checkpoint)
         write_json(output / "progress.json", {"completed_epochs": epoch + 1, "losses": losses})
@@ -198,7 +263,9 @@ def train_ranker(
     completed = {
         "complete": True, "name": name, "model_class": model.model_class, "seed": seed,
         "parameters": sum(value.numel() for value in model.parameters()), "training_pairs": len(rows),
-        "epochs": epochs, "losses": losses, "training_seconds": time.perf_counter() - started,
+        "epochs": epochs, "losses": losses,
+        "training_seconds": previous_training_seconds + time.perf_counter() - started,
+        "training_runtime_scope": "Measured fitting-worker segments accumulated across epoch-complete resume; downtime excluded.",
         "checkpoint_sha256": sha256(output / "model.pt"), "environment": environment_manifest(),
         "torchrec_implementation": "Actual unsharded localTorchRecDLRM/DCN; no assumed automaticFBGEMM servingoptimization.",
         "feature_budget": {

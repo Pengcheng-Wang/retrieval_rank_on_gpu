@@ -146,6 +146,7 @@ class BatchStats:
     padded_tokens: int
     at_token_cap: int
     seconds: float
+    bounded_query_rows: int = 0
 
 
 class SemanticEncoder:
@@ -234,9 +235,28 @@ class TextReranker:
             if len(self.yes) != 1 or len(self.no) != 1 or self.yes == self.no:
                 raise ValueError("Official Qwen yes/no scorer requires distinct single tokens.")
 
-    def tokenize(self, queries: list[str], documents: list[str], instruction: str | None = None):
+    def bound_queries(self, queries: list[str], query_token_cap: int | None = None) -> list[str]:
+        if query_token_cap is None:
+            return queries
+        if query_token_cap <= 0:
+            raise ValueError("History query token budget must be positive.")
+        encoded = self.tokenizer(
+            queries, padding=False, truncation=False, add_special_tokens=False,
+            return_attention_mask=False,
+        )["input_ids"]
+        return [
+            self.tokenizer.decode(tokens[:query_token_cap], skip_special_tokens=True)
+            if len(tokens) > query_token_cap else query
+            for query, tokens in zip(queries, encoded)
+        ]
+
+    def tokenize(
+        self, queries: list[str], documents: list[str], instruction: str | None = None,
+        query_token_cap: int | None = None,
+    ):
         if len(queries) != len(documents) or not queries:
             raise ValueError("Reranker requires aligned nonempty query/document batches.")
+        queries = self.bound_queries(queries, query_token_cap)
         limit = self.specification["max_tokens"]
         if self.is_qwen:
             texts = [
@@ -258,10 +278,14 @@ class TextReranker:
         )
 
     @torch.inference_mode()
-    def score(self, queries: list[str], documents: list[str], instruction: str | None = None) -> tuple[torch.Tensor, BatchStats]:
+    def score(
+        self, queries: list[str], documents: list[str], instruction: str | None = None,
+        query_token_cap: int | None = None,
+    ) -> tuple[torch.Tensor, BatchStats]:
         torch.cuda.synchronize(self.device)
         started = time.perf_counter()
-        inputs = self.tokenize(queries, documents, instruction).to(self.device)
+        bounded = self.bound_queries(queries, query_token_cap)
+        inputs = self.tokenize(bounded, documents, instruction).to(self.device)
         if self.is_qwen:
             output = self.model(**inputs, use_cache=False, logits_to_keep=1)
             logits = output.logits[:, -1].float()
@@ -276,6 +300,7 @@ class TextReranker:
             len(queries), int(lengths.sum().item()), inputs["input_ids"].numel(),
             int((lengths >= self.specification["max_tokens"]).sum().item()),
             time.perf_counter() - started,
+            sum(original != value for original, value in zip(queries, bounded)),
         )
 
 

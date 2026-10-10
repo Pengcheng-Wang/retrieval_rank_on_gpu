@@ -1,11 +1,13 @@
 import numpy as np
 import pytest
 import torch
+import json
 
 from rrbench.ann import Partition
 from rrbench.io import sha256, write_json
 from rrbench.semantic_ann import (
-    make_shared_ivf, resident_exact_topk, validate_backends, validate_journal, validate_oracle, validate_partition,
+    make_shared_ivf, resident_exact_topk, validate_backends, validate_complete_ann,
+    validate_journal, validate_oracle, validate_partition,
 )
 
 
@@ -64,3 +66,16 @@ def test_missing_candidate_file_is_not_a_completed_ann_condition(tmp_path):
 def test_undeclared_faiss_int8_arm_is_rejected_before_expensive_work():
     with pytest.raises(ValueError, match="backend"):
         validate_backends(["faiss-gpu-int8"])
+
+
+def test_changed_metric_or_timing_cannot_recertify_an_old_ann_completion(tmp_path):
+    journal = tmp_path / "ann.jsonl"
+    journal.write_text(json.dumps({"condition": "one", "geometric_recall_at_k": 1.0}) + "\n", encoding="utf-8")
+    write_json(tmp_path / "completed.json", {
+        "complete": True, "ann_sha256": sha256(journal), "catalog_items": 10,
+        "dimension": 2, "panel_queries": 1, "conditions": ["one"],
+    })
+    validate_complete_ann(tmp_path, 10, 2, 1, {"one"})
+    journal.write_text(json.dumps({"condition": "one", "geometric_recall_at_k": 0.0}) + "\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="journal"):
+        validate_complete_ann(tmp_path, 10, 2, 1, {"one"})
