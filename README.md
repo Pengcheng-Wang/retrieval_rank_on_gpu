@@ -25,6 +25,7 @@ model rules, or client-side serving load generator. The paper's 23.7x QPS and
 | [Full measurement tables](docs/measured-tables.md) | Generated ANN, filtering, pipeline, and quality operating points |
 | [Independent seed replication](docs/seed-replication.md) | Separate seed23/42 follow-up against the immutable seed17 reference |
 | [Frozen TorchRec inference](docs/torchrec-inference.md) | FP32/BF16 and dense-path compilation fidelity, runtime, and first-call costs |
+| [Real semantic study](docs/semantic-study-design.md) | Full 8.84M real passages, audited 1.8M recommendation items, stronger LM encoders/rerankers, and separate model/stage costs |
 | [Upstream provenance](third_party/silvertorch/UPSTREAM.json) | Exact source, commit, license, and modification policy |
 
 Operational `progress.md`, access configuration, logs, datasets, checkpoints,
@@ -136,6 +137,31 @@ seed23/42 files. Outputs use new immutable directories. The
 [inference report](docs/torchrec-inference.md) distinguishes verified FP32
 compiler fidelity from BF16 approximation and does not infer recommendation
 quality from ranking overlap.
+
+### Expanded real-corpus semantic study
+
+The separate semantic environment is pinned in `environments/semantic`.
+`configs/semantic-models-pinned.json` fixes the four encoder and three
+reranker revisions. The expanded pipeline audits full corpus IDs, licenses,
+recorded-clock recommendation eligibility, token lengths for every input,
+model-card pooling/scoring, native/MRL dimensions, and complete artifact
+checksums before full encoding.
+
+The real-data study uses **8,841,823 MS MARCO passages** and **1,798,875
+training-observed, caption-covered KuaiRand videos**. It is in progress;
+acquisition or successful model smoke is not a semantic quality result.
+MS MARCO is IR rather than personalized recommendation. KuaiRand captions
+are retrospective metadata, and frozen-catalog test-positive event coverage
+is only 14.78%; conditional ranking metrics must not hide that ceiling.
+
+Run the corresponding Python modules with `--help` for audited acquisition,
+token-length certification, disjoint shard encoding/merging, judged IR
+panels, frozen exposure histories, ANN and supervised semantic rankers.
+GPU work uses Linux, the matched environment, explicit source/model
+receipts, and separate ignored output directories. The new FP16 FAISS arm
+uses actual IVF scalar half codes rather than an ignored IVFFlat cloning
+option. See the [design](docs/semantic-study-design.md) for the complete
+fairness and reviewer gates.
 
 ## 🏗️ What is compared
 
