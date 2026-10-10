@@ -23,6 +23,7 @@ model rules, or client-side serving load generator. The paper's 23.7x QPS and
 | [Upstream audit](docs/upstream-audit.md) | Public-code boundaries and independently reproduced correctness hazards |
 | [Measured findings](docs/results.md) | Completed study, limitations, and adoption implications |
 | [Full measurement tables](docs/measured-tables.md) | Generated ANN, filtering, pipeline, and quality operating points |
+| [Independent seed replication](docs/seed-replication.md) | Separate seed23/42 follow-up against the immutable seed17 reference |
 | [Upstream provenance](third_party/silvertorch/UPSTREAM.json) | Exact source, commit, license, and modification policy |
 
 Operational `progress.md`, access configuration, logs, datasets, checkpoints,

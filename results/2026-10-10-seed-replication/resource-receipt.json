@@ -1,0 +1,14 @@
+{
+  "milestone": "independent-data seed replication",
+  "new_data_and_index_seeds": [
+    23,
+    42
+  ],
+  "gpu_control": "confirmed keepalive CUDA worker stopped; original supervisor suspended only during measurements",
+  "measurement_preflight": "GPU0 had no compute processes and three consecutive zero-utilization samples",
+  "restoration_verified": true,
+  "restored_original_profile": true,
+  "restored_gpu_count": 8,
+  "failed_attempt": "SIGSTOP-only preflight did not quiesce GPU; both original processes restored and no benchmark started",
+  "other_nodes_modified": false
+}
