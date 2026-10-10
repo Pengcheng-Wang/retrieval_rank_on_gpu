@@ -12,6 +12,7 @@ build/
 dist/
 /data/
 /runs/
+/checkpoints/
 /artifacts/
 *.pem
 *.key

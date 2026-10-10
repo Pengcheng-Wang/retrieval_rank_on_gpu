@@ -1,0 +1,15 @@
+{
+  "milestone": "frozen TorchRec inference",
+  "measurement_gpu_isolated": true,
+  "isolation_preflight": "No compute processes and three zero-utilization samples after scoped keepalive shutdown",
+  "restoration_verified": true,
+  "restored_original_profile": true,
+  "restored_gpu_count": 8,
+  "other_nodes_modified": false,
+  "allocation_cancelled": false,
+  "frozen_checkpoints_unchanged": true,
+  "heldout_targets_or_histories_loaded": false,
+  "preflight_failures": "Two private process-exit identity wait races; each restored the original supervisor; no inference started before successful isolation",
+  "completed_smoke_cells": 8,
+  "completed_full_cells": 144
+}

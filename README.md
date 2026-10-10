@@ -24,6 +24,7 @@ model rules, or client-side serving load generator. The paper's 23.7x QPS and
 | [Measured findings](docs/results.md) | Completed study, limitations, and adoption implications |
 | [Full measurement tables](docs/measured-tables.md) | Generated ANN, filtering, pipeline, and quality operating points |
 | [Independent seed replication](docs/seed-replication.md) | Separate seed23/42 follow-up against the immutable seed17 reference |
+| [Frozen TorchRec inference](docs/torchrec-inference.md) | FP32/BF16 and dense-path compilation fidelity, runtime, and first-call costs |
 | [Upstream provenance](third_party/silvertorch/UPSTREAM.json) | Exact source, commit, license, and modification policy |
 
 Operational `progress.md`, access configuration, logs, datasets, checkpoints,
@@ -118,6 +119,23 @@ The GPU wheel is the community `faiss-gpu-cu12` build, not an official Meta
 binary distribution.[^5] The matched CPU/GPU implementation comparison uses
 that same 1.14.1 build, with an additional separately installed
 `faiss-cpu==1.14.2` CPU reference.
+
+The final inference-only extension uses the selected MF/DLRM/DCN checkpoints
+without training or holdout labels:
+
+```bash
+$PYTHON -m rrbench.inference --data data/movielens \
+  --checkpoints checkpoints --smoke --output runs/inference-smoke
+$PYTHON -m rrbench.inference --data data/movielens \
+  --checkpoints checkpoints --output runs/inference-frozen
+```
+
+Keep `checkpoints` local/ignored and supply `mf_s17.pt`,
+`torchrec-dlrm_s17.pt`, and `torchrec-dcn_s17.pt` plus the corresponding
+seed23/42 files. Outputs use new immutable directories. The
+[inference report](docs/torchrec-inference.md) distinguishes verified FP32
+compiler fidelity from BF16 approximation and does not infer recommendation
+quality from ranking overlap.
 
 ## 🏗️ What is compared
 

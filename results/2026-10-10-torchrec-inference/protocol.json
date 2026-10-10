@@ -1,0 +1,132 @@
+{
+  "milestone": "frozen TorchRec precision and dense-path compilation",
+  "models": [
+    "torchrec-dlrm",
+    "torchrec-dcn"
+  ],
+  "modes": [
+    "eager-fp32",
+    "eager-bf16",
+    "compiled-fp32",
+    "compiled-bf16"
+  ],
+  "seeds": [
+    17,
+    23,
+    42
+  ],
+  "batches": [
+    1,
+    16
+  ],
+  "candidate_counts": [
+    100,
+    500,
+    1000
+  ],
+  "panel_users": 128,
+  "warmup": 20,
+  "samples": 50,
+  "repeats": 3,
+  "cpu_threads": 4,
+  "worker_timeout_seconds": 300,
+  "smoke": false,
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Linux",
+    "packages": {
+      "torch": "2.13.0+cu129",
+      "triton": "3.7.1",
+      "numpy": "2.2.6",
+      "faiss-gpu-cu12": "1.14.1.post1",
+      "faiss-cpu": null,
+      "torchrec": "1.8.0",
+      "fbgemm-gpu": "1.8.0+cu126"
+    },
+    "torch_cuda": "12.9",
+    "tf32": false,
+    "cpu_threads": 4,
+    "gpu": {
+      "name": "NVIDIA A100-SXM4-80GB",
+      "memory_bytes": 85093777408,
+      "compute_capability": [
+        8,
+        0
+      ],
+      "multiprocessors": 108
+    }
+  },
+  "heldout_policy": "No train labels, validation/test targets, or validation/test histories loaded.",
+  "compile_scope": "TorchRec compile_dense_path(compile_mode=reduce-overhead); sparse path eager",
+  "weight_precision": "FP32 frozen weights in every mode",
+  "fp32_gate": {
+    "atol": 1e-05,
+    "rtol": 0.0001
+  },
+  "bf16_gate": "No arbitrary quality/equivalence cutoff; report score and ordering differences.",
+  "latency_scope": "Resident pair inputs to masked stable top100; sparse-input creation and marker included",
+  "excluded": "Retrieval, features preparation, data transfer, reference/fidelity collection, compilation/first-call/profiling",
+  "worker_isolation": "Fresh process per model, checkpoint seed, precision/compile mode and exact shape; sequential GPU",
+  "panels": {
+    "17": {
+      "seed": 17,
+      "panel_users": 128,
+      "max_candidates": 1000,
+      "prepared_data_sha256": "4ff28b883c7bf1000089148fd92aa00286790eb57fadfaaf24e5bae756ad9aa9",
+      "panel_sha256": "0b0b65185964be9dc2948b61d7cc99017b69d557a931158533a15780d4a09d8c",
+      "user_selection_sha256": "1a5ed78143ccdb9a125d3129b2af02ddb10f83213a83c8d24603d5776df8615f",
+      "candidate_ids_sha256": "9cf2321fc12fb0154c9fac970066ab94acc288d4931e747b66216a45d27e54ac",
+      "eligibility_sha256": "456608443b4230f68df62540c9bd156ac3c491bd6e95361305d641438f8deede",
+      "dense_features_sha256": "285eb4d959708cb90e7cd54be455b162b4b1e7f6a0ebb821b57e32a47a2f17f0",
+      "history_source": "training-only observed interactions; no validation/test histories",
+      "selection": "fixed RNG20261010 sample from training-active users",
+      "retriever": "already validation-selected frozen MF; stable full warm-catalog ordering",
+      "checkpoint_sha256": {
+        "mf": "0fb1e6e9ddee68dd6c086003af7247d90678521cf29bc8a71af44fd87c6c6c6b",
+        "torchrec-dlrm": "8a15fec1b50de2f927ff72d31d0b97caf26fd8835b60e18cf74f670a89ad67ae",
+        "torchrec-dcn": "ea901514cf06adb7fe24db598b0b91a3346d75a5e6a99d3c7da32f1dee463a9c"
+      },
+      "heldout_fields_loaded": false
+    },
+    "23": {
+      "seed": 23,
+      "panel_users": 128,
+      "max_candidates": 1000,
+      "prepared_data_sha256": "4ff28b883c7bf1000089148fd92aa00286790eb57fadfaaf24e5bae756ad9aa9",
+      "panel_sha256": "be9cac3e3774c549d208f1c2b8be1996484dff0fc08df8cac9258946f483cc95",
+      "user_selection_sha256": "1a5ed78143ccdb9a125d3129b2af02ddb10f83213a83c8d24603d5776df8615f",
+      "candidate_ids_sha256": "024389cd258a40491168c8837ab7c3e03c5660828dbb1d1bf458cabf861cc57a",
+      "eligibility_sha256": "456608443b4230f68df62540c9bd156ac3c491bd6e95361305d641438f8deede",
+      "dense_features_sha256": "aed86ff311534139a3ff9771cfb73414c2a1e1d7c5f9407b14e94ef57715d755",
+      "history_source": "training-only observed interactions; no validation/test histories",
+      "selection": "fixed RNG20261010 sample from training-active users",
+      "retriever": "already validation-selected frozen MF; stable full warm-catalog ordering",
+      "checkpoint_sha256": {
+        "mf": "3295ffdbf2d4650ede2fae557365ae80d86c89aca9d95a57ffa49cecfba23212",
+        "torchrec-dlrm": "f747b9f584ecaf2bc37418b39f00a2073e3cbade6454ae468e6c8a7a885a97f8",
+        "torchrec-dcn": "1288ce6b759bfe098b98af2da02a05881269d9f171d5cdf7d1629f43d6a286ad"
+      },
+      "heldout_fields_loaded": false
+    },
+    "42": {
+      "seed": 42,
+      "panel_users": 128,
+      "max_candidates": 1000,
+      "prepared_data_sha256": "4ff28b883c7bf1000089148fd92aa00286790eb57fadfaaf24e5bae756ad9aa9",
+      "panel_sha256": "4d891d2cd69cee6edb804194158278232c3effce59905fe7976ccb7896078f30",
+      "user_selection_sha256": "1a5ed78143ccdb9a125d3129b2af02ddb10f83213a83c8d24603d5776df8615f",
+      "candidate_ids_sha256": "5f0e7ebb82191512abe80be0f90694b95b321611cf4aa76573a82a97d702b019",
+      "eligibility_sha256": "456608443b4230f68df62540c9bd156ac3c491bd6e95361305d641438f8deede",
+      "dense_features_sha256": "96a96781cb099eb10670e6a365b07bcb36bf452a6e54cfe7763b86e7453f88c8",
+      "history_source": "training-only observed interactions; no validation/test histories",
+      "selection": "fixed RNG20261010 sample from training-active users",
+      "retriever": "already validation-selected frozen MF; stable full warm-catalog ordering",
+      "checkpoint_sha256": {
+        "mf": "e9eb272bb472be7b36400610fbabe42543693f9326328bc12e40005705b20fb4",
+        "torchrec-dlrm": "15b85ef91a1278ca96fc7f644b9f6f592636d975c76e462a7df3f3ee4e5a4714",
+        "torchrec-dcn": "ac9a782f5e2a9d75d14ed76620ca3a378f7acf075078737140e250fdcdebb708"
+      },
+      "heldout_fields_loaded": false
+    }
+  }
+}
