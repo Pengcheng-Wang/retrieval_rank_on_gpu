@@ -1,0 +1,171 @@
+{
+  "complete_for_published_frame": true,
+  "full_pipeline_matrix_complete": false,
+  "primary_assessments": [
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp32",
+      "scorer": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "probes": 64,
+      "primary_status": "predeclared_primary",
+      "independent_queries": 1000,
+      "execution_contexts": 3,
+      "status": "not_assessed",
+      "unavailable_references": [
+        {
+          "session": "0",
+          "status": "unsupported_memory"
+        },
+        {
+          "session": "1",
+          "status": "unsupported_memory"
+        },
+        {
+          "session": "2",
+          "status": "unsupported_memory"
+        }
+      ],
+      "unavailable_candidates": [],
+      "reason": "Three valid matched FP32/MLP reference contexts and candidates are required. Exact geometry oracles and other scorer/backend layouts are not substitute primary references."
+    },
+    {
+      "candidate": "faiss-gpu-fp16",
+      "reference": "faiss-gpu-fp32",
+      "scorer": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "probes": 64,
+      "primary_status": "predeclared_primary",
+      "independent_queries": 1000,
+      "execution_contexts": 3,
+      "status": "not_assessed",
+      "unavailable_references": [
+        {
+          "session": "0",
+          "status": "unsupported_memory"
+        },
+        {
+          "session": "1",
+          "status": "unsupported_memory"
+        },
+        {
+          "session": "2",
+          "status": "unsupported_memory"
+        }
+      ],
+      "unavailable_candidates": [],
+      "reason": "Three valid matched FP32/MLP reference contexts and candidates are required. Exact geometry oracles and other scorer/backend layouts are not substitute primary references."
+    }
+  ],
+  "secondary_assessment": {
+    "candidate": "silver-int8-rowwise",
+    "reference": "faiss-gpu-fp16",
+    "ranker": "semantic-mlp",
+    "cap": 50,
+    "batch": 16,
+    "inference_scope": "secondary_exploratory",
+    "status": "assessed",
+    "interval": {
+      "queries": 1000,
+      "mean_difference": 0.0,
+      "lower_bound": 0.0,
+      "upper_bound": 0.0,
+      "confidence": 0.95,
+      "bootstrap_draws": 20000,
+      "seed": 20261011,
+      "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+      "execution_contexts": 3,
+      "context_point_differences": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0
+      },
+      "context_aggregation": "Average per-query metrics across three fixed execution contexts, then resample the original query identities once.",
+      "independence_warning": "Repeated session predictions are not additional independent query observations."
+    },
+    "latency_ratio": {
+      "ratios": {
+        "0": 0.9793442160522949,
+        "1": 0.9839127524412151,
+        "2": 0.9816963285824352
+      },
+      "mean_ratio": 0.981651099025315,
+      "minimum_10_percent_mean_gain": false,
+      "within_5_percent_slower_mean": true,
+      "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+    },
+    "observed_memory_saving_bytes_by_context": {
+      "0": 12111052800,
+      "1": 12111052800,
+      "2": 12111052800
+    },
+    "scope": "Pointwise95% exploratory comparison of the same1000 query identities averaged over three fixed contexts; not a replacement primary reference or non-inferiority decision."
+  },
+  "within_backend_boundary_controls": [
+    {
+      "backend": "faiss-gpu-fp16",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.0658672040808772,
+          "1": 1.06544333966523,
+          "2": 1.0574620976041877
+        },
+        "mean_ratio": 1.0629242137834316,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": false,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 79.14322419999999,
+        "1": 78.96147028,
+        "2": 78.690804
+      },
+      "local_cascade_means_ms": {
+        "0": 84.35616710000001,
+        "1": 84.12897260000001,
+        "2": 83.21254266000001
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    },
+    {
+      "backend": "silver-int8-rowwise",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.0551407715088197,
+          "1": 1.058332407561359,
+          "2": 1.0564611753062632
+        },
+        "mean_ratio": 1.0566447847921472,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": false,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 77.50845886,
+        "1": 77.69119756,
+        "2": 77.25047338
+      },
+      "local_cascade_means_ms": {
+        "0": 81.78233508000001,
+        "1": 82.22311215999999,
+        "2": 81.6121259
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    }
+  ],
+  "scope": "All nine predeclared primary attempts are recorded, but both FP32-reference primary comparisons are not assessed. The half-versus-INT8 comparison is separately secondary exploratory."
+}

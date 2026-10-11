@@ -28,6 +28,7 @@ model rules, or client-side serving load generator. The paper's 23.7x QPS and
 | [Real semantic study](docs/semantic-study-design.md) | Full 8.84M real passages, audited 1.8M recommendation items, stronger LM encoders/rerankers, and separate model/stage costs |
 | [Real-corpus measured findings](docs/real-semantic-results.md) | Completed eight-representation ANN matrix, strong text/TorchRec comparisons, paired quality intervals, and 24 complete one-GPU cells |
 | [Real-catalog GPU profiles](docs/real-semantic-profiling-results.md) | Completed 60 fresh ANN timing conditions and 20 separate CUDA traces; precision-dependent crossover and limits |
+| [Initial actual-pipeline findings](docs/actual-pipeline-initial-results.md) | Reviewed nine-attempt partial frame: observed memory advantage, small whole-batch timing change, and unavailable FP32/MLP primaries |
 | [Upstream provenance](third_party/silvertorch/UPSTREAM.json) | Exact source, commit, license, and modification policy |
 
 Operational `progress.md`, access configuration, logs, datasets, checkpoints,
@@ -186,7 +187,10 @@ The [completed personalization result](docs/controlled-personalization-results.m
 reports a failed validation expansion gate despite inexpensive user-head
 inference. The [real ANN characterization](docs/real-semantic-profiling-results.md)
 now includes 3,000 varying batch durations and 20 actual CUDA profile
-conditions; the separate raw-encoder pipeline comparison remains in progress.
+conditions. The [initial raw-encoder pipeline frame](docs/actual-pipeline-initial-results.md)
+records all nine designated MLP/batch16 attempts: large observed INT8-layout
+memory savings versus half, only 1.83% lower whole-batch wall time, and
+unavailable FP32/MLP primary references. The remaining matrix is in progress.
 It reuses the frozen real catalogs instead of repeating corpus encoding. The
 personalization experiment fits a small shared user head over the same prior
 exposure histories, with fixed-mean, popularity, recurrence and wrong-user

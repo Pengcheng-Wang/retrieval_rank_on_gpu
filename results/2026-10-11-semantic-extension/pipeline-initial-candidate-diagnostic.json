@@ -1,0 +1,55 @@
+{
+  "complete_for_published_frame": true,
+  "full_pipeline_matrix_complete": false,
+  "contexts": [
+    {
+      "session": 0,
+      "quality_queries": 1097,
+      "identical_ordered_top1000_rows": 0,
+      "identical_ordered_prefix50_rows": 6,
+      "mean_top1000_set_overlap": 0.9959516864175022,
+      "identical_ordered_final10_rows": 1097,
+      "candidate_payload_sha256": {
+        "faiss_scalar_half": "a9b38a44e4e23361a0d4882dea87250dfc4879becb0bae916eb10398a6d1dde4",
+        "silver_rowwise_int8": "ed0fae71679f626dae27341d54210c7cff606a451e8db5e3f6c3ad56b26fbee3"
+      },
+      "final_payload_sha256": {
+        "faiss_scalar_half": "5bc18b97835b1f80a66709a3ad022c9ea036efb620823ba264cfe6f16a31cc76",
+        "silver_rowwise_int8": "5bc18b97835b1f80a66709a3ad022c9ea036efb620823ba264cfe6f16a31cc76"
+      }
+    },
+    {
+      "session": 1,
+      "quality_queries": 1097,
+      "identical_ordered_top1000_rows": 0,
+      "identical_ordered_prefix50_rows": 10,
+      "mean_top1000_set_overlap": 0.9959817684594349,
+      "identical_ordered_final10_rows": 1096,
+      "candidate_payload_sha256": {
+        "faiss_scalar_half": "b0ebf918d9f1a766093a49495d7bab02c2944544b384fc704f829953c75e9c1b",
+        "silver_rowwise_int8": "e52cdeb11841cd0cef04648f1c90927a16c6926edd0edc3b1683674995b2b6b0"
+      },
+      "final_payload_sha256": {
+        "faiss_scalar_half": "907366efb8085183140c7cd7cd1f756e487997b907daf2e245e0caf9ae843481",
+        "silver_rowwise_int8": "e72df1712c3b8504f0de6a427f1f6a8adfd9f61ea87a3b9a3510696611042a8c"
+      }
+    },
+    {
+      "session": 2,
+      "quality_queries": 1097,
+      "identical_ordered_top1000_rows": 0,
+      "identical_ordered_prefix50_rows": 6,
+      "mean_top1000_set_overlap": 0.9960009115770283,
+      "identical_ordered_final10_rows": 1097,
+      "candidate_payload_sha256": {
+        "faiss_scalar_half": "a35bfd5dbb2b54fd69a58439c809d15507bbf9024ee2f35a90bddfd3aa342820",
+        "silver_rowwise_int8": "60a022dd10391acd8db34dc00a595aa437e5f8be4648ee11ce8003a89a3a476f"
+      },
+      "final_payload_sha256": {
+        "faiss_scalar_half": "1f8a5fa4be1ff6b86bacda9a9504d07d1488883642f9780ea48a32d1dd180660",
+        "silver_rowwise_int8": "1f8a5fa4be1ff6b86bacda9a9504d07d1488883642f9780ea48a32d1dd180660"
+      }
+    }
+  ],
+  "scope": "Separate stored-array supplement; same1097fixedrows/nofilters/noinferencecriteriachange. Candidate-membership overlap is distinct from ordered equality; one final-list difference is not reflected in selected-dev MRR@10, not asserted unjudged."
+}

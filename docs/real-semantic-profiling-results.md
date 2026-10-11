@@ -6,7 +6,8 @@ _Completed ANN characterization in the bounded semantic extension._
 
 **Status:** the ANN-only matrix and actual CUDA profiles are complete. The
 separately gated raw-encoder, actual-candidate pipeline comparison is still
-pending; no whole-pipeline qualification follows from this report.
+in progress; its [reviewed nine-attempt partial frame](actual-pipeline-initial-results.md)
+is available. No whole-pipeline qualification follows from this ANN report.
 
 ## 📐 What was measured
 
@@ -151,7 +152,9 @@ The remaining comparison includes raw Qwen8 encoding, actual ANN candidates,
 the same frozen MLP/BGE scorer and resident versus local-cascade boundaries.
 It uses the prospective [geometry and resource contracts](semantic-extension-protocol.md),
 not historical query substitution or subtraction of the standalone ANN
-numbers above. That result remains pending.
+numbers above. The [initial actual-pipeline findings](actual-pipeline-initial-results.md)
+record the complete nine-attempt priority frame while the remaining matrix
+and separate pipeline profiles continue.
 
 [^1]: [Pinned semantic models](../configs/semantic-models-pinned.json), [original full-corpus findings](real-semantic-results.md) and [extension protocol](semantic-extension-protocol.md).
 [^2]: [ANN characterization](../results/2026-10-11-semantic-extension/ann-characterization.csv), [three-restart comparisons](../results/2026-10-11-semantic-extension/ann-restarted-comparisons.csv) and [checksummed summary](../results/2026-10-11-semantic-extension/ann-summary.json).
