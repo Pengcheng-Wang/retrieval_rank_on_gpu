@@ -151,6 +151,16 @@ and actual canonical-query hashes, not merely equal policy names.
 Quality is scoped to its session/batch geometry, and repeated contexts do
 not create additional independent query observations.
 
+Before production, execution priority is prospectively amended to run the
+nine designated primary MLP/cap50/batch16 cells first, preserving the rotated
+backend order within each of the three contexts. The remaining63 cells keep
+their original relative order and stable IDs. All72 remain in the denominator
+irrespective of favorable, negative, unsupported or deadline-unfinished
+outcomes; secondary work is not selected by primary quality. Actual order and
+UTC requested/completed times are recorded rather than implying each restart
+is one contiguous time block. The separate planned pipeline traces follow;
+already completed ANN traces are not repeated.
+
 Within-backend resident/local-cascade
 candidate and final IDs must match exactly and scorer values must meet the
 declared tolerance. FAISS can feed a resident neural scorer too.[^2]
@@ -178,6 +188,45 @@ An absolute cutoff bounds in-flight registered workers. Worker identity and
 process completion are verified before original keeper restoration; empty
 process argv during teardown is pending observation, not permission to
 signal or certify successful drainage.
+
+## 🔒 Cooperative resource handoff
+
+The original ANN-only characterization retains its checked STOP/CONT lease.
+The first full-pipeline launch failed before any production point because the
+original supervisor did not remain stopped. A bounded observation confirmed
+the transition, but the source of the independent continuation remains
+unidentified. This failure is not a scientific timing or quality outcome.
+
+The prospective pipeline resource-control amendment leaves that supervisor
+running and uses its existing cooperative external-client behavior. One
+registered, start-gated administrative CUDA context on an unused GPU makes
+the native keeper withdraw; actual observed withdrawal is required before
+any benchmark starts. The context is bound to the intended device UUID and
+performs no periodic/background CUDA work after initialization.
+
+| Resource | Purpose | Required evidence |
+| --- | --- | --- |
+| Benchmark GPU | Actual isolated encoder/index/scorer workload | Existing exclusive-client and headroom observations |
+| Additional administrative GPU | Idle context for native cooperative handoff | Device UUID and actual sampled NVML allocation, separate from the one-byte tensor payload |
+| Original supervisor | Unchanged cooperative yield and restoration | Exact process identity, source-policy hashes and operating environment |
+
+Each real child is registered before a **fresh, nonreusable** start gate is
+published. Parent-death protection precedes scientific-module import, and
+the original absolute cutoff remains in force. Unexpected reservation loss
+prevents further admission and drains only the verified real worker.
+Cleanup drains real workers, then the administrative context, verifies both
+absent, and passively waits for the original policy and all eight original
+allocations to return. This path sends no keeper/supervisor signals and
+changes no profile, grace marker or persistent policy.
+
+The administrative context is an additional occupied physical device, not
+another experimental arm or evidence of useful utilization. Its allocation
+is recorded separately from benchmark memory. Matched pipeline arms/restarts
+share this policy; earlier STOP-controlled ANN measurements are not silently
+pooled as the same environment. Scientific source hashes, execution groups,
+models and thresholds remain unchanged. Linux lifecycle checks and a
+20-row resource-control CUDA smoke with native-restoration evidence gate
+the full finite grid; this does not replace the model/query parity smoke.
 
 [^1]: [Original study protocol](semantic-study-design.md) and [measured results](real-semantic-results.md).
 [^2]: FAISS GPU interoperability. https://github.com/facebookresearch/faiss/wiki/Faiss-on-the-GPU

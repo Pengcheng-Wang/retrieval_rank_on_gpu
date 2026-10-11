@@ -1,0 +1,105 @@
+{
+  "complete": true,
+  "catalog_items": 8841823,
+  "validation_queries": 5000,
+  "fresh_processes": 15,
+  "timing_conditions": 60,
+  "measured_batch_durations": 3000,
+  "separate_profile_processes": 5,
+  "separate_profile_conditions": 20,
+  "query_source_scope": "Original cached canonical query geometry; ANN-only, separate from raw-execution-groups-v2 online pipeline.",
+  "resource_control_policy": "Original STOP/CONT checked lease; not pooled with later cooperative pipeline conditions.",
+  "quality_scope": "Full5000panel predictions in batch16; each timed varyingb1/b16 sample IDs and scores checked against canonical-panel predictions. Binary known judged positives; unjudged not exhaustive negatives.",
+  "receipts": {
+    "ann-characterization-v1/session0/faiss-gpu-fp32": {
+      "receipt_sha256": "eb977ddef4ed8f56b7cc3b998283196040e2fb64258f7c14cdb210c46a0bc1be",
+      "binding_sha256": "2f28b807a5639d7afd21f6fcf5a390b10909297484058cc05cbc33420bec31bc"
+    },
+    "ann-characterization-v1/session0/silver-fp32": {
+      "receipt_sha256": "6a433dc63bab69e879961b8b3e1ebd25454fa20a965f5a67270a7e8c0863baf4",
+      "binding_sha256": "363468a5e5d43ce96c97950fa18886fd17f2d79c77e36022b5c7e0dd082764ef"
+    },
+    "ann-characterization-v1/session0/faiss-gpu-fp16": {
+      "receipt_sha256": "ef345514a5f61ddbb5c15a51d5298b597006babbac7bc4a737dc5a217ccb2bd4",
+      "binding_sha256": "8fa8cee908e76d39eb9dcbb2a9bf05d233b8ba51cd8f82682cbc09aa85c58887"
+    },
+    "ann-characterization-v1/session0/silver-fp16": {
+      "receipt_sha256": "f69f1a7f094c3a398e24b8f0c1989c3624a7ddfc02c5f8b67b6171f947815235",
+      "binding_sha256": "308713fd94065a09a4cb81ec018052cfdf55c65abc6b45c040543b62eae587da"
+    },
+    "ann-characterization-v1/session0/silver-int8-rowwise": {
+      "receipt_sha256": "56de9d230c3c9a9baf1da18a9864d4e4dde95f8c77ac80bb6fb26420eb357e2f",
+      "binding_sha256": "4c1630759ae287debde2fb530016145173ec139c767545fb3089b410c56dbb66"
+    },
+    "ann-characterization-v1/session1/faiss-gpu-fp32": {
+      "receipt_sha256": "2ff810a58d95b70d53d55e7c6d3d8f394823545c0994b5e03f368578a1598063",
+      "binding_sha256": "226a8aee60c5aa52cde2a673b9aa54cbc72201c25b2bdf4ab92bb263aec3c1fc"
+    },
+    "ann-characterization-v1/session1/silver-fp32": {
+      "receipt_sha256": "a85777195f399bb4c6db9c70f098cbdbe1290157871289904bd5d1c7e09e0dbb",
+      "binding_sha256": "0926baa32d5d584bab06612a86c8dc190fccc2c714f73de34ba2f831944b62f9"
+    },
+    "ann-characterization-v1/session1/faiss-gpu-fp16": {
+      "receipt_sha256": "f921bd31ad78ce55cece41c08f15ccdfc6c0419fed68206a8edb0356ff08b5ab",
+      "binding_sha256": "d279ffd8c6cdf317bb40ff97cd3ffd76aa787c399c05203916fdaf56058d9adc"
+    },
+    "ann-characterization-v1/session1/silver-fp16": {
+      "receipt_sha256": "ac502b4b2ec50c1dbf76c75b2e3b66fcc1e7e79f042e51aa2e136af7b3e33b9f",
+      "binding_sha256": "2c48e486d71e16fbe191ecd4345134d6c00196e46a71098679e67a002e69b5be"
+    },
+    "ann-characterization-v1/session1/silver-int8-rowwise": {
+      "receipt_sha256": "d2370dad6fa0662a898eb608d17c924014290aeb0734cdc047b343e696f0b469",
+      "binding_sha256": "7bb5777bc74be00d915e328178fb7ff1bc176de5e79ce148032ec8bdda5f5af8"
+    },
+    "ann-characterization-v1/session2/faiss-gpu-fp32": {
+      "receipt_sha256": "7ef984512262f47fc4e2733203c7cc913a9a95833b7e5c3535b2f7d953c43d04",
+      "binding_sha256": "93bb76c7aabe176e510740c550b6807e58a49c74854437f8ffd74c08fe84e6f2"
+    },
+    "ann-characterization-v1/session2/silver-fp32": {
+      "receipt_sha256": "1d58443d197b7a6b89bcb05f1c7cbaee2b1d9d16b87643eadb085698cf7cd15c",
+      "binding_sha256": "c3b849baed90b1429f1269075a482d064d54a07e25eea790db24d3c640f08d02"
+    },
+    "ann-characterization-v1/session2/faiss-gpu-fp16": {
+      "receipt_sha256": "d94e6d0a6bce3eb700794ef2da2ddbf3a29e78e4004ae6e9356f4ffc8f56b2db",
+      "binding_sha256": "4e5ded67c6cf8b7f385bef62044b3a7ac1ed3a2102b7bca4f90c12b3c2d9602c"
+    },
+    "ann-characterization-v1/session2/silver-fp16": {
+      "receipt_sha256": "88a454e88aeac20ceae61b90bc618ed867dbafc49a1bcb04c84469d52f969bab",
+      "binding_sha256": "004b96df8517b996b13246c01454d8b11110ce86aad86cf57c368192a6663c26"
+    },
+    "ann-characterization-v1/session2/silver-int8-rowwise": {
+      "receipt_sha256": "1d219a868e1a999b48e3f85dbfd5d159aee2bebc101139fa316e51215412e0a2",
+      "binding_sha256": "13070897fab244d97f6120147801d59a5dd9f637ff458264504caf148a1f5118"
+    },
+    "ann-profile-v1/faiss-gpu-fp32": {
+      "receipt_sha256": "1b44dbda3879aecbab0de98b1d9245270cb3d8790830824fb6b1b5144e79a031",
+      "binding_sha256": "a24d07ddf7ce779efce3d21b27303106a32f9e698a06a60cc7163cc0f643cef9"
+    },
+    "ann-profile-v1/silver-fp32": {
+      "receipt_sha256": "76410c13c6885b59a35850fa5e5825c0407fe86c82b4faa73e949967e45c1d49",
+      "binding_sha256": "8f191f41ba8eb629191e298d53e836b93bdb2bb06aa082635ab7d8039bd8ab31"
+    },
+    "ann-profile-v1/faiss-gpu-fp16": {
+      "receipt_sha256": "3c3b300572f54e8d13a6459735145220da7ced191a75776124d37399defc0a8e",
+      "binding_sha256": "7e978bf100d495853869a56386c1c6cd033033ac14c3db7af6106ba472d462f7"
+    },
+    "ann-profile-v1/silver-fp16": {
+      "receipt_sha256": "aa4fd314734a3e014e794f2de25a15f63ffe6a87b00ba360a1960a6fe2af6095",
+      "binding_sha256": "362646add7c4febb208bb58ca89eb552cee31c92ff7d03184c7b859351aa1403"
+    },
+    "ann-profile-v1/silver-int8-rowwise": {
+      "receipt_sha256": "1e3afd5542808da4ba1569c6bb75d75fbdaba8fdf311a3026bed910dc96477f2",
+      "binding_sha256": "74ceb95a401656fd89d0c7a9d0a58e2fb30521fbc988440c3e23e71a39038d12"
+    }
+  },
+  "analysis_source_sha256": "4c43c827fd9ea7d6fd8fc05157427cdeb00ccb8639b7351eae86a11b270a6183",
+  "source_analysis_sha256": "cf388af79835c53ba6c159dd004e8190cbb7b3f5143902f956c340ee76366bf8",
+  "files": {
+    "ann-characterization.csv": "3ac88aa6fbbceb518c5fcdc355cb063d4bf532e2e18285b70f9b67765bf695ff",
+    "ann-restarted-comparisons.csv": "5f84ffd23ada6d44906a7a4e08a80d982c01943dd1cad5c716483ddc7652d1f6",
+    "ann-profiles.csv": "40030a09e3a8a9103636748ccd2d72c41c0379ce70e5bee76593004c49992a1a",
+    "ann-profile-kernels.csv": "95b004dd16a3ce7baf1eb43ac03aa3b2f753b8e55357f92f1be7c65a09f95b88",
+    "ann-profile-operators.csv": "4001f600e585fc557b409cc0a0e98fa021d47d2dfcb52e363564f353776d3f62"
+  },
+  "publication_scope": "Completed ANN-only characterization. This is not completion or qualification of the separately gated raw-encoder pipeline. No latency CI/p99/serving QPS/MFU/energy or private Meta reproduction."
+}

@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import signal
 import sys
 import time
@@ -48,6 +49,14 @@ def wait_for_start_gate(
         if time.monotonic() >= deadline:
             raise TimeoutError("Unregistered worker's startup gate never opened; no GPU work started.")
         time.sleep(0.05)
+
+
+def fresh_start_gate(directory: Path, owner: str, launch: int) -> Path:
+    if not isinstance(owner, str) or re.fullmatch(r"[A-Za-z0-9_-]+", owner) is None or type(launch) is not int or launch <= 0:
+        raise ValueError("Startup launch identity must have a safe owner and positive integer sequence.")
+    reserved = directory / f"{owner}-{launch}"
+    reserved.mkdir(mode=0o700, exist_ok=False)
+    return reserved / "approval.json"
 
 
 def read_process(pid: int, proc_root: Path) -> tuple[dict[str, object], str]:
@@ -209,6 +218,7 @@ def wait_owned_worker_until(
     registry: Path, parent: int, pid: int, deadline_utc: str,
     proc_root: Path = Path("/proc"), send_signal: Callable[[int, int], None] = os.kill,
     now: Callable[[], float] = time.time, poll_seconds: float = 0.2,
+    required_registry: Path | None = None,
 ) -> None:
     deadline = datetime.datetime.fromisoformat(deadline_utc.replace("Z", "+00:00"))
     if deadline.tzinfo is None or poll_seconds <= 0:
@@ -218,6 +228,10 @@ def wait_owned_worker_until(
     if len(matches) != 1:
         raise RuntimeError("Deadline monitor requires exactly one registered owned-worker identity.")
     expected = matches[0]
+    required = json.loads(required_registry.read_text(encoding="utf-8")) if required_registry is not None else None
+    if required is not None and (len(required) != 1 or required[0]["parent"] != parent):
+        terminate_owned_workers(registry, parent, proc_root, send_signal, timeout=5)
+        raise RuntimeError("Required reservation must contain exactly one child of this lease.")
     parent_identity, parent_state = read_process(parent, proc_root)
     if parent_state in ("Z", "X"):
         raise RuntimeError("Owned-worker parent exited before deadline monitoring.")
@@ -226,6 +240,9 @@ def wait_owned_worker_until(
         current_parent, state = read_process(parent, proc_root)
         if current_parent != parent_identity or state in ("Z", "X"):
             raise RuntimeError("Owned-worker parent identity changed during deadline monitoring.")
+        if required is not None and _owned_worker_state(required[0], parent, proc_root) != "live":
+            terminate_owned_workers(registry, parent, proc_root, send_signal, timeout=5)
+            raise RuntimeError("Required reservation exited or changed; actual owned work was drained.")
         observation = {}
         state = _owned_worker_state(expected, parent, proc_root, observation)
         if state != previous:
@@ -253,6 +270,7 @@ def main() -> None:
     parser.add_argument("--pid", type=int)
     parser.add_argument("--module", default="rrbench.semantic_encoding")
     parser.add_argument("--deadline")
+    parser.add_argument("--required-registry")
     args = parser.parse_args()
     if args.operation == "register":
         if args.pid is None:
@@ -263,7 +281,10 @@ def main() -> None:
     else:
         if args.pid is None or args.deadline is None:
             parser.error("wait requires --pid and an absolute --deadline")
-        wait_owned_worker_until(Path(args.registry), args.parent, args.pid, args.deadline)
+        wait_owned_worker_until(
+            Path(args.registry), args.parent, args.pid, args.deadline,
+            required_registry=Path(args.required_registry) if args.required_registry else None,
+        )
 
 
 if __name__ == "__main__":
