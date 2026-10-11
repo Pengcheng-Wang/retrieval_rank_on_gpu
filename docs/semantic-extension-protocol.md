@@ -206,6 +206,44 @@ the latency tolerance, rather than an ANN-only speedup. Observed headroom
 and finite no-OOM runs are admission evidence, not guarantees against unseen
 peaks. No serving QPS, tail SLO, energy, MFU or fabricated RPC is inferred.
 
+### Secondary scorer and cap reanalysis
+
+An additional, separately versioned analysis family is specified **after
+partial outcomes were available**. It reuses the existing matrix without
+new training, GPU runs, candidates or execution changes: eight resident
+BGE-versus-MLP comparisons across two candidate backends, two caps and two
+batches, plus eight cap500-versus-cap50 comparisons across the same backends,
+two scorers and two batches. These are not originally preregistered primary
+comparisons.
+
+Each three-context quality contrast requires the same complete actual-query,
+execution-group and ordered top1000 candidate hashes, cohort, catalog,
+protocol and resource policy. Only the declared scorer or prefix intervention
+may differ. Missing, unsupported or incompatible contexts are retained;
+neither two-context selection nor candidate/query replacement is allowed.
+Dev MRR@10 and Recall@10 use the original 1,000 identities; TREC19/20 nDCG@10
+and Recall@10 use their original 43/54 identities separately. Per-query metrics
+are averaged across three fixed contexts, then resampled once with 20,000
+draws and seed20261011. Pointwise95% secondary intervals are not
+multiplicity-adjusted family evidence, primary margins or qualification.
+
+Scorer timing has two distinct descriptive views. Full executed protocols
+retain MLP's 50 and BGE's 8 measured batches. A fixed common-eight diagnostic
+uses MLP's first 8 measured durations and BGE's 8 durations only when the ordered
+measured groups and boundaries match exactly; it does not remove the unequal
+10-versus2 warmup histories. Both views are reported, never whichever is
+more favorable. Same-scorer cap contrasts use their full paired schedules.
+
+Scorer comparisons change information, precision, tokenization/fetching and
+cached-feature layout, not parameter count alone. Cap changes can affect
+batching/padding and score numerics as well as which candidates are scored.
+Shared-prefix score diagnostics constrain any narrower interpretation.
+Memory samples retain their observation counts and layout scope; unequal
+sampling is not matched continuous-peak measurement. This family does not
+repair unavailable FP32/MLP primary references.
+
+### Source and lifecycle bounds
+
 Only source/implementation/checkpoint-bound completed files can be reused.
 An absolute cutoff bounds in-flight registered workers. Worker identity and
 process completion are verified before original keeper restoration; empty
