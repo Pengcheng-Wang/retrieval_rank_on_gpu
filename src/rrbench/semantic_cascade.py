@@ -14,13 +14,14 @@ import torch
 from rrbench.io import bind_run_config, sha256, write_json
 from rrbench.metrics import latency_summary
 from rrbench.runtime import configure, environment_manifest, require_cuda
-from rrbench.semantic_ir import PassageStore, judged_metrics
+from rrbench.semantic_ir import PassageStore, panel_metrics
 from rrbench.semantic_models import (
     SemanticEncoder, TextReranker, configuration_digest, mrl_prefix, validate_model_files, validate_smoke_contract,
 )
 from rrbench.semantic_rankers import (
     make_cached_ranker, query_representation, validate_checkpoint_features, validate_fitting_query_alignment,
 )
+from rrbench.semantic_sampling import latency_query_rows, stable_rank
 
 
 def device_telemetry(device: torch.device, require_exclusive: bool = False) -> dict[str, int]:
@@ -61,15 +62,21 @@ def pipeline_memory_bytes(
 
 
 def transfer_candidates(candidates: torch.Tensor, boundary: str, device: torch.device) -> torch.Tensor:
+    return transfer_candidate_payload(candidates, boundary, device)[0]
+
+
+def transfer_candidate_payload(
+    candidates: torch.Tensor, boundary: str, device: torch.device,
+) -> tuple[torch.Tensor, torch.Tensor | None]:
     if candidates.ndim != 2 or candidates.dtype != torch.int64:
         raise ValueError("Stage boundaries require a two-dimensional external candidate-ID tensor.")
     if boundary == "integrated":
-        return candidates.to(device)
+        return candidates.to(device), None
     if boundary == "local-cascade":
         host = candidates.detach().cpu().contiguous()
         serialized = host.numpy().tobytes(order="C")
         received = torch.from_numpy(np.frombuffer(serialized, dtype=np.int64).copy().reshape(host.shape))
-        return received.to(device)
+        return received.to(device), received
     raise ValueError("Unknown measured stage boundary; no assumed-RPC fallback is supported.")
 
 
@@ -227,7 +234,6 @@ def collect_text_scores(
     }
     bind_run_config(output, binding)
     np.save(output / "scores.npy", scores)
-    qrels = {query: {int(item): int(grade) for item, grade in values.items()} for query, values in panel["qrels"].items()}
     quality = {}
     for cap in (10, 50, 100, 500):
         if cap > scores.shape[1]:
@@ -236,7 +242,7 @@ def collect_text_scores(
             torch.from_numpy(np.array(candidates[:, :cap], dtype=np.int64)),
             torch.from_numpy(scores[:, :cap]), cap,
         ).numpy()
-        quality[str(cap)] = judged_metrics(panel["query_ids"], ranked, qrels, panel["binary_threshold"])
+        quality[str(cap)] = panel_metrics(panel, ranked)
         np.save(output / f"ranked-cap{cap}.npy", ranked)
     complete = {
         "complete": True, "rows": len(scores), "scores_sha256": sha256(output / "scores.npy"),
@@ -318,7 +324,6 @@ def evaluate_cached_ranker(
     )
     elapsed = time.perf_counter() - started
     np.save(output / "scores.npy", scores)
-    qrels = {query: {int(item): int(grade) for item, grade in values.items()} for query, values in panel["qrels"].items()}
     quality = {}
     for cap in (10, 50, 100, 500, 1000):
         if cap > candidates.shape[1]:
@@ -326,7 +331,7 @@ def evaluate_cached_ranker(
         ranked = rank_candidates(
             torch.from_numpy(np.array(candidates[:, :cap])), torch.from_numpy(scores[:, :cap]), cap,
         ).numpy()
-        quality[str(cap)] = judged_metrics(panel["query_ids"], ranked, qrels, panel["binary_threshold"])
+        quality[str(cap)] = panel_metrics(panel, ranked)
         np.save(output / f"ranked-cap{cap}.npy", ranked)
     complete = {
         "complete": True, "model_class": model.model_class, "query_rows": len(queries),
@@ -403,7 +408,7 @@ def benchmark_cached_boundary(
 
                 @torch.inference_mode()
                 def operation():
-                    ids = transfer_candidates(source_ids, boundary, device)
+                    ids, host_ids = transfer_candidate_payload(source_ids, boundary, device)
                     flattened = ids.reshape(-1)
                     if boundary == "integrated":
                         item = item_gpu[flattened].float()
@@ -412,7 +417,9 @@ def benchmark_cached_boundary(
                             assignment_gpu[flattened], bucket_gpu[flattened],
                         ), dim=1)
                     else:
-                        host = ids.cpu().numpy().reshape(-1)
+                        if host_ids is None:
+                            raise RuntimeError("Local cascade has no received host candidate payload.")
+                        host = host_ids.numpy().reshape(-1)
                         item = torch.as_tensor(np.array(items[host], dtype=np.float32), device=device)
                         sparse = torch.as_tensor(np.column_stack((
                             query_clusters[torch.as_tensor(rows, device=device)].cpu().numpy().repeat(cap),
@@ -515,6 +522,9 @@ def benchmark_online_pipeline(
         "boundaries": ["integrated", "local-cascade"], "candidate_caps": [10, 50, 100, 500],
         "query_batches": [1, 16], "probes": 64, "same_weights": True, "same_scorer": True,
         "same_precision": True, "same_candidates": True,
+        "primary_warmup_batches": 1, "primary_measured_batches": 3,
+        "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+        "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO.",
     }
     bind_run_config(output, binding)
     if items.shape[1] not in specification["dimensions"]:
@@ -565,16 +575,20 @@ def benchmark_online_pipeline(
     for query_batch in (1, 16):
         if len(panel["queries"]) < query_batch:
             continue
-        chosen = np.random.default_rng(17 + query_batch).choice(len(panel["queries"]), query_batch, replace=False)
-        texts = [panel["queries"][int(row)] for row in chosen]
+        row_batches = latency_query_rows(panel, query_batch)
         for cap in (10, 50, 100, 500):
             if cap > len(items):
                 continue
             outputs = {}
-            for boundary in ("integrated", "local-cascade"):
+            order_key = stable_rank("online-boundary-order", 20261010, f"{query_batch}:{cap}")[0]
+            boundaries = ["integrated", "local-cascade"]
+            if order_key[0] % 2:
+                boundaries.reverse()
+            for boundary in boundaries:
 
                 @torch.inference_mode()
-                def operation():
+                def operation(chosen):
+                    texts = [panel["queries"][int(row)] for row in chosen]
                     query, _ = encoder.encode(texts, query=True, instruction=panel.get("history_instruction"))
                     if query.shape[1] != items.shape[1]:
                         query = mrl_prefix(query, items.shape[1])
@@ -582,12 +596,15 @@ def benchmark_online_pipeline(
                     _, found = ann.search(query, cap, 64)
                     if not ann.cuda:
                         found = found.to(device)
-                    ids = transfer_candidates(found.long(), boundary, device)
+                    ids, host_ids = transfer_candidate_payload(found.long(), boundary, device)
                     if (ids < 0).any():
                         raise ValueError("Online pipeline could not produce a full valid candidate prefix.")
                     if is_text:
-                        host_ids = ids.cpu().numpy().reshape(-1)
-                        documents = store.fetch(host_ids)
+                        text_ids = (
+                            host_ids.numpy().reshape(-1) if host_ids is not None
+                            else ids.cpu().numpy().reshape(-1)
+                        )
+                        documents = store.fetch(text_ids)
                         repeated = [text for text in texts for _ in range(cap)]
                         values = []
                         for start in range(0, len(documents), scorer_batch):
@@ -607,7 +624,9 @@ def benchmark_online_pipeline(
                                 cluster.repeat_interleave(cap), assignment_gpu[flat], bucket_gpu[flat],
                             ), dim=1)
                         else:
-                            host = ids.cpu().numpy().reshape(-1)
+                            if host_ids is None:
+                                raise RuntimeError("Local cascade has no received host candidate payload.")
+                            host = host_ids.numpy().reshape(-1)
                             vectors = torch.as_tensor(np.array(items[host], dtype=np.float32), device=device)
                             sparse = torch.as_tensor(np.column_stack((
                                 cluster.cpu().numpy().repeat(cap), partition.assignments[host], buckets[host],
@@ -615,26 +634,37 @@ def benchmark_online_pipeline(
                         scores = ranker(query.repeat_interleave(cap, dim=0), vectors, sparse).reshape(query_batch, cap)
                     return ids, scores, rank_candidates(ids, scores, min(10, cap))
 
-                for _ in range(3):
-                    operation()
+                operation(row_batches[0])
                 samples = []
-                for _ in range(20):
+                results = []
+                for chosen in row_batches[1:]:
                     torch.cuda.synchronize()
                     started = time.perf_counter()
-                    ids, values, ranked = operation()
+                    ids, values, ranked = operation(chosen)
                     torch.cuda.synchronize()
                     samples.append((time.perf_counter() - started) * 1000)
-                outputs[boundary] = (ids.cpu(), values.cpu(), ranked.cpu())
+                    results.append((ids.cpu(), values.cpu(), ranked.cpu()))
+                outputs[boundary] = results
+                mean = float(np.mean(samples))
                 conditions.append({
                     "boundary": boundary, "query_batch": query_batch, "candidate_cap": cap,
-                    "raw_query_rows": chosen.tolist(), "full_online_latency": latency_summary(samples, query_batch),
+                    "warmup_query_rows": row_batches[0], "measured_query_row_batches": row_batches[1:],
+                    "boundary_order": boundaries,
+                    "full_online_latency": {
+                        "samples_ms": samples, "sample_count": len(samples),
+                        "latency_mean_ms": mean, "latency_p50_ms": float(np.median(samples)),
+                        "observed_min_ms": float(min(samples)), "observed_max_ms": float(max(samples)),
+                        "offline_queries_per_second": query_batch * 1000 / mean,
+                        "scope": "Afteronewarmup,3distinctrealbatches; no tails,confidenceintervalsorSLOclaims.",
+                    },
                 })
                 device_samples.append(device_telemetry(device, require_exclusive=True))
-            if not torch.equal(outputs["integrated"][0], outputs["local-cascade"][0]):
-                raise RuntimeError("Stage-boundary control changed upstream ANN candidate IDs.")
-            torch.testing.assert_close(outputs["integrated"][1], outputs["local-cascade"][1], rtol=1e-5, atol=1e-5)
-            if not torch.equal(outputs["integrated"][2], outputs["local-cascade"][2]):
-                raise RuntimeError("Same model/candidates changed final top-k at the stage boundary.")
+            for integrated, separate in zip(outputs["integrated"], outputs["local-cascade"]):
+                if not torch.equal(integrated[0], separate[0]):
+                    raise RuntimeError("Stage-boundary control changed upstream ANN candidate IDs.")
+                torch.testing.assert_close(integrated[1], separate[1], rtol=1e-5, atol=1e-5)
+                if not torch.equal(integrated[2], separate[2]):
+                    raise RuntimeError("Same model/candidates changed final top-k at the stage boundary.")
             parity.append({"query_batch": query_batch, "candidate_cap": cap, "same_candidates_scores_final_ids": True})
     result = {
         "complete": True, "status": "ok", "conditions": conditions, "parity": parity,

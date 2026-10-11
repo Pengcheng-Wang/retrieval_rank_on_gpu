@@ -2,7 +2,11 @@ import numpy as np
 import pytest
 
 from rrbench.io import sha256, write_json
-from rrbench.semantic_banking import bank_shard, validate_bank_progress
+import json
+import shutil
+
+import rrbench.semantic_banking as banking
+from rrbench.semantic_banking import bank_shard, fetch_shard, validate_bank_progress
 from rrbench.semantic_models import configuration_digest
 
 
@@ -80,3 +84,26 @@ def test_saved_progress_cannot_certify_a_missing_or_different_destination(tmp_pa
     (target / "vectors.npy").unlink()
     with pytest.raises(FileNotFoundError):
         validate_bank_progress(plan, bank, progress)
+
+
+def test_remote_shard_can_be_staged_to_disjoint_scratch_without_racing_the_durable_writer(tmp_path, monkeypatch):
+    source, spec = shard(tmp_path)
+    expected = task(source)
+    destination = tmp_path / "independent-merge-input"
+
+    def remote(node, path):
+        assert node == "node-1"
+        assert path.parent == source
+        return json.loads(path.read_text())
+
+    def copy(arguments, **_):
+        assert arguments[0] == "scp"
+        remote_path = arguments[2].split(":", 1)[1].strip("'")
+        assert str(source) in remote_path
+        shutil.copyfile(remote_path, arguments[3])
+
+    monkeypatch.setattr(banking, "remote_json", remote)
+    monkeypatch.setattr(banking.subprocess, "run", copy)
+    fetch_shard("node-1", expected, spec, destination=destination)
+    assert sha256(destination / "vectors.npy") == sha256(source / "vectors.npy")
+    assert not (source / "vectors.transfer").exists()

@@ -13,6 +13,7 @@ def test_personalized_uncertainty_resamples_users_not_independent_impressions():
     assert effect["mean_user_effect"] == 0.5
     assert effect["mean_event_or_query_effect"] == pytest.approx(2 / 3)
     assert effect["ci95_mean_user_effect"] == [0.0, 1.0]
+    assert effect["ci95_mean_event_or_query_effect"] == [0.0, 1.0]
 
 
 def test_misaligned_or_nonfinite_paired_data_is_not_an_uncertainty_estimate():

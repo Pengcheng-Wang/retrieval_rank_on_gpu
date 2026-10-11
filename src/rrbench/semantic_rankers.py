@@ -12,6 +12,7 @@ from torch import nn
 
 from rrbench.io import bind_run_config, sha256, write_json
 from rrbench.runtime import configure, environment_manifest, require_cuda
+from rrbench.semantic_recommendation_baselines import publish_mf_epoch, validate_mf_resume
 
 
 def query_representation(query_file: Path) -> dict[str, Any]:
@@ -19,7 +20,7 @@ def query_representation(query_file: Path) -> dict[str, Any]:
     values = np.load(query_file, mmap_mode="r")
     if query_file.name == "vectors.npy":
         expected = completed["vectors_sha256"]
-        dimension = completed["native_dimension"]
+        dimension = completed.get("stored_dimension", completed["native_dimension"])
     else:
         match = next(
             (representation for representation in completed["mrl_representations"].values()
@@ -213,17 +214,21 @@ def train_ranker(
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.0001)
     model.train()
     started, epoch_start, losses, previous_training_seconds = time.perf_counter(), 0, [], 0.0
-    checkpoint = output / "training-state.pt"
-    if checkpoint.exists():
+    if (output / "training-state.json").exists():
+        receipt = json.loads((output / "training-state.json").read_text(encoding="utf-8"))
+        checkpoint = output / receipt["checkpoint"]
+        if checkpoint.parent != output or checkpoint.suffix != ".pt" or sha256(checkpoint) != receipt["checkpoint_sha256"]:
+            raise ValueError("Cached training epoch pointer/checkpoint integrity changed.")
         state = torch.load(checkpoint, map_location=device, weights_only=True)
         if state["binding"] != binding:
             raise ValueError("Training resume checkpoint is bound to a different fitting protocol.")
+        validate_mf_resume(state, epochs)
+        if state["epochs"] != receipt["completed_epochs"]:
+            raise ValueError("Cached training epoch counter differs from its committed pointer.")
         model.load_state_dict(state["model"])
         optimizer.load_state_dict(state["optimizer"])
-        epoch_start, losses = state["completed_epochs"], state["losses"]
-        if "training_elapsed_seconds" not in state:
-            raise ValueError("Training resume checkpoint lacks measured accumulated runtime; use a new run.")
-        previous_training_seconds = state["training_elapsed_seconds"]
+        epoch_start, losses = state["epochs"], state["losses"]
+        previous_training_seconds = state["elapsed_seconds"]
     for epoch in range(epoch_start, epochs):
         order = np.random.default_rng(seed + epoch).permutation(len(rows))
         total_loss, count = 0.0, 0
@@ -247,13 +252,11 @@ def train_ranker(
             total_loss += float(loss.item()) * len(selected)
             count += len(selected)
         losses.append(total_loss / count)
-        temporary = output / "training-state.partial.pt"
-        torch.save({
+        publish_mf_epoch(output, {
             "model": model.state_dict(), "optimizer": optimizer.state_dict(), "binding": binding,
-            "completed_epochs": epoch + 1, "losses": losses,
-            "training_elapsed_seconds": previous_training_seconds + time.perf_counter() - started,
-        }, temporary)
-        temporary.replace(checkpoint)
+            "epochs": epoch + 1, "losses": losses,
+            "elapsed_seconds": previous_training_seconds + time.perf_counter() - started,
+        })
         write_json(output / "progress.json", {"completed_epochs": epoch + 1, "losses": losses})
         print(f"SEMANTIC_RANKER_EPOCH {name} seed={seed} epoch={epoch + 1} loss={losses[-1]:.6f}", flush=True)
     model.eval()

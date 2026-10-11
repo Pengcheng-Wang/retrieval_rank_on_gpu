@@ -28,8 +28,10 @@ def common_candidate_pool(predictions: list[np.ndarray], limit: int) -> np.ndarr
     output = np.full((len(predictions[0]), limit), -1, dtype=np.int64)
     for query in range(len(output)):
         found = list(dict.fromkeys(
-            int(item) for predictions_for_retriever in predictions
-            for item in predictions_for_retriever[query] if item >= 0
+            int(values[query, rank])
+            for rank in range(max(matrix.shape[1] for matrix in predictions))
+            for values in predictions
+            if rank < values.shape[1] and values[query, rank] >= 0
         ))[:limit]
         output[query, :len(found)] = found
     return output
@@ -123,7 +125,7 @@ def save_common_pool(sources: list[Path], output: Path, limit: int) -> dict[str,
     binding = {
         "source_candidates": [sha256(path) for path in sources], "limit": limit,
         "query_panel_sha256": panel_sha, "query_ids": query_ids,
-        "pool_policy": "Ordered retriever union without labels, positive injection or relevance-based truncation.",
+        "pool_policy": "Rank-interleaved retriever union without labels, positive injection or relevance-based truncation.",
     }
     bind_run_config(output, binding)
     if (output / "completed.json").exists():

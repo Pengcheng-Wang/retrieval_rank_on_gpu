@@ -2,7 +2,9 @@ import numpy as np
 import pytest
 import torch
 
-from rrbench.semantic_cascade import pipeline_memory_bytes, rank_candidates, transfer_candidates
+from rrbench.semantic_cascade import (
+    pipeline_memory_bytes, rank_candidates, transfer_candidate_payload, transfer_candidates,
+)
 
 
 def test_same_candidate_ids_and_scores_produce_same_final_topk_for_both_stage_boundaries():
@@ -26,3 +28,13 @@ def test_native_4096_index_plus_two_large_models_does_not_pretend_to_fit_one_gpu
     mrl = pipeline_memory_bytes(8841823, 1024, 2, 7567295488, 8188548096, cached_features=False)
     assert native > 80 * (1 << 30)
     assert mrl < 80 * (1 << 30)
+
+
+def test_local_cascade_reuses_the_received_host_ids_for_feature_fetch_without_a_second_roundtrip():
+    source = torch.tensor([[5, 3, 8]], dtype=torch.int64)
+    device_ids, host_ids = transfer_candidate_payload(source, "local-cascade", torch.device("cpu"))
+    assert host_ids is not None
+    assert host_ids.device.type == "cpu"
+    torch.testing.assert_close(device_ids, host_ids)
+    _, integrated_host_ids = transfer_candidate_payload(source, "integrated", torch.device("cpu"))
+    assert integrated_host_ids is None

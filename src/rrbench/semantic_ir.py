@@ -121,6 +121,32 @@ def judged_metrics(
     }
 
 
+def panel_metrics(panel: dict[str, Any], rankings: np.ndarray) -> dict[str, Any]:
+    qrels = {
+        query: {int(item): int(grade) for item, grade in labels.items()}
+        for query, labels in panel["qrels"].items()
+    }
+    if "evaluation_groups" not in panel:
+        return judged_metrics(panel["query_ids"], rankings, qrels, panel["binary_threshold"])
+    groups = panel["evaluation_groups"]
+    if len(groups) != len(rankings) or len(panel["query_ids"]) != len(rankings):
+        raise ValueError("Combined official evaluation groups do not align with query rows.")
+    results = {}
+    for name in sorted(set(groups)):
+        indices = [index for index, group in enumerate(groups) if group == name]
+        queries = [panel["query_ids"][index] for index in indices]
+        if name not in panel["threshold_by_group"]:
+            raise ValueError("Official evaluation group lacks its explicit binary relevance threshold.")
+        results[name] = judged_metrics(
+            queries, rankings[indices], {query: qrels[query] for query in queries},
+            panel["threshold_by_group"][name],
+        )
+    return {
+        "by_group": results, "queries": len(rankings),
+        "policy": "Separate official judged query populations and thresholds; no misleading combined relevance mean.",
+    }
+
+
 class PassageStore:
     def __init__(self, source: Path, offsets: Path) -> None:
         self.source = source

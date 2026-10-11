@@ -1,18 +1,148 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
 from pathlib import Path
+from pathlib import PureWindowsPath
 import shlex
 import shutil
 import socket
 import subprocess
 import time
+import uuid
 from typing import Any
 
 from rrbench.io import sha256, write_json
 from rrbench.semantic_encoding import validate_completed
 from rrbench.semantic_models import configuration_digest, validate_encoding_contract
+
+
+def safe_relative(filename: str) -> Path:
+    path = Path(filename)
+    windows = PureWindowsPath(filename)
+    if (
+        not filename or path.is_absolute() or windows.is_absolute() or windows.drive
+        or filename.startswith(("/", "\\")) or ".." in path.parts or ".." in windows.parts
+    ):
+        raise ValueError("Artifact path must be an in-scope relative path without roots or traversal.")
+    return path
+
+
+def checked_artifact_path(path: Path, root: Path) -> Path:
+    if not path.absolute().is_relative_to(root.absolute()):
+        raise ValueError("Artifact write path is outside its explicitly granted root.")
+    for candidate in (path, *path.parents):
+        if candidate.is_symlink() or (hasattr(candidate, "is_junction") and candidate.is_junction()):
+            raise ValueError("Artifact target/staging symlink or junction is not permitted.")
+        if candidate == root:
+            break
+    if not path.resolve().is_relative_to(root.resolve()):
+        raise ValueError("Artifact write path resolves outside its explicitly granted root.")
+    return path
+
+
+def exclusive_file(path: Path, root: Path) -> int:
+    checked_artifact_path(path, root)
+    return os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0), 0o600)
+
+
+def write_artifact_receipt(path: Path, value: dict[str, Any], root: Path) -> None:
+    checked_artifact_path(path, root)
+    checked_artifact_path(path.with_suffix(path.suffix + ".tmp"), root)
+    temporary = path.with_name(path.name + ".tmp-" + uuid.uuid4().hex)
+    descriptor = exclusive_file(temporary, root)
+    with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as stream:
+        json.dump(value, stream, indent=2, allow_nan=False)
+        stream.write("\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+    checked_artifact_path(path, root)
+    temporary.replace(path)
+
+
+def process_artifact_requests(
+    requests: Path, bank: Path, verified_requests: dict[str, str] | None = None,
+) -> None:
+    if not requests.exists():
+        return
+    for request_file in sorted(requests.glob("*.json")):
+        if request_file.name.endswith(".banked.json"):
+            continue
+        snapshot = request_file.read_bytes()
+        request = json.loads(snapshot)
+        request_digest = hashlib.sha256(snapshot).hexdigest()
+        if verified_requests is not None and request_file.name in verified_requests:
+            if verified_requests[request_file.name] != request_digest:
+                raise ValueError("An already verified artifact request changed during publishing.")
+            continue
+        source = Path(request["source_root"]).resolve()
+        bank_root = (bank / "artifacts").absolute()
+        destination = bank_root / safe_relative(request["destination"])
+        checked_artifact_path(destination, bank_root)
+        if not source.is_dir():
+            raise ValueError("Artifact request source or durable destination is outside its declared root.")
+        destination.mkdir(parents=True, exist_ok=True)
+        checked_artifact_path(destination, bank_root)
+        files = request["files"]
+        if not files:
+            raise ValueError("Artifact request must include checked completed files.")
+        durable_path = destination / "durable.json"
+        checked_artifact_path(durable_path, destination)
+        prior = json.loads(durable_path.read_text(encoding="utf-8")) if durable_path.exists() else None
+        if prior is not None and (
+            not prior["complete"] or prior["request_sha256"] != request_digest or prior["files"] != files
+        ):
+            raise ValueError("Durable artifact request is already bound to a different immutable file set.")
+        for filename, expected in files.items():
+            relative = safe_relative(filename)
+            original, target = (source / relative).resolve(), destination / relative
+            checked_artifact_path(target, destination)
+            if (
+                not original.is_relative_to(source) or not target.is_relative_to(destination)
+                or not isinstance(expected, str) or len(expected) != 64
+            ):
+                raise ValueError("Artifact request file paths or expected hashes are invalid.")
+            if sha256(original) != expected:
+                raise ValueError("Artifact request source checksum differs from its immutable request.")
+            if prior is not None:
+                if sha256(target) != expected:
+                    raise ValueError("Previously published durable artifact payload checksum changed.")
+                continue
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if not target.exists() or sha256(target) != expected:
+                temporary = target.with_suffix(target.suffix + ".partial")
+                checked_artifact_path(temporary, destination)
+                if temporary.exists():
+                    temporary.unlink()
+                descriptor = exclusive_file(temporary, destination)
+                with original.open("rb") as input_file, os.fdopen(descriptor, "wb") as output_file:
+                    shutil.copyfileobj(input_file, output_file, length=8 << 20)
+                    output_file.flush()
+                    os.fsync(output_file.fileno())
+                if sha256(temporary) != expected:
+                    raise ValueError("Copied durable artifact checksum differs from the frozen source.")
+                checked_artifact_path(target, destination)
+                temporary.replace(target)
+        if hashlib.sha256(request_file.read_bytes()).hexdigest() != request_digest:
+            raise ValueError("Artifact request changed during publishing; no durability acknowledgement is issued.")
+        durable = {
+            "complete": True, "request_sha256": request_digest, "files": files,
+            "description": request["description"],
+        }
+        if prior is None:
+            write_artifact_receipt(durable_path, durable, destination)
+        if hashlib.sha256(request_file.read_bytes()).hexdigest() != request_digest:
+            raise ValueError("Artifact request changed before the durability acknowledgement.")
+        checked_artifact_path(durable_path, destination)
+        write_artifact_receipt(request_file.with_suffix(".banked.json"), {
+            "complete": True, "request_sha256": request_digest,
+            "durable_receipt_sha256": sha256(durable_path),
+        }, requests)
+        if verified_requests is not None:
+            verified_requests[request_file.name] = request_digest
+        print(f"FINISHED_ARTIFACT_DURABLY_PUBLISHED {request_file.stem}", flush=True)
 
 
 def representation_files(completed: dict[str, Any]) -> dict[str, str]:
@@ -79,10 +209,13 @@ def remote_json(node: str, filename: Path) -> dict[str, Any]:
     return json.loads(result.stdout)
 
 
-def fetch_shard(node: str, task: dict[str, Any], specification: dict[str, Any]) -> None:
-    destination = Path(task["output"])
-    completed = remote_json(node, destination / "completed.json")
-    configuration = remote_json(node, destination / "run-config.json")
+def fetch_shard(
+    node: str, task: dict[str, Any], specification: dict[str, Any], destination: Path | None = None,
+) -> None:
+    remote_source = Path(task["output"])
+    destination = remote_source if destination is None else destination
+    completed = remote_json(node, remote_source / "completed.json")
+    configuration = remote_json(node, remote_source / "run-config.json")
     validate_task_binding(completed, configuration, task, specification)
     if (destination / "completed.json").exists():
         existing = validate_completed(destination, task["rows"], task["start"])
@@ -101,7 +234,7 @@ def fetch_shard(node: str, task: dict[str, Any], specification: dict[str, Any]) 
             continue
         temporary = target.with_suffix(target.suffix + ".transfer")
         subprocess.run(
-            ["scp", "-q", node + ":" + shlex.quote(str(destination / filename)), str(temporary)],
+            ["scp", "-q", node + ":" + shlex.quote(str(remote_source / filename)), str(temporary)],
             check=True, timeout=1200,
         )
         if sha256(temporary) != expected:
@@ -150,6 +283,7 @@ def validate_bank_progress(plan: dict[str, Any], bank: Path, progress: dict[str,
 
 def bank_loop(
     plan: dict[str, Any], bank: Path, progress: Path, nodes: int, deadline_seconds: int,
+    artifact_requests: Path | None = None,
 ) -> None:
     if socket.gethostname() != "node-0":
         raise RuntimeError("Shared-storage publishing is restricted to the sole node-0 writer.")
@@ -159,10 +293,17 @@ def bank_loop(
     prior = json.loads(progress.read_text(encoding="utf-8")) if progress.exists() else {
         "banked": {}, "plan_sha256": plan_digest, "bank_directory": str(bank.resolve()),
     }
+    if prior["plan_sha256"] != plan_digest or prior["bank_directory"] != str(bank.resolve()):
+        raise ValueError("Existing bank progress uses a different frozen plan or destination.")
+    verified_requests = {}
+    if artifact_requests is not None:
+        process_artifact_requests(artifact_requests, bank, verified_requests)
     verified_keys = validate_bank_progress(plan, bank, prior)
     banked = prior["banked"]
     deadline = time.monotonic() + deadline_seconds
     while time.monotonic() < deadline:
+        if artifact_requests is not None:
+            process_artifact_requests(artifact_requests, bank, verified_requests)
         ready = {}
         for node in range(1, nodes):
             pending = [
@@ -197,7 +338,11 @@ def bank_loop(
                 "bank_directory": str(bank.resolve()),
             })
             print(f"SHARD_DURABLY_BANKED {task['key']} count={len(banked)}/{len(plan['tasks'])}", flush=True)
+            if artifact_requests is not None:
+                process_artifact_requests(artifact_requests, bank, verified_requests)
         if verified_keys == {task["key"] for task in plan["tasks"]}:
+            if artifact_requests is not None:
+                process_artifact_requests(artifact_requests, bank)
             validate_bank_progress(plan, bank, {
                 "banked": banked, "plan_sha256": plan_digest, "bank_directory": str(bank.resolve()),
             })
@@ -221,6 +366,7 @@ def main() -> None:
     parser.add_argument("--progress", required=True)
     parser.add_argument("--nodes", type=int, default=3)
     parser.add_argument("--deadline-seconds", type=int, default=86400)
+    parser.add_argument("--artifact-requests")
     args = parser.parse_args()
     progress = Path(args.progress)
     progress.parent.mkdir(parents=True, exist_ok=True)
@@ -229,6 +375,7 @@ def main() -> None:
         bank_loop(
             json.loads(Path(args.plan).read_text(encoding="utf-8")), Path(args.bank), progress,
             args.nodes, args.deadline_seconds,
+            Path(args.artifact_requests) if args.artifact_requests else None,
         )
 
 

@@ -267,6 +267,53 @@ latency, token/pair throughput, memory, utilization and profiler breakdowns.
 Do not invent MFU from a GPU utilization percentage; a defensible FLOP count
 and corresponding hardware peak would be required.
 
+## 🧾 Transparent evaluation amendments
+
+The full item catalogs and primary retrieval/cached-ranker query panels are
+unchanged. Before bulk expensive text inference, GPT-6-Astra reviewed a
+**post-test compute-budget adjustment** recorded in
+`configs/semantic-ranking-evaluation-v1.json`. Text scoring uses 1,000
+hash-selected dev-small queries, all 43/54 TREC queries, and one fixed
+retained query for each of 819 recommendation users. This is not an
+originally preregistered sample; no reseeding or replacement based on hits,
+lengths, or scorer outcomes is permitted.
+
+The recommendation text mean is equal-user selected-query quality within
+the already conditioned warm/history population, not the original
+2,707-query-weighted mean. All cached comparators score the **same** fixed
+rank-interleaved union of the 0.6B/8B-MRL retrievers. Common-pool text quality
+cannot be paired with a single-retriever online timing as a deployed
+quality-latency point. Prefix caps are applied before reranking; no
+evaluation positive is injected.
+
+Primary online timing uses one warmup and three distinct hash-selected
+batches per cell, shared across models/caps/paths and counterbalanced path
+order. Report all three values, mean/median and min-max—not p95/p99,
+confidence intervals, steady-state performance, or serving SLOs. The
+separate cached-boundary supplement retains 10/50 warmup/sample batches.
+
+One additional **test-informed exploratory diagnostic** fixes item vectors
+and partitions but replaces exposure-text queries with a static mean of
+all admitted, catalog-covered training-positive exposure vectors per user.
+Repeated exposures retain event weights; means and normalization are FP32,
+then stored FP16. It receives its own oracle and query provenance, never a
+model-card LM-query label. No held-out feedback contributes. This jointly
+changes feedback selection, history length, aggregation and query encoding,
+so it cannot identify positive-history selection as an isolated cause.
+
+The diagnostic retains all original 2,707 test queries. Its exact
+Recall@1000 is 0.0003694 versus 0.0014777 for the original exposure-history
+exact retrieval. This null/negative follow-up does not prove that semantic
+personalization lacks useful signal. The dimension, model and user-policy
+comparisons remain separate from kernel geometry and timing.
+
+An independent caption identity check strengthens the version-specific ID
+join: 864 of 1,024 fixed hash-selected catalog IDs had valid durations in
+both sources, and all 864 matched exactly; a deterministic permutation
+matched only one. Missing/nonnumeric durations were excluded and counted.
+Duration is not a ranking feature, and this sanity check does not certify
+every caption's correctness.
+
 [^1]: Microsoft. MS MARCO passage ranking data and usage terms. https://github.com/microsoft/msmarco/blob/master/Datasets.md ; https://github.com/microsoft/msmarco/blob/master/README.md
 [^2]: Gao et al. KuaiRand and official supplementary metadata. https://doi.org/10.1145/3511808.3557624 ; https://zenodo.org/records/10439422 ; https://zenodo.org/records/18159199 ; https://github.com/chongminggao/KuaiRand
 [^3]: Encoder model cards. https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2 ; https://huggingface.co/BAAI/bge-large-en-v1.5 ; https://huggingface.co/Qwen/Qwen3-Embedding-0.6B ; https://huggingface.co/Qwen/Qwen3-Embedding-8B

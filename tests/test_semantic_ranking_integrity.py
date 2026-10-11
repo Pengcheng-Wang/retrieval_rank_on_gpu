@@ -8,7 +8,7 @@ import torch
 from rrbench.io import sha256, write_json
 from rrbench.semantic_models import BatchStats, configuration_digest
 from rrbench.semantic_queries import encode_query_panel
-from rrbench.semantic_rankers import validate_checkpoint_features, validate_fitting_query_alignment
+from rrbench.semantic_rankers import query_representation, validate_checkpoint_features, validate_fitting_query_alignment
 from rrbench.semantic_history import validate_history_panels
 
 
@@ -88,3 +88,14 @@ def test_validation_and_test_only_history_receipt_cannot_claim_required_fit_pane
     })
     with pytest.raises(ValueError, match="fit"):
         validate_history_panels(tmp_path)
+
+
+def test_combined_final_mrl_query_width_uses_stored_dimension_without_relabeling_native_model(tmp_path):
+    vectors = tmp_path / "vectors.npy"
+    np.save(vectors, np.eye(2, dtype=np.float16))
+    write_json(tmp_path / "completed.json", {
+        "complete": True, "rows": 2, "model": "Qwen/example", "revision": "fixed",
+        "specification_sha256": "example", "native_dimension": 4, "stored_dimension": 2,
+        "vectors_sha256": sha256(vectors), "mrl_representations": {}, "query_instruction": "search",
+    })
+    assert query_representation(vectors)["stored_dimension"] == 2

@@ -5,7 +5,7 @@ import gc
 import json
 from pathlib import Path
 import time
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 import torch
@@ -15,7 +15,7 @@ from rrbench.exact import exact_topk
 from rrbench.io import append_jsonl, bind_run_config, sha256, write_json
 from rrbench.metrics import latency_summary, recall_at_k
 from rrbench.runtime import configure, environment_manifest, measure, require_cuda
-from rrbench.semantic_ir import judged_metrics
+from rrbench.semantic_ir import panel_metrics
 
 BACKEND_STORAGE = {
     "faiss-cpu-fp32": (False, "fp32"), "faiss-gpu-fp32": (True, "fp32"),
@@ -181,6 +181,37 @@ def resident_exact_topk(
     return exact_topk(tensor, queries.float(), k, chunk_size=chunk_size)
 
 
+@torch.inference_mode()
+def item_major_exact_topk(
+    items: np.ndarray, queries: torch.Tensor, k: int, chunk_size: int = 65536,
+    query_batch: int = 128, progress: Callable[[int, int], None] | None = None,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    if (
+        items.ndim != 2 or queries.ndim != 2 or items.shape[1] != queries.shape[1]
+        or not 0 < k <= len(items) or min(chunk_size, query_batch) <= 0
+    ):
+        raise ValueError("Item-major oracle requires aligned vectors and valid positive sizes.")
+    best_scores = torch.full((len(queries), k), -torch.inf, device=queries.device, dtype=torch.float32)
+    best_ids = torch.full((len(queries), k), -1, device=queries.device, dtype=torch.long)
+    for start in range(0, len(items), chunk_size):
+        block = torch.as_tensor(
+            np.array(items[start:start + chunk_size], dtype=np.float32, copy=True),
+            device=queries.device,
+        )
+        for row in range(0, len(queries), query_batch):
+            stop = min(row + query_batch, len(queries))
+            scores = queries[row:stop].float() @ block.T
+            local_scores, local_ids = scores.topk(min(k, len(block)), dim=1)
+            all_scores = torch.cat((best_scores[row:stop], local_scores), dim=1)
+            all_ids = torch.cat((best_ids[row:stop], local_ids + start), dim=1)
+            chosen_scores, positions = all_scores.topk(k, dim=1)
+            best_scores[row:stop] = chosen_scores
+            best_ids[row:stop] = all_ids.gather(1, positions)
+        if progress is not None:
+            progress(start + len(block), len(items))
+    return best_scores, best_ids.masked_fill(~torch.isfinite(best_scores), -1)
+
+
 def exact_panel(
     items: np.ndarray, queries: np.ndarray, output: Path, k: int, batch_size: int = 128,
 ) -> dict[str, Any]:
@@ -202,15 +233,33 @@ def exact_panel(
         output / "scores.partial.npy", mode="w+", dtype=np.float32, shape=(len(queries), k),
     )
     started = time.perf_counter()
-    for position in range(0, len(queries), batch_size):
-        query = torch.as_tensor(
-            np.array(queries[position:position + batch_size], dtype=np.float32), device=device,
+    if resident:
+        for position in range(0, len(queries), batch_size):
+            query = torch.as_tensor(
+                np.array(queries[position:position + batch_size], dtype=np.float32), device=device,
+            )
+            values, found = exact_topk(database, query, k, chunk_size=65536)
+            identifiers[position:position + len(query)] = found.cpu().numpy()
+            scores[position:position + len(query)] = values.cpu().numpy()
+            write_json(output / "progress.json", {"rows": position + len(query), "expected": len(queries)})
+            print(f"FULL_CATALOG_FP32_ORACLE rows={position + len(query)}/{len(queries)}", flush=True)
+        algorithm = "GPUresident-fullFP32catalog/querymajor-tiled"
+    else:
+        query = torch.as_tensor(np.array(queries, dtype=np.float32), device=device)
+
+        def record(items_done: int, expected_items: int) -> None:
+            write_json(output / "progress.json", {
+                "items": items_done, "expected_items": expected_items, "all_query_rows": len(queries),
+                "algorithm": "item-major-FP32-streaming",
+            })
+            print(f"FULL_FP32_ITEM_MAJOR_ORACLE items={items_done}/{expected_items} queries={len(queries)}", flush=True)
+
+        values, found = item_major_exact_topk(
+            items, query, k, chunk_size=65536, query_batch=batch_size, progress=record,
         )
-        values, found = exact_topk(database, query, k, chunk_size=65536)
-        identifiers[position:position + len(query)] = found.cpu().numpy()
-        scores[position:position + len(query)] = values.cpu().numpy()
-        write_json(output / "progress.json", {"rows": position + len(query), "expected": len(queries)})
-        print(f"FULL_CATALOG_FP32_ORACLE rows={position + len(query)}/{len(queries)}", flush=True)
+        identifiers[:] = found.cpu().numpy()
+        scores[:] = values.cpu().numpy()
+        algorithm = "Itemmajor-FP32catalogstreamed-once/querybatch128"
     identifiers.flush()
     scores.flush()
     del identifiers, scores, database
@@ -221,6 +270,7 @@ def exact_panel(
         "complete": True, "queries": len(queries), "catalog_items": len(items),
         "dimension": items.shape[1], "fp32_database_resident": resident,
         "database_policy": "All canonical stored vectors cast toFP32; tiled exact full-catalog product.",
+        "oracle_loop_algorithm": algorithm,
         "elapsed_seconds": time.perf_counter() - started,
         "ids.npy_sha256": sha256(output / "ids.npy"), "scores.npy_sha256": sha256(output / "scores.npy"),
     }
@@ -286,7 +336,6 @@ def benchmark(
     validate_partition(partition, len(items), items.shape[1], clusters)
     if not partition_receipt.exists():
         write_json(partition_receipt, {"partition_sha256": sha256(output / "partition" / "partition.npz")})
-    qrels = {query: {int(item): int(grade) for item, grade in values.items()} for query, values in panel["qrels"].items()}
     query_ids = panel["query_ids"]
     journal = output / "ann.jsonl"
     _, gpu_total = torch.cuda.mem_get_info(device)
@@ -399,7 +448,7 @@ def benchmark(
                     "catalog_items": len(items), "dimension": items.shape[1], "index_build_seconds": build_seconds,
                     "retrieval_wall_seconds": retrieval_seconds, "quality_query_batch": quality_batch,
                     "geometric_recall_at_k": float(recall_at_k(predictions, truth, k).mean()),
-                    "relevance": judged_metrics(query_ids, predictions, qrels, panel["binary_threshold"]),
+                    "relevance": panel_metrics(panel, predictions),
                     "latency": latency, "environment": environment_manifest(),
                     "prediction_ids_sha256": sha256(output / (condition + "-ids.npy")),
                     "faiss_storage_contract": "IVF-SQfp16codes" if backend.endswith("fp16") and backend.startswith("faiss") else None,

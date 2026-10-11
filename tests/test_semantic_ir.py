@@ -3,6 +3,7 @@ import pytest
 
 from rrbench.io import sha256, write_json
 from rrbench.semantic_ir import PassageStore, judged_metrics, split_fitting_queries
+from rrbench.semantic_ir import panel_metrics
 
 
 def test_graded_ndcg_and_binary_recall_use_distinct_trec_relevance_contracts():
@@ -46,3 +47,17 @@ def test_random_access_preserves_passage_id_mapping_and_rejects_corrupt_offset(t
     np.save(offsets, np.array([0, 0, len(lines[0]) + len(lines[1]), sum(map(len, lines))], dtype=np.uint64))
     with pytest.raises(ValueError, match="offset"):
         PassageStore(source, offsets)
+
+
+def test_combined_final_panel_keeps_msmarco_and_trec_binary_thresholds_separate():
+    panel = {
+        "query_ids": ["dev-small:q", "trec19:q"], "qrels": {
+            "dev-small:q": {"7": 1}, "trec19:q": {"7": 1, "9": 2},
+        },
+        "evaluation_groups": ["dev-small", "trec19"],
+        "threshold_by_group": {"dev-small": 1, "trec19": 2}, "binary_threshold": 1,
+    }
+    result = panel_metrics(panel, np.array([[7, 9], [7, 9]], dtype=np.int64))
+    assert result["by_group"]["dev-small"]["mrr@10"] == 1
+    assert result["by_group"]["trec19"]["mrr@10"] == 0.5
+    assert result["by_group"]["trec19"]["binary_relevance_threshold"] == 2
