@@ -89,9 +89,9 @@ are not uninstrumented request latencies or additive wall-time fractions.[^3]
 
 | Backend | CUDA kernel events | Sum of kernel durations, ms | Main selected-list scoring kernel, ms |
 | --- | --- | --- | --- |
-| FAISS FP32 | 7 | 18.866 | 14.525 native IVF scan; additional native scan stage3.928 |
+| FAISS FP32 | 7 | 18.866 | 14.525 native IVF scan; additional native scan stage: 3.928 |
 | Silver FP32 | 117 | 22.331 | 20.648 |
-| FAISS scalar-half | 7 | 16.785 | 12.437 native IVF scan; additional native scan stage3.932 |
+| FAISS scalar-half | 7 | 16.785 | 12.437 native IVF scan; additional native scan stage: 3.932 |
 | Silver half | 121 | 11.542 | 10.068 |
 | Silver rowwise INT8 | 159 | 6.889 | 5.204 |
 

@@ -177,6 +177,29 @@ an interval containing zero is not equivalence. Multiple primary comparisons
 receive the declared adjustment; other intervals remain secondary exploratory
 comparisons.
 
+After the first FP32 MLP primary point failed its prescribed memory-budget
+gate, the geometry-oracle input dependency is prospectively amended. All
+six session/batch contexts use the same fixed FAISS scalar-half / MLP /
+cap50 donor for their complete **actual query payload**, independent of
+quality, speed or availability. This is a post-failure operational amendment,
+not original preregistration or a replacement primary reference.
+
+The donor must supply the full source-bound 1,097x1,024 FP16 query artifact,
+ordered cohort and immutable execution groups. Partial or independently
+unattested query files are unavailable; there is no fallback donor. Only query
+vectors are copied, never donor ANN candidates or scores. The oracle still
+exhaustively scores the whole canonical item bank using FP32 products with
+TF32 disabled. Geometry joins require matching actual-query, group, catalog,
+panel, raw-source and model identities. Missing/mismatched evidence is
+unavailable, not zero or permission to change a point's queries.
+
+An exhaustive oracle can exist even when a full FP32 encoder/index/MLP
+layout cannot maintain its headroom gate. That does not repair the primary
+comparison: under the declared three-valid-reference requirement, primary
+non-inferiority is not assessed when the compatible FP32 reference set is
+unsupported. Half-versus-INT8 and different-scorer comparisons remain
+secondary, not replacement primaries.
+
 Fresh FP32 resident timing is the reference. A deployment candidate must
 demonstrate complete-pipeline benefit or quantified memory savings within
 the latency tolerance, rather than an ANN-only speedup. Observed headroom
