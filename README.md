@@ -176,6 +176,28 @@ uses actual IVF scalar half codes rather than an ignored IVFFlat cloning
 option. See the [design](docs/semantic-study-design.md) for the complete
 fairness and reviewer gates.
 
+### Controlled personalization and profiling extension
+
+`configs/semantic-extension-v1.json` defines the authorized, bounded follow-up.
+The [extension protocol](docs/semantic-extension-protocol.md) details its
+controls, fixed admission and exploratory interpretation.
+The [completed personalization result](docs/controlled-personalization-results.md)
+reports a failed validation expansion gate despite inexpensive user-head
+inference; the separate profiling/pipeline workstream remains in progress.
+It reuses the frozen real catalogs instead of repeating corpus encoding. The
+personalization experiment fits a small shared user head over the same prior
+exposure histories, with fixed-mean, popularity, recurrence and wrong-user
+controls. The profiling experiment separates CPU/CUDA traces from unprofiled
+timing and pairs each deployed pipeline's quality with its actual candidates.
+
+The personalization runner exposes `smoke`, `train` and `evaluate` commands via
+`python -m rrbench.semantic_personalization_run --help`. A fixed seed17
+validation checkpoint determines whether a second seed is admitted before the
+pilot deadline; final test results never authorize further fitting. Input,
+implementation and checkpoint hashes prevent stale result reuse. Reused test
+panels remain post-test exploratory, and admission/qualification thresholds
+are resource and research gates, not production-uplift guarantees.
+
 ## 🏗️ What is compared
 
 ```mermaid
