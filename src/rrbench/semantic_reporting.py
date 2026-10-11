@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -115,6 +116,57 @@ def verify_online_protocol(value: dict[str, Any], config: dict[str, Any]) -> Non
         raise ValueError("Online primary measurement protocol has missing expected conditions.")
 
 
+def public_online_cell(
+    value: dict[str, Any], config: dict[str, Any], context: dict[str, Any],
+) -> dict[str, Any]:
+    if context["corpus"] == "kuairand" and context["ranker"] in (
+        "bge-m3-rerank", "qwen06-rerank", "qwen8-rerank",
+    ):
+        if config.get("history_bound_preprocessing") != "Unique raw queries per scorerbatch; identical bounded tokens reused for repeated candidatepairs.":
+            raise ValueError("Final recommendation text cells must all use the same optimized history preprocessing.")
+    verify_online_parity(value)
+    verify_online_protocol(value, config)
+    schedules = {}
+    for condition in value["conditions"]:
+        schedule = [condition["warmup_query_rows"], *condition["measured_query_row_batches"]]
+        batch = str(condition["query_batch"])
+        digest = hashlib.sha256(json.dumps(schedule, separators=(",", ":")).encode()).hexdigest()
+        if batch in schedules and schedules[batch] != digest:
+            raise ValueError("Online candidate caps and boundaries use different measured query batches.")
+        schedules[batch] = digest
+    samples = value["device_memory_samples"]
+    maximum = value["maximum_observed_device_memory_used_bytes"]
+    if (
+        not samples or any(
+            not 0 <= sample["memory_used_bytes"] <= sample["device_memory_bytes"]
+            or not 0 <= sample["gpu_utilization_percent"] <= 100
+            for sample in samples
+        )
+        or max(sample["memory_used_bytes"] for sample in samples) != maximum
+    ):
+        raise ValueError("Online observed device memory samples and maximum are inconsistent.")
+    configuration_fields = {
+        "backend", "encoder", "ranker", "probes", "same_candidates", "same_precision",
+        "same_scorer", "same_weights", "primary_measured_batches", "primary_warmup_batches",
+        "timing_estimand", "timing_query_policy", "history_bound_preprocessing",
+        "panel_sha256", "items_sha256", "partition_sha256", "model_registry_sha256",
+        "checkpoint_sha256", "source_sha256", "offsets_sha256", "token_lengths_sha256",
+        "smoke_sha256",
+    }
+    result = {
+        **context, "configuration": {key: value for key, value in config.items() if key in configuration_fields},
+        "query_schedule_sha256_by_batch": schedules,
+        "parity": value["parity"], "device_memory_samples": samples,
+        "device_memory_sampling": value["device_memory_sampling"],
+        "maximum_observed_device_memory_used_bytes": maximum,
+        "peak_cuda_allocated_bytes": value["peak_cuda_allocated_bytes"],
+        "memory_caveat": value["memory_caveat"], "timing_scope": value["timing_scope"],
+        "network": value["network"], "text_integrated_boundary": value["text_integrated_boundary"],
+    }
+    reject_private_fields(result)
+    return result
+
+
 def flatten_quality(context: dict[str, Any], quality: dict[str, Any]) -> list[dict[str, Any]]:
     if "by_group" in quality:
         return [
@@ -135,6 +187,7 @@ def export_results(root: Path, output: Path) -> None:
     if not merged["complete"] or set(merged["models"]) != required:
         raise ValueError("Cannot publish a final study without every complete full-catalog representation.")
     annex, ann_rows, quality_rows, online_rows, training_rows, sources = [], [], [], [], [], []
+    unsupported_ann, online_cells, query_schedules = [], [], {}
     encoding_rows, query_encoding_rows = [], []
     for corpus, model in sorted({(task["corpus"], task["model"]) for task in plans["tasks"]}):
         tasks = [task for task in plans["tasks"] if task["corpus"] == corpus and task["model"] == model]
@@ -201,7 +254,9 @@ def export_results(root: Path, output: Path) -> None:
         for record in records:
             context = {"corpus": corpus, "encoder": model, "dimension": int(dimension), "backend": record["backend"], "status": record["status"]}
             if record["status"] != "ok":
-                ann_rows.append({**context, "reason": record["reason"], "catalog_items": completed["catalog_items"]})
+                unsupported = {**context, "reason": record["reason"], "catalog_items": completed["catalog_items"]}
+                ann_rows.append(unsupported)
+                unsupported_ann.append(unsupported)
                 continue
             safe = {
                 **context, "catalog_items": record["catalog_items"], "k": record["k"], "probes": record["probes"],
@@ -252,6 +307,11 @@ def export_results(root: Path, output: Path) -> None:
                             "candidate_cap": int(cap), "stage": "actual_retrieval_cached_ranker",
                         }, metrics))
                 quality = checked_receipt(root / "cached-common-quality-v1" / corpus / architecture / f"seed{seed}" / "completed.json")
+                sources.append({
+                    "artifact": f"cached-common-quality/{corpus}/{architecture}/seed{seed}",
+                    "receipt_sha256": sha256(root / "cached-common-quality-v1" / corpus / architecture / f"seed{seed}" / "completed.json"),
+                    "scores_sha256": quality["scores_sha256"],
+                })
                 if not quality["complete"]:
                     raise ValueError("Cached common-pool comparison is incomplete.")
                 for cap, metrics in quality["relevance_by_candidate_cap"].items():
@@ -290,12 +350,14 @@ def export_results(root: Path, output: Path) -> None:
                 if complete["status"] != "ok":
                     online_rows.append({**context, "reason": complete["reason"]})
                     continue
-                if len(complete["conditions"]) != 16 or len(complete["parity"]) != 8:
-                    raise ValueError("Online cell does not cover every declared candidate/batch/boundary condition.")
-                verify_online_parity(complete)
-                verify_online_protocol(
-                    complete, json.loads((directory / "run-config.json").read_text(encoding="utf-8")),
-                )
+                config = json.loads((directory / "run-config.json").read_text(encoding="utf-8"))
+                cell = public_online_cell(complete, config, context)
+                for batch, digest in cell["query_schedule_sha256_by_batch"].items():
+                    key = corpus, batch
+                    if key in query_schedules and query_schedules[key] != digest:
+                        raise ValueError("Online models and ANN backends use different measured query batches.")
+                    query_schedules[key] = digest
+                online_cells.append(cell)
                 for condition in complete["conditions"]:
                     timing = public_timing(condition["full_online_latency"])
                     online_rows.append({
@@ -344,10 +406,19 @@ def export_results(root: Path, output: Path) -> None:
         "corpus": "kuairand", "architecture": "training-positive-static-semantic-profile",
         "stage": "exploratory_exact_full_catalog_retrieval",
     }, diagnostic["diagnostics"]["static_profile_exact"]))
+    warning_log = root / "logs" / "full-online-text-timing-v1.log"
+    runtime_warnings = [{
+        "corpus": "msmarco", "ranker": "qwen8-rerank", "backend": "faiss-gpu-fp32",
+        "message": line, "source_log_sha256": sha256(warning_log),
+        "scope": "Recorded allocator warning; final cell completed all conditions and parity, not a no-OOM robustness guarantee.",
+    } for line in warning_log.read_text(encoding="utf-8").splitlines()
+        if "memory allocation failed with OOM" in line]
     output.mkdir(parents=True, exist_ok=True)
     summary = {
-        "complete": True, "ann": annex, "quality_rows": quality_rows,
-        "online_rows": online_rows, "training_rows": training_rows, "source_receipts": sources,
+        "complete": True, "ann": annex, "ann_unsupported": unsupported_ann, "quality_rows": quality_rows,
+        "online_rows": online_rows, "online_cells": online_cells,
+        "training_rows": training_rows, "source_receipts": sources,
+        "runtime_warnings": runtime_warnings,
         "models": plans["registry"]["models"],
         "encoding_rows": encoding_rows, "query_encoding_rows": query_encoding_rows,
         "privacy": "Aggregated metrics, measured timings and hashes only; no user/query/item identity, raw text or access details.",
@@ -370,6 +441,8 @@ def export_results(root: Path, output: Path) -> None:
     write_json(output / "query-encoding.json", query_encoding_rows)
     write_csv(output / "online.csv", [{key: value for key, value in row.items() if key != "samples_ms"} for row in online_rows])
     write_json(output / "online-raw.json", online_rows)
+    write_json(output / "online-cells.json", online_cells)
+    write_json(output / "runtime-warnings.json", runtime_warnings)
     files = {path.name: sha256(path) for path in output.iterdir() if path.is_file() and path.name != "checksums.json"}
     write_json(output / "checksums.json", files)
     print("FULL_SEMANTIC_STUDY_PUBLIC_ARTIFACTS_VERIFIED", len(annex), len(quality_rows), len(online_rows), flush=True)

@@ -1,0 +1,4208 @@
+[
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "bge-m3-rerank",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "bge-m3-rerank",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 65478328320,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 14
+      },
+      {
+        "memory_used_bytes": 65633517568,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 27
+      },
+      {
+        "memory_used_bytes": 65633517568,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 46
+      },
+      {
+        "memory_used_bytes": 65969061888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 51
+      },
+      {
+        "memory_used_bytes": 65969061888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 45
+      },
+      {
+        "memory_used_bytes": 66455601152,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 57
+      },
+      {
+        "memory_used_bytes": 66455601152,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 58
+      },
+      {
+        "memory_used_bytes": 66893905920,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 66893905920,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 66896003072,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 26
+      },
+      {
+        "memory_used_bytes": 67338502144,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 58
+      },
+      {
+        "memory_used_bytes": 66896003072,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 69
+      },
+      {
+        "memory_used_bytes": 66896003072,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 57
+      },
+      {
+        "memory_used_bytes": 66896003072,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 57
+      },
+      {
+        "memory_used_bytes": 66896003072,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 59
+      },
+      {
+        "memory_used_bytes": 66896003072,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 60
+      },
+      {
+        "memory_used_bytes": 66896003072,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 52
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 67338502144,
+    "peak_cuda_allocated_bytes": 16890081280,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "bge-m3-rerank",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "bge-m3-rerank",
+      "backend": "silver-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 53126103040,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 14
+      },
+      {
+        "memory_used_bytes": 53285486592,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 48
+      },
+      {
+        "memory_used_bytes": 53285486592,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 53621030912,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 49
+      },
+      {
+        "memory_used_bytes": 53621030912,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 22
+      },
+      {
+        "memory_used_bytes": 54107570176,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 63
+      },
+      {
+        "memory_used_bytes": 54107570176,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 49
+      },
+      {
+        "memory_used_bytes": 54543777792,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 63
+      },
+      {
+        "memory_used_bytes": 54543777792,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 56
+      },
+      {
+        "memory_used_bytes": 54545874944,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 61
+      },
+      {
+        "memory_used_bytes": 54545874944,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 65
+      },
+      {
+        "memory_used_bytes": 54545874944,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 59
+      },
+      {
+        "memory_used_bytes": 54545874944,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 35
+      },
+      {
+        "memory_used_bytes": 54545874944,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 58
+      },
+      {
+        "memory_used_bytes": 54545874944,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 38
+      },
+      {
+        "memory_used_bytes": 54545874944,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 58
+      },
+      {
+        "memory_used_bytes": 54545874944,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 59
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 54545874944,
+    "peak_cuda_allocated_bytes": 53244862976,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "qwen06-rerank",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "qwen06-rerank",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 65488814080,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 65717403648,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 22
+      },
+      {
+        "memory_used_bytes": 65717403648,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 29
+      },
+      {
+        "memory_used_bytes": 66453504000,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 45
+      },
+      {
+        "memory_used_bytes": 66453504000,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 67032317952,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 91
+      },
+      {
+        "memory_used_bytes": 67032317952,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 91
+      },
+      {
+        "memory_used_bytes": 67772612608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 77
+      },
+      {
+        "memory_used_bytes": 67772612608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 89
+      },
+      {
+        "memory_used_bytes": 67774709760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 64
+      },
+      {
+        "memory_used_bytes": 67774709760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 64
+      },
+      {
+        "memory_used_bytes": 67774709760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 92
+      },
+      {
+        "memory_used_bytes": 67774709760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 84
+      },
+      {
+        "memory_used_bytes": 67774709760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 85
+      },
+      {
+        "memory_used_bytes": 67774709760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 34
+      },
+      {
+        "memory_used_bytes": 67774709760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 16
+      },
+      {
+        "memory_used_bytes": 67774709760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 26
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 67774709760,
+    "peak_cuda_allocated_bytes": 17258255872,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "qwen06-rerank",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "qwen06-rerank",
+      "backend": "silver-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 53136588800,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 12
+      },
+      {
+        "memory_used_bytes": 53369372672,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 65
+      },
+      {
+        "memory_used_bytes": 53369372672,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 46
+      },
+      {
+        "memory_used_bytes": 54105473024,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 42
+      },
+      {
+        "memory_used_bytes": 54105473024,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 4
+      },
+      {
+        "memory_used_bytes": 54684286976,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 59
+      },
+      {
+        "memory_used_bytes": 54684286976,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 75
+      },
+      {
+        "memory_used_bytes": 55422484480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 89
+      },
+      {
+        "memory_used_bytes": 55422484480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 54
+      },
+      {
+        "memory_used_bytes": 55424581632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 84
+      },
+      {
+        "memory_used_bytes": 55424581632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 92
+      },
+      {
+        "memory_used_bytes": 55424581632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 15
+      },
+      {
+        "memory_used_bytes": 55424581632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 92
+      },
+      {
+        "memory_used_bytes": 55424581632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 83
+      },
+      {
+        "memory_used_bytes": 55424581632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 85
+      },
+      {
+        "memory_used_bytes": 55424581632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 95
+      },
+      {
+        "memory_used_bytes": 55424581632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 55424581632,
+    "peak_cuda_allocated_bytes": 53613037568,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "qwen8-rerank",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "qwen8-rerank",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 80972087296,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 10
+      },
+      {
+        "memory_used_bytes": 81720770560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 79
+      },
+      {
+        "memory_used_bytes": 81720770560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 68
+      },
+      {
+        "memory_used_bytes": 83473989632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 44
+      },
+      {
+        "memory_used_bytes": 83473989632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 84172341248,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 53
+      },
+      {
+        "memory_used_bytes": 84172341248,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 98
+      },
+      {
+        "memory_used_bytes": 83174096896,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 67
+      },
+      {
+        "memory_used_bytes": 83174096896,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 83176194048,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 83176194048,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 68
+      },
+      {
+        "memory_used_bytes": 83176194048,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 83176194048,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 83176194048,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 83176194048,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 83515932672,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 83515932672,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 84172341248,
+    "peak_cuda_allocated_bytes": 33274014208,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "qwen8-rerank",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "qwen8-rerank",
+      "backend": "silver-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 68619862016,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 3
+      },
+      {
+        "memory_used_bytes": 69372739584,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 16
+      },
+      {
+        "memory_used_bytes": 69372739584,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 71125958656,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 71125958656,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 71824310272,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 98
+      },
+      {
+        "memory_used_bytes": 71824310272,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 73569140736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 95
+      },
+      {
+        "memory_used_bytes": 73569140736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 76
+      },
+      {
+        "memory_used_bytes": 73571237888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 73571237888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 73571237888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 97
+      },
+      {
+        "memory_used_bytes": 73571237888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 73571237888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 73571237888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 55
+      },
+      {
+        "memory_used_bytes": 73571237888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 73571237888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 73571237888,
+    "peak_cuda_allocated_bytes": 69628795904,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "semantic-mlp",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "semantic-mlp",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "0375eed153440306b6617c72388645e591951754ee3290c7d2a8e2ae3aa81fc9",
+      "token_lengths_sha256": "db997efcb0ac97c0d3b18c54489b8b3a02096aa2b2cb3f1bc5d767ace6a47bff",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 82781929472,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 12
+      },
+      {
+        "memory_used_bytes": 82880495616,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 18
+      },
+      {
+        "memory_used_bytes": 82880495616,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 47
+      },
+      {
+        "memory_used_bytes": 82880495616,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 33
+      },
+      {
+        "memory_used_bytes": 82880495616,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 82880495616,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 22
+      },
+      {
+        "memory_used_bytes": 82880495616,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 38
+      },
+      {
+        "memory_used_bytes": 82903564288,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 82903564288,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 40
+      },
+      {
+        "memory_used_bytes": 82976964608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 78
+      },
+      {
+        "memory_used_bytes": 82976964608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 75
+      },
+      {
+        "memory_used_bytes": 82976964608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 74
+      },
+      {
+        "memory_used_bytes": 82976964608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 65
+      },
+      {
+        "memory_used_bytes": 83004227584,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 77
+      },
+      {
+        "memory_used_bytes": 83004227584,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 83304120320,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 56
+      },
+      {
+        "memory_used_bytes": 83304120320,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 79
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 83304120320,
+    "peak_cuda_allocated_bytes": 33737261568,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "semantic-mlp",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "semantic-mlp",
+      "backend": "silver-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "0375eed153440306b6617c72388645e591951754ee3290c7d2a8e2ae3aa81fc9",
+      "token_lengths_sha256": "db997efcb0ac97c0d3b18c54489b8b3a02096aa2b2cb3f1bc5d767ace6a47bff",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 70429704192,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 29
+      },
+      {
+        "memory_used_bytes": 70532464640,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 23
+      },
+      {
+        "memory_used_bytes": 70532464640,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 34
+      },
+      {
+        "memory_used_bytes": 70532464640,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 28
+      },
+      {
+        "memory_used_bytes": 70532464640,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 36
+      },
+      {
+        "memory_used_bytes": 70532464640,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 43
+      },
+      {
+        "memory_used_bytes": 70532464640,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 40
+      },
+      {
+        "memory_used_bytes": 70553436160,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 20
+      },
+      {
+        "memory_used_bytes": 70553436160,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 24
+      },
+      {
+        "memory_used_bytes": 70626836480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 28
+      },
+      {
+        "memory_used_bytes": 70626836480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 77
+      },
+      {
+        "memory_used_bytes": 70626836480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 58
+      },
+      {
+        "memory_used_bytes": 70626836480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 30
+      },
+      {
+        "memory_used_bytes": 70654099456,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 7
+      },
+      {
+        "memory_used_bytes": 70654099456,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 70953992192,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 35
+      },
+      {
+        "memory_used_bytes": 70953992192,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 75
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 70953992192,
+    "peak_cuda_allocated_bytes": 70092043264,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "torchrec-dlrm",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "torchrec-dlrm",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "ebfb2446527e2aec756eb6adefc6f1367c33fcbe95d4aa7d66b6e4f3e9bcc317",
+      "token_lengths_sha256": "db997efcb0ac97c0d3b18c54489b8b3a02096aa2b2cb3f1bc5d767ace6a47bff",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 82802900992,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 82901467136,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 30
+      },
+      {
+        "memory_used_bytes": 82901467136,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 5
+      },
+      {
+        "memory_used_bytes": 82901467136,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 29
+      },
+      {
+        "memory_used_bytes": 82901467136,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 38
+      },
+      {
+        "memory_used_bytes": 82901467136,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 25
+      },
+      {
+        "memory_used_bytes": 82901467136,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 19
+      },
+      {
+        "memory_used_bytes": 82924535808,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 15
+      },
+      {
+        "memory_used_bytes": 82924535808,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 46
+      },
+      {
+        "memory_used_bytes": 82997936128,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 50
+      },
+      {
+        "memory_used_bytes": 82997936128,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 68
+      },
+      {
+        "memory_used_bytes": 82997936128,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 29
+      },
+      {
+        "memory_used_bytes": 82997936128,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 62
+      },
+      {
+        "memory_used_bytes": 83025199104,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 49
+      },
+      {
+        "memory_used_bytes": 83025199104,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 56
+      },
+      {
+        "memory_used_bytes": 83325091840,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 66
+      },
+      {
+        "memory_used_bytes": 83325091840,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 51
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 83325091840,
+    "peak_cuda_allocated_bytes": 33755241984,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "torchrec-dlrm",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "torchrec-dlrm",
+      "backend": "silver-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "ebfb2446527e2aec756eb6adefc6f1367c33fcbe95d4aa7d66b6e4f3e9bcc317",
+      "token_lengths_sha256": "db997efcb0ac97c0d3b18c54489b8b3a02096aa2b2cb3f1bc5d767ace6a47bff",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 70452772864,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 9
+      },
+      {
+        "memory_used_bytes": 70553436160,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 2
+      },
+      {
+        "memory_used_bytes": 70553436160,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 23
+      },
+      {
+        "memory_used_bytes": 70553436160,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 15
+      },
+      {
+        "memory_used_bytes": 70553436160,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 43
+      },
+      {
+        "memory_used_bytes": 70553436160,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 29
+      },
+      {
+        "memory_used_bytes": 70553436160,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 70574407680,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 27
+      },
+      {
+        "memory_used_bytes": 70574407680,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 10
+      },
+      {
+        "memory_used_bytes": 70647808000,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 30
+      },
+      {
+        "memory_used_bytes": 70647808000,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 19
+      },
+      {
+        "memory_used_bytes": 70647808000,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 11
+      },
+      {
+        "memory_used_bytes": 70647808000,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 92
+      },
+      {
+        "memory_used_bytes": 70675070976,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 75
+      },
+      {
+        "memory_used_bytes": 70675070976,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 81
+      },
+      {
+        "memory_used_bytes": 70974963712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 36
+      },
+      {
+        "memory_used_bytes": 70974963712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 65
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 70974963712,
+    "peak_cuda_allocated_bytes": 70110023680,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "torchrec-dcn",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "torchrec-dcn",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "0e0d1ce081800034fc50512d138d1ae15c68dbea9c685cff9937611c092e3777",
+      "token_lengths_sha256": "db997efcb0ac97c0d3b18c54489b8b3a02096aa2b2cb3f1bc5d767ace6a47bff",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 82804998144,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 3
+      },
+      {
+        "memory_used_bytes": 82903564288,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 26
+      },
+      {
+        "memory_used_bytes": 82903564288,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 37
+      },
+      {
+        "memory_used_bytes": 82903564288,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 24
+      },
+      {
+        "memory_used_bytes": 82903564288,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 48
+      },
+      {
+        "memory_used_bytes": 82903564288,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 26
+      },
+      {
+        "memory_used_bytes": 82903564288,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 13
+      },
+      {
+        "memory_used_bytes": 82928730112,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 12
+      },
+      {
+        "memory_used_bytes": 82928730112,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 83000033280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 66
+      },
+      {
+        "memory_used_bytes": 83000033280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 92
+      },
+      {
+        "memory_used_bytes": 83000033280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 65
+      },
+      {
+        "memory_used_bytes": 83000033280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 74
+      },
+      {
+        "memory_used_bytes": 83027296256,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 79
+      },
+      {
+        "memory_used_bytes": 83027296256,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 81
+      },
+      {
+        "memory_used_bytes": 83327188992,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 19
+      },
+      {
+        "memory_used_bytes": 83327188992,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 81
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 83327188992,
+    "peak_cuda_allocated_bytes": 33792013312,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "msmarco",
+    "encoder": "qwen8",
+    "ranker": "torchrec-dcn",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "torchrec-dcn",
+      "backend": "silver-fp32",
+      "items_sha256": "67b1216958f9b72f9837fd9f7330ede91a2f8e0a60d45535973c08d138fe55c4",
+      "partition_sha256": "f30c2fa0b38a0b39851274a95341f5ef7816af3ec223e426c34d8986030ed8d0",
+      "panel_sha256": "82b227c583d894773630c61315700120cefb57fd7646bd317c0d4c53c989faf4",
+      "source_sha256": "86e0c5820be6b22280337a67e54cbb626645453d9ac3c377bac45abb81c5653d",
+      "offsets_sha256": "658f06405dcabbc9720e60e7501f6ab70c31c0cb91ac630ef9c56921763829b9",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "0e0d1ce081800034fc50512d138d1ae15c68dbea9c685cff9937611c092e3777",
+      "token_lengths_sha256": "db997efcb0ac97c0d3b18c54489b8b3a02096aa2b2cb3f1bc5d767ace6a47bff",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "ddc4470901554755eccaccd40f28e0f3bb6d081c15a1f6f815d2081602cb9ff1",
+      "16": "ec5a05598a0903629eb7e04e17327b8ac6638adc3ce02399a93df304f77c8739"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 70454870016,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 56
+      },
+      {
+        "memory_used_bytes": 70555533312,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 3
+      },
+      {
+        "memory_used_bytes": 70555533312,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 5
+      },
+      {
+        "memory_used_bytes": 70555533312,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 45
+      },
+      {
+        "memory_used_bytes": 70555533312,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 12
+      },
+      {
+        "memory_used_bytes": 70555533312,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 32
+      },
+      {
+        "memory_used_bytes": 70555533312,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 19
+      },
+      {
+        "memory_used_bytes": 70578601984,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 16
+      },
+      {
+        "memory_used_bytes": 70580699136,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 14
+      },
+      {
+        "memory_used_bytes": 70652002304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 89
+      },
+      {
+        "memory_used_bytes": 70652002304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 55
+      },
+      {
+        "memory_used_bytes": 70652002304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 32
+      },
+      {
+        "memory_used_bytes": 70652002304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 89
+      },
+      {
+        "memory_used_bytes": 70679265280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 53
+      },
+      {
+        "memory_used_bytes": 70679265280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 79
+      },
+      {
+        "memory_used_bytes": 70979158016,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 67
+      },
+      {
+        "memory_used_bytes": 70979158016,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 67
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 70979158016,
+    "peak_cuda_allocated_bytes": 70146795008,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "bge-m3-rerank",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "bge-m3-rerank",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO.",
+      "history_bound_preprocessing": "Unique raw queries per scorerbatch; identical bounded tokens reused for repeated candidatepairs."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 26469203968,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 3
+      },
+      {
+        "memory_used_bytes": 26228031488,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 1
+      },
+      {
+        "memory_used_bytes": 26228031488,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 26672627712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 82
+      },
+      {
+        "memory_used_bytes": 26672627712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 31
+      },
+      {
+        "memory_used_bytes": 27226275840,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 77
+      },
+      {
+        "memory_used_bytes": 27226275840,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 43
+      },
+      {
+        "memory_used_bytes": 27765243904,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 47
+      },
+      {
+        "memory_used_bytes": 27765243904,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 83
+      },
+      {
+        "memory_used_bytes": 28167897088,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 33
+      },
+      {
+        "memory_used_bytes": 28167897088,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 78
+      },
+      {
+        "memory_used_bytes": 28167897088,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 79
+      },
+      {
+        "memory_used_bytes": 28167897088,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 79
+      },
+      {
+        "memory_used_bytes": 28167897088,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 70
+      },
+      {
+        "memory_used_bytes": 28167897088,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 61
+      },
+      {
+        "memory_used_bytes": 28167897088,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 68
+      },
+      {
+        "memory_used_bytes": 28167897088,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 35
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 28167897088,
+    "peak_cuda_allocated_bytes": 17155878912,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "bge-m3-rerank",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "bge-m3-rerank",
+      "backend": "silver-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO.",
+      "history_bound_preprocessing": "Unique raw queries per scorerbatch; identical bounded tokens reused for repeated candidatepairs."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 24221057024,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 16
+      },
+      {
+        "memory_used_bytes": 24428675072,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 68
+      },
+      {
+        "memory_used_bytes": 24428675072,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 72
+      },
+      {
+        "memory_used_bytes": 24873271296,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 77
+      },
+      {
+        "memory_used_bytes": 24873271296,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 71
+      },
+      {
+        "memory_used_bytes": 25426919424,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 70
+      },
+      {
+        "memory_used_bytes": 25426919424,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 74
+      },
+      {
+        "memory_used_bytes": 25963790336,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 25963790336,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 26366443520,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 71
+      },
+      {
+        "memory_used_bytes": 26366443520,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 73
+      },
+      {
+        "memory_used_bytes": 26366443520,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 53
+      },
+      {
+        "memory_used_bytes": 26366443520,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 81
+      },
+      {
+        "memory_used_bytes": 26366443520,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 67
+      },
+      {
+        "memory_used_bytes": 26366443520,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 78
+      },
+      {
+        "memory_used_bytes": 26366443520,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 63
+      },
+      {
+        "memory_used_bytes": 26366443520,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 27
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 26366443520,
+    "peak_cuda_allocated_bytes": 24606122496,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "qwen06-rerank",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "qwen06-rerank",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO.",
+      "history_bound_preprocessing": "Unique raw queries per scorerbatch; identical bounded tokens reused for repeated candidatepairs."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 26037190656,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 19
+      },
+      {
+        "memory_used_bytes": 26282557440,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 56
+      },
+      {
+        "memory_used_bytes": 26282557440,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 30
+      },
+      {
+        "memory_used_bytes": 26959937536,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 85
+      },
+      {
+        "memory_used_bytes": 26959937536,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 85
+      },
+      {
+        "memory_used_bytes": 27698135040,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 72
+      },
+      {
+        "memory_used_bytes": 27698135040,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 88
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 83
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 83
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 89
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 81
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 95
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 92
+      },
+      {
+        "memory_used_bytes": 28656533504,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 28656533504,
+    "peak_cuda_allocated_bytes": 17258590208,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "qwen06-rerank",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "qwen06-rerank",
+      "backend": "silver-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO.",
+      "history_bound_preprocessing": "Unique raw queries per scorerbatch; identical bounded tokens reused for repeated candidatepairs."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 24231542784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 14
+      },
+      {
+        "memory_used_bytes": 24481103872,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 86
+      },
+      {
+        "memory_used_bytes": 24481103872,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 87
+      },
+      {
+        "memory_used_bytes": 25158483968,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 83
+      },
+      {
+        "memory_used_bytes": 25158483968,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 61
+      },
+      {
+        "memory_used_bytes": 25896681472,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 58
+      },
+      {
+        "memory_used_bytes": 25896681472,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 90
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 26
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 85
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 32
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 97
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 80
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 67
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 87
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 32
+      },
+      {
+        "memory_used_bytes": 26852982784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 81
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 26852982784,
+    "peak_cuda_allocated_bytes": 24708833792,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "qwen8-rerank",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "qwen8-rerank",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO.",
+      "history_bound_preprocessing": "Unique raw queries per scorerbatch; identical bounded tokens reused for repeated candidatepairs."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 41520463872,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 21
+      },
+      {
+        "memory_used_bytes": 42325770240,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 67
+      },
+      {
+        "memory_used_bytes": 42325770240,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 95
+      },
+      {
+        "memory_used_bytes": 43768610816,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 92
+      },
+      {
+        "memory_used_bytes": 43768610816,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 44617957376,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 86
+      },
+      {
+        "memory_used_bytes": 44617957376,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 89
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 82
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 56
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 96
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 29
+      },
+      {
+        "memory_used_bytes": 46771732480,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 46771732480,
+    "peak_cuda_allocated_bytes": 33274411008,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "qwen8-rerank",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "qwen8-rerank",
+      "backend": "silver-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": null,
+      "token_lengths_sha256": null,
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO.",
+      "history_bound_preprocessing": "Unique raw queries per scorerbatch; identical bounded tokens reused for repeated candidatepairs."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 39714816000,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 20
+      },
+      {
+        "memory_used_bytes": 40524316672,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 40524316672,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 41967157248,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 94
+      },
+      {
+        "memory_used_bytes": 41967157248,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 73
+      },
+      {
+        "memory_used_bytes": 42816503808,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 92
+      },
+      {
+        "memory_used_bytes": 42816503808,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 63
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 50
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 76
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 53
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 91
+      },
+      {
+        "memory_used_bytes": 44968181760,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 83
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 44968181760,
+    "peak_cuda_allocated_bytes": 40724654592,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "semantic-mlp",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "semantic-mlp",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "b804e34f9e22ebf36414b1407696b0ac1c07d84d9c99339d66265e56b81da16a",
+      "token_lengths_sha256": "65d004fe084190cf7e3944f91d88fae3009fda23a1719173175673199ec89165",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 28792848384,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 59
+      },
+      {
+        "memory_used_bytes": 28948037632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 32
+      },
+      {
+        "memory_used_bytes": 28948037632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 93
+      },
+      {
+        "memory_used_bytes": 28948037632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 67
+      },
+      {
+        "memory_used_bytes": 28948037632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 44
+      },
+      {
+        "memory_used_bytes": 28948037632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 35
+      },
+      {
+        "memory_used_bytes": 28948037632,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 65
+      },
+      {
+        "memory_used_bytes": 28950134784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 90
+      },
+      {
+        "memory_used_bytes": 28950134784,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 68
+      },
+      {
+        "memory_used_bytes": 30023876608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 70
+      },
+      {
+        "memory_used_bytes": 30023876608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 48
+      },
+      {
+        "memory_used_bytes": 30023876608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30023876608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30023876608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 6
+      },
+      {
+        "memory_used_bytes": 30023876608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30023876608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30023876608,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 83
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 30023876608,
+    "peak_cuda_allocated_bytes": 19810054144,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "semantic-mlp",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "semantic-mlp",
+      "backend": "silver-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "b804e34f9e22ebf36414b1407696b0ac1c07d84d9c99339d66265e56b81da16a",
+      "token_lengths_sha256": "65d004fe084190cf7e3944f91d88fae3009fda23a1719173175673199ec89165",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 26987200512,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 54
+      },
+      {
+        "memory_used_bytes": 27146584064,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 73
+      },
+      {
+        "memory_used_bytes": 27146584064,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 84
+      },
+      {
+        "memory_used_bytes": 27146584064,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 73
+      },
+      {
+        "memory_used_bytes": 27146584064,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 36
+      },
+      {
+        "memory_used_bytes": 27146584064,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 90
+      },
+      {
+        "memory_used_bytes": 27146584064,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 83
+      },
+      {
+        "memory_used_bytes": 27146584064,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 45
+      },
+      {
+        "memory_used_bytes": 27146584064,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 80
+      },
+      {
+        "memory_used_bytes": 28220325888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28220325888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28220325888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28220325888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 63
+      },
+      {
+        "memory_used_bytes": 28220325888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 78
+      },
+      {
+        "memory_used_bytes": 28220325888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28220325888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28220325888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 28220325888,
+    "peak_cuda_allocated_bytes": 27260297728,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "torchrec-dlrm",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "torchrec-dlrm",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "07f314ad0b1ef87b73024bb4ddd39a02c0e7f8a6554626f2f0c2cd90c0850405",
+      "token_lengths_sha256": "65d004fe084190cf7e3944f91d88fae3009fda23a1719173175673199ec89165",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 28813819904,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 23
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 74
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 81
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 68
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 68
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 65
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 40
+      },
+      {
+        "memory_used_bytes": 28973203456,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 75
+      },
+      {
+        "memory_used_bytes": 28973203456,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 63
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 56
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 36
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 30046945280,
+    "peak_cuda_allocated_bytes": 19827650560,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "torchrec-dlrm",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "torchrec-dlrm",
+      "backend": "silver-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "07f314ad0b1ef87b73024bb4ddd39a02c0e7f8a6554626f2f0c2cd90c0850405",
+      "token_lengths_sha256": "65d004fe084190cf7e3944f91d88fae3009fda23a1719173175673199ec89165",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 27010269184,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 53
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 78
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 72
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 68
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 43
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 66
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 74
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 79
+      },
+      {
+        "memory_used_bytes": 28243394560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 99
+      },
+      {
+        "memory_used_bytes": 28243394560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 99
+      },
+      {
+        "memory_used_bytes": 28243394560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28243394560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28243394560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28243394560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28243394560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 74
+      },
+      {
+        "memory_used_bytes": 28243394560,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 28243394560,
+    "peak_cuda_allocated_bytes": 27277894144,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "torchrec-dcn",
+    "backend": "faiss-gpu-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "torchrec-dcn",
+      "backend": "faiss-gpu-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "8620bbb9d6a2d1cde822dfec11ca2648adeeee6889684bb2f88437a501c1166a",
+      "token_lengths_sha256": "65d004fe084190cf7e3944f91d88fae3009fda23a1719173175673199ec89165",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 4194304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 28815917056,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 59
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 63
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 73
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 56
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 71
+      },
+      {
+        "memory_used_bytes": 28971106304,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 50
+      },
+      {
+        "memory_used_bytes": 28973203456,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 89
+      },
+      {
+        "memory_used_bytes": 28973203456,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 86
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 50
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 92
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 30046945280,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 30046945280,
+    "peak_cuda_allocated_bytes": 19829216768,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  },
+  {
+    "corpus": "kuairand",
+    "encoder": "qwen8",
+    "ranker": "torchrec-dcn",
+    "backend": "silver-fp32",
+    "status": "ok",
+    "configuration": {
+      "encoder": "qwen8",
+      "ranker": "torchrec-dcn",
+      "backend": "silver-fp32",
+      "items_sha256": "07794eed9a4e127b5d7e8b2d7904f5892aa2e011eb61d362f7a3b92dcfcbfe13",
+      "partition_sha256": "ae33deda5c1b31619c146dadf986b90ce71fba3554f95f7357bccfe4327477e3",
+      "panel_sha256": "d387d93c2dfbbbcdc9b656873625e4503eb465607ff97de240aa8d7c5d9b21f0",
+      "source_sha256": "1a65f6e0b77a608665c190b105683feaaa80f2e13716103dfd6d334cffd29f49",
+      "offsets_sha256": "ab4ddf5e1f22362c6e97218d884c26d89cf693cd6a8d1b4bea29c9a64a3226e0",
+      "model_registry_sha256": "f0159bb59901716140b8fa226c58b13d8fd406d0f1053d3620329d92ca1862e8",
+      "smoke_sha256": "6e0fea271ba72ecd46d9f66f4712fbd6dc3748b0c218859bd845af8075eefa1f",
+      "checkpoint_sha256": "8620bbb9d6a2d1cde822dfec11ca2648adeeee6889684bb2f88437a501c1166a",
+      "token_lengths_sha256": "65d004fe084190cf7e3944f91d88fae3009fda23a1719173175673199ec89165",
+      "probes": 64,
+      "same_weights": true,
+      "same_scorer": true,
+      "same_precision": true,
+      "same_candidates": true,
+      "primary_warmup_batches": 1,
+      "primary_measured_batches": 3,
+      "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
+      "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO."
+    },
+    "query_schedule_sha256_by_batch": {
+      "1": "2a20fc2229518656b0feaadbbba87c5b8c1702ff277d16517434246f37772096",
+      "16": "24975b1e314214a9acadcef2e21bff485f129e57964e26ed72f9ed88bdf8d819"
+    },
+    "parity": [
+      {
+        "query_batch": 1,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 1,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 10,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 50,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 100,
+        "same_candidates_scores_final_ids": true
+      },
+      {
+        "query_batch": 16,
+        "candidate_cap": 500,
+        "same_candidates_scores_final_ids": true
+      }
+    ],
+    "device_memory_samples": [
+      {
+        "memory_used_bytes": 445644800,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 0
+      },
+      {
+        "memory_used_bytes": 27012366336,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 67
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 72
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 42
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 44
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 49
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 73
+      },
+      {
+        "memory_used_bytes": 27169652736,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 18
+      },
+      {
+        "memory_used_bytes": 27171749888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 42
+      },
+      {
+        "memory_used_bytes": 27171749888,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 75
+      },
+      {
+        "memory_used_bytes": 28245491712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28245491712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 99
+      },
+      {
+        "memory_used_bytes": 28245491712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28245491712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28245491712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 99
+      },
+      {
+        "memory_used_bytes": 28245491712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 95
+      },
+      {
+        "memory_used_bytes": 28245491712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 100
+      },
+      {
+        "memory_used_bytes": 28245491712,
+        "device_memory_bytes": 85899345920,
+        "gpu_utilization_percent": 75
+      }
+    ],
+    "device_memory_sampling": "Measured startup/co-resident and post-conditionNVMLsamples outside latencytimers; not a continuouspeak.",
+    "maximum_observed_device_memory_used_bytes": 28245491712,
+    "peak_cuda_allocated_bytes": 27279460352,
+    "memory_caveat": "Torchallocatorpeak excludesFAISSexternalCUDAallocations; report deviceNVMLmemory separately.",
+    "timing_scope": "Actual querytokenization/LMencoding,fullANN,measuredcandidateboundary,feature/textfetch,scoringandfinaltopk.",
+    "network": "In-process byte serialization only; no interprocess transport or fabricatedRPCdelay.",
+    "text_integrated_boundary": "Text requires host IDs and CPUtokenization in both paths; no transformer-kernelfusionclaim."
+  }
+]

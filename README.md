@@ -26,6 +26,7 @@ model rules, or client-side serving load generator. The paper's 23.7x QPS and
 | [Independent seed replication](docs/seed-replication.md) | Separate seed23/42 follow-up against the immutable seed17 reference |
 | [Frozen TorchRec inference](docs/torchrec-inference.md) | FP32/BF16 and dense-path compilation fidelity, runtime, and first-call costs |
 | [Real semantic study](docs/semantic-study-design.md) | Full 8.84M real passages, audited 1.8M recommendation items, stronger LM encoders/rerankers, and separate model/stage costs |
+| [Real-corpus measured findings](docs/real-semantic-results.md) | Completed eight-representation ANN matrix, strong text/TorchRec comparisons, paired quality intervals, and 24 complete one-GPU cells |
 | [Upstream provenance](third_party/silvertorch/UPSTREAM.json) | Exact source, commit, license, and modification policy |
 
 Operational `progress.md`, access configuration, logs, datasets, checkpoints,
@@ -148,11 +149,23 @@ model-card pooling/scoring, native/MRL dimensions, and complete artifact
 checksums before full encoding.
 
 The real-data study uses **8,841,823 MS MARCO passages** and **1,798,875
-training-observed, caption-covered KuaiRand videos**. It is in progress;
-acquisition or successful model smoke is not a semantic quality result.
+training-observed, caption-covered KuaiRand videos**. The full experiment is
+complete: 150 encoded shards, eight catalog representations, 276 measured
+ANN grid records plus 10 explicit unsupported outcomes, and 24 co-resident
+encoder/index/scorer cells. The [results report](docs/real-semantic-results.md)
+and [checksummed CSV/JSON](results/2026-10-10-real-semantic/summary.json)
+separate semantic quality, quantization fidelity, and whole-pipeline costs.
 MS MARCO is IR rather than personalized recommendation. KuaiRand captions
 are retrospective metadata, and frozen-catalog test-positive event coverage
 is only 14.78%; conditional ranking metrics must not hide that ceiling.
+
+Qwen8 improves measured IR retrieval, but larger models do not automatically
+improve reranking or personalization. SilverTorch's speed ordering changes
+with batch and precision; resident TorchRec/cached scoring helps with FAISS
+too. The recommendation common first-500 pool has no known positives for
+the 819 selected users, so its zero reranking metrics are a candidate ceiling,
+not evidence of scorer equivalence. All primary online samples and memory
+observations, including the recovered allocator warning, are preserved.
 
 Run the corresponding Python modules with `--help` for audited acquisition,
 token-length certification, disjoint shard encoding/merging, judged IR

@@ -1,0 +1,1832 @@
+{
+  "complete": true,
+  "comparisons": [
+    {
+      "corpus": "kuairand",
+      "phase": "validation",
+      "metric": "recall@1000",
+      "contrast": "trainingpositivepopularity minus mean-of-three-MFseedmetrics",
+      "effect": {
+        "mean_user_effect": 0.028128395212651394,
+        "mean_event_or_query_effect": 0.03052600472813239,
+        "ci95_mean_user_effect": [
+          0.022621089069028807,
+          0.03408454207120687
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.02582059308960695,
+          0.035420508738507654
+        ],
+        "users_or_query_groups": 903,
+        "paired_rows": 4136,
+        "bootstrap_draws": 20000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "seed_average": "Metricaverage,notpredictionensemble/testseedselection."
+    },
+    {
+      "corpus": "kuairand",
+      "phase": "test",
+      "metric": "recall@1000",
+      "contrast": "trainingpositivepopularity minus mean-of-three-MFseedmetrics",
+      "effect": {
+        "mean_user_effect": 0.02345222629614164,
+        "mean_event_or_query_effect": 0.026053852152854735,
+        "ci95_mean_user_effect": [
+          0.01694676165740981,
+          0.03059394061626203
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.019728591371946623,
+          0.032759449269320284
+        ],
+        "users_or_query_groups": 819,
+        "paired_rows": 2707,
+        "bootstrap_draws": 20000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "seed_average": "Metricaverage,notpredictionensemble/testseedselection."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.012526431436648364,
+        "mean_event_or_query_effect": -0.012526431436648364,
+        "ci95_mean_user_effect": [
+          -0.025174128583145057,
+          -0.0006855426577943574
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.025174128583145057,
+          -0.0006855426577943574
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.01540277777777778,
+        "mean_event_or_query_effect": -0.01540277777777778,
+        "ci95_mean_user_effect": [
+          -0.03205891865079366,
+          0.0007356448412698329
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.03205891865079366,
+          0.0007356448412698329
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.008157843166661606,
+        "mean_event_or_query_effect": 0.008157843166661606,
+        "ci95_mean_user_effect": [
+          -0.006129349646617507,
+          0.021621998627534552
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.006129349646617507,
+          0.021621998627534552
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.01073531746031746,
+        "mean_event_or_query_effect": 0.01073531746031746,
+        "ci95_mean_user_effect": [
+          -0.008354851190476189,
+          0.0287846626984127
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.008354851190476189,
+          0.0287846626984127
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.009068715978066003,
+        "mean_event_or_query_effect": -0.009068715978066003,
+        "ci95_mean_user_effect": [
+          -0.021592618802614993,
+          0.001580595537741298
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.021592618802614993,
+          0.001580595537741298
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.06589147286821706,
+        "mean_event_or_query_effect": -0.06589147286821706,
+        "ci95_mean_user_effect": [
+          -0.14534883720930233,
+          0.007751937984496122
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.14534883720930233,
+          0.007751937984496122
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.0027814718448574824,
+        "mean_event_or_query_effect": 0.0027814718448574824,
+        "ci95_mean_user_effect": [
+          -0.017771439209103016,
+          0.021829152277791412
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.017771439209103016,
+          0.021829152277791412
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.0003875968992248074,
+        "mean_event_or_query_effect": 0.0003875968992248074,
+        "ci95_mean_user_effect": [
+          -0.08876937984496125,
+          0.09031976744186043
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.08876937984496125,
+          0.09031976744186043
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.004400275289648926,
+        "mean_event_or_query_effect": -0.004400275289648926,
+        "ci95_mean_user_effect": [
+          -0.017908557200310374,
+          0.009622962824379447
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.017908557200310374,
+          0.009622962824379447
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.006944444444444448,
+        "mean_event_or_query_effect": 0.006944444444444448,
+        "ci95_mean_user_effect": [
+          -0.05632716049382716,
+          0.07407407407407407
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.05632716049382716,
+          0.07407407407407407
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.009576242326629592,
+        "mean_event_or_query_effect": 0.009576242326629592,
+        "ci95_mean_user_effect": [
+          -0.0043675182762990695,
+          0.023678667771302075
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.0043675182762990695,
+          0.023678667771302075
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 10,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.05406378600823046,
+        "mean_event_or_query_effect": 0.05406378600823046,
+        "ci95_mean_user_effect": [
+          0.004679783950617284,
+          0.1071000514403292
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.004679783950617284,
+          0.1071000514403292
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.03908497352709822,
+        "mean_event_or_query_effect": -0.03908497352709822,
+        "ci95_mean_user_effect": [
+          -0.056176767956782656,
+          -0.023274778352622177
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.056176767956782656,
+          -0.023274778352622177
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.039329365079365075,
+        "mean_event_or_query_effect": -0.039329365079365075,
+        "ci95_mean_user_effect": [
+          -0.05978005952380953,
+          -0.020901904761904778
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.05978005952380953,
+          -0.020901904761904778
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.008681947047269946,
+        "mean_event_or_query_effect": 0.008681947047269946,
+        "ci95_mean_user_effect": [
+          -0.009610556758584696,
+          0.025705361268456916
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.009610556758584696,
+          0.025705361268456916
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.00784563492063492,
+        "mean_event_or_query_effect": 0.00784563492063492,
+        "ci95_mean_user_effect": [
+          -0.013664593253968252,
+          0.027892539682539675
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.013664593253968252,
+          0.027892539682539675
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.0007156846224077397,
+        "mean_event_or_query_effect": -0.0007156846224077397,
+        "ci95_mean_user_effect": [
+          -0.025730593801600442,
+          0.023689815665034406
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.025730593801600442,
+          0.023689815665034406
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.060852713178294576,
+        "mean_event_or_query_effect": -0.060852713178294576,
+        "ci95_mean_user_effect": [
+          -0.12871124031007752,
+          0.006201550387596898
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.12871124031007752,
+          0.006201550387596898
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.03603307694917815,
+        "mean_event_or_query_effect": 0.03603307694917815,
+        "ci95_mean_user_effect": [
+          -0.003096717397253052,
+          0.07344662733761012
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.003096717397253052,
+          0.07344662733761012
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.014341085271317831,
+        "mean_event_or_query_effect": -0.014341085271317831,
+        "ci95_mean_user_effect": [
+          -0.10348837209302326,
+          0.07521317829457354
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.10348837209302326,
+          0.07521317829457354
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.02530344935570279,
+        "mean_event_or_query_effect": -0.02530344935570279,
+        "ci95_mean_user_effect": [
+          -0.05723273603956253,
+          0.008599511282543092
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.05723273603956253,
+          0.008599511282543092
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.014403292181069957,
+        "mean_event_or_query_effect": -0.014403292181069957,
+        "ci95_mean_user_effect": [
+          -0.07186948853615521,
+          0.04640101410934726
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.07186948853615521,
+          0.04640101410934726
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.04542456771383244,
+        "mean_event_or_query_effect": 0.04542456771383244,
+        "ci95_mean_user_effect": [
+          0.008179137623572696,
+          0.08333027542399536
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.008179137623572696,
+          0.08333027542399536
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 50,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.05833333333333334,
+        "mean_event_or_query_effect": 0.05833333333333334,
+        "ci95_mean_user_effect": [
+          -0.021032848324514998,
+          0.13699404761904763
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.021032848324514998,
+          0.13699404761904763
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.037705736545847045,
+        "mean_event_or_query_effect": -0.037705736545847045,
+        "ci95_mean_user_effect": [
+          -0.05524453842354686,
+          -0.02138578485727749
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.05524453842354686,
+          -0.02138578485727749
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.03820238095238095,
+        "mean_event_or_query_effect": -0.03820238095238095,
+        "ci95_mean_user_effect": [
+          -0.05874214285714286,
+          -0.019709216269841283
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.05874214285714286,
+          -0.019709216269841283
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.010554921038724583,
+        "mean_event_or_query_effect": 0.010554921038724583,
+        "ci95_mean_user_effect": [
+          -0.008084784461339976,
+          0.028235937155852372
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.008084784461339976,
+          0.028235937155852372
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.007426190476190478,
+        "mean_event_or_query_effect": 0.007426190476190478,
+        "ci95_mean_user_effect": [
+          -0.013637063492063489,
+          0.0278656746031746
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.013637063492063489,
+          0.0278656746031746
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.004617335911291212,
+        "mean_event_or_query_effect": -0.004617335911291212,
+        "ci95_mean_user_effect": [
+          -0.029963676295707255,
+          0.019360244222377
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.029963676295707255,
+          0.019360244222377
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.05891472868217054,
+        "mean_event_or_query_effect": -0.05891472868217054,
+        "ci95_mean_user_effect": [
+          -0.12868217054263564,
+          0.008139534883720932
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.12868217054263564,
+          0.008139534883720932
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.04007089281276752,
+        "mean_event_or_query_effect": 0.04007089281276752,
+        "ci95_mean_user_effect": [
+          0.0005761762940461706,
+          0.077754547336108
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.0005761762940461706,
+          0.077754547336108
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.014341085271317831,
+        "mean_event_or_query_effect": -0.014341085271317831,
+        "ci95_mean_user_effect": [
+          -0.10348837209302326,
+          0.07521317829457354
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.10348837209302326,
+          0.07521317829457354
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.030163378355991713,
+        "mean_event_or_query_effect": -0.030163378355991713,
+        "ci95_mean_user_effect": [
+          -0.0644809180431716,
+          0.005300381371114458
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.0644809180431716,
+          0.005300381371114458
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.027594062316284543,
+        "mean_event_or_query_effect": -0.027594062316284543,
+        "ci95_mean_user_effect": [
+          -0.09069297472075251,
+          0.03910108024691355
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.09069297472075251,
+          0.03910108024691355
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.04002288978614748,
+        "mean_event_or_query_effect": 0.04002288978614748,
+        "ci95_mean_user_effect": [
+          -0.00411186566247166,
+          0.08573101975570144
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.00411186566247166,
+          0.08573101975570144
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 100,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.04495884773662552,
+        "mean_event_or_query_effect": 0.04495884773662552,
+        "ci95_mean_user_effect": [
+          -0.03840277777777778,
+          0.1263374485596708
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.03840277777777778,
+          0.1263374485596708
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.04299410833979471,
+        "mean_event_or_query_effect": -0.04299410833979471,
+        "ci95_mean_user_effect": [
+          -0.06121469631149167,
+          -0.026239191051102995
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.06121469631149167,
+          -0.026239191051102995
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.04427261904761905,
+        "mean_event_or_query_effect": -0.04427261904761905,
+        "ci95_mean_user_effect": [
+          -0.06384698412698411,
+          -0.025489871031746072
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.06384698412698411,
+          -0.025489871031746072
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.012665087689550674,
+        "mean_event_or_query_effect": 0.012665087689550674,
+        "ci95_mean_user_effect": [
+          -0.0058117102310665785,
+          0.030325165579111087
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.0058117102310665785,
+          0.030325165579111087
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.008170238095238095,
+        "mean_event_or_query_effect": 0.008170238095238095,
+        "ci95_mean_user_effect": [
+          -0.012773373015873016,
+          0.02778581349206348
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.012773373015873016,
+          0.02778581349206348
+        ],
+        "users_or_query_groups": 1000,
+        "paired_rows": 1000,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.010358260760709817,
+        "mean_event_or_query_effect": -0.010358260760709817,
+        "ci95_mean_user_effect": [
+          -0.0359160957584411,
+          0.014482725998216166
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.0359160957584411,
+          0.014482725998216166
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.05891472868217054,
+        "mean_event_or_query_effect": -0.05891472868217054,
+        "ci95_mean_user_effect": [
+          -0.12868217054263564,
+          0.008139534883720932
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.12868217054263564,
+          0.008139534883720932
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.031964531201081274,
+        "mean_event_or_query_effect": 0.031964531201081274,
+        "ci95_mean_user_effect": [
+          -0.00793167615402981,
+          0.06945260067959404
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.00793167615402981,
+          0.06945260067959404
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.014341085271317831,
+        "mean_event_or_query_effect": -0.014341085271317831,
+        "ci95_mean_user_effect": [
+          -0.10348837209302326,
+          0.07521317829457354
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.10348837209302326,
+          0.07521317829457354
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": -0.03438561146114367,
+        "mean_event_or_query_effect": -0.03438561146114367,
+        "ci95_mean_user_effect": [
+          -0.07027389864310717,
+          0.003659374863884019
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.07027389864310717,
+          0.003659374863884019
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus bge-m3-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": -0.029320987654320983,
+        "mean_event_or_query_effect": -0.029320987654320983,
+        "ci95_mean_user_effect": [
+          -0.0905654761904762,
+          0.03673941798941793
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.0905654761904762,
+          0.03673941798941793
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "ndcg@10",
+      "effect": {
+        "mean_user_effect": 0.04909479190587221,
+        "mean_event_or_query_effect": 0.04909479190587221,
+        "ci95_mean_user_effect": [
+          0.0030802304409081977,
+          0.09633776425914421
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.0030802304409081977,
+          0.09633776425914421
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "candidate_cap": 500,
+      "contrast": "qwen8-rerank minus qwen06-rerank",
+      "metric": "mrr@10",
+      "effect": {
+        "mean_user_effect": 0.04351851851851852,
+        "mean_event_or_query_effect": 0.04351851851851852,
+        "ci95_mean_user_effect": [
+          -0.038294753086419754,
+          0.1243904320987654
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.038294753086419754,
+          0.1243904320987654
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      },
+      "sampling": "Pairedquerybootstrap,empiricalbenchmarkvariation;notgeneralwebpopulation."
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "contrast": "Qwen8-native4096 minus Qwen8-MRL1024",
+      "metric": "mrr@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.0032179810797289305,
+        "mean_event_or_query_effect": 0.0032179810797289305,
+        "ci95_mean_user_effect": [
+          0.0002578626006276435,
+          0.00607072787328876
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.0002578626006276435,
+          0.00607072787328876
+        ],
+        "users_or_query_groups": 6980,
+        "paired_rows": 6980,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "contrast": "Qwen8-native4096 minus Qwen8-MRL1024",
+      "metric": "ndcg@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.00451933427043368,
+        "mean_event_or_query_effect": 0.00451933427043368,
+        "ci95_mean_user_effect": [
+          0.0018749225893978953,
+          0.007177875971779217
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.0018749225893978953,
+          0.007177875971779217
+        ],
+        "users_or_query_groups": 6980,
+        "paired_rows": 6980,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "contrast": "Qwen8-native4096 minus Qwen8-MRL1024",
+      "metric": "recall@1000",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.002065425023877746,
+        "mean_event_or_query_effect": 0.002065425023877746,
+        "ci95_mean_user_effect": [
+          0.0007160339063992359,
+          0.0035339063992359124
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.0007160339063992359,
+          0.0035339063992359124
+        ],
+        "users_or_query_groups": 6980,
+        "paired_rows": 6980,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "contrast": "Qwen8-native4096 minus Qwen8-MRL1024",
+      "metric": "mrr@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.020930232558139535,
+        "mean_event_or_query_effect": 0.020930232558139535,
+        "ci95_mean_user_effect": [
+          -0.023255813953488372,
+          0.06744186046511627
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.023255813953488372,
+          0.06744186046511627
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "contrast": "Qwen8-native4096 minus Qwen8-MRL1024",
+      "metric": "ndcg@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.010509385601968487,
+        "mean_event_or_query_effect": 0.010509385601968487,
+        "ci95_mean_user_effect": [
+          0.0004996101227511233,
+          0.022051980205056308
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.0004996101227511233,
+          0.022051980205056308
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "contrast": "Qwen8-native4096 minus Qwen8-MRL1024",
+      "metric": "recall@1000",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.002464685049942718,
+        "mean_event_or_query_effect": 0.002464685049942718,
+        "ci95_mean_user_effect": [
+          -0.007018096990996889,
+          0.013594612916780206
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.007018096990996889,
+          0.013594612916780206
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "contrast": "Qwen8-native4096 minus Qwen8-MRL1024",
+      "metric": "mrr@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": -0.008788947677836566,
+        "mean_event_or_query_effect": -0.008788947677836566,
+        "ci95_mean_user_effect": [
+          -0.044978321575543795,
+          0.027590388007054656
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.044978321575543795,
+          0.027590388007054656
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "contrast": "Qwen8-native4096 minus Qwen8-MRL1024",
+      "metric": "ndcg@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": -0.002829802536373958,
+        "mean_event_or_query_effect": -0.002829802536373958,
+        "ci95_mean_user_effect": [
+          -0.01567504958866505,
+          0.009196024817747665
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.01567504958866505,
+          0.009196024817747665
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "contrast": "Qwen8-native4096 minus Qwen8-MRL1024",
+      "metric": "recall@1000",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.006077892231017462,
+        "mean_event_or_query_effect": 0.006077892231017462,
+        "ci95_mean_user_effect": [
+          -0.0009133140198543488,
+          0.012460867599936847
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.0009133140198543488,
+          0.012460867599936847
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "contrast": "Qwen8-MRL1024 minus Qwen06-1024",
+      "metric": "mrr@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.04866068585982626,
+        "mean_event_or_query_effect": 0.04866068585982626,
+        "ci95_mean_user_effect": [
+          0.04165804367353436,
+          0.055528444364851964
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.04165804367353436,
+          0.055528444364851964
+        ],
+        "users_or_query_groups": 6980,
+        "paired_rows": 6980,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "contrast": "Qwen8-MRL1024 minus Qwen06-1024",
+      "metric": "ndcg@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.052585953330458665,
+        "mean_event_or_query_effect": 0.052585953330458665,
+        "ci95_mean_user_effect": [
+          0.0462653049031181,
+          0.05898258084372424
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.0462653049031181,
+          0.05898258084372424
+        ],
+        "users_or_query_groups": 6980,
+        "paired_rows": 6980,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "dev-small",
+      "contrast": "Qwen8-MRL1024 minus Qwen06-1024",
+      "metric": "recall@1000",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.010912129894937917,
+        "mean_event_or_query_effect": 0.010912129894937917,
+        "ci95_mean_user_effect": [
+          0.008200811843361987,
+          0.013610912129894934
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.008200811843361987,
+          0.013610912129894934
+        ],
+        "users_or_query_groups": 6980,
+        "paired_rows": 6980,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "contrast": "Qwen8-MRL1024 minus Qwen06-1024",
+      "metric": "mrr@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.10891472868217054,
+        "mean_event_or_query_effect": 0.10891472868217054,
+        "ci95_mean_user_effect": [
+          0.02403100775193799,
+          0.20273255813953484
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.02403100775193799,
+          0.20273255813953484
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "contrast": "Qwen8-MRL1024 minus Qwen06-1024",
+      "metric": "ndcg@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.08764395551033172,
+        "mean_event_or_query_effect": 0.08764395551033172,
+        "ci95_mean_user_effect": [
+          0.043996651688519926,
+          0.13453160298720354
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.043996651688519926,
+          0.13453160298720354
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec19",
+      "contrast": "Qwen8-MRL1024 minus Qwen06-1024",
+      "metric": "recall@1000",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.04908073603956603,
+        "mean_event_or_query_effect": 0.04908073603956603,
+        "ci95_mean_user_effect": [
+          0.019832303537171397,
+          0.0835385980466669
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.019832303537171397,
+          0.0835385980466669
+        ],
+        "users_or_query_groups": 43,
+        "paired_rows": 43,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "contrast": "Qwen8-MRL1024 minus Qwen06-1024",
+      "metric": "mrr@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.04986772486772487,
+        "mean_event_or_query_effect": 0.04986772486772487,
+        "ci95_mean_user_effect": [
+          -0.0038051146384479708,
+          0.10586419753086419
+        ],
+        "ci95_mean_event_or_query_effect": [
+          -0.0038051146384479708,
+          0.10586419753086419
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "contrast": "Qwen8-MRL1024 minus Qwen06-1024",
+      "metric": "ndcg@10",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.06668476857133832,
+        "mean_event_or_query_effect": 0.06668476857133832,
+        "ci95_mean_user_effect": [
+          0.03429943471948606,
+          0.1028211194883649
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.03429943471948606,
+          0.1028211194883649
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    },
+    {
+      "corpus": "msmarco",
+      "query_panel": "trec20",
+      "contrast": "Qwen8-MRL1024 minus Qwen06-1024",
+      "metric": "recall@1000",
+      "stage": "Exact-fullcatalogFP32retrievalfromcanonicalstoredvectors",
+      "effect": {
+        "mean_user_effect": 0.027073871098072782,
+        "mean_event_or_query_effect": 0.027073871098072782,
+        "ci95_mean_user_effect": [
+          0.005594428560282807,
+          0.052083925805251605
+        ],
+        "ci95_mean_event_or_query_effect": [
+          0.005594428560282807,
+          0.052083925805251605
+        ],
+        "users_or_query_groups": 54,
+        "paired_rows": 54,
+        "bootstrap_draws": 2000,
+        "seed": 20261010,
+        "estimand": "Both equal-group and query-weighted paired effects; resample users with all retained query rows.",
+        "zero_observation_warning": "A zero-width bootstrap interval for an all-zero observed metric does not prove population performance is exactlyzero.",
+        "warning": "This conditional sampled-panel effect cannot be multiplied by full-catalog event coverage to claim all-target recall."
+      }
+    }
+  ],
+  "coverage_warning": "Conditionalquery/user metrics cannotbe multipliedbypositive-eventcatalogcoverage.",
+  "multiplicity": "All predefined contrasts/caps/metrics reported; exploratoryintervals,not multiplicity-correctedconfirmatorytests.",
+  "sparse_zero": "Recommendationcommon-prefixknownpositives=0; exactdescriptiveceiling,notmodel-equivalencebootstrap.",
+  "source_files": {
+    "mf-quality-v1/seed42/validation/completed.json": "e9f463226a5a8382c2e96f6bb0334ff0b14e55470d7bd167bae889ba16569585",
+    "mf-quality-v1/seed42/test/completed.json": "9e4de3a00cc775ef3314756ea482def7229c7f6806e0c8c14a4a6edf134751b7",
+    "mf-quality-v1/seed17/validation/completed.json": "ad863abcaf6196232eb383e42859cb672c749f45ffbe5cbb8622284beaea7b53",
+    "mf-quality-v1/seed17/test/completed.json": "17618c237c694ce6f91ec608bf2c56099b6e44dd811820eb3d974e60fa433c6a",
+    "mf-quality-v1/seed23/validation/completed.json": "27e610c7b848de0658846c60f2a40aff9b398b3ec8c2888d31522355e5da540d",
+    "mf-quality-v1/seed23/test/completed.json": "ac2e0d30b287c1be16b1bd81103e397f664f4a85c707b8306edcc109dee3a46d"
+  }
+}
