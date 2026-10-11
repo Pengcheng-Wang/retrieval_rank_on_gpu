@@ -26,6 +26,11 @@ BACKEND_STORAGE = {
 SILVER_DIMENSIONS = (16, 32, 64, 96, 128, 192, 256, 384, 512, 768, 1024, 1280)
 
 
+def is_faiss_gpu_allocation_failure(error: RuntimeError) -> bool:
+    message = str(error).lower()
+    return "standardgpuresources" in message and "alloc fail" in message and "out of memory" in message
+
+
 def validate_backends(backends: list[str]) -> None:
     if not backends or len(backends) != len(set(backends)) or set(backends) - set(BACKEND_STORAGE):
         raise ValueError("ANN backend names must be unique entries in the explicit device/precision allowlist.")
@@ -344,6 +349,15 @@ def benchmark(
         if (backend.startswith("silver") and items.shape[1] not in SILVER_DIMENSIONS)
         or (backend == "faiss-gpu-fp32" and items.size * 4 > gpu_total * 0.8)
     }
+    records = []
+    if journal.exists():
+        records = [json.loads(line) for line in journal.read_text(encoding="utf-8").splitlines()]
+    unsupported.update(
+        row["backend"] for row in records
+        if row["condition"] == row.get("backend") and row["status"] == "unsupported_memory"
+        and row.get("failure_stage") == "actual_GPU_index_construction"
+        and row.get("observed_error")
+    )
     expected_conditions = {
         condition for backend in names for condition in (
             [backend] if backend in unsupported else [
@@ -351,9 +365,6 @@ def benchmark(
             ]
         )
     }
-    records = []
-    if journal.exists():
-        records = [json.loads(line) for line in journal.read_text(encoding="utf-8").splitlines()]
     completed_conditions = validate_journal(records, output, expected_conditions, len(queries), len(items))
     if (output / "completed.json").exists():
         validate_complete_ann(output, len(items), items.shape[1], len(queries), expected_conditions)
@@ -362,7 +373,13 @@ def benchmark(
         print("COMPLETE_REAL_SEMANTIC_ANN_REUSED_WITH_VERIFIED_JOURNAL_AND_ARTIFACTS", flush=True)
         return
     for backend in names:
+        gc.collect()
+        torch.cuda.empty_cache()
         started = time.perf_counter()
+        if backend not in unsupported and all(
+            f"{backend}-p{probes}-k{k}" in completed_conditions for probes in probes_grid for k in candidate_grid
+        ):
+            continue
         if backend in unsupported and backend in completed_conditions:
             continue
         if items.shape[1] not in SILVER_DIMENSIONS and backend.startswith("silver"):
@@ -384,7 +401,27 @@ def benchmark(
             torch.set_num_threads(32 if cpu else 4)
             import faiss
             faiss.omp_set_num_threads(32 if cpu else 4)
-            model = SemanticFaissANN(items, partition, BACKEND_STORAGE[backend][0], BACKEND_STORAGE[backend][1] == "fp16")
+            try:
+                model = SemanticFaissANN(items, partition, BACKEND_STORAGE[backend][0], BACKEND_STORAGE[backend][1] == "fp16")
+            except RuntimeError as error:
+                if not BACKEND_STORAGE[backend][0] or not is_faiss_gpu_allocation_failure(error):
+                    raise
+                append_jsonl(journal, {
+                    "condition": backend, "backend": backend, "status": "unsupported_memory",
+                    "reason": "Actualfull-catalogGPUindexconstructionfailedwithcudaMallocOOM; catalog/dimension/precisionnotreduced.",
+                    "failure_stage": "actual_GPU_index_construction", "observed_error": str(error),
+                    "dimension": items.shape[1], "catalog_items": len(items),
+                    "gpu_total_bytes": gpu_total, "raw_item_vector_bytes": items.size * (2 if backend.endswith("fp16") else 4),
+                    "faiss_temporary_memory_bytes": 512 << 20,
+                })
+                expected_conditions.difference_update(
+                    f"{backend}-p{probes}-k{k}" for probes in probes_grid for k in candidate_grid
+                )
+                expected_conditions.add(backend)
+                print(f"FULL_NATIVE_GPU_INDEX_UNSUPPORTED_MEMORY {backend}: {error}", flush=True)
+                gc.collect()
+                torch.cuda.empty_cache()
+                continue
         elif backend.startswith("silver-"):
             torch.set_num_threads(4)
             model = SilverANN(items, partition, BACKEND_STORAGE[backend][1])

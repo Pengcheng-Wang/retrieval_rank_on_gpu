@@ -7,7 +7,7 @@ from rrbench.ann import Partition
 from rrbench.io import sha256, write_json
 from rrbench.semantic_ann import (
     make_shared_ivf, resident_exact_topk, validate_backends, validate_complete_ann,
-    validate_journal, validate_oracle, validate_partition,
+    validate_journal, validate_oracle, validate_partition, is_faiss_gpu_allocation_failure,
 )
 
 
@@ -79,3 +79,10 @@ def test_changed_metric_or_timing_cannot_recertify_an_old_ann_completion(tmp_pat
     journal.write_text(json.dumps({"condition": "one", "geometric_recall_at_k": 0.0}) + "\n", encoding="utf-8")
     with pytest.raises(ValueError, match="journal"):
         validate_complete_ann(tmp_path, 10, 2, 1, {"one"})
+
+
+def test_real_faiss_gpu_allocation_failure_is_explicit_without_hiding_other_backend_errors():
+    assert is_faiss_gpu_allocation_failure(RuntimeError(
+        "StandardGpuResources: alloc fail type IVFLists cudaMalloc error out of memory [2]"
+    ))
+    assert not is_faiss_gpu_allocation_failure(RuntimeError("Unsupported scalar quantizer type"))

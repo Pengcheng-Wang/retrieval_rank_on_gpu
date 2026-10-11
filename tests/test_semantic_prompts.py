@@ -33,3 +33,13 @@ def test_short_official_ir_query_is_not_changed_by_optional_history_guard():
     reranker.tokenizer = Tokenizer()
     queries = ["capital of China"]
     assert reranker.bound_queries(queries, query_token_cap=160) == queries
+
+
+def test_repeated_candidate_pairs_bound_each_distinct_history_query_only_once_per_batch():
+    reranker = object.__new__(TextReranker)
+    reranker.tokenizer = Tokenizer()
+    queries = ["word " * 1000] * 64
+    bounded = reranker.bound_queries(queries, query_token_cap=160)
+    assert len(bounded) == 64
+    assert all(query == bounded[0] for query in bounded)
+    assert len(reranker.tokenizer.seen[0][0]) == 1

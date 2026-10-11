@@ -292,6 +292,16 @@ order. Report all three values, mean/median and min-max—not p95/p99,
 confidence intervals, steady-state performance, or serving SLOs. The
 separate cached-boundary supplement retains 10/50 warmup/sample batches.
 
+The personalized text wrapper initially re-tokenized a complete history
+separately for every repeated query-candidate pair. This redundant CPU work
+was removed by bounding each distinct query once per scorer batch and
+reusing the identical bounded text. Actual paired probes on all three
+pretrained scorers returned exactly the same scores. All six personalized
+text online cells were measured again with this same wrapper; earlier
+naive-preprocessing and stale remote-budget evidence remains separate.
+No cached scorer or IR text result is silently relabeled as the optimized
+personalized wrapper.
+
 One additional **test-informed exploratory diagnostic** fixes item vectors
 and partitions but replaces exposure-text queries with a static mean of
 all admitted, catalog-covered training-positive exposure vectors per user.
@@ -313,6 +323,14 @@ both sources, and all 864 matched exactly; a deterministic permutation
 matched only one. Missing/nonnumeric durations were excluded and counted.
 Duration is not a ranking feature, and this sanity check does not certify
 every caption's correctness.
+
+A full native 4096D memory-control probe distinguishes layout from
+dimensionality: classic device-resident FlatFP16 held all 8,841,823 vectors
+and executed one fixed query, whereas native IVF-SQhalf construction
+reproducibly failed even on a clean A100 80GB with 128MiB scratch. The Flat
+probe is feasibility-only—not an IVF replacement, FP32 oracle, online
+co-residency or benchmark timing. Do not generalize the IVF build OOM to
+universal impossibility of native-dimensional GPU search.
 
 [^1]: Microsoft. MS MARCO passage ranking data and usage terms. https://github.com/microsoft/msmarco/blob/master/Datasets.md ; https://github.com/microsoft/msmarco/blob/master/README.md
 [^2]: Gao et al. KuaiRand and official supplementary metadata. https://doi.org/10.1145/3511808.3557624 ; https://zenodo.org/records/10439422 ; https://zenodo.org/records/18159199 ; https://github.com/chongminggao/KuaiRand

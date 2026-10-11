@@ -525,6 +525,7 @@ def benchmark_online_pipeline(
         "primary_warmup_batches": 1, "primary_measured_batches": 3,
         "timing_query_policy": "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries.",
         "timing_estimand": "Descriptive synchronized wall-clock afteronewarmup, notsteady-stateSLO.",
+        "history_bound_preprocessing": "Unique raw queries per scorerbatch; identical bounded tokens reused for repeated candidatepairs.",
     }
     bind_run_config(output, binding)
     if items.shape[1] not in specification["dimensions"]:

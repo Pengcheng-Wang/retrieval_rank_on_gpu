@@ -74,6 +74,47 @@ def public_timing(timing: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
+def verify_online_parity(value: dict[str, Any]) -> None:
+    expected = {(batch, cap) for batch in (1, 16) for cap in (10, 50, 100, 500)}
+    if len(value["parity"]) != len(expected):
+        raise ValueError("Online parity verification lacks declared batch/candidate conditions.")
+    observed = set()
+    for row in value["parity"]:
+        condition = row["query_batch"], row["candidate_cap"]
+        if condition not in expected or condition in observed or not row["same_candidates_scores_final_ids"]:
+            raise ValueError("Online same-scorer parity is false, duplicated or outside the declared grid.")
+        observed.add(condition)
+    if observed != expected:
+        raise ValueError("Online parity grid is incomplete.")
+
+
+def verify_online_protocol(value: dict[str, Any], config: dict[str, Any]) -> None:
+    if (
+        config.get("primary_warmup_batches") != 1 or config.get("primary_measured_batches") != 3
+        or config.get("timing_query_policy") != "Fourdisjointhash-selectedbatches, shared acrossmodels/caps/boundaries."
+    ):
+        raise ValueError("Online timing source does not use the exact approved matched sampling protocol.")
+    expected = {
+        (batch, cap, boundary) for batch in (1, 16) for cap in (10, 50, 100, 500)
+        for boundary in ("integrated", "local-cascade")
+    }
+    seen = set()
+    for row in value["conditions"]:
+        key = row["query_batch"], row["candidate_cap"], row["boundary"]
+        timing = row["full_online_latency"]
+        batches = [row["warmup_query_rows"], *row["measured_query_row_batches"]]
+        if (
+            key not in expected or key in seen or timing["sample_count"] != 3 or len(batches) != 4
+            or any(len(batch) != row["query_batch"] for batch in batches)
+            or len({query for batch in batches for query in batch}) != row["query_batch"] * 4
+        ):
+            raise ValueError("Online primary measurement protocol has wrong/duplicated conditions or query sampling.")
+        public_timing(timing)
+        seen.add(key)
+    if seen != expected:
+        raise ValueError("Online primary measurement protocol has missing expected conditions.")
+
+
 def flatten_quality(context: dict[str, Any], quality: dict[str, Any]) -> list[dict[str, Any]]:
     if "by_group" in quality:
         return [
@@ -94,6 +135,47 @@ def export_results(root: Path, output: Path) -> None:
     if not merged["complete"] or set(merged["models"]) != required:
         raise ValueError("Cannot publish a final study without every complete full-catalog representation.")
     annex, ann_rows, quality_rows, online_rows, training_rows, sources = [], [], [], [], [], []
+    encoding_rows, query_encoding_rows = [], []
+    for corpus, model in sorted({(task["corpus"], task["model"]) for task in plans["tasks"]}):
+        tasks = [task for task in plans["tasks"] if task["corpus"] == corpus and task["model"] == model]
+        receipts = [
+            json.loads((Path(task["output"]) / "completed.json").read_text(encoding="utf-8")) for task in tasks
+        ]
+        expected = plans["rows_per_corpus"][corpus]
+        if (
+            not all(receipt["complete"] for receipt in receipts)
+            or sum(receipt["rows"] for receipt in receipts) != expected
+            or any(receipt["source_sha256"] != task["source_sha256"] for receipt, task in zip(receipts, tasks))
+        ):
+            raise ValueError("Offline encoding measurements omitted source-bound full-catalog rows.")
+        elapsed = sum(receipt["elapsed_seconds"] for receipt in receipts)
+        real_tokens = sum(receipt["real_tokens"] for receipt in receipts)
+        padded_tokens = sum(receipt["padded_tokens"] for receipt in receipts)
+        encoding_rows.append({
+            "corpus": corpus, "encoder": model, "items": expected,
+            "model_parameters": receipts[0]["parameters"], "native_dimension": receipts[0]["native_dimension"],
+            "sum_worker_seconds": elapsed, "sum_worker_hours": elapsed / 3600,
+            "real_tokens": real_tokens, "padded_tokens": padded_tokens,
+            "at_token_cap_rows": sum(receipt["at_token_cap_rows"] for receipt in receipts),
+            "real_tokens_per_worker_second": real_tokens / elapsed,
+            "item_rows_per_worker_second": expected / elapsed,
+            "padding_ratio": padded_tokens / real_tokens,
+            "runtime_scope": "Summedmeasuredworkerwalltime,notparallelwalltimeorhardwareMFU;includesCPUtokenization/load/I/O.",
+            "concurrency": "SomeexplicitcorrectnesssmokesbrieflysharedownedencoderGPU; notpure uncontendedofflinekernelbenchmark.",
+        })
+    for receipt in sorted((root / "query-embeddings-v2").glob("*/*/*/completed.json")):
+        corpus, model, panel = receipt.parent.relative_to(root / "query-embeddings-v2").parts
+        measured = checked_receipt(receipt)
+        query_encoding_rows.append({
+            "corpus": corpus, "encoder": model, "panel": panel, "queries": measured["rows"],
+            "native_dimension": measured["native_dimension"], "elapsed_seconds": measured["elapsed_seconds"],
+            "raw_query_overflow_rows": measured["length_audit"]["raw_rows_exceeding_cap"],
+            "query_instruction": measured["query_instruction"],
+            "latency": {
+                batch: public_timing(values) for batch, values in measured["online_query_encoding_latency"].items()
+            },
+            "latency_population": "Repeatedfirst1/16panelqueries,incontrasttohash-sampledend-to-endprimarytiming.",
+        })
     for name in sorted(required):
         corpus, model, dimension = name.split("/")
         directory = root / "ann-full-v1" / corpus / model / f"dim{dimension}"
@@ -143,6 +225,11 @@ def export_results(root: Path, output: Path) -> None:
             for seed in (17, 23, 42):
                 directory = root / "cached-trained-v1" / corpus / architecture / f"seed{seed}"
                 train = checked_receipt(directory / "completed.json")
+                sources.append({
+                    "artifact": f"cached-training/{corpus}/{architecture}/seed{seed}",
+                    "receipt_sha256": sha256(directory / "completed.json"),
+                    "checkpoint_sha256": train["checkpoint_sha256"],
+                })
                 if not train["complete"] or sha256(directory / "model.pt") != train["checkpoint_sha256"]:
                     raise ValueError("Full cached training model/checkpoint is not complete.")
                 training_rows.append({
@@ -152,6 +239,11 @@ def export_results(root: Path, output: Path) -> None:
                 })
                 for phase in ("validation", "final"):
                     quality = checked_receipt(root / "cached-quality-v1" / corpus / architecture / f"seed{seed}" / phase / "completed.json")
+                    sources.append({
+                        "artifact": f"cached-quality/{corpus}/{architecture}/seed{seed}/{phase}",
+                        "receipt_sha256": sha256(root / "cached-quality-v1" / corpus / architecture / f"seed{seed}" / phase / "completed.json"),
+                        "scores_sha256": quality["scores_sha256"],
+                    })
                     if not quality["complete"]:
                         raise ValueError("Cached full-panel evaluation is incomplete.")
                     for cap, metrics in quality["relevance_by_candidate_cap"].items():
@@ -172,6 +264,10 @@ def export_results(root: Path, output: Path) -> None:
             if not path.exists():
                 path = root / "strong-text-common-quality-v1" / corpus / ranker / "collected" / "completed.json"
             quality = checked_receipt(path)
+            sources.append({
+                "artifact": f"text-quality/{corpus}/{ranker}", "receipt_sha256": sha256(path),
+                "scores_sha256": quality["scores_sha256"],
+            })
             if not quality["complete"]:
                 raise ValueError("Pretrained full fixed-common-pool text ranking is incomplete.")
             for cap, metrics in quality["relevance_by_candidate_cap"].items():
@@ -180,7 +276,12 @@ def export_results(root: Path, output: Path) -> None:
                 }, metrics))
         for ranker in ("bge-m3-rerank", "qwen06-rerank", "qwen8-rerank", "semantic-mlp", "torchrec-dlrm", "torchrec-dcn"):
             for backend in ("faiss-gpu-fp32", "silver-fp32"):
-                directory = root / "online-full-catalog-v1" / corpus / ranker / backend
+                name = (
+                    "online-text-unique-history-v2"
+                    if corpus == "kuairand" and ranker in ("bge-m3-rerank", "qwen06-rerank", "qwen8-rerank")
+                    else "online-full-catalog-v1"
+                )
+                directory = root / name / corpus / ranker / backend
                 complete = json.loads((directory / "completed.json").read_text(encoding="utf-8"))
                 if not complete["complete"]:
                     raise ValueError("One-GPU complete-catalog online cell is unfinished.")
@@ -191,6 +292,10 @@ def export_results(root: Path, output: Path) -> None:
                     continue
                 if len(complete["conditions"]) != 16 or len(complete["parity"]) != 8:
                     raise ValueError("Online cell does not cover every declared candidate/batch/boundary condition.")
+                verify_online_parity(complete)
+                verify_online_protocol(
+                    complete, json.loads((directory / "run-config.json").read_text(encoding="utf-8")),
+                )
                 for condition in complete["conditions"]:
                     timing = public_timing(condition["full_online_latency"])
                     online_rows.append({
@@ -202,6 +307,11 @@ def export_results(root: Path, output: Path) -> None:
                     })
     for seed in (17, 23, 42):
         train = checked_receipt(root / "mf-full-logged-v1" / f"seed{seed}" / "completed.json")
+        sources.append({
+            "artifact": f"logged-mf-training/seed{seed}",
+            "receipt_sha256": sha256(root / "mf-full-logged-v1" / f"seed{seed}" / "completed.json"),
+            "model_sha256": train["model_sha256"],
+        })
         training_rows.append({
             "corpus": "kuairand", "architecture": "logged-mf", "seed": seed,
             "parameters": train["model_parameters"], "training_pairs": train["training_pairs"],
@@ -239,14 +349,25 @@ def export_results(root: Path, output: Path) -> None:
         "complete": True, "ann": annex, "quality_rows": quality_rows,
         "online_rows": online_rows, "training_rows": training_rows, "source_receipts": sources,
         "models": plans["registry"]["models"],
+        "encoding_rows": encoding_rows, "query_encoding_rows": query_encoding_rows,
         "privacy": "Aggregated metrics, measured timings and hashes only; no user/query/item identity, raw text or access details.",
         "coverage": "Recommendation results conditional on frozen catalog and history; full-positive-event coverage14.78%test/25.72%validation.",
+        "native_memory_controls": {
+            name: json.loads((root / filename).read_text(encoding="utf-8"))
+            for name, filename in (
+                ("ivf_half_clean_construction", "native-half-clean-gpu-memory-probe.json"),
+                ("flat_half_feasibility", "native-full-flat-layout-feasibility-probe.json"),
+            )
+        },
+        "namespace_duration_control": json.loads((root / "caption-id-exact-duration-permutation-audit.json").read_text(encoding="utf-8")),
     }
     reject_private_fields(summary)
     write_json(output / "summary.json", summary)
     write_csv(output / "ann.csv", ann_rows)
     write_csv(output / "quality.csv", quality_rows)
     write_csv(output / "training.csv", training_rows)
+    write_csv(output / "offline-encoding.csv", encoding_rows)
+    write_json(output / "query-encoding.json", query_encoding_rows)
     write_csv(output / "online.csv", [{key: value for key, value in row.items() if key != "samples_ms"} for row in online_rows])
     write_json(output / "online-raw.json", online_rows)
     files = {path.name: sha256(path) for path in output.iterdir() if path.is_file() and path.name != "checksums.json"}

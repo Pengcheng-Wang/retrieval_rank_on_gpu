@@ -240,15 +240,18 @@ class TextReranker:
             return queries
         if query_token_cap <= 0:
             raise ValueError("History query token budget must be positive.")
+        unique = list(dict.fromkeys(queries))
         encoded = self.tokenizer(
-            queries, padding=False, truncation=False, add_special_tokens=False,
+            unique, padding=False, truncation=False, add_special_tokens=False,
             return_attention_mask=False,
         )["input_ids"]
-        return [
+        bounded = {
+            query: (
             self.tokenizer.decode(tokens[:query_token_cap], skip_special_tokens=True)
-            if len(tokens) > query_token_cap else query
-            for query, tokens in zip(queries, encoded)
-        ]
+            if len(tokens) > query_token_cap else query)
+            for query, tokens in zip(unique, encoded)
+        }
+        return [bounded[query] for query in queries]
 
     def tokenize(
         self, queries: list[str], documents: list[str], instruction: str | None = None,
