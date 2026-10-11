@@ -125,18 +125,44 @@ scorers, depth1000 and prefix caps50/500. Each point retrieves its **own actual
 candidates**, then scores the prefix before final top10. Its quality cannot
 be replaced with earlier common-union quality.
 
-Raw Qwen8 query execution is checked against the canonical cached MRL rows
-on 100 real initial queries and every measured/pretrace batch. The declared
-vector tolerance is maxabs0.0001/mincos0.99999; observed drift is retained,
-not called bit-exact or lossless. Within-backend resident/local-cascade
+The first pipeline smoke rejected comparison with historical batch32 query
+vectors: identical model/token inputs under a different BF16 execution
+geometry exceeded the declared vector tolerance. Replaying the original
+32-query group reproduced its stored vectors exactly; repeating the same new
+group also reproduced its vectors exactly. Matching padding or logical
+positions alone did not remove cross-group drift. This isolates execution
+geometry sensitivity without identifying a particular CUDA kernel cause.
+
+The prospective
+[`pipeline-v2 contract`](../configs/semantic-extension-pipeline-v2.json)
+therefore computes quality with **actual raw forwards in immutable execution
+groups**, then checks independent raw forwards in those identical groups.
+The historical cache remains lineage/diagnostic evidence, never an online
+substitute. Every one of the 1,097 quality rows is covered exactly once and
+outputs are scattered back to canonical row order. Backend, scorer, cap,
+boundary and reduced measurement budgets cannot change the group partition.
+
+Initial parity checks preserve complete groups and cover at least100 queries
+(112 at normal batch16); the exact100-row smoke has a separate manifest.
+Every measured/pretrace group is checked too. The original vector tolerance
+remains maxabs0.0001/mincos0.99999; there is no outcome-based relaxation.
+Candidate/reference comparisons require identical execution-group hashes
+and actual canonical-query hashes, not merely equal policy names.
+Quality is scoped to its session/batch geometry, and repeated contexts do
+not create additional independent query observations.
+
+Within-backend resident/local-cascade
 candidate and final IDs must match exactly and scorer values must meet the
 declared tolerance. FAISS can feed a resident neural scorer too.[^2]
 
 ## 📐 Interpretation and execution limits
 
-Two predeclared cap50/probes64 MLP comparisons use the fixed 1,000 selected
+Two predeclared batch16/cap50/probes64 MLP comparisons use the fixed 1,000 selected
 dev queries for MRR@10 non-inferiority. TREC19/20 remain separate graded
-panels. A lower confidence bound must exceed the specified negative margin;
+panels. Paired per-query metric differences are averaged across the three
+fixed session contexts before resampling those same1,000 query identities.
+They are not treated as3,000 independent queries. A lower confidence bound
+must exceed the specified negative margin;
 an interval containing zero is not equivalence. Multiple primary comparisons
 receive the declared adjustment; other intervals remain secondary exploratory
 comparisons.
