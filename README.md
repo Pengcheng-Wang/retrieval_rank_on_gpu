@@ -29,6 +29,7 @@ model rules, or client-side serving load generator. The paper's 23.7x QPS and
 | [Real-corpus measured findings](docs/real-semantic-results.md) | Completed eight-representation ANN matrix, strong text/TorchRec comparisons, paired quality intervals, and 24 complete one-GPU cells |
 | [Real-catalog GPU profiles](docs/real-semantic-profiling-results.md) | Completed 60 fresh ANN timing conditions and 20 separate CUDA traces; precision-dependent crossover and limits |
 | [Initial actual-pipeline findings](docs/actual-pipeline-initial-results.md) | Reviewed nine-attempt partial frame: observed memory advantage, small whole-batch timing change, and unavailable FP32/MLP primaries |
+| [Full actual-pipeline findings](docs/actual-pipeline-results.md) | Completed 72 attempts, four CUDA profiles and 16 scorer/cap contrasts; memory versus wall time, BGE quality/cost, negative larger-cap evidence and unavailable primary NI |
 | [Upstream provenance](third_party/silvertorch/UPSTREAM.json) | Exact source, commit, license, and modification policy |
 
 Operational `progress.md`, access configuration, logs, datasets, checkpoints,
@@ -190,7 +191,16 @@ now includes 3,000 varying batch durations and 20 actual CUDA profile
 conditions. The [initial raw-encoder pipeline frame](docs/actual-pipeline-initial-results.md)
 records all nine designated MLP/batch16 attempts: large observed INT8-layout
 memory savings versus half, only 1.83% lower whole-batch wall time, and
-unavailable FP32/MLP primary references. The remaining matrix is in progress.
+unavailable FP32/MLP primary references. The
+[complete actual-pipeline report](docs/actual-pipeline-results.md) now preserves
+all 72 attempts, 2,688 unprofiled batch durations, four separate CUDA profiles
+and 16 secondary scorer/cap comparisons. BGE improves selected-dev ranking
+over the cached MLP at substantial implementation-specific cost; scoring500
+rather than50 candidates does not establish a dev-MRR benefit and lowers
+TREC19 nDCG in pointwise exploratory comparisons. Both FP32/MLP primary
+non-inferiority assessments remain not assessed. The
+[sealed aggregate package](results/2026-10-12-actual-pipeline/checksums.json)
+retains unsupported measurements and all negative/null outcomes.
 It reuses the frozen real catalogs instead of repeating corpus encoding. The
 personalization experiment fits a small shared user head over the same prior
 exposure histories, with fixed-mean, popularity, recurrence and wrong-user
