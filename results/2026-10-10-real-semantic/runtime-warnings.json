@@ -1,0 +1,10 @@
+[
+  {
+    "corpus": "msmarco",
+    "ranker": "qwen8-rerank",
+    "backend": "faiss-gpu-fp32",
+    "message": "[W1011 00:26:16.333113264 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 402653184 bytes (free: 382664704, total: 85093777408).",
+    "source_log_sha256": "74cc8a69ad4f8c4abf35b84d9de5fd24423a893cf66ab9f14fb07d7f41433049",
+    "scope": "Recorded allocator warning; final cell completed all conditions and parity, not a no-OOM robustness guarantee."
+  }
+]

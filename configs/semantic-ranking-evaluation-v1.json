@@ -1,0 +1,47 @@
+{
+  "status": "Post-test compute-budget adjustment, frozen before bulk expensive-text inference.",
+  "catalog_policy": "Full 8,841,823 MS MARCO passages and 1,798,875 recommendation items are unchanged.",
+  "primary_ann_and_cached_quality_queries": {
+    "ir_final": 7077,
+    "recommendation_test": 2707
+  },
+  "expensive_text_quality_sampling": {
+    "seed": 20261010,
+    "hash": "SHA-256 with separate IR-dev and recommendation quality domains",
+    "dev_small_queries": 1000,
+    "trec19_queries": 43,
+    "trec20_queries": 54,
+    "recommendation_queries_per_retained_user": 1,
+    "recommendation_retained_users": 819,
+    "source_frames": "Previously frozen official final IR panels and conditional warm/history recommendation panel.",
+    "estimand": "Query mean within each official IR panel; equal-user selected-query mean for recommendation."
+  },
+  "common_candidate_pool": {
+    "source_order": ["Qwen3-Embedding-0.6B", "Qwen3-Embedding-8B-MRL1024"],
+    "source_retrieval": "Full-catalog FAISS GPU scalar-FP16 IVF, probes256, top1000",
+    "construction": "Rank-interleaved deduplicated union; first1000 without qrels.",
+    "scored_prefix": 500,
+    "candidate_caps": [10, 50, 100, 500],
+    "cap_policy": "Prefix before scoring, then sort that prefix; never select bestK from scored500.",
+    "positive_injection": false
+  },
+  "primary_online_timing": {
+    "query_encoder": "Qwen3-Embedding-8B",
+    "backends": ["faiss-gpu-fp32", "silver-fp32"],
+    "boundaries": ["integrated", "local-cascade"],
+    "query_batches": [1, 16],
+    "candidate_caps": [10, 50, 100, 500],
+    "warmup_batches": 1,
+    "measured_batches": 3,
+    "query_sampling": "Distinct hash-selected real batches, same across models/caps/paths; independent timing hash domain.",
+    "order": "Deterministically counterbalance boundary order.",
+    "report": "All3 synchronized wall-clock values, mean/median/min/max; no p95/p99, confidence interval or serving SLO claim.",
+    "quality_warning": "Actual single-retriever timing cannot be paired with common-union quality as a deployed quality-latency point."
+  },
+  "cached_boundary_stability_supplement": {
+    "warmup_batches": 10,
+    "measured_batches": 50,
+    "status": "Separate incremental-boundary study, not a replacement for matched primary timing."
+  },
+  "recommendation_interpretation": "Coverage14.78% is a full-positive-event catalog ceiling, not a selected-user denominator. Sparse common-pool hits imply descriptive ceiling-bounded text results, not significance or general model weakness."
+}

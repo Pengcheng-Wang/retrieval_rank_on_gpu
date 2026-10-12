@@ -1,0 +1,33 @@
+{
+  "source_commit": "525b09b6ddf21c2d0d8beaf604c972a8d14561de",
+  "upstream_commit": "22c2007ed5d28ec8304de081cc2393778708ad12",
+  "items": 1000000,
+  "dimension": 128,
+  "queries": 128,
+  "clusters": 1024,
+  "distribution": "clustered",
+  "k": 2048,
+  "probes": [
+    8,
+    24,
+    64,
+    256
+  ],
+  "batch": 16,
+  "warmup": 20,
+  "samples_per_repeat": 50,
+  "timing_repeats": 3,
+  "data_and_index_seeds": [
+    17,
+    23,
+    42
+  ],
+  "backends": [
+    "faiss-ivf-cpu",
+    "faiss-ivf-gpu",
+    "silver-fp32",
+    "silver-fp16",
+    "silver-int8-global",
+    "silver-int8-rowwise"
+  ]
+}

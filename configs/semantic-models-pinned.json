@@ -1,0 +1,122 @@
+{
+  "configuration_sha256": "3281d7351cf40905ce5cb39d21e2dd6472fb7f8657d3ae6fa5f59ab8ff2b8d49",
+  "models": {
+    "minilm": {
+      "key": "minilm",
+      "model": "sentence-transformers/all-MiniLM-L6-v2",
+      "dimensions": [
+        384
+      ],
+      "pooling": "attention-mask mean",
+      "max_tokens": 256,
+      "query_instruction": "",
+      "license": "Apache-2.0",
+      "corpora": [
+        "msmarco"
+      ],
+      "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+      "model_card_license": "apache-2.0",
+      "metadata_url": "https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2",
+      "model_card_url": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md",
+      "declared_weight_parameters": 22713728
+    },
+    "bge-large": {
+      "key": "bge-large",
+      "model": "BAAI/bge-large-en-v1.5",
+      "dimensions": [
+        1024
+      ],
+      "pooling": "CLS",
+      "max_tokens": 512,
+      "query_instruction": "Represent this sentence for searching relevant passages: ",
+      "license": "MIT",
+      "corpora": [
+        "msmarco"
+      ],
+      "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+      "model_card_license": "mit",
+      "metadata_url": "https://huggingface.co/api/models/BAAI/bge-large-en-v1.5",
+      "model_card_url": "https://huggingface.co/BAAI/bge-large-en-v1.5/blob/d4aa6901d3a41ba39fb536a557fa166f842b0e09/README.md",
+      "declared_weight_parameters": 335142400
+    },
+    "qwen06": {
+      "key": "qwen06",
+      "model": "Qwen/Qwen3-Embedding-0.6B",
+      "dimensions": [
+        1024
+      ],
+      "pooling": "last valid token",
+      "max_tokens": 512,
+      "query_instruction": "Given a web search query, retrieve relevant passages that answer the query",
+      "license": "Apache-2.0",
+      "corpora": [
+        "msmarco",
+        "kuairand"
+      ],
+      "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+      "model_card_license": "apache-2.0",
+      "metadata_url": "https://huggingface.co/api/models/Qwen/Qwen3-Embedding-0.6B",
+      "model_card_url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B/blob/97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3/README.md",
+      "declared_weight_parameters": 595776512
+    },
+    "qwen8": {
+      "key": "qwen8",
+      "model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": [
+        4096,
+        1024
+      ],
+      "pooling": "last valid token; official MRL prefix re-normalized",
+      "max_tokens": 512,
+      "query_instruction": "Given a web search query, retrieve relevant passages that answer the query",
+      "license": "Apache-2.0",
+      "corpora": [
+        "msmarco",
+        "kuairand"
+      ],
+      "silver_native4096": "Unsupported by pinned source; full-dimensional exact and FAISS ablation must not be relabeled SilverTorch.",
+      "revision": "1d8ad4ca9b3dd8059ad90a75d4983776a23d44af",
+      "model_card_license": "apache-2.0",
+      "metadata_url": "https://huggingface.co/api/models/Qwen/Qwen3-Embedding-8B",
+      "model_card_url": "https://huggingface.co/Qwen/Qwen3-Embedding-8B/blob/1d8ad4ca9b3dd8059ad90a75d4983776a23d44af/README.md",
+      "declared_weight_parameters": 7567295488
+    },
+    "bge-m3-rerank": {
+      "key": "bge-m3-rerank",
+      "model": "BAAI/bge-reranker-v2-m3",
+      "score": "sequence-classification logit",
+      "max_tokens": 512,
+      "license": "Apache-2.0",
+      "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "model_card_license": "apache-2.0",
+      "metadata_url": "https://huggingface.co/api/models/BAAI/bge-reranker-v2-m3",
+      "model_card_url": "https://huggingface.co/BAAI/bge-reranker-v2-m3/blob/953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e/README.md",
+      "declared_weight_parameters": 567755777
+    },
+    "qwen06-rerank": {
+      "key": "qwen06-rerank",
+      "model": "Qwen/Qwen3-Reranker-0.6B",
+      "score": "last-token yes-minus-no logit with official prefix/suffix",
+      "max_tokens": 512,
+      "license": "Apache-2.0",
+      "revision": "e61197ed45024b0ed8a2d74b80b4d909f1255473",
+      "model_card_license": "apache-2.0",
+      "metadata_url": "https://huggingface.co/api/models/Qwen/Qwen3-Reranker-0.6B",
+      "model_card_url": "https://huggingface.co/Qwen/Qwen3-Reranker-0.6B/blob/e61197ed45024b0ed8a2d74b80b4d909f1255473/README.md",
+      "declared_weight_parameters": 595776512
+    },
+    "qwen8-rerank": {
+      "key": "qwen8-rerank",
+      "model": "Qwen/Qwen3-Reranker-8B",
+      "score": "last-token yes-minus-no logit with official prefix/suffix",
+      "max_tokens": 512,
+      "license": "Apache-2.0",
+      "revision": "77d193c791ed757ca307ee72715aa132723da912",
+      "model_card_license": "apache-2.0",
+      "metadata_url": "https://huggingface.co/api/models/Qwen/Qwen3-Reranker-8B",
+      "model_card_url": "https://huggingface.co/Qwen/Qwen3-Reranker-8B/blob/77d193c791ed757ca307ee72715aa132723da912/README.md",
+      "declared_weight_parameters": 8188548096
+    }
+  },
+  "snapshot_policy": "Pinned public revisions, safetensors only, trust_remote_code=False."
+}

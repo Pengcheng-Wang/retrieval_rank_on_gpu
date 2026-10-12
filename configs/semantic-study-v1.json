@@ -1,0 +1,103 @@
+{
+  "study": "real semantic retrieval and recommendation v1",
+  "purpose": "Separate real-data semantic model quality, ANN numerical fidelity, and actual integrated-versus-cascade costs.",
+  "ir": {
+    "dataset": "MS MARCO passage v1",
+    "expected_items": 8841823,
+    "evaluation": ["dev-small", "TREC-DL-2019-judged", "TREC-DL-2020-judged"],
+    "development_queries": 5000,
+    "fitting_queries": 100000,
+    "query_split_seed": 20261010,
+    "final_label_policy": "No checkpoint, instruction, probe, dimension or hyperparameter selection on final evaluation labels.",
+    "ranker_pool": "Label-independent candidates; common-pool quality and actual-retriever quality reported separately."
+  },
+  "recommendation": {
+    "dataset": "KuaiRand-1K plus official caption supplement",
+    "expected_metadata_items": 4371868,
+    "minimum_training_observed_semantic_catalog": 1000000,
+    "train_dates": ["2022-04-08", "2022-04-21"],
+    "validation_dates": ["2022-04-22", "2022-04-28"],
+    "test_dates": ["2022-04-29", "2022-05-08"],
+    "positive_action": "long_view",
+    "audited_semantic_catalog_items": 1798875,
+    "clock_policy": "Whole(user,time_ms) recorded-clock envelopes plus declared-date periods; quarantine cutoff crossings.",
+    "history_policy": "Frozen admitted-training exposure items only, upper<=target lower, no outcome-conditioned selection.",
+    "evaluation_query_sampling": {"blocks_per_user_per_phase": 12, "maximum_history_items": 12, "seed": 20261010},
+    "metadata_contract": "Retrospective fixed semantic metadata. Captions released 2026 are not historically versioned; exact exposure/feedback clocks unestablished.",
+    "exclude": ["monthly aggregate features", "future popularity", "future-aware k-core", "final-target text in query history"],
+    "metrics": ["full eligible-catalog Recall@10/100/1000", "NDCG@10", "coverage", "per-user uncertainty"],
+    "data_license": "Conservatively comply with the original archive CC-BY-SA-4.0; supplement declares CC-BY-4.0."
+  },
+  "embeddings": [
+    {
+      "key": "minilm",
+      "model": "sentence-transformers/all-MiniLM-L6-v2",
+      "dimensions": [384],
+      "pooling": "attention-mask mean",
+      "max_tokens": 256,
+      "query_instruction": "",
+      "license": "Apache-2.0",
+      "corpora": ["msmarco"]
+    },
+    {
+      "key": "bge-large",
+      "model": "BAAI/bge-large-en-v1.5",
+      "dimensions": [1024],
+      "pooling": "CLS",
+      "max_tokens": 512,
+      "query_instruction": "Represent this sentence for searching relevant passages: ",
+      "license": "MIT",
+      "corpora": ["msmarco"]
+    },
+    {
+      "key": "qwen06",
+      "model": "Qwen/Qwen3-Embedding-0.6B",
+      "dimensions": [1024],
+      "pooling": "last valid token",
+      "max_tokens": 512,
+      "query_instruction": "Given a web search query, retrieve relevant passages that answer the query",
+      "license": "Apache-2.0",
+      "corpora": ["msmarco", "kuairand"]
+    },
+    {
+      "key": "qwen8",
+      "model": "Qwen/Qwen3-Embedding-8B",
+      "dimensions": [4096, 1024],
+      "pooling": "last valid token; official MRL prefix re-normalized",
+      "max_tokens": 512,
+      "query_instruction": "Given a web search query, retrieve relevant passages that answer the query",
+      "license": "Apache-2.0",
+      "corpora": ["msmarco", "kuairand"],
+      "silver_native4096": "Unsupported by pinned source; full-dimensional exact and FAISS ablation must not be relabeled SilverTorch."
+    }
+  ],
+  "rerankers": [
+    {"key": "bge-m3-rerank", "model": "BAAI/bge-reranker-v2-m3", "score": "sequence-classification logit", "max_tokens": 512, "license": "Apache-2.0"},
+    {"key": "qwen06-rerank", "model": "Qwen/Qwen3-Reranker-0.6B", "score": "last-token yes-minus-no logit with official prefix/suffix", "max_tokens": 512, "license": "Apache-2.0"},
+    {"key": "qwen8-rerank", "model": "Qwen/Qwen3-Reranker-8B", "score": "last-token yes-minus-no logit with official prefix/suffix", "max_tokens": 512, "license": "Apache-2.0"}
+  ],
+  "ann": {
+    "clusters": 16384,
+    "probes": [16, 64, 256],
+    "candidate_counts": [100, 1000],
+    "query_batches": [1, 16],
+    "latency_query_sampling": "Predetermined varying query batches from the full panel, shared across backends.",
+    "repeats": 3,
+    "warmup": 20,
+    "samples": 50,
+    "shared_partition": true,
+    "precisions": ["FP32", "FP16", "INT8-global", "INT8-rowwise"],
+    "oracle": "Chunked FP32 inner-product over the identical stored learned vectors; TF32 disabled.",
+    "no_loss_claim": "Both geometric ANN overlap and real judged relevance metrics are required."
+  },
+  "ranking": {
+    "text_candidate_caps": [10, 50, 100, 500],
+    "query_batches": [1, 16],
+    "cached_baselines": ["supervised semantic MLP", "actual TorchRec DLRM", "actual TorchRec DLRM_DCN"],
+    "cached_model_budget": {"embedding_dim": 128, "dense_arch": [512, 128], "over_arch": [512, 256, 1], "cross_layers": 3, "cross_rank": 64},
+    "architecture_control": "Exactly the same candidate IDs, weights, scoring, precision and final top-k for GPU-resident integrated and measured separate-stage local cascade.",
+    "time": "Separate offline encoding/build/training, online query encoding, retrieval, movement, tokenization and reranking.",
+    "mfu": "Do not invent MFU; report wall time, real/padded tokens per second, pairs per second, memory, GPU utilization and profiler-derived compute only when justified."
+  },
+  "review_gates": ["GPT-6-Astra design/plan", "GPT-6-Astra code before large encoding", "GPT-6-Astra raw results", "GPT-6-Astra conclusions"]
+}

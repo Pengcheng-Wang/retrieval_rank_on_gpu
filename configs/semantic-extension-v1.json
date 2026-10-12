@@ -1,0 +1,128 @@
+{
+  "study": "Controlled personalization and real-semantic profiling extension v1",
+  "evaluation_status": "Post-test exploratory; previous final results have been inspected.",
+  "authorization": {
+    "start_utc": "2026-10-11T09:03:01.929Z",
+    "hard_end_utc": "2026-10-13T09:03:01.929Z",
+    "primary_compute_end_utc": "2026-10-13T03:03:01.929Z",
+    "first_pilot_gate_utc": "2026-10-11T15:03:01.929Z",
+    "protected_final_hours": 6
+  },
+  "prior_results": {
+    "source_commit": "69bbd5e6a8bad6308b4fa2ccc60b53f2562898a2",
+    "policy": "All original measurements, source specifications and artifact receipts remain immutable.",
+    "ir_catalog_items": 8841823,
+    "recommendation_catalog_items": 1798875
+  },
+  "personalization": {
+    "frozen_item_encoder": "Qwen3-Embedding-0.6B",
+    "dimension": 1024,
+    "maximum_history_items": 12,
+    "history_inputs": "Admitted training exposures only; whole-block upper bound <= target lower bound. No outcome-selected history or held-out appends.",
+    "maximum_fitting_blocks": 50000,
+    "fitting_selection": "Label-independent per-user hash selection, capped before positive/history eligibility; report all attrition.",
+    "architecture": "One attention-pooling and residual shared user head, below 2000000 trainable parameters.",
+    "seeds": [17, 23],
+    "maximum_epochs": 3,
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "temperature": 0.05,
+    "loss": "Multi-positive sampled-softmax against frozen item vectors.",
+    "loss_equation": "For each fitting query, logsumexp(s_i/tau for i in P union L union U) minus logsumexp(s_i/tau for i in P); average equally over fitting queries. All P have unit weight.",
+    "negative_construction": "Retain every covered fitting positive P. Sample up to12 distinct logged nonpositives L excluding P; sample up to64 distinct catalog alternatives U excluding P and L. Fixed once per seed/query. No validation/test labels are consulted.",
+    "wrong_user_control": "Held-out inference input only, deterministic whole-user history derangement; no extra fitting labels.",
+    "order_control": "Deterministic permutation of the same exposure multiset. The head includes learned relative-recency embeddings; mean/init invariance and trained temporal sensitivity are distinguished.",
+    "checkpoint_policy": "Fixed epoch3, no validation-best or first-threshold selection. Pilot uses seed17 epoch3; seed23 epoch3 is trained only if the pilot admits expansion. Report seeds individually and mean of per-query metrics, not a prediction ensemble.",
+    "pilot_phase": "Unchanged validation panel only, full-catalog exhaustive FP32 products over canonical stored items and FP16-rounded head queries, top1000.",
+    "final_evaluation": "One frozen test evaluation of seed17 and controls even if pilot stops expansion; seed23 is added only after a passing validation pilot. No decisions use extension test metrics.",
+    "maximum_logged_negatives_per_query": 12,
+    "maximum_sampled_catalog_negatives_per_query": 64,
+    "negative_truth": "Logged nonpositive exposures and sampled unjudged catalog alternatives are distinct weak-negative sources; no propensity or exhaustive-negative claim.",
+    "controls": [
+      "frozen raw-history Qwen0.6 query",
+      "same-history fixed mean",
+      "training-positive popularity",
+      "recurrence plus popularity backfill",
+      "uniform full-catalog candidates",
+      "wrong-user frozen history",
+      "within-history deterministic order permutation"
+    ],
+    "primary_metric": "Equal-user known-positive Recall@1000 on the unchanged conditional panel.",
+    "secondary_metrics": ["query-weighted Recall@10/100/1000", "NDCG@10", "distinct hit users", "recurrent/novel target strata", "history/support/coverage"],
+    "pilot_gate": {
+      "hit_user_arm": "Fixed seed17 epoch3 aligned learned head, not the best control or best epoch.",
+      "minimum_hit_users": 10,
+      "minimum_equal_user_aligned_minus_wrong_user_recall1000": 0.005,
+      "interpretation": "Proposed information-value gate, not power analysis or evidence of no signal if failed."
+    },
+    "research_qualification_gate": {
+      "minimum_equal_user_gain_over_matched_popularity": 0.01,
+      "paired_user_interval_lower_above_zero": true,
+      "same_direction_both_seeds": true,
+      "interpretation": "Scoped exploratory research qualification, not causal engagement uplift or production adoption proof."
+    },
+    "incremental_encoder_batch16_budget_ms": 5,
+    "observed_device_memory_budget_gib": 24
+  },
+  "profiling": {
+    "frozen_item_encoder": "Qwen3-Embedding-8B-MRL1024",
+    "dimension": 1024,
+    "clusters": 16384,
+    "canonical_query_parity": {
+      "maximum_absolute_difference": 0.0001,
+      "minimum_cosine_similarity": 0.99999,
+      "scope": "Declared pre-execution tolerance on FP16-canonicalized raw and cached query vectors, not bit-exact equality. Exact candidate/final IDs and scorer tolerance remain separately required.",
+      "report": "Maximum absolute difference, minimum cosine and changed canonical values for initial100 probes and every measured/pretrace batch."
+    },
+    "ann_backends": ["faiss-gpu-fp32", "silver-fp32", "faiss-gpu-fp16", "silver-fp16", "silver-int8-rowwise"],
+    "probes": [64, 256],
+    "retrieval_depth": 1000,
+    "query_batches": [1, 16],
+    "conditional_ann_stress_batch": 64,
+    "restarted_sessions": [0, 1, 2],
+    "warmup_batches": 10,
+    "measured_batches": 50,
+    "trace_policy": "CPU/CUDA trace in separate executions; unprofiled synchronized wall time is the performance measure. Overlapping stage durations are not summed.",
+    "pipeline_candidates": ["faiss-gpu-fp16", "silver-int8-rowwise"],
+    "pipeline_scorers": ["semantic-mlp-seed17", "bge-reranker-v2-m3"],
+    "pipeline_candidate_caps": [50, 500],
+    "quality_population": "Same fixed 1097-query IR cohort for both scorers; each point uses its own actual single-retriever candidates and timed prefix policy.",
+    "text_warmup_batches": 2,
+    "text_measured_batches": 8,
+    "quality_reference": "Corresponding actual FAISS FP32 candidate-producing point on the same panel and scorer.",
+    "latency_reference": "Fresh corresponding FAISS FP32 resident pipeline with this extension timing protocol; earlier three-sample timing is not reused.",
+    "reference_memory_policy": "Reference-only FP32 may be measured at admitted batch1/16 shapes with at least2GiB observed headroom. It is not qualified as a deployment candidate unless it also meets8GiB; no batch64 reference stress if unsafe.",
+    "primary_quality_contrasts": [
+      "Silver rowwise INT8 minus FAISS FP32, probes64/top1000/cap50/semantic-MLP-seed17",
+      "FAISS scalar-half minus FAISS FP32, probes64/top1000/cap50/semantic-MLP-seed17"
+    ],
+    "primary_quality_population": "MRR@10 on the fixed1000 selected dev-small queries only. TREC43/54 remain separate graded populations.",
+    "uncertainty": "Paired query bootstrap,20000 draws,seed20261011. Two primary contrasts use Bonferroni-adjusted97.5% two-sided percentile intervals; all other pointwise95% intervals are exploratory secondary comparisons, not a globally selected winner.",
+    "boundary_control": "Paired resident/local-cascade cached MLP within each backend; exact candidate/final IDs and score tolerance rtol=1e-5,atol=1e-5.",
+    "paired_schedule": "Shared label-independent hash-selected query batches across backends/caps/paths within session and batch shape; counterbalanced backend and boundary order across restarted sessions.",
+    "mrr_noninferiority_margin": 0.002,
+    "required_lower_confidence_bound": "Candidate minus reference MRR lower bound > -0.002; otherwise failed or inconclusive, not equivalence.",
+    "geometric_overlap_loss_allowance": 0.001,
+    "minimum_whole_pipeline_latency_gain": 0.1,
+    "alternative_benefit": "Quantified memory savings with comparable quality/latency.",
+    "comparable_latency_tolerance": "At most5% slower mean complete-pipeline wall time versus the fresh corresponding reference; all three sessions reported.",
+    "minimum_alternative_memory_saving_gib": 8,
+    "proposed_observed_headroom_gib": 8,
+    "headroom_interpretation": "Finite sampled/stress admission criterion, not protection against all unseen peaks.",
+    "excluded_claims": ["serving QPS", "offered-load tail SLO", "MFU", "energy efficiency", "fabricated RPC"]
+  },
+  "stretch": {
+    "enabled_only_after_primary_evidence_is_durable": true,
+    "maximum_wall_hours": 6,
+    "task": "One fixed query-only Qwen0.6 LoRA pilot against the frozen full IR item bank.",
+    "excluded": ["full corpus re-encoding", "native4096 Silver kernel", "new giant dataset", "HSTU/CAGRA/hybrid multi-project expansion"]
+  },
+  "review_policy": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "max",
+    "context_tier": "long_context",
+    "numeric_context_limit": "Not exposed by the tool; no unverified 1M-token capacity claim.",
+    "gates": ["protocol", "spec compliance", "code quality", "real smoke", "raw results and conclusions"]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "across-seed-anchor.csv": "660f97e4b336b8b01f6a5a68f14130cddd5e6e59d6a9e5495dfd43fd03dd33c0",
+  "ann-raw.jsonl.gz": "fe3c4f3c8b6cfd86d2092ce6712b3d766fcfcba18eced35ee1bd066f7ffd4381",
+  "paired-latency-ratios.csv": "bbccb7e8adb9ec2e9bd6c9ac14ced79c1d2174e7d966499f2990d563cf5d8cf9",
+  "per-seed.csv": "9f4a496b0b08cf09f67f32e09dd69fc4037dd2f3fcf0a6c11a46a21061e3da09",
+  "protocol.json": "e86a0a52ca470fdea9cf1698688f58867cbebb3e0bbdc3acd6d6ddbe1a71d794",
+  "recall-frontier.csv": "a4771b117f5b52971afd680cfd53f7e76ee83dcaa79c28b7d48e43e10608b459",
+  "resource-receipt.json": "925fa12d0c5bb6fadda7c0781a245ae2733d0c28c7e0408f53214c444bd3f72e",
+  "summary.json": "8cb817038c49ad2f4534256e5ce099871e0bb4d66906c1ea05a6ec2930000a19"
+}

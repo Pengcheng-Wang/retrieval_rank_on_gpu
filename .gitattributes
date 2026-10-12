@@ -1,0 +1,10 @@
+* text=auto
+*.sh text eol=lf
+*.py text eol=lf
+*.cu text eol=lf
+*.cpp text eol=lf
+*.cuh text eol=lf
+*.csv text eol=lf
+third_party/silvertorch/** -text
+results/**/*.json text eol=lf
+results/**/*.md text eol=lf

@@ -1,0 +1,32 @@
+[project]
+name = "semantic-retrieval-gpu-env"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch==2.13.0+cu129",
+    "triton==3.7.1",
+    "numpy==2.2.6",
+    "faiss-gpu-cu12==1.14.1.post1",
+    "torchrec==1.8.0",
+    "fbgemm-gpu==1.8.0+cu126",
+    "transformers==5.10.4",
+    "huggingface-hub==1.30.0",
+    "safetensors==0.8.0",
+    "accelerate==1.15.0",
+    "tokenizers==0.22.2",
+    "pytest>=8.3,<10"
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu129"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu129" }
+fbgemm-gpu = { index = "pytorch-cu126" }

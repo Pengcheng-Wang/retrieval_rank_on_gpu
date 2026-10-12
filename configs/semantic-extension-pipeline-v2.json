@@ -1,0 +1,84 @@
+{
+  "study": "Geometry-matched actual-candidate pipeline extension v2",
+  "evaluation_status": "Post-test exploratory; prospective execution-contract amendment, not a quality-selected recipe.",
+  "authorization": {
+    "start_utc": "2026-10-11T09:03:01.929Z",
+    "hard_end_utc": "2026-10-13T09:03:01.929Z",
+    "primary_compute_end_utc": "2026-10-13T03:03:01.929Z",
+    "protected_final_hours": 6
+  },
+  "amendment": {
+    "previous_protocol": "semantic-extension-v1.json",
+    "reason": "The original32-query BF16 batch reproduces its stored vectors exactly, but other online group geometry does not meet the frozen cross-geometry query-parity gate.",
+    "preservation": "Original cache, rejected smoke and diagnostic evidence stay immutable. No vector tolerance, item bank, encoder weight, instruction, pooling, precision or scoring-weight change.",
+    "new_contract": "Quality is measured with actual raw forwards in the same immutable execution groups later used by independent raw parity/timing/profile forwards.",
+    "not_claimed": "Historical batch32 cache invariance, a specific CUDA kernel cause, or validation of the rejected v1 pipeline comparison."
+  },
+  "profiling": {
+    "frozen_item_encoder": "Qwen3-Embedding-8B-MRL1024",
+    "dimension": 1024,
+    "clusters": 16384,
+    "ann_backends": ["faiss-gpu-fp32", "silver-fp32", "faiss-gpu-fp16", "silver-fp16", "silver-int8-rowwise"],
+    "probes": [64, 256],
+    "retrieval_depth": 1000,
+    "query_batches": [1, 16],
+    "restarted_sessions": [0, 1, 2],
+    "warmup_batches": 10,
+    "measured_batches": 50,
+    "pipeline_candidates": ["faiss-gpu-fp16", "silver-int8-rowwise"],
+    "pipeline_scorers": ["semantic-mlp-seed17", "bge-reranker-v2-m3"],
+    "pipeline_candidate_caps": [50, 500],
+    "text_warmup_batches": 2,
+    "text_measured_batches": 8,
+    "pipeline_query_execution": {
+      "policy": "raw-execution-groups-v2",
+      "production_rows": 1097,
+      "production_group_warmup_batches": 10,
+      "production_group_measured_batches": 50,
+      "smoke_rows": 100,
+      "smoke_group_warmup_batches": 1,
+      "smoke_group_measured_batches": 5,
+      "construction": "Shared label-independent session/batch hash schedule measured prefix, warmup suffix, then remaining rows chunked at the same batch width. Every quality row occurs exactly once, with ordered membership and remainder handling recorded.",
+      "independence": "Backend, scorer, candidate cap, boundary and reduced measurement budgets do not change the immutable query-group partition.",
+      "probes": "At least100 source queries, retaining whole execution groups. The100-row smoke has its own explicit manifest and does not certify production quality.",
+      "quality": "Real raw query forward, ANN, prefix scoring and final selection in the declared groups, scattered back to canonical panel order.",
+      "timing": "Independent raw forwards in identical groups; no cached query substitution inside the timed operation.",
+      "historical_cache": "Source lineage and explicitly non-qualifying drift diagnostic only.",
+      "reference_matching": "Execution-group SHA and actual canonical-quality-query SHA must match between candidate and reference."
+    },
+    "canonical_query_parity": {
+      "maximum_absolute_difference": 0.0001,
+      "minimum_cosine_similarity": 0.99999,
+      "scope": "Independent raw forwards versus the new same-group quality reference, after FP16 canonicalization. No relaxed tolerance or bit-exact claim."
+    },
+    "quality_population": "Same fixed1097 IR cohort for both scorers; primary1000 selected dev queries and separate43/54 TREC panels.",
+    "primary_quality_contrasts": [
+      "Silver rowwise INT8 minus FAISS FP32, batch16/probes64/top1000/cap50/semantic-MLP-seed17",
+      "FAISS scalar-half minus FAISS FP32, batch16/probes64/top1000/cap50/semantic-MLP-seed17"
+    ],
+    "primary_quality_aggregation": "Average the paired per-query metric difference across the three fixed session/group contexts, then resample the1000 query identities once. Report each session individually; do not treat three contexts as3000 independent queries.",
+    "secondary_quality_scope": "Batch1, other candidate caps, BGE and TREC panels remain separately labeled secondary comparisons; no selection among these points upgrades them to the primary two contrasts.",
+    "uncertainty": "Paired query bootstrap20000 draws,seed20261011; Bonferroni97.5% two-sided percentile intervals for two primary contrasts, secondary pointwise95% exploratory intervals.",
+    "mrr_noninferiority_margin": 0.002,
+    "required_lower_confidence_bound": "Candidate minus reference lower bound > -0.002; insufficient precision is inconclusive, not equivalence.",
+    "geometric_overlap_loss_allowance": 0.001,
+    "latency_reference": "Fresh corresponding FAISS FP32 resident point under this same-group query policy and the same session/batch/scorer/prefix.",
+    "boundary_control": "Cached MLP resident versus local cascade within each backend: exact candidate/final IDs, rtol=atol=1e-5 scores, and independent same-group query parity.",
+    "minimum_whole_pipeline_latency_gain": 0.1,
+    "alternative_benefit": "At least8GiB observed memory savings with at most5% slower mean complete-pipeline wall time.",
+    "minimum_alternative_memory_saving_gib": 8,
+    "comparable_latency_tolerance": 0.05,
+    "proposed_observed_headroom_gib": 8,
+    "reference_memory_policy": "Reference-only FP32 requires at least2GiB observed headroom; it does not qualify as a deployment candidate unless it also passes8GiB.",
+    "headroom_interpretation": "Finite sampled admission and stress evidence, not a continuous-peak or unseen-workload guarantee.",
+    "trace_policy": "Separate CPU/CUDA profiles; never sum overlapping stage times or treat profiles as primary wall-time samples.",
+    "excluded_claims": ["serving QPS", "offered-load tail SLO", "MFU", "energy efficiency", "fabricated RPC"]
+  },
+  "review_policy": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "max",
+    "context_tier": "long_context",
+    "numeric_context_limit": "Not exposed; no unverified1M-token capacity claim.",
+    "gates": ["prospective amendment design", "spec compliance", "code correctness", "real co-resident smoke", "raw results and conclusions"]
+  }
+}

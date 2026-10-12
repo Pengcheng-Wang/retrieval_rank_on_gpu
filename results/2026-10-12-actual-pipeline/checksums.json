@@ -1,0 +1,22 @@
+{
+  "complete": true,
+  "source_analysis_sha256": "198a8a5e98042bd3a67177a394b2b110c944a0672408e88a8537f5a107698dbb",
+  "source_resource_sha256": "9e76e40b4cb778d15f9b3c6e977fb52b8bb8299883c9d577343da2df3eded9ed",
+  "source_secondary_analysis_sha256": "4221933d03ca2b2380166ff61576b6098f1cf2a390cc14f63c49f02ecd1bf53a",
+  "files": {
+    "README.md": "fa0fed42166ed09e16a3193cb94bda16f2b14a9a370f4453a1f0a1fd74cd80fb",
+    "pipeline-attempts.csv": "72087fc878c61c0187cba18ee911fe40b5665308a34a069b997fd83e1e856ff7",
+    "pipeline-conditions.csv": "3b72200b32d183d93631b9aeb03dae8fabd1651ecb723de847a73e3f645f3f1e",
+    "pipeline-geometry.csv": "bff5f247a428866c6af77860767a7b504dac7605d1f7e5264a893cceb8927b5c",
+    "pipeline-latency-samples.csv": "9888e3c3596603bc0bd3b5c5bce739c243b9456acde40060facf8f6b118022b7",
+    "pipeline-profile-attempts.csv": "a4df44c8dd54a6420b38b867394ca40b3f99c297136235ea44bf63295be1f562",
+    "pipeline-profile-kernels.csv": "728809b28020642126cc754498cc8ee704d9b6cd763d3ad9e406d132c1f5c783",
+    "pipeline-profile-operators.csv": "e1806c9cb70c61956ea1105ec90161673789afd45d0154f66ee5ef1a1412fb51",
+    "pipeline-profiles.csv": "0ef937e179b6ec85b9cb34401504094650a5eaf0ee231cd5eea58ffb74986f47",
+    "pipeline-quality.csv": "e297126b0ea4d4083eccd622c0e6f1f9ae01307827d01a1ad5965b7142924007",
+    "pipeline-scorer-cap-statistics.json": "4221933d03ca2b2380166ff61576b6098f1cf2a390cc14f63c49f02ecd1bf53a",
+    "pipeline-statistics.json": "05cbe770abc8f1711574ea35b92a325cae57e5285c2c4e2bfd5ee6c1c077bf64",
+    "pipeline-summary.json": "6e9dcffeb57f5b9dae659a6bd81546654e282fcebae8a8e6465626f786782819"
+  },
+  "publication_scope": "BothAstraRAWandreadableconclusiongatesclosed; allattempts/missingprimaryrefs/fixed16secondarynegativeandnullresults retained. Notdeployment/privateMetareproduction/serving/MFU/energy/RPC claims."
+}

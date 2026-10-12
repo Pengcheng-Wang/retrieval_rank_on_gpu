@@ -1,0 +1,3112 @@
+{
+  "complete_for_declared_attempt_set": true,
+  "primary_assessments": [
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp32",
+      "scorer": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "probes": 64,
+      "primary_status": "predeclared_primary",
+      "independent_queries": 1000,
+      "execution_contexts": 3,
+      "status": "not_assessed",
+      "unavailable_references": [
+        {
+          "session": "0",
+          "status": "unsupported_memory"
+        },
+        {
+          "session": "1",
+          "status": "unsupported_memory"
+        },
+        {
+          "session": "2",
+          "status": "unsupported_memory"
+        }
+      ],
+      "unavailable_candidates": [],
+      "reason": "Three valid matched FP32/MLP reference contexts and candidates are required. Exact geometry oracles and other scorer/backend layouts are not substitute primary references."
+    },
+    {
+      "candidate": "faiss-gpu-fp16",
+      "reference": "faiss-gpu-fp32",
+      "scorer": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "probes": 64,
+      "primary_status": "predeclared_primary",
+      "independent_queries": 1000,
+      "execution_contexts": 3,
+      "status": "not_assessed",
+      "unavailable_references": [
+        {
+          "session": "0",
+          "status": "unsupported_memory"
+        },
+        {
+          "session": "1",
+          "status": "unsupported_memory"
+        },
+        {
+          "session": "2",
+          "status": "unsupported_memory"
+        }
+      ],
+      "unavailable_candidates": [],
+      "reason": "Three valid matched FP32/MLP reference contexts and candidates are required. Exact geometry oracles and other scorer/backend layouts are not substitute primary references."
+    }
+  ],
+  "secondary_candidate_assessments": [
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp16",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "interval": {
+        "queries": 1000,
+        "mean_difference": 0.0,
+        "lower_bound": 0.0,
+        "upper_bound": 0.0,
+        "confidence": 0.95,
+        "bootstrap_draws": 20000,
+        "seed": 20261011,
+        "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+        "execution_contexts": 3,
+        "context_point_differences": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0
+        },
+        "group": "dev-small",
+        "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+      },
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9661526643809581,
+          "1": 0.9940257935226366,
+          "2": 0.9820251813672102
+        },
+        "mean_ratio": 0.9807345464236016,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 12111052800,
+        "1": 12111052800,
+        "2": 12108955648
+      },
+      "scope": "Pointwise95% exploratory comparison of the same1000 query identities averaged over three fixed contexts; not a replacement primary reference or non-inferiority decision."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp16",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "interval": {
+        "queries": 1000,
+        "mean_difference": 0.0,
+        "lower_bound": 0.0,
+        "upper_bound": 0.0,
+        "confidence": 0.95,
+        "bootstrap_draws": 20000,
+        "seed": 20261011,
+        "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+        "execution_contexts": 3,
+        "context_point_differences": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0
+        },
+        "group": "dev-small",
+        "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+      },
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9793442160522949,
+          "1": 0.9839127524412151,
+          "2": 0.9816963285824352
+        },
+        "mean_ratio": 0.981651099025315,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 12111052800,
+        "1": 12111052800,
+        "2": 12111052800
+      },
+      "scope": "Pointwise95% exploratory comparison of the same1000 query identities averaged over three fixed contexts; not a replacement primary reference or non-inferiority decision."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp16",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "interval": {
+        "queries": 1000,
+        "mean_difference": 0.0,
+        "lower_bound": 0.0,
+        "upper_bound": 0.0,
+        "confidence": 0.95,
+        "bootstrap_draws": 20000,
+        "seed": 20261011,
+        "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+        "execution_contexts": 3,
+        "context_point_differences": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0
+        },
+        "group": "dev-small",
+        "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+      },
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9878962665077595,
+          "1": 0.9840561770744154,
+          "2": 0.9878440888891683
+        },
+        "mean_ratio": 0.9865988441571144,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 12111052800,
+        "1": 12108955648,
+        "2": 12553551872
+      },
+      "scope": "Pointwise95% exploratory comparison of the same1000 query identities averaged over three fixed contexts; not a replacement primary reference or non-inferiority decision."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp16",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "interval": {
+        "queries": 1000,
+        "mean_difference": 0.0,
+        "lower_bound": 0.0,
+        "upper_bound": 0.0,
+        "confidence": 0.95,
+        "bootstrap_draws": 20000,
+        "seed": 20261011,
+        "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+        "execution_contexts": 3,
+        "context_point_differences": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0
+        },
+        "group": "dev-small",
+        "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+      },
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9919835757742006,
+          "1": 0.9896280369608081,
+          "2": 0.9856174017433845
+        },
+        "mean_ratio": 0.9890763381594644,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 12553551872,
+        "1": 12553551872,
+        "2": 12553551872
+      },
+      "scope": "Pointwise95% exploratory comparison of the same1000 query identities averaged over three fixed contexts; not a replacement primary reference or non-inferiority decision."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp16",
+      "ranker": "bge-m3-rerank",
+      "cap": 50,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "interval": {
+        "queries": 1000,
+        "mean_difference": 9.166666666666664e-05,
+        "lower_bound": -0.0003250000000000001,
+        "upper_bound": 0.00055,
+        "confidence": 0.95,
+        "bootstrap_draws": 20000,
+        "seed": 20261011,
+        "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+        "execution_contexts": 3,
+        "context_point_differences": {
+          "0": 9.166666666666667e-05,
+          "1": 9.166666666666667e-05,
+          "2": 9.166666666666667e-05
+        },
+        "group": "dev-small",
+        "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+      },
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 9.166666666666664e-05,
+            "lower_bound": -0.0003250000000000001,
+            "upper_bound": 0.00055,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 9.166666666666667e-05,
+              "1": 9.166666666666667e-05,
+              "2": 9.166666666666667e-05
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 5.929837264274832e-05,
+            "lower_bound": 0.0,
+            "upper_bound": 0.00017789511792824496,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 5.929837264274961e-05,
+              "1": 5.929837264274961e-05,
+              "2": 5.929837264274961e-05
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": -0.0005196101889883698,
+            "lower_bound": -0.0017374462471119487,
+            "upper_bound": 0.00017861568014683934,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": -0.0005196101889883677,
+              "1": -0.0005196101889883677,
+              "2": -0.0005196101889883677
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 1.0098658895936061,
+          "1": 0.9908145148308123,
+          "2": 0.9963036191430565
+        },
+        "mean_ratio": 0.9989946745224917,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 12111052800,
+        "1": 12111052800,
+        "2": 11884560384
+      },
+      "scope": "Pointwise95% exploratory comparison of the same1000 query identities averaged over three fixed contexts; not a replacement primary reference or non-inferiority decision."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp16",
+      "ranker": "bge-m3-rerank",
+      "cap": 50,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "interval": {
+        "queries": 1000,
+        "mean_difference": -8.333333333333332e-05,
+        "lower_bound": -0.00024999999999999995,
+        "upper_bound": 0.0,
+        "confidence": 0.95,
+        "bootstrap_draws": 20000,
+        "seed": 20261011,
+        "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+        "execution_contexts": 3,
+        "context_point_differences": {
+          "0": -8.333333333333332e-05,
+          "1": -8.333333333333332e-05,
+          "2": -8.333333333333332e-05
+        },
+        "group": "dev-small",
+        "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+      },
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": -8.333333333333332e-05,
+            "lower_bound": -0.00024999999999999995,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": -8.333333333333332e-05,
+              "1": -8.333333333333332e-05,
+              "2": -8.333333333333332e-05
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 5.929837264274832e-05,
+            "lower_bound": 0.0,
+            "upper_bound": 0.00017789511792824496,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 5.929837264274961e-05,
+              "1": 5.929837264274961e-05,
+              "2": 5.929837264274961e-05
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.00019285379737334538,
+            "lower_bound": -0.0013701202404845802,
+            "upper_bound": 0.0016187061591331723,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": -2.8159739096266522e-05,
+              "1": 0.0011858698802536148,
+              "2": -0.0005791487490373163
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 5.1015202530354045e-05,
+            "lower_bound": 0.0,
+            "upper_bound": 0.00015304560759106213,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.00015304560759106213,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9984352361454227,
+          "1": 0.9954538797813629,
+          "2": 0.9927254758804805
+        },
+        "mean_ratio": 0.9955381972690888,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 12108955648,
+        "1": 12373196800,
+        "2": 12306087936
+      },
+      "scope": "Pointwise95% exploratory comparison of the same1000 query identities averaged over three fixed contexts; not a replacement primary reference or non-inferiority decision."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp16",
+      "ranker": "bge-m3-rerank",
+      "cap": 500,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "interval": {
+        "queries": 1000,
+        "mean_difference": 0.0001666666666666667,
+        "lower_bound": 0.0,
+        "upper_bound": 0.0005,
+        "confidence": 0.95,
+        "bootstrap_draws": 20000,
+        "seed": 20261011,
+        "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+        "execution_contexts": 3,
+        "context_point_differences": {
+          "0": 0.0001666666666666667,
+          "1": 0.0001666666666666667,
+          "2": 0.0001666666666666667
+        },
+        "group": "dev-small",
+        "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+      },
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0001666666666666667,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0005,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0001666666666666667,
+              "1": 0.0001666666666666667,
+              "2": 0.0001666666666666667
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9987547466141385,
+          "1": 1.0059560864011816,
+          "2": 1.0034505549486779
+        },
+        "mean_ratio": 1.002720462654666,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 12111052800,
+        "1": 12111052800,
+        "2": 12111052800
+      },
+      "scope": "Pointwise95% exploratory comparison of the same1000 query identities averaged over three fixed contexts; not a replacement primary reference or non-inferiority decision."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp16",
+      "ranker": "bge-m3-rerank",
+      "cap": 500,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "interval": {
+        "queries": 1000,
+        "mean_difference": -8.333333333333332e-05,
+        "lower_bound": -0.00024999999999999995,
+        "upper_bound": 0.0,
+        "confidence": 0.95,
+        "bootstrap_draws": 20000,
+        "seed": 20261011,
+        "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+        "execution_contexts": 3,
+        "context_point_differences": {
+          "0": -8.333333333333332e-05,
+          "1": -8.333333333333332e-05,
+          "2": -8.333333333333332e-05
+        },
+        "group": "dev-small",
+        "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+      },
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": -8.333333333333332e-05,
+            "lower_bound": -0.00024999999999999995,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": -8.333333333333332e-05,
+              "1": -8.333333333333332e-05,
+              "2": -8.333333333333332e-05
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9949660282906717,
+          "1": 0.994248495030745,
+          "2": 0.9935239690362203
+        },
+        "mean_ratio": 0.9942461641192123,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 11685330944,
+        "1": 12108955648,
+        "2": 12551454720
+      },
+      "scope": "Pointwise95% exploratory comparison of the same1000 query identities averaged over three fixed contexts; not a replacement primary reference or non-inferiority decision."
+    }
+  ],
+  "secondary_fp32_reference_assessments": [
+    {
+      "candidate": "faiss-gpu-fp16",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "not_assessed",
+      "reason": "The corresponding three valid matched FP32/scorer references and candidates are not all complete."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "not_assessed",
+      "reason": "The corresponding three valid matched FP32/scorer references and candidates are not all complete."
+    },
+    {
+      "candidate": "faiss-gpu-fp16",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "not_assessed",
+      "reason": "The corresponding three valid matched FP32/scorer references and candidates are not all complete."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "not_assessed",
+      "reason": "The corresponding three valid matched FP32/scorer references and candidates are not all complete."
+    },
+    {
+      "candidate": "faiss-gpu-fp16",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "not_assessed",
+      "reason": "The corresponding three valid matched FP32/scorer references and candidates are not all complete."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "not_assessed",
+      "reason": "The corresponding three valid matched FP32/scorer references and candidates are not all complete."
+    },
+    {
+      "candidate": "faiss-gpu-fp16",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "bge-m3-rerank",
+      "cap": 50,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9921613316892606,
+          "1": 0.9956370805436382,
+          "2": 0.9908145730471976
+        },
+        "mean_ratio": 0.9928709950933654,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 27365736448,
+        "1": 27365736448,
+        "2": 27365736448
+      },
+      "scope": "Separate secondary layout/scorer comparison; a valid BGE reference cannot replace the failed predeclared MLP primary reference."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "bge-m3-rerank",
+      "cap": 50,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 9.166666666666664e-05,
+            "lower_bound": -0.0003250000000000001,
+            "upper_bound": 0.00055,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 9.166666666666667e-05,
+              "1": 9.166666666666667e-05,
+              "2": 9.166666666666667e-05
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 5.929837264274832e-05,
+            "lower_bound": 0.0,
+            "upper_bound": 0.00017789511792824496,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 5.929837264274961e-05,
+              "1": 5.929837264274961e-05,
+              "2": 5.929837264274961e-05
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": -0.0005196101889883698,
+            "lower_bound": -0.0017374462471119487,
+            "upper_bound": 0.00017861568014683934,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": -0.0005196101889883677,
+              "1": -0.0005196101889883677,
+              "2": -0.0005196101889883677
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 1.001949885846752,
+          "1": 0.9864916709064113,
+          "2": 0.9871521450266052
+        },
+        "mean_ratio": 0.9918645672599228,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 39476789248,
+        "1": 39476789248,
+        "2": 39250296832
+      },
+      "scope": "Separate secondary layout/scorer comparison; a valid BGE reference cannot replace the failed predeclared MLP primary reference."
+    },
+    {
+      "candidate": "faiss-gpu-fp16",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "bge-m3-rerank",
+      "cap": 50,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9983051472791917,
+          "1": 1.006680677127746,
+          "2": 0.9893231914370015
+        },
+        "mean_ratio": 0.9981030052813131,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 27365736448,
+        "1": 27365736448,
+        "2": 27365736448
+      },
+      "scope": "Separate secondary layout/scorer comparison; a valid BGE reference cannot replace the failed predeclared MLP primary reference."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "bge-m3-rerank",
+      "cap": 50,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": -8.333333333333332e-05,
+            "lower_bound": -0.00024999999999999995,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": -8.333333333333332e-05,
+              "1": -8.333333333333332e-05,
+              "2": -8.333333333333332e-05
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 5.929837264274832e-05,
+            "lower_bound": 0.0,
+            "upper_bound": 0.00017789511792824496,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 5.929837264274961e-05,
+              "1": 5.929837264274961e-05,
+              "2": 5.929837264274961e-05
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.00019285379737334538,
+            "lower_bound": -0.0013701202404845802,
+            "upper_bound": 0.0016187061591331723,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": -2.8159739096266522e-05,
+              "1": 0.0011858698802536148,
+              "2": -0.0005791487490373163
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 5.1015202530354045e-05,
+            "lower_bound": 0.0,
+            "upper_bound": 0.00015304560759106213,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.00015304560759106213,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9967430354688908,
+          "1": 1.0021041857477442,
+          "2": 0.9821263360188931
+        },
+        "mean_ratio": 0.9936578524118427,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 39474692096,
+        "1": 39738933248,
+        "2": 39671824384
+      },
+      "scope": "Separate secondary layout/scorer comparison; a valid BGE reference cannot replace the failed predeclared MLP primary reference."
+    },
+    {
+      "candidate": "faiss-gpu-fp16",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "bge-m3-rerank",
+      "cap": 500,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 1.0032698988363669,
+          "1": 0.9804223966168304,
+          "2": 0.9832446366000342
+        },
+        "mean_ratio": 0.9889789773510772,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 27365736448,
+        "1": 27365736448,
+        "2": 27365736448
+      },
+      "scope": "Separate secondary layout/scorer comparison; a valid BGE reference cannot replace the failed predeclared MLP primary reference."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "bge-m3-rerank",
+      "cap": 500,
+      "batch": 1,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0001666666666666667,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0005,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0001666666666666667,
+              "1": 0.0001666666666666667,
+              "2": 0.0001666666666666667
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 1.002020573597908,
+          "1": 0.9862618771207338,
+          "2": 0.9866373762466155
+        },
+        "mean_ratio": 0.9916399423217525,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 39476789248,
+        "1": 39476789248,
+        "2": 39476789248
+      },
+      "scope": "Separate secondary layout/scorer comparison; a valid BGE reference cannot replace the failed predeclared MLP primary reference."
+    },
+    {
+      "candidate": "faiss-gpu-fp16",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "bge-m3-rerank",
+      "cap": 500,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 1.0041692787025358,
+          "1": 1.005458154707575,
+          "2": 1.0010598111029798
+        },
+        "mean_ratio": 1.003562414837697,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 27346862080,
+        "1": 27365736448,
+        "2": 26923237376
+      },
+      "scope": "Separate secondary layout/scorer comparison; a valid BGE reference cannot replace the failed predeclared MLP primary reference."
+    },
+    {
+      "candidate": "silver-int8-rowwise",
+      "reference": "faiss-gpu-fp32",
+      "ranker": "bge-m3-rerank",
+      "cap": 500,
+      "batch": 16,
+      "inference_scope": "secondary_exploratory",
+      "status": "assessed",
+      "groups": {
+        "dev-small": {
+          "mrr@10": {
+            "queries": 1000,
+            "mean_difference": -8.333333333333332e-05,
+            "lower_bound": -0.00024999999999999995,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": -8.333333333333332e-05,
+              "1": -8.333333333333332e-05,
+              "2": -8.333333333333332e-05
+            },
+            "group": "dev-small",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec19": {
+          "mrr@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 43,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec19",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        },
+        "trec20": {
+          "mrr@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "ndcg@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          },
+          "recall@10": {
+            "queries": 54,
+            "mean_difference": 0.0,
+            "lower_bound": 0.0,
+            "upper_bound": 0.0,
+            "confidence": 0.95,
+            "bootstrap_draws": 20000,
+            "seed": 20261011,
+            "method": "Paired query percentile bootstrap on unchanged compatible query population.",
+            "execution_contexts": 3,
+            "context_point_differences": {
+              "0": 0.0,
+              "1": 0.0,
+              "2": 0.0
+            },
+            "group": "trec20",
+            "scope": "Pointwise95% secondary exploratory interval; per-query metrics averaged across three fixed contexts before resampling the original identities once. No primary non-inferiority or universal equivalence decision."
+          }
+        }
+      },
+      "latency_ratio": {
+        "ratios": {
+          "0": 0.9991143189621706,
+          "1": 0.9996752571343963,
+          "2": 0.9945769167696815
+        },
+        "mean_ratio": 0.997788830955416,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "observed_memory_saving_bytes_by_context": {
+        "0": 39032193024,
+        "1": 39474692096,
+        "2": 39474692096
+      },
+      "scope": "Separate secondary layout/scorer comparison; a valid BGE reference cannot replace the failed predeclared MLP primary reference."
+    }
+  ],
+  "within_backend_boundary_controls": [
+    {
+      "backend": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 1,
+      "status": "not_assessed",
+      "reason": "Three valid restarted within-backend boundary pairs are not all complete."
+    },
+    {
+      "backend": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "status": "not_assessed",
+      "reason": "Three valid restarted within-backend boundary pairs are not all complete."
+    },
+    {
+      "backend": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 1,
+      "status": "not_assessed",
+      "reason": "Three valid restarted within-backend boundary pairs are not all complete."
+    },
+    {
+      "backend": "faiss-gpu-fp32",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 16,
+      "status": "not_assessed",
+      "reason": "Three valid restarted within-backend boundary pairs are not all complete."
+    },
+    {
+      "backend": "faiss-gpu-fp16",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 1,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.0118640681436835,
+          "1": 1.0122510916332579,
+          "2": 1.01186085479323
+        },
+        "mean_ratio": 1.0119920048567237,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 51.21093309999999,
+        "1": 50.62173547999999,
+        "2": 50.73014301999999
+      },
+      "local_cascade_means_ms": {
+        "0": 51.81850310000001,
+        "1": 51.24190700000001,
+        "2": 51.33184588
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    },
+    {
+      "backend": "faiss-gpu-fp16",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.0658672040808772,
+          "1": 1.06544333966523,
+          "2": 1.0574620976041877
+        },
+        "mean_ratio": 1.0629242137834316,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": false,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 79.14322419999999,
+        "1": 78.96147028,
+        "2": 78.690804
+      },
+      "local_cascade_means_ms": {
+        "0": 84.35616710000001,
+        "1": 84.12897260000001,
+        "2": 83.21254266000001
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    },
+    {
+      "backend": "faiss-gpu-fp16",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 1,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.0513582413793838,
+          "1": 1.0534043355896467,
+          "2": 1.0502988715590933
+        },
+        "mean_ratio": 1.0516871495093747,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": false,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 50.38997268,
+        "1": 50.88947386000001,
+        "2": 50.43453464
+      },
+      "local_cascade_means_ms": {
+        "0": 52.97791306,
+        "1": 53.6071924,
+        "2": 52.97133482
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    },
+    {
+      "backend": "faiss-gpu-fp16",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 16,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.387993318756456,
+          "1": 1.3717278168562437,
+          "2": 1.3878483387293432
+        },
+        "mean_ratio": 1.3825231581140143,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": false,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 78.76204430000001,
+        "1": 78.98280556,
+        "2": 78.68215602000001
+      },
+      "local_cascade_means_ms": {
+        "0": 109.32119126000002,
+        "1": 108.34291144,
+        "2": 109.19889952
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    },
+    {
+      "backend": "silver-int8-rowwise",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 1,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.010589846264076,
+          "1": 1.015161838430888,
+          "2": 1.0084575287978792
+        },
+        "mean_ratio": 1.0114030711642812,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 49.477579459999994,
+        "1": 50.31931078,
+        "2": 49.818277900000005
+      },
+      "local_cascade_means_ms": {
+        "0": 50.00153942,
+        "1": 51.082244040000006,
+        "2": 50.23961742
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    },
+    {
+      "backend": "silver-int8-rowwise",
+      "ranker": "semantic-mlp",
+      "cap": 50,
+      "batch": 16,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.0551407715088197,
+          "1": 1.058332407561359,
+          "2": 1.0564611753062632
+        },
+        "mean_ratio": 1.0566447847921472,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": false,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 77.50845886,
+        "1": 77.69119756,
+        "2": 77.25047338
+      },
+      "local_cascade_means_ms": {
+        "0": 81.78233508000001,
+        "1": 82.22311215999999,
+        "2": 81.6121259
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    },
+    {
+      "backend": "silver-int8-rowwise",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 1,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.0457105795216357,
+          "1": 1.0450159329224247,
+          "2": 1.0475933047041852
+        },
+        "mean_ratio": 1.046106605716082,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": true,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 49.78006588,
+        "1": 50.078101100000005,
+        "2": 49.82145692
+      },
+      "local_cascade_means_ms": {
+        "0": 52.05554154000001,
+        "1": 52.332413540000005,
+        "2": 52.192624699999996
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    },
+    {
+      "backend": "silver-int8-rowwise",
+      "ranker": "semantic-mlp",
+      "cap": 500,
+      "batch": 16,
+      "status": "assessed",
+      "candidate_final_ids_exact": true,
+      "scores_rtol_atol": 1e-05,
+      "local_over_resident": {
+        "ratios": {
+          "0": 1.3639939317062681,
+          "1": 1.3622654786559636,
+          "2": 1.3639564880506876
+        },
+        "mean_ratio": 1.3634052994709733,
+        "minimum_10_percent_mean_gain": false,
+        "within_5_percent_slower_mean": false,
+        "scope": "Descriptive ratios of freshly paired restarted-session means, not serving tails, latency confidence intervals or production speedup."
+      },
+      "resident_means_ms": {
+        "0": 78.13065434,
+        "1": 78.16359882,
+        "2": 77.55050218000001
+      },
+      "local_cascade_means_ms": {
+        "0": 106.5697384,
+        "1": 106.47957236000002,
+        "2": 105.7755106
+      },
+      "scope": "Source- and candidate-matched local serialization/feature fetch only; no network RPC, serving SLO or neural quality gain implied."
+    }
+  ],
+  "scope": "Source-bound exploratory actual-query/candidate/scorer evidence only. Pending/unsupported attempts stay in72+4 denominators; unavailable FP32 primary references are not repaired by other scorers/backends/exact geometry. No MFU, energy, RPC, serving-QPS or tail-SLO claim."
+}

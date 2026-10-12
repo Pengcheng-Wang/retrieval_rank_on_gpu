@@ -1,0 +1,29 @@
+[project]
+name = "silvertorch-local-gpu-env"
+version = "0.1.0"
+description = "Validated isolated CUDA 12.x SilverTorch, FAISS, and TorchRec benchmark environment"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch==2.13.0+cu129",
+    "triton==3.7.1",
+    "numpy==2.2.6",
+    "faiss-gpu-cu12==1.14.1.post1",
+    "torchrec==1.8.0",
+    "fbgemm-gpu==1.8.0+cu126",
+    "ninja==1.13.0",
+    "pytest>=8.3,<10",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu129"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu129" }
+fbgemm-gpu = { index = "pytorch-cu126" }
