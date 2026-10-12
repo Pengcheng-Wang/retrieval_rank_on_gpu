@@ -1,0 +1,112 @@
+{
+  "study": "One bounded query-only Qwen0.6 LoRA pilot over the frozen full IR catalog",
+  "status": "Post-test exploratory; not a personalization rescue or corpus re-encoding.",
+  "admission": {
+    "requires_completed_reviewed_durable_primary_evidence": true,
+    "latest_start_utc": "2026-10-12T21:03:01.929Z",
+    "maximum_wall_seconds": 21600,
+    "engineering_ready_seconds": 7200,
+    "maximum_gpu_seconds": 18000,
+    "reserved_closure_seconds": 3600,
+    "global_gpu_cutoff_utc": "2026-10-13T03:03:01.929Z",
+    "global_hard_end_utc": "2026-10-13T09:03:01.929Z"
+  },
+  "model": {
+    "key": "qwen06",
+    "model": "Qwen/Qwen3-Embedding-0.6B",
+    "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+    "dimension": 1024,
+    "base_dtype": "bfloat16",
+    "attention": "sdpa",
+    "adapter_dtype": "float32",
+    "targets": ["q_proj", "v_proj"],
+    "rank": 16,
+    "alpha": 32,
+    "dropout": 0,
+    "base_frozen": true,
+    "items_frozen": true,
+    "merge": false,
+    "compile": false,
+    "quantize_base": false
+  },
+  "data": {
+    "catalog_items": 8841823,
+    "stored_item_dtype": "float16",
+    "fit_queries": 50000,
+    "selection": "First50000 in the existing frozen100000 official-train fitting order; all covered fitting positives retained.",
+    "validation_queries": 5000,
+    "validation_role": "Existing disjoint train-sourced query groups; previously inspected, diagnostic only, no checkpoint or recipe selection.",
+    "final_groups": {"dev-small": 1000, "trec19": 43, "trec20": 54},
+    "final_role": "One frozen post-test exploratory evaluation, never resource or recipe admission.",
+    "token_cap": 512,
+    "padding": "left, pad-to-multiple-of-eight",
+    "query_rendering": "Existing pinned Instruct/Query string and tokenizer special-token behavior, no chat template.",
+    "pooling": "Pinned last-valid-token pooling, FP32 normalization, differentiable canonicalFP16 query rounding.",
+    "length_audit": "All actual instructed strings, not a sample; report count/p50/p90/p99/max/overflow/real and padded token counts. Unexpected overflow fails preflight.",
+    "generation_metadata": "N/A: static embedding contrastive inputs, not generated responses."
+  },
+  "training": {
+    "seed": 17,
+    "epochs": 1,
+    "microbatch": 8,
+    "accumulation": 8,
+    "effective_batch": 64,
+    "optimizer_updates": 782,
+    "last_block_queries": 16,
+    "optimizer": "AdamW",
+    "learning_rate": 0.00002,
+    "betas": [0.9, 0.999],
+    "epsilon": 0.00000001,
+    "weight_decay": 0,
+    "gradient_clip_norm": 1,
+    "temperature": 0.05,
+    "checkpoint_every_updates": 100,
+    "checkpoint_policy": "Final completed epoch only; no validation-best or intermediate winner.",
+    "gradient_policy": "Direct gradient-enabled transformer forward with use_cache=False; never SemanticEncoder.encode inference_mode.",
+    "loss": "Per-query logsumexp over P union H union U minus logsumexp over all P, averaged equally across the actual optimizer block.",
+    "negatives": {
+      "base_query_source": "Existing pinned frozen-base fitting vectors, source and ordered query identities checked.",
+      "backend": "Actual FAISS scalar-half on the existing validated shared partition",
+      "probes": 64,
+      "retrieval_depth": 1000,
+      "consider_prefix": 100,
+      "hard_count": 12,
+      "uniform_count": 64,
+      "policy": "Distinct fixed seed/query samples excluding all P and prior sampled H; once only, no refresh/in-batch negatives/held-out label blacklist.",
+      "truth": "Retrieved and uniform alternatives are weak negatives, not exhaustive irrelevance."
+    }
+  },
+  "smoke": {
+    "queries": 100,
+    "production_shaped_optimizer_steps": 5,
+    "requirements": ["zero-adapter fresh-base parity on identical groups", "finite loss and adapter gradients", "adapter updates", "base weights and item bank unchanged", "adapter optimizer RNG checkpoint reload and resumed-continuation agreement", "all source token query negative and target-module identities"],
+    "post_smoke": "Discard smoke state and restart the fixed seed17 one-epoch recipe."
+  },
+  "evaluation": {
+    "arms": ["fresh pinned base", "same pinned base with final attached adapter"],
+    "reranking": false,
+    "quality_query_batch": 16,
+    "groups": "One immutable label-independent group partition, identical between arms and reused by every raw replay/timing context.",
+    "retrieval": "Exhaustive FP32 whole canonical item bank top1000, TF32 disabled.",
+    "metrics": ["MRR@10", "nDCG@10", "Recall@10", "Recall@100", "Recall@1000"],
+    "uncertainty": "Paired original-query bootstrap20000 draws, seed20261011, pointwise95%, populations separate; no PrimaryB NI margin or qualification.",
+    "encoding_batches": [1, 16],
+    "pipeline_batch": 16,
+    "warmup": 10,
+    "samples": 50,
+    "fresh_paired_contexts": 3,
+    "timing": "Raw tokenization/encoding and raw query to resident exact search; catalog loading outside the timer. Batch1 encoding is a cost diagnostic, not batch1 quality-latency.",
+    "excluded_claims": ["model-parameter-only effect", "untouched-test confirmation", "serving QPS", "p99 SLO", "energy", "MFU", "engagement uplift"]
+  },
+  "memory": {
+    "maximum_observed_benchmark_gib": 48,
+    "minimum_headroom_gib": 8,
+    "scope": "Finite sampled benchmark-device observations; additional administrative context separately accounted, not unseen-peak guarantees."
+  },
+  "stops": {
+    "engineering_not_ready_by_two_hours": "Stop as preflight/engineering incomplete; no resource escalation or new recipe.",
+    "missing_or_incompatible_data": "Data/preflight blocked, not method failure or permission to substitute final queries.",
+    "epoch_or_required_evaluation_unfinished": "Incomplete; no intermediate checkpoint selection or shortened outcome denominator.",
+    "completed_null_or_regression": "One finite asymmetric query-only recipe result, not evidence against all finetuning."
+  }
+}

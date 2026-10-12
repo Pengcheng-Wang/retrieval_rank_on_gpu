@@ -30,6 +30,7 @@ model rules, or client-side serving load generator. The paper's 23.7x QPS and
 | [Real-catalog GPU profiles](docs/real-semantic-profiling-results.md) | Completed 60 fresh ANN timing conditions and 20 separate CUDA traces; precision-dependent crossover and limits |
 | [Initial actual-pipeline findings](docs/actual-pipeline-initial-results.md) | Reviewed nine-attempt partial frame: observed memory advantage, small whole-batch timing change, and unavailable FP32/MLP primaries |
 | [Full actual-pipeline findings](docs/actual-pipeline-results.md) | Completed 72 attempts, four CUDA profiles and 16 scorer/cap contrasts; memory versus wall time, BGE quality/cost, negative larger-cap evidence and unavailable primary NI |
+| [Query-only adaptation findings](docs/query-adaptation-results.md) | One fixed Qwen0.6 LoRA epoch over 50,000 queries and the unchanged 8.84M item bank; head-rank gains, Recall@1000 losses and unmerged adapter cost |
 | [Upstream provenance](third_party/silvertorch/UPSTREAM.json) | Exact source, commit, license, and modification policy |
 
 Operational `progress.md`, access configuration, logs, datasets, checkpoints,
@@ -214,6 +215,21 @@ pilot deadline; final test results never authorize further fitting. Input,
 implementation and checkpoint hashes prevent stale result reuse. Reused test
 panels remain post-test exploratory, and admission/qualification thresholds
 are resource and research gates, not production-uplift guarantees.
+
+The conditional [query-only pilot](docs/query-adaptation-results.md) is also
+complete: native1024D Qwen0.6, one fixed50,000-query epoch,782 updates and an
+unchanged8.84M item bank. Its selected-dev MRR improves, but every
+Recall@1000 point estimate decreases, with negative intervals on internal
+validation and TREC20. Attached, unmerged FP32 adapters increase encoding
+wall time by17-19% and raw-query/exhaustive-search batch16 wall time by8.80%.
+The [complete aggregate package](results/2026-10-12-query-adaptation/checksums.json)
+retains all20 quality contrasts and900 durations across three fresh paired
+runtime contexts. This is an asymmetric retrieval trade-off, not a general
+finetuning victory, a personalization rescue or a cross-study model leaderboard.
+The [fixed protocol](configs/semantic-extension-query-adaptation-v1.json)
+and `python -m rrbench.semantic_query_adaptation_run --help` expose audited
+mining, real gradient/resume smoke, one-epoch fitting, exact evaluation and
+matched runtime phases without embedding allocation access in source.
 
 ## 🏗️ What is compared
 

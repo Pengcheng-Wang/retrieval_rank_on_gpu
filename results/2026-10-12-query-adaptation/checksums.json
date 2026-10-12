@@ -1,0 +1,21 @@
+{
+  "complete": true,
+  "reviewed_private_evidence_sha256": "3f550a8cb1f1579ecc346e7e732d648644fbf78852adfb76bf2b85b5a386e8c6",
+  "files": {
+    "quality.csv": "c97547684005aa00fcbe43dbbaab39355b86d4344e80dd855a640e6d7fdfcfa5",
+    "README.md": "bf7fb557f272b0e120d9d415dfce484cb1566a39cf44ea47a6faa66bbb759058",
+    "summary.json": "830b4359dc5c55f0e85cc0d32d3118c7950cef03855af817712166a3be7718e6",
+    "timing-samples.csv": "2c34a0eef5b6d7301557cedded3c232f646246bf56bb21b6ebf4be30b9fc96ce",
+    "timing.csv": "76f8527c930405c1de58fb0364e8c0f42c7fe9c15d969a6936b237914ceef625"
+  },
+  "publication_source_lf_sha256": {
+    "configs/semantic-extension-query-adaptation-v1.json": "78c15b8fa9a1c65ab390ea5f20e2397b26329e3d6deac5c4d4794bbd14b29d13",
+    "src/rrbench/semantic_query_adaptation.py": "988555278fb0d8463076508224db33bd3514837d8255d214c92bc25d97e5d735",
+    "src/rrbench/semantic_query_adaptation_run.py": "57d1f1d4ed9b564f02fe9fd31daa8c63c2f6727d78ff8159c07bf2d589d88e0e",
+    "tests/test_query_adaptation.py": "eb81e1eb43d82d4d41ebdfdf37a650877fa69dee1d36c24ec34d25647851a63b",
+    "tests/test_query_adaptation_run.py": "71596ebab5572afc086ca2d740b53923694cdbf1f40f43af5bdf3a0ab622fb61",
+    "docs/query-adaptation-results.md": "aaa51da7b723ce0edf5615a53ddab9d720ee86749ecc587732a8219395e9c5d7",
+    "README.md": "2ee03686cd6cccb0cd2acad489cab25daff9ae3b97830ba947460ee51582c05c"
+  },
+  "scope": "All20qualitycontrasts/18context-armtimings/900rawdurations, reviewed mixed conclusions and exact executed source; aggregate-only, no raw identifiers or allocation/control paths."
+}
