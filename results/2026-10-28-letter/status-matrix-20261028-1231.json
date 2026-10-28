@@ -1,0 +1,1001 @@
+{
+  "status": "all_saved_predictions_recomputed",
+  "as_of": "2026-10-28T12:31:19-07:00",
+  "replay_cells": [
+    {
+      "dataset": "Instruments",
+      "seed": 42,
+      "temperature": 0.7,
+      "users": 24772,
+      "metrics": {
+        "code": {
+          "recall@1": 0.06160180849346036,
+          "ndcg@1": 0.06160180849346036,
+          "recall@5": 0.08860810592604554,
+          "ndcg@5": 0.07523511120640715,
+          "recall@10": 0.10976102050702406,
+          "ndcg@10": 0.08202366366819253
+        },
+        "item": {
+          "recall@1": 0.06039076376554174,
+          "ndcg@1": 0.06039076376554174,
+          "recall@5": 0.08816405619247537,
+          "ndcg@5": 0.07450901581681187,
+          "recall@10": 0.1093169707734539,
+          "ndcg@10": 0.08130122017353231
+        }
+      },
+      "predictions_sha256": "349b65aeb4e93a73550cccf4c722df2ca1fa86440db02a67f878506d00987758"
+    },
+    {
+      "dataset": "Instruments",
+      "seed": 42,
+      "temperature": 1.0,
+      "users": 24772,
+      "metrics": {
+        "code": {
+          "recall@1": 0.061036654287098334,
+          "ndcg@1": 0.061036654287098334,
+          "recall@5": 0.08832552882286453,
+          "ndcg@5": 0.07485723459700105,
+          "recall@10": 0.10980138866462134,
+          "ndcg@10": 0.08174633425964713
+        },
+        "item": {
+          "recall@1": 0.05994671403197158,
+          "ndcg@1": 0.05994671403197158,
+          "recall@5": 0.08792184724689166,
+          "ndcg@5": 0.0742203146201165,
+          "recall@10": 0.10907476182787018,
+          "ndcg@10": 0.08100772620494019
+        }
+      },
+      "predictions_sha256": "7bf3525ecd38f0c32b72c5625bda52fee20f117fadde71ff4758988fdcfcd0a9"
+    },
+    {
+      "dataset": "Instruments",
+      "seed": 17,
+      "temperature": 0.7,
+      "users": 24772,
+      "metrics": {
+        "code": {
+          "recall@1": 0.06047150008073632,
+          "ndcg@1": 0.06047150008073632,
+          "recall@5": 0.08816405619247537,
+          "ndcg@5": 0.07442595605646865,
+          "recall@10": 0.10879218472468917,
+          "ndcg@10": 0.08105392305731549
+        },
+        "item": {
+          "recall@1": 0.059300823510414984,
+          "ndcg@1": 0.059300823510414984,
+          "recall@5": 0.08751816567091877,
+          "ndcg@5": 0.07365002406346548,
+          "recall@10": 0.10846923946391086,
+          "ndcg@10": 0.08037963383054932
+        }
+      },
+      "predictions_sha256": "b332eecbb8cf7e963e322f158397880166380a94cbf650101819b93d35e0ddfa"
+    },
+    {
+      "dataset": "Instruments",
+      "seed": 17,
+      "temperature": 1.0,
+      "users": 24772,
+      "metrics": {
+        "code": {
+          "recall@1": 0.06043113192313903,
+          "ndcg@1": 0.06043113192313903,
+          "recall@5": 0.08630712094300017,
+          "ndcg@5": 0.07340595615975948,
+          "recall@10": 0.10713709026320038,
+          "ndcg@10": 0.0800722280118634
+        },
+        "item": {
+          "recall@1": 0.05934119166801227,
+          "ndcg@1": 0.05934119166801227,
+          "recall@5": 0.08598417568222186,
+          "ndcg@5": 0.072778460910056,
+          "recall@10": 0.10681414500242209,
+          "ndcg@10": 0.07944535171787995
+        }
+      },
+      "predictions_sha256": "570a744169e8f80904e896fa002837a7bf7fba09b7241775adb0f4fbd0e1e853"
+    },
+    {
+      "dataset": "Instruments",
+      "seed": 23,
+      "temperature": 0.7,
+      "users": 24772,
+      "metrics": {
+        "code": {
+          "recall@1": 0.060632972711125464,
+          "ndcg@1": 0.060632972711125464,
+          "recall@5": 0.08816405619247537,
+          "ndcg@5": 0.07441475480414964,
+          "recall@10": 0.10859034393670274,
+          "ndcg@10": 0.08097935624127058
+        },
+        "item": {
+          "recall@1": 0.05942192798320685,
+          "ndcg@1": 0.05942192798320685,
+          "recall@5": 0.08784111093169708,
+          "ndcg@5": 0.07375492522607707,
+          "recall@10": 0.10826739867592443,
+          "ndcg@10": 0.08032072566523828
+        }
+      },
+      "predictions_sha256": "fb8433cf01dc4108c9c79c93b294d08895781d42fe81c8292dad576fc4017fcb"
+    },
+    {
+      "dataset": "Instruments",
+      "seed": 23,
+      "temperature": 1.0,
+      "users": 24772,
+      "metrics": {
+        "code": {
+          "recall@1": 0.06184401743904408,
+          "ndcg@1": 0.06184401743904408,
+          "recall@5": 0.08465202648151138,
+          "ndcg@5": 0.0734841693185927,
+          "recall@10": 0.1042305829161957,
+          "ndcg@10": 0.07975674767474908
+        },
+        "item": {
+          "recall@1": 0.060632972711125464,
+          "ndcg@1": 0.060632972711125464,
+          "recall@5": 0.08432908122073308,
+          "ndcg@5": 0.07287224166250342,
+          "recall@10": 0.10370579686743098,
+          "ndcg@10": 0.07908489370588284
+        }
+      },
+      "predictions_sha256": "b843a0801d68e3063efbc9ffca207b271bd12e19bd78e2b076d9063d02e9ea06"
+    },
+    {
+      "dataset": "Beauty",
+      "seed": 42,
+      "temperature": 0.7,
+      "users": 22363,
+      "metrics": {
+        "code": {
+          "recall@1": 0.013415015874435452,
+          "ndcg@1": 0.013415015874435452,
+          "recall@5": 0.04073693153870232,
+          "ndcg@5": 0.02707656439239027,
+          "recall@10": 0.06421320931896436,
+          "ndcg@10": 0.03462700327030171
+        },
+        "item": {
+          "recall@1": 0.013191432276528194,
+          "ndcg@1": 0.013191432276528194,
+          "recall@5": 0.040468631221213615,
+          "ndcg@5": 0.026853591337959358,
+          "recall@10": 0.06394490900147565,
+          "ndcg@10": 0.034408745218640034
+        }
+      },
+      "predictions_sha256": "a03ad6e30f952ebd4edff58eab88f15ff71dd4b9c00703260e0ea7c5d1f2ec62"
+    },
+    {
+      "dataset": "Beauty",
+      "seed": 42,
+      "temperature": 1.0,
+      "users": 22363,
+      "metrics": {
+        "code": {
+          "recall@1": 0.013280865715691098,
+          "ndcg@1": 0.013280865715691098,
+          "recall@5": 0.04328578455484506,
+          "ndcg@5": 0.028373489001243236,
+          "recall@10": 0.06774583016589902,
+          "ndcg@10": 0.036245996947128684
+        },
+        "item": {
+          "recall@1": 0.01310199883736529,
+          "ndcg@1": 0.01310199883736529,
+          "recall@5": 0.04274918391986764,
+          "ndcg@5": 0.028041398185794018,
+          "recall@10": 0.06738809640924742,
+          "ndcg@10": 0.03597139415221788
+        }
+      },
+      "predictions_sha256": "545ebc1721e3f66c86607e3c4d90f5e6fa38b4b6a10eb0ebd27f2991f9659c66"
+    },
+    {
+      "dataset": "Beauty",
+      "seed": 17,
+      "temperature": 0.7,
+      "users": 22363,
+      "metrics": {
+        "code": {
+          "recall@1": 0.013459732594016904,
+          "ndcg@1": 0.013459732594016904,
+          "recall@5": 0.04346465143317086,
+          "ndcg@5": 0.02854428740174756,
+          "recall@10": 0.06474980995394178,
+          "ndcg@10": 0.035343689610841354
+        },
+        "item": {
+          "recall@1": 0.013459732594016904,
+          "ndcg@1": 0.013459732594016904,
+          "recall@5": 0.04328578455484506,
+          "ndcg@5": 0.02842786074227962,
+          "recall@10": 0.06457094307561598,
+          "ndcg@10": 0.03522270562855289
+        }
+      },
+      "predictions_sha256": "fd28c0ae504b26cfaf51929b7e4ddcaafb91494452f26eaf913e105a29f8ea53"
+    },
+    {
+      "dataset": "Beauty",
+      "seed": 17,
+      "temperature": 1.0,
+      "users": 22363,
+      "metrics": {
+        "code": {
+          "recall@1": 0.011984080847829003,
+          "ndcg@1": 0.011984080847829003,
+          "recall@5": 0.04082636497786522,
+          "ndcg@5": 0.026513818846002683,
+          "recall@10": 0.06546527746724501,
+          "ndcg@10": 0.034440651208982535
+        },
+        "item": {
+          "recall@1": 0.011849930689084649,
+          "ndcg@1": 0.011849930689084649,
+          "recall@5": 0.04033448106246926,
+          "ndcg@5": 0.026215635438052703,
+          "recall@10": 0.06483924339310468,
+          "ndcg@10": 0.034104708410680334
+        }
+      },
+      "predictions_sha256": "76e399493f23727d6a74ecdb51ccb1c08b9989090655f41eeaa45a87c92b9083"
+    },
+    {
+      "dataset": "Beauty",
+      "seed": 23,
+      "temperature": 0.7,
+      "users": 22363,
+      "metrics": {
+        "code": {
+          "recall@1": 0.011849930689084649,
+          "ndcg@1": 0.011849930689084649,
+          "recall@5": 0.039350713231677326,
+          "ndcg@5": 0.025619512147680743,
+          "recall@10": 0.06153020614407727,
+          "ndcg@10": 0.032710604138887454
+        },
+        "item": {
+          "recall@1": 0.011715780530340295,
+          "ndcg@1": 0.011715780530340295,
+          "recall@5": 0.03912712963377007,
+          "ndcg@5": 0.02545351924409785,
+          "recall@10": 0.06135133926575147,
+          "ndcg@10": 0.03256024968226369
+        }
+      },
+      "predictions_sha256": "a490841f54f2db2e73bd58af93464ac99ba6b5d6242135b353231054a849a54b"
+    },
+    {
+      "dataset": "Beauty",
+      "seed": 23,
+      "temperature": 1.0,
+      "users": 22363,
+      "metrics": {
+        "code": {
+          "recall@1": 0.012431248043643518,
+          "ndcg@1": 0.012431248043643518,
+          "recall@5": 0.04113938201493538,
+          "ndcg@5": 0.02669900303326194,
+          "recall@10": 0.06318472476859098,
+          "ndcg@10": 0.033755325622376584
+        },
+        "item": {
+          "recall@1": 0.012386531324062066,
+          "ndcg@1": 0.012386531324062066,
+          "recall@5": 0.04104994857577248,
+          "ndcg@5": 0.026610099313158473,
+          "recall@10": 0.06305057460984662,
+          "ndcg@10": 0.03364775507489322
+        }
+      },
+      "predictions_sha256": "fa91451d0b2e9bd376e345d762b846210d5131ef2b24ad78fc60e4f5fa1ca8b7"
+    },
+    {
+      "dataset": "Yelp",
+      "seed": 42,
+      "temperature": 0.7,
+      "users": 30431,
+      "metrics": {
+        "code": {
+          "recall@1": 0.008313890440669054,
+          "ndcg@1": 0.008313890440669054,
+          "recall@5": 0.028786434885478624,
+          "ndcg@5": 0.018544731085715565,
+          "recall@10": 0.04587427294535178,
+          "ndcg@10": 0.024039660378566762
+        },
+        "item": {
+          "recall@1": 0.008051000624363314,
+          "ndcg@1": 0.008051000624363314,
+          "recall@5": 0.02625612040353587,
+          "ndcg@5": 0.017195258962308387,
+          "recall@10": 0.041438007295192404,
+          "ndcg@10": 0.022073576377132625
+        }
+      },
+      "predictions_sha256": "c83c3145a33a8b547342d00d1efa1f5f350c36db9b9f2127683ac09dc8da5f73"
+    },
+    {
+      "dataset": "Yelp",
+      "seed": 42,
+      "temperature": 1.0,
+      "users": 30431,
+      "metrics": {
+        "code": {
+          "recall@1": 0.008708225165127665,
+          "ndcg@1": 0.008708225165127665,
+          "recall@5": 0.027504847030988138,
+          "ndcg@5": 0.01793356013310129,
+          "recall@10": 0.042489566560415366,
+          "ndcg@10": 0.022747487828800872
+        },
+        "item": {
+          "recall@1": 0.008478196575860143,
+          "ndcg@1": 0.008478196575860143,
+          "recall@5": 0.02540172850054221,
+          "ndcg@5": 0.016743158674669856,
+          "recall@10": 0.03880910913213499,
+          "ndcg@10": 0.021064092122094515
+        }
+      },
+      "predictions_sha256": "2fab9fc36557a697579ec72ceb63487aaa364cd2243d9dd2823a7ae683752d4b"
+    },
+    {
+      "dataset": "Yelp",
+      "seed": 17,
+      "temperature": 0.7,
+      "users": 30431,
+      "metrics": {
+        "code": {
+          "recall@1": 0.008313890440669054,
+          "ndcg@1": 0.008313890440669054,
+          "recall@5": 0.02730767966875883,
+          "ndcg@5": 0.017848866300578057,
+          "recall@10": 0.04350826459860011,
+          "ndcg@10": 0.0230604256773311
+        },
+        "item": {
+          "recall@1": 0.007985278170286879,
+          "ndcg@1": 0.007985278170286879,
+          "recall@5": 0.0250073937760836,
+          "ndcg@5": 0.016530679574359282,
+          "recall@10": 0.0390062764943643,
+          "ndcg@10": 0.021038670680912763
+        }
+      },
+      "predictions_sha256": "bde304dbd5aef41d12598107abab38ccb5524e99b8a2806420ba5b877ad8d574"
+    },
+    {
+      "dataset": "Yelp",
+      "seed": 17,
+      "temperature": 1.0,
+      "users": 30431,
+      "metrics": {
+        "code": {
+          "recall@1": 0.00920114357070093,
+          "ndcg@1": 0.00920114357070093,
+          "recall@5": 0.026321842857612302,
+          "ndcg@5": 0.017834884198203553,
+          "recall@10": 0.041536590976307054,
+          "ndcg@10": 0.022726992264315946
+        },
+        "item": {
+          "recall@1": 0.008773947619204102,
+          "ndcg@1": 0.008773947619204102,
+          "recall@5": 0.024645920278663205,
+          "ndcg@5": 0.016799972715933316,
+          "recall@10": 0.03805330091025599,
+          "ndcg@10": 0.02109857110455408
+        }
+      },
+      "predictions_sha256": "44b817d5b9d21da1b8b5c0d6faf6e1a9d73f53619792484a88c85919112d3f73"
+    },
+    {
+      "dataset": "Yelp",
+      "seed": 23,
+      "temperature": 0.7,
+      "users": 30431,
+      "metrics": {
+        "code": {
+          "recall@1": 0.008741086392165883,
+          "ndcg@1": 0.008741086392165883,
+          "recall@5": 0.02678190003614735,
+          "ndcg@5": 0.017801309736004856,
+          "recall@10": 0.04317965232821794,
+          "ndcg@10": 0.023089140885525432
+        },
+        "item": {
+          "recall@1": 0.008313890440669054,
+          "ndcg@1": 0.008313890440669054,
+          "recall@5": 0.024251585554204595,
+          "ndcg@5": 0.016368226648456358,
+          "recall@10": 0.03838191318063817,
+          "ndcg@10": 0.020929407691696076
+        }
+      },
+      "predictions_sha256": "0d16a2c325584ee687a3fdee5d7b3f1ff0c3a84eac40b8ad98b8c634e882859c"
+    },
+    {
+      "dataset": "Yelp",
+      "seed": 23,
+      "temperature": 1.0,
+      "users": 30431,
+      "metrics": {
+        "code": {
+          "recall@1": 0.008215306759554402,
+          "ndcg@1": 0.008215306759554402,
+          "recall@5": 0.02678190003614735,
+          "ndcg@5": 0.017682655401034746,
+          "recall@10": 0.04225953797114784,
+          "ndcg@10": 0.022648316263333683
+        },
+        "item": {
+          "recall@1": 0.008018139397325097,
+          "ndcg@1": 0.008018139397325097,
+          "recall@5": 0.024777365186816076,
+          "ndcg@5": 0.01656197193170832,
+          "recall@10": 0.03821760704544708,
+          "ndcg@10": 0.02086636876249611
+        }
+      },
+      "predictions_sha256": "e7b6af7dbc476ee7ac7de167a8eed4e3c053a14ae32b227ac5e6a1c0003b427a"
+    }
+  ],
+  "replay_seed_summary": [
+    {
+      "dataset": "Instruments",
+      "temperature": 0.7,
+      "seeds": [
+        42,
+        17,
+        23
+      ],
+      "metrics": {
+        "code": {
+          "recall@5": {
+            "mean": 0.0883120727703321,
+            "sample_sd": 0.0002563722332103163
+          },
+          "recall@10": {
+            "mean": 0.10904784972280532,
+            "sample_sd": 0.000625814949902226
+          },
+          "ndcg@5": {
+            "mean": 0.07469194068900847,
+            "sample_sd": 0.0004704328062983417
+          },
+          "ndcg@10": {
+            "mean": 0.08135231432225953,
+            "sample_sd": 0.000582599786068675
+          }
+        },
+        "item": {
+          "recall@5": {
+            "mean": 0.08784111093169708,
+            "sample_sd": 0.0003229452607782998
+          },
+          "recall@10": {
+            "mean": 0.10868453630442973,
+            "sample_sd": 0.0005569245407873109
+          },
+          "ndcg@5": {
+            "mean": 0.07397132170211813,
+            "sample_sd": 0.0004686014129422995
+          },
+          "ndcg@10": {
+            "mean": 0.08066719322310663,
+            "sample_sd": 0.0005498728702024115
+          }
+        }
+      }
+    },
+    {
+      "dataset": "Instruments",
+      "temperature": 1.0,
+      "seeds": [
+        42,
+        17,
+        23
+      ],
+      "metrics": {
+        "code": {
+          "recall@5": {
+            "mean": 0.08642822541579202,
+            "sample_sd": 0.0018397430752633403
+          },
+          "recall@10": {
+            "mean": 0.1070563539480058,
+            "sample_sd": 0.002786280304656449
+          },
+          "ndcg@5": {
+            "mean": 0.0739157866917844,
+            "sample_sd": 0.0008162551336630443
+          },
+          "ndcg@10": {
+            "mean": 0.08052510331541987,
+            "sample_sd": 0.0010693155404884447
+          }
+        },
+        "item": {
+          "recall@5": {
+            "mean": 0.08607836804994887,
+            "sample_sd": 0.0017982341564110416
+          },
+          "recall@10": {
+            "mean": 0.10653156789924108,
+            "sample_sd": 0.0026956137614720724
+          },
+          "ndcg@5": {
+            "mean": 0.0732903390642253,
+            "sample_sd": 0.0008067463097521706
+          },
+          "ndcg@10": {
+            "mean": 0.079845990542901,
+            "sample_sd": 0.001022108020682485
+          }
+        }
+      }
+    },
+    {
+      "dataset": "Beauty",
+      "temperature": 0.7,
+      "seeds": [
+        42,
+        17,
+        23
+      ],
+      "metrics": {
+        "code": {
+          "recall@5": {
+            "mean": 0.04118409873451684,
+            "sample_sd": 0.002093105529395598
+          },
+          "recall@10": {
+            "mean": 0.06349774180566113,
+            "sample_sd": 0.001724929707283095
+          },
+          "ndcg@5": {
+            "mean": 0.027080121313939526,
+            "sample_sd": 0.0014623908713023972
+          },
+          "ndcg@10": {
+            "mean": 0.03422709900667684,
+            "sample_sd": 0.0013613329279433023
+          }
+        },
+        "item": {
+          "recall@5": {
+            "mean": 0.04096051513660958,
+            "sample_sd": 0.0021225138463186197
+          },
+          "recall@10": {
+            "mean": 0.0632890637809477,
+            "sample_sd": 0.00170706235623967
+          },
+          "ndcg@5": {
+            "mean": 0.026911657108112275,
+            "sample_sd": 0.0014880206860790378
+          },
+          "ndcg@10": {
+            "mean": 0.034063900176485536,
+            "sample_sd": 0.0013643153938172007
+          }
+        }
+      }
+    },
+    {
+      "dataset": "Beauty",
+      "temperature": 1.0,
+      "seeds": [
+        42,
+        17,
+        23
+      ],
+      "metrics": {
+        "code": {
+          "recall@5": {
+            "mean": 0.04175051051588189,
+            "sample_sd": 0.0013387661100467709
+          },
+          "recall@10": {
+            "mean": 0.06546527746724501,
+            "sample_sd": 0.0022805526986540217
+          },
+          "ndcg@5": {
+            "mean": 0.027195436960169288,
+            "sample_sd": 0.0010244160553269323
+          },
+          "ndcg@10": {
+            "mean": 0.034813991259495934,
+            "sample_sd": 0.001286622713530896
+          }
+        },
+        "item": {
+          "recall@5": {
+            "mean": 0.04137787118603646,
+            "sample_sd": 0.0012403013348068804
+          },
+          "recall@10": {
+            "mean": 0.06509263813739957,
+            "sample_sd": 0.0021798349736611962
+          },
+          "ndcg@5": {
+            "mean": 0.02695571097900173,
+            "sample_sd": 0.0009606966068614966
+          },
+          "ndcg@10": {
+            "mean": 0.03457461921259714,
+            "sample_sd": 0.0012310307720508563
+          }
+        }
+      }
+    },
+    {
+      "dataset": "Yelp",
+      "temperature": 0.7,
+      "seeds": [
+        42,
+        17,
+        23
+      ],
+      "metrics": {
+        "code": {
+          "recall@5": {
+            "mean": 0.027625338196794934,
+            "sample_sd": 0.00103933642092993
+          },
+          "recall@10": {
+            "mean": 0.04418739662405661,
+            "sample_sd": 0.001470088534262876
+          },
+          "ndcg@5": {
+            "mean": 0.018064969040766158,
+            "sample_sd": 0.0004161659783536228
+          },
+          "ndcg@10": {
+            "mean": 0.02339640898047443,
+            "sample_sd": 0.0005572570427156705
+          }
+        },
+        "item": {
+          "recall@5": {
+            "mean": 0.025171699911274686,
+            "sample_sd": 0.0010123178206926729
+          },
+          "recall@10": {
+            "mean": 0.03960873232339829,
+            "sample_sd": 0.0016146648502726613
+          },
+          "ndcg@5": {
+            "mean": 0.01669805506170801,
+            "sample_sd": 0.00043818549424048535
+          },
+          "ndcg@10": {
+            "mean": 0.02134721824991382,
+            "sample_sd": 0.0006314124618153709
+          }
+        }
+      }
+    },
+    {
+      "dataset": "Yelp",
+      "temperature": 1.0,
+      "seeds": [
+        42,
+        17,
+        23
+      ],
+      "metrics": {
+        "code": {
+          "recall@5": {
+            "mean": 0.02686952997491593,
+            "sample_sd": 0.0005963505455540391
+          },
+          "recall@10": {
+            "mean": 0.04209523183595675,
+            "sample_sd": 0.0004972806003884716
+          },
+          "ndcg@5": {
+            "mean": 0.017817033244113198,
+            "sample_sd": 0.00012640129969584298
+          },
+          "ndcg@10": {
+            "mean": 0.0227075987854835,
+            "sample_sd": 5.235293798080124e-05
+          }
+        },
+        "item": {
+          "recall@5": {
+            "mean": 0.024941671322007163,
+            "sample_sd": 0.0004038055183018799
+          },
+          "recall@10": {
+            "mean": 0.03836000569594602,
+            "sample_sd": 0.0003975167277145901
+          },
+          "ndcg@5": {
+            "mean": 0.016701701107437163,
+            "sample_sd": 0.00012429859505870596
+          },
+          "ndcg@10": {
+            "mean": 0.021009677329714902,
+            "sample_sd": 0.0001253004754044805
+          }
+        }
+      }
+    }
+  ],
+  "conventional_cells": [
+    {
+      "dataset": "Instruments",
+      "model": "bpr",
+      "seed": 42,
+      "users": 24772,
+      "metrics": {
+        "recall@5": 0.054093331180364926,
+        "recall@10": 0.07678023575004037,
+        "ndcg@5": 0.034285629356785224,
+        "ndcg@10": 0.04161308402029507
+      },
+      "predictions_sha256": "d5146c93bc7bfefbf0c9ff7cd4973dfb2ce2512d1c17fd2657971c4a2f8aff29",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Instruments",
+      "model": "lightgcn",
+      "seed": 42,
+      "users": 24772,
+      "metrics": {
+        "recall@5": 0.061319231390279345,
+        "recall@10": 0.08622638462780559,
+        "ndcg@5": 0.03717303255573354,
+        "ndcg@10": 0.045179904202015224
+      },
+      "predictions_sha256": "c4ef5777c94564fbc03cd698a108d10c3c86e54751e884473296f92d906a787f",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Instruments",
+      "model": "sasrec",
+      "seed": 42,
+      "users": 24772,
+      "metrics": {
+        "recall@5": 0.061359599547876634,
+        "recall@10": 0.08287582754723075,
+        "ndcg@5": 0.03338353982387113,
+        "ndcg@10": 0.04029186286360033
+      },
+      "predictions_sha256": "7cc036e35756e83f56dad00a94e9b08b28a86ec2091bfdba3590a742d09405c5",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Instruments",
+      "model": "hgn",
+      "seed": 42,
+      "users": 24772,
+      "metrics": {
+        "recall@5": 0.08150331018892298,
+        "recall@10": 0.10350395607944453,
+        "ndcg@5": 0.06769349806461898,
+        "ndcg@10": 0.0747377500534042
+      },
+      "predictions_sha256": "41be4507ef756c50699f90dfbcb7d0bb261edfe29356360a3175a74430b9ee67",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Instruments",
+      "model": "caser",
+      "seed": 42,
+      "users": 24772,
+      "metrics": {
+        "recall@5": 0.05231713224608429,
+        "recall@10": 0.07072501211044728,
+        "ndcg@5": 0.034709786901150286,
+        "ndcg@10": 0.04063876854525091
+      },
+      "predictions_sha256": "f03d6eae68e8926ec34e4234f77e8229e5780bd3312b86a0cf50b7a4b7789639",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Instruments",
+      "model": "bert4rec",
+      "seed": 42,
+      "users": 24772,
+      "metrics": {
+        "recall@5": 0.07383336024543839,
+        "recall@10": 0.0918779266914258,
+        "ndcg@5": 0.06140298417347763,
+        "ndcg@10": 0.06720175823349642
+      },
+      "predictions_sha256": "72007369c8ac802130fd64fb127ce2a8a15a4773e2ee8150a42dbc39cbda2f58",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Beauty",
+      "model": "bpr",
+      "seed": 42,
+      "users": 22363,
+      "metrics": {
+        "recall@5": 0.014577650583553191,
+        "recall@10": 0.028976434288780575,
+        "ndcg@5": 0.00795710480372921,
+        "ndcg@10": 0.0125827999040491
+      },
+      "predictions_sha256": "56230ade9b5778a639486f67679f9c92426aeb6a5229440ca0b094de80776e02",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Beauty",
+      "model": "lightgcn",
+      "seed": 42,
+      "users": 22363,
+      "metrics": {
+        "recall@5": 0.0177972543934177,
+        "recall@10": 0.03465545767562492,
+        "ndcg@5": 0.010089503594821166,
+        "ndcg@10": 0.0155093521126468
+      },
+      "predictions_sha256": "30fbb802c8b89fbe474e9e31d66a27bd4466da7571c12cf8173b066fb958eac4",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Beauty",
+      "model": "sasrec",
+      "seed": 42,
+      "users": 22363,
+      "metrics": {
+        "recall@5": 0.02316326074319188,
+        "recall@10": 0.04337521799400796,
+        "ndcg@5": 0.012753515009302503,
+        "ndcg@10": 0.019251358283852524
+      },
+      "predictions_sha256": "b19685e044bbfd5fffea03665dbf4a128942a78968542dbff7a54ba8b7c21900",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Beauty",
+      "model": "hgn",
+      "seed": 42,
+      "users": 22363,
+      "metrics": {
+        "recall@5": 0.03474489111478782,
+        "recall@10": 0.05902606984751599,
+        "ndcg@5": 0.021858534269535393,
+        "ndcg@10": 0.029655083405196223
+      },
+      "predictions_sha256": "ad32b6fa0265b1d9d879a3b5ccbeb80eead646bf3f6810cfa1f301d74d523739",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Beauty",
+      "model": "caser",
+      "seed": 42,
+      "users": 22363,
+      "metrics": {
+        "recall@5": 0.022045342753655592,
+        "recall@10": 0.03662299333720878,
+        "ndcg@5": 0.013177469750967357,
+        "ndcg@10": 0.017854802252363754
+      },
+      "predictions_sha256": "0007f744a8e30b089c70d6f033951b60b2478dcae58018cea091e9fc99636b5b",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Beauty",
+      "model": "bert4rec",
+      "seed": 42,
+      "users": 22363,
+      "metrics": {
+        "recall@5": 0.03335867280776282,
+        "recall@10": 0.05258686222778697,
+        "ndcg@5": 0.022168136455412036,
+        "ndcg@10": 0.02832674674829078
+      },
+      "predictions_sha256": "91400a918db17c5631274554692ef1acce31bd3835f323441d9ee28ff10db163",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Yelp",
+      "model": "bpr",
+      "seed": 42,
+      "users": 30431,
+      "metrics": {
+        "recall@5": 0.04186520324668923,
+        "recall@10": 0.06207485787519306,
+        "ndcg@5": 0.028045011635548768,
+        "ndcg@10": 0.034537283862732165
+      },
+      "predictions_sha256": "652a7f0e5d31def0664eee43d699d76c36d69038383aae780f17787200553991",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Yelp",
+      "model": "lightgcn",
+      "seed": 42,
+      "users": 30431,
+      "metrics": {
+        "recall@5": 0.0447898524530906,
+        "recall@10": 0.06529525812493839,
+        "ndcg@5": 0.029044708053128893,
+        "ndcg@10": 0.035641147189130945
+      },
+      "predictions_sha256": "9175929f7f883c857ad3453ad6b9beba6fdb1f3d0dba70072cd038e8dcb643f3",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Yelp",
+      "model": "sasrec",
+      "seed": 42,
+      "users": 30431,
+      "metrics": {
+        "recall@5": 0.02513883868423647,
+        "recall@10": 0.03880910913213499,
+        "ndcg@5": 0.01783760084203148,
+        "ndcg@10": 0.0222296966876527
+      },
+      "predictions_sha256": "3eb85b7283ba226a8053401b04bc32e002ba9f00bc717266d208c9fb321fe5a3",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Yelp",
+      "model": "hgn",
+      "seed": 42,
+      "users": 30431,
+      "metrics": {
+        "recall@5": 0.03680457428280372,
+        "recall@10": 0.055831224737931714,
+        "ndcg@5": 0.02548551512614419,
+        "ndcg@10": 0.0316336985270452
+      },
+      "predictions_sha256": "bfb930892821d91850a2966b191fb42626a7aa9d191d7e650264bae317e6031e",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Yelp",
+      "model": "caser",
+      "seed": 42,
+      "users": 30431,
+      "metrics": {
+        "recall@5": 0.01564194407019158,
+        "recall@10": 0.028096349117676053,
+        "ndcg@5": 0.009595631632509531,
+        "ndcg@10": 0.013607081498906147
+      },
+      "predictions_sha256": "cd6a488cc5c60faba04482252898d2b5b8ec3c1070430bc8f1a7bf07730bd5d5",
+      "durable_completion_ack_verified": true
+    },
+    {
+      "dataset": "Yelp",
+      "model": "bert4rec",
+      "seed": 42,
+      "users": 30431,
+      "metrics": {
+        "recall@5": 0.021031185304459268,
+        "recall@10": 0.036278794650192236,
+        "ndcg@5": 0.01287709720639646,
+        "ndcg@10": 0.017738254770130274
+      },
+      "predictions_sha256": "bdec855f64eb53d678d3061f601c4e6f3fcdc9abd8bf490bdd546f6d191c4b09",
+      "durable_completion_ack_verified": true
+    }
+  ],
+  "caveats": [
+    "Replays use author-released IDs, not retrained tokenizers.",
+    "Conventional references use declared reconstructed settings, not recovered paper recipes.",
+    "Code metrics and original-item diagnostics are different ranking identities.",
+    "Three-seed means and sample SD are descriptive, not significance or equivalence claims.",
+    "This check recomputes all saved predictions; it does not repeat every durable model byte check."
+  ]
+}

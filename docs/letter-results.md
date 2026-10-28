@@ -1,8 +1,57 @@
 # LETTER reproduction: measured results
 
-_2026-10-28. Verified seed42 temperature pairs for Instruments and Beauty; the broader reproduction is still running._
+_2026-10-28, 12:31 PDT. The 18-cell released-ID matrix and 18 conventional reference cells are complete; end-to-end reconstruction remains unfinished._
 
 ---
+
+## 📊 Concise completed-results matrix
+
+Every cell below is **Recall@10 / NDCG@10**. Released-ID T5 rows are means
+over seeds42,17,23; conventional references use seed42 and explicitly
+reconstructed settings, not recovered LETTER baseline recipes. Every saved
+prediction in all36 cells was rechecked against the original held-out
+targets and complete user coverage. Exact per-seed values, sample standard
+deviations and prediction hashes are in the
+[verified aggregate matrix](../results/2026-10-28-letter/status-matrix-20261028-1231.json).
+
+| Method and metric identity | Instruments | Beauty | Yelp |
+| --- | ---: | ---: | ---: |
+| Paper LETTER-TIGER, code reference[^1] | 0.11220 / 0.08310 | 0.06720 / 0.03640 | 0.04260 / 0.02310 |
+| Released-ID T5, temperature0.7, code | 0.10905 / 0.08135 | 0.06350 / 0.03423 | 0.04419 / 0.02340 |
+| Released-ID T5, temperature1.0, code | 0.10706 / 0.08053 | 0.06547 / 0.03481 | 0.04210 / 0.02271 |
+| Released-ID T5, temperature0.7, item diagnostic | 0.10868 / 0.08067 | 0.06329 / 0.03406 | 0.03961 / 0.02135 |
+| Released-ID T5, temperature1.0, item diagnostic | 0.10653 / 0.07985 | 0.06509 / 0.03457 | 0.03836 / 0.02101 |
+| BPR-MF, item | 0.07678 / 0.04161 | 0.02898 / 0.01258 | 0.06207 / 0.03454 |
+| LightGCN, item | 0.08623 / 0.04518 | 0.03466 / 0.01551 | 0.06530 / 0.03564 |
+| SASRec-BCE, item | 0.08288 / 0.04029 | 0.04338 / 0.01925 | 0.03881 / 0.02223 |
+| HGN-CE, item | 0.10350 / 0.07474 | 0.05903 / 0.02966 | 0.05583 / 0.03163 |
+| Caser, item | 0.07073 / 0.04064 | 0.03662 / 0.01785 | 0.02810 / 0.01361 |
+| BERT4Rec, item | 0.09188 / 0.06720 | 0.05259 / 0.02833 | 0.03628 / 0.01774 |
+
+Lower temperature improves the three-seed mean on Instruments and Yelp,
+but reduces it on Beauty. Three seeds do not establish statistical
+significance or a universal benefit. Yelp is especially sensitive to
+identity: the temperature0.7 Recall@10 mean is0.04419 by code but0.03961
+under the declared original-item collision diagnostic. Several conventional
+references outperform that diagnostic on Yelp; this does not reproduce a
+universal LETTER advantage. Compare item metrics with item metrics, not
+with the paper's code-string matching.
+
+All three auditable CF teachers and all three compatible-backbone semantic
+embedding banks are complete and durably acknowledged. **No fresh tokenizer
+fit or LC-Rec fit has completed.** The full native LC corpus audit admits
+Instruments and Yelp but rejects Beauty's untouched auxiliary-task corpus:
+168 prompt variants exceed2048 tokens,91 have no supervised response after
+masking, and841 have prompt/full token-prefix mismatches. These are
+prompt-variant counts, not unique users. Empty auxiliary targets are
+also retained in the failure evidence. No silent filtering or recipe
+change has been used to bypass this gate.
+
+The original LLaMA1 track remains blocked on model access. The OpenLLaMA
+track is a separately named compatible-method replication; these semantic
+features were not used to obtain the released-ID scores above. The remainder
+of this report preserves the initial single-seed findings and their
+conditional paired-user intervals.
 
 ## 📊 Instruments released-ID replay
 
@@ -139,9 +188,11 @@ latency/QPS measurements or a hardware comparison with the paper.
 ## 📋 Remaining coverage
 
 The same-ID, temperature-one control is a separate ordinary-CE comparison;
-it must not be relabeled the semantic-only TIGER baseline. The complete
-Yelp pair, seed replications, full tokenizer reconstruction, LC-Rec, and
-the other paper baselines/analyses are not established by these cells.
+it must not be relabeled the semantic-only TIGER baseline. The released-ID
+matrix, its predeclared seeds and six conventional references now have
+completed results. Full tokenizer reconstruction, LC-Rec, remaining
+generative baselines and the paper's mechanism/ablation analyses are not
+established by these cells.
 
 Three train-only BCE SASRec teachers have been completed and durably banked
 for the reconstruction phase. Original LLaMA1-7B access is still required
