@@ -33,9 +33,10 @@ but reduces it on Beauty. Three seeds do not establish statistical
 significance or a universal benefit. Yelp is especially sensitive to
 identity: the temperature0.7 Recall@10 mean is0.04419 by code but0.03961
 under the declared original-item collision diagnostic. Several conventional
-references outperform that diagnostic on Yelp; this does not reproduce a
-universal LETTER advantage. Compare item metrics with item metrics, not
-with the paper's code-string matching.
+references outperform that diagnostic on Yelp under these reconstructed
+settings. The paper's central claim of improving a generative backbone
+still requires our fresh-ID, same-backbone comparisons. Compare item
+metrics with item metrics, not with the paper's code-string matching.
 
 All three auditable CF teachers and all three compatible-backbone semantic
 embedding banks are complete and durably acknowledged. **No fresh tokenizer
@@ -181,6 +182,20 @@ Consequently, close agreement with the code metric does not establish
 equivalent original-item ranking. The two definitions remain separate,
 especially for Yelp, whose released IDs have substantially more collisions.
 See the [source/data study](letter-study.md) for that audit.
+
+The completed alternative semantic banks provide a further
+[input-ambiguity check](../results/2026-10-28-letter/semantic-input-ambiguity-v1.json).
+Bitwise-identical semantic vectors occur for48 Instruments items,15 Beauty
+items and1,247 Yelp items; their duplicate groups contain122,32 and1,306
+test targets respectively. A deterministic item-wise encoder cannot
+recover missing identity from identical inputs. This does not imply that
+every learned collision is unavoidable or that batch-coupled Sinkhorn
+assignment is item-wise.
+
+Title-only methods face greater Yelp ambiguity:6,127 catalog items share
+titles, affecting8,508 test targets, and the largest title group contains149
+items. Title-string hits must therefore remain separate from original-item
+grounding; a title-to-last-ID dictionary is not valid ground truth.
 
 The observed trainer invocation took about 55.2 minutes on two A100 80GB GPUs;
 the evaluation loop took about 27.4 minutes on one GPU. These timings exclude

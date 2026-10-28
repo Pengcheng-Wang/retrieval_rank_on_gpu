@@ -1,0 +1,104 @@
+{
+  "status": "complete",
+  "kind": "input_identity_ambiguity_audit",
+  "scope": "Released metadata and completed compatible OpenLLaMA7B-v2 semantic inputs, not trained tokenizer results",
+  "datasets": {
+    "Instruments": {
+      "items": 9922,
+      "exact_raw_titles": {
+        "unique_values": 9888,
+        "duplicate_groups": 31,
+        "items_in_duplicate_groups": 65,
+        "excess_items": 34,
+        "largest_group": 3,
+        "test_users_with_ambiguous_target": 178
+      },
+      "ordered_cleaned_title_description": {
+        "unique_values": 9897,
+        "duplicate_groups": 23,
+        "items_in_duplicate_groups": 48,
+        "excess_items": 25,
+        "largest_group": 3,
+        "test_users_with_ambiguous_target": 122
+      },
+      "bitwise_identical_semantic_vectors": {
+        "unique_values": 9897,
+        "duplicate_groups": 23,
+        "items_in_duplicate_groups": 48,
+        "excess_items": 25,
+        "largest_group": 3,
+        "test_users_with_ambiguous_target": 122
+      },
+      "empty_raw_titles": 0,
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "revision": "e5961def23172a2384543940e773ab676033c963",
+      "semantic_sha256": "430bcca5fe448d9ab016685747516969262ae121deaec1606988836c3b8d4933",
+      "item_metadata_sha256": "1d9938e576a8d964e6b977a2b63aa56402840a788eaa6685f26f0d910a7133f2"
+    },
+    "Beauty": {
+      "items": 12101,
+      "exact_raw_titles": {
+        "unique_values": 12073,
+        "duplicate_groups": 27,
+        "items_in_duplicate_groups": 55,
+        "excess_items": 28,
+        "largest_group": 3,
+        "test_users_with_ambiguous_target": 173
+      },
+      "ordered_cleaned_title_description": {
+        "unique_values": 12093,
+        "duplicate_groups": 7,
+        "items_in_duplicate_groups": 15,
+        "excess_items": 8,
+        "largest_group": 3,
+        "test_users_with_ambiguous_target": 32
+      },
+      "bitwise_identical_semantic_vectors": {
+        "unique_values": 12093,
+        "duplicate_groups": 7,
+        "items_in_duplicate_groups": 15,
+        "excess_items": 8,
+        "largest_group": 3,
+        "test_users_with_ambiguous_target": 32
+      },
+      "empty_raw_titles": 0,
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "revision": "e5961def23172a2384543940e773ab676033c963",
+      "semantic_sha256": "60b858e5817c99e1fdc52a78a3b7f5a69b3daa94a9cce81e4978f36c2791a0c0",
+      "item_metadata_sha256": "74aeddf911548aadfcd1dab326c16678ed4ac74457e874da300d63a94bdb2330"
+    },
+    "Yelp": {
+      "items": 20033,
+      "exact_raw_titles": {
+        "unique_values": 15340,
+        "duplicate_groups": 1434,
+        "items_in_duplicate_groups": 6127,
+        "excess_items": 4693,
+        "largest_group": 149,
+        "test_users_with_ambiguous_target": 8508
+      },
+      "ordered_cleaned_title_description": {
+        "unique_values": 19201,
+        "duplicate_groups": 415,
+        "items_in_duplicate_groups": 1247,
+        "excess_items": 832,
+        "largest_group": 65,
+        "test_users_with_ambiguous_target": 1306
+      },
+      "bitwise_identical_semantic_vectors": {
+        "unique_values": 19201,
+        "duplicate_groups": 415,
+        "items_in_duplicate_groups": 1247,
+        "excess_items": 832,
+        "largest_group": 65,
+        "test_users_with_ambiguous_target": 1306
+      },
+      "empty_raw_titles": 0,
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "revision": "e5961def23172a2384543940e773ab676033c963",
+      "semantic_sha256": "662eb444a07b4575a6a0cdecca38a0432477ef924b0ea3458f3790df058b3fa4",
+      "item_metadata_sha256": "8f58a9d54111fc10ccd675f99e6f2afe988cd0ee70b40f1e37d04f9aea764c2d"
+    }
+  },
+  "interpretation": "Identical semantic input vectors create intrinsic ambiguity for a deterministic item-wise encoder/nearest-code assignment. Collaborative targets alone do not supply missing item identity to that encoder at inference. This is not a claim that every exported code collision is unavoidable, or that batch-coupled Sinkhorn assignment is item-wise."
+}
