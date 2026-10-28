@@ -8,7 +8,7 @@
 
 **Tech stack:** Author PyTorch implementations of RQ-VAE, T5 and LLaMA1-7B/LoRA; author-named BCE SASRec; isolated Linux/CUDA environment; Azure ML interactive-job transport; JSON manifests and per-user result records.
 
-**Status:** Study, source inspection and full released-JSON audit are complete. GPU execution awaits the user's AML handoff. No environment image, training runner, compatibility patch or trained checkpoint is claimed to exist yet.
+**Status:** This is the original execution plan, with operational amendments noted below. Resources were supplied on 2026-10-28. See the [execution notes](../../letter-execution.md) for implemented/verified surfaces and geometry amendments; current jobs and progress are tracked only in ignored local files. Full paper reproduction is not yet complete.
 
 ---
 

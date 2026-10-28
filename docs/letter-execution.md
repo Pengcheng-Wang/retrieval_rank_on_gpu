@@ -14,10 +14,11 @@ pinned external source. Original orchestration adds complete input audits,
 explicit runtime/configuration receipts, checkpoint continuation and
 all-user evaluation; it does not vendor the unlicensed LETTER release.
 
-The implemented paths are released-ID **TIGER replay** and a separate
-**training-only BCE SASRec teacher reconstruction**. LC-Rec, fresh semantic
-encoding and tokenizer retraining are not represented as implemented or
-completed. LLaMA1-7B-dependent stages require an authorized original
+The implemented paths are released-ID **TIGER replay**, a separate
+**training-only BCE SASRec teacher reconstruction**, and the tokenizer's
+audited training/resume/export lifecycle. Real-data tokenizer retraining,
+LC-Rec and fresh semantic encoding are not represented as completed.
+LLaMA1-7B-dependent stages require an authorized original
 checkpoint; a publicly downloadable mirror does not establish access rights.
 The mirror's card explicitly requires prior access from Meta.[^1]
 
@@ -81,12 +82,30 @@ Early-stopping patience is saved with each sealed checkpoint and restored.
 | Instruments, 2 workers x 256 | 258 | 2 | Integral |
 | Beauty, 2 workers x 256 | 257 | 2 | Rejected |
 | Yelp, 2 workers x 256 | 440 | 2 | Integral |
-| Beauty, 4 workers x 256 | 129 | 1 | Candidate disclosed alternative |
+| Beauty, 4 workers x 256 | 129 | 1 | Not admitted under the bitwise continuation gate |
+| Beauty, 2 workers x 512 | 129 | 1 | Admitted after full-data trace/state checks |
 
-The Beauty alternative preserves **nominal effective batch 1,024**, not the
-old training trajectory. Its distributed tail padding and optimizer-step
-count differ. It must be a new, labeled configuration, not continuation of
-a two-worker checkpoint. Do not silently adopt it during a run.
+Beauty uses two workers with microbatch 512 and accumulation one. This
+preserves **nominal effective batch 1,024** and worker count, not the old
+microbatch trajectory. Its epoch padding changes from 171 to 683 repeated
+examples and its 200-epoch update budget from 25,600 to 25,800. It is a new,
+labeled configuration, never continuation of a 256-microbatch checkpoint.
+
+The four-worker candidate had up to `2.384185791015625e-7` final-weight
+differences after continuation. A fresh uninterrupted repeat was bitwise
+identical, and RNG states agreed across the interrupted comparison. Reduction
+ordering is a possible explanation, not an established root cause. Rather
+than relax the gate after observing that discrepancy, the two-worker
+alternative was checked on the full Beauty fitting data at interruptions
+64, 129 and 130: ordered actual input/label tensors, model/optimizer/scheduler,
+both ranks' RNG, validation sequence and callback state matched exactly.
+
+The six declared released-ID cells are frozen in
+[`letter-released-id-execution-v1.json`](../configs/letter-released-id-execution-v1.json).
+Temperatures 0.7 and 1.0 are compared for each dataset at LR `5e-4`; Beauty
+and Yelp use these prespecified transfer settings, not falsely claimed
+recovered best author hyperparameters. The temperature-one arm is **not**
+the semantic-only TIGER baseline because it uses the same full LETTER IDs.
 
 GPU regression checks include interruption at the first-epoch middle, an
 epoch boundary and a later-epoch middle. Model/optimizer/scheduler and both
@@ -107,6 +126,9 @@ preferable to silently changing example order.
 | `evaluate.py` | Saved tokenizer/model identity, fixed 20 beams, full-prefix trie, every user once, per-user codes/scores and separate original-item diagnostics |
 | `cf.py` | Author-named BCE SASRec model, training-only sequences, explicit padding-row mapping, validation-only checkpoint selection and complete teacher state |
 | `bank.py` / `bank_watch.py` | Independent local checkpoint snapshots, checksum verification, immutable durable artifacts and one designated writer/lock |
+| `bank_remote.py` | Worker-local snapshots, explicit node-to-node copies, writer-only Gen2 exports and checksum-bound worker acknowledgments |
+| `tokenizer_run.py` | Verified author RQ-VAE/trainer, minimal parameter plumbing, initialization-aware resume and native collision-resolution export |
+| `trace_train.py` | Gate-only ordered input/label tensor hashes; not enabled for ordinary benchmark fits |
 
 All three released T5 datasets have passed complete sequence/token audits.
 This certifies **that path**, not LLaMA prompt tokenization. The primary metric
@@ -155,6 +177,37 @@ CUDA_VISIBLE_DEVICES=0 bash scripts/letter/env.sh \
 This passed on the isolated GPU runtime, but it does not certify the full
 LLaMA1-7B memory footprint, prompt corpus, ZeRO-2 execution or recommendation
 quality.
+
+## 🔬 Tokenizer lifecycle gates
+
+The adapter verifies each author source file before making a private copy.
+Only codebook-size initialization, dynamic diversity-label enumeration and
+fail-fast handling of nonfinite Sinkhorn outputs are patched. The original
+RQ-VAE losses and straight-through gradient routing remain unchanged.
+Default initialization, losses, indices and parameter gradients matched the
+unmodified source on GPU; CF gradients reach the encoder indirectly and do
+not directly differentiate through codebook assignments.
+
+The original training/evaluation epoch methods are reused. The adapter
+records the source method's returned quantization loss as **last-batch** loss,
+not an invented epoch average. Full epoch checkpoints include initialization
+flags, optimizer and Python/NumPy/CPU/CUDA RNG states. Continuation skips
+initialization, so trained centroids are not overwritten. Source DataLoader
+workers are set to zero as an explicit operational choice.
+
+On a 512-row **synthetic fixture**, interrupted and uninterrupted three-epoch
+runs produced bitwise-equal state and identical exported IDs after the
+authors' collision postprocessing. An additional actual eight-level run
+with 128 codes/level and 20 diversity clusters emitted eight-token IDs,
+confirming that requested structure reaches the model and exporter rather
+than being silently truncated by `zip` or a six-prefix list.
+
+Those are correctness gates, **not paper measurements**. Real execution
+requires a complete original-encoder embedding receipt with model/tokenizer
+hashes, full token-audit status, metadata hash, row order and embedding hash.
+CF inputs must match either the exact released Instruments tensor or a
+completed, dataset-bound teacher reconstruction. No alternative encoder
+or synthetic matrix may silently enter a paper run.
 
 ## 💾 Operations and persistence
 

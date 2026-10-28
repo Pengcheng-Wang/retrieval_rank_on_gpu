@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "declared_on": "2026-10-28",
+  "phase": "released_id_replay_and_matched_temperature_control",
+  "input_protocol": "letter-reproduction-v1.json",
+  "training_harness_commit": "405095d",
+  "index_bank": "author_released_index.json",
+  "seed": 42,
+  "temperatures": [0.7, 1.0],
+  "learning_rate": 0.0005,
+  "epochs_max": 200,
+  "early_stopping_patience": 20,
+  "checkpoint_metric": "eval_loss_within_each_run",
+  "effective_batch": 1024,
+  "precision": "float32",
+  "datasets": {
+    "Instruments": {"world_size": 2, "per_device_batch_size": 256, "gradient_accumulation_steps": 2, "microbatches_per_worker_epoch": 258},
+    "Beauty": {"world_size": 2, "per_device_batch_size": 512, "gradient_accumulation_steps": 1, "microbatches_per_worker_epoch": 129},
+    "Yelp": {"world_size": 2, "per_device_batch_size": 256, "gradient_accumulation_steps": 2, "microbatches_per_worker_epoch": 440}
+  },
+  "interpretation": {
+    "temperature_1_control": "Ordinary-CE control on exactly the same released full-LETTER ID bank; not the semantic-only TIGER baseline.",
+    "instruments": "Temperature 0.7 is the author-confirmed starting point.",
+    "beauty_and_yelp": "Transfer of the prespecified 0.7/1.0 endpoints; complete best TIGER settings for these datasets were not recovered.",
+    "beauty_geometry_amendment": "Retain two workers but use per-device batch512 and accumulation1 to avoid the legacy nonintegral accumulation epoch. Nominal batch1024 is preserved, but tail padding changes from171 to683 repeated examples and nominal 200-epoch updates from25600 to25800. This is not an exact replay of the original microbatch schedule.",
+    "beauty_admission_evidence": "Four-worker continuation had up to2.384185791015625e-7 weight drift despite identical RNG and a bitwise-identical fresh repeat; it was not admitted under the strict gate. The chosen two-worker512 geometry passed full-data interruptions64/129/130 with identical actual input/label traces, model, optimizer, scheduler, RNG, validation sequence and callback state.",
+    "selection": "Freeze each within-run selected checkpoint, report both temperatures; never choose the better temperature by test score or compare their validation-loss magnitudes.",
+    "future_tuning": "Any further search is separately versioned and selected only by validation ranking metrics."
+  },
+  "evaluation": {
+    "beams": 20,
+    "all_users_once": true,
+    "seen_item_exclusion": false,
+    "primary_identity": "semantic_code",
+    "secondary_identity": "original_item_with_predeclared_target_independent_ties"
+  }
+}

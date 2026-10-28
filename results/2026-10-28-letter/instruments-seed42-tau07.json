@@ -1,0 +1,73 @@
+{
+  "status": "verified_single_cell",
+  "study_status": "partial",
+  "dataset": "Instruments",
+  "method": "LETTER-TIGER with author-released semantic IDs",
+  "scope": "Downstream released-ID replay, not an end-to-end tokenizer reconstruction",
+  "seed": 42,
+  "temperature": 0.7,
+  "learning_rate": 0.0005,
+  "world_size": 2,
+  "per_device_batch_size": 256,
+  "gradient_accumulation_steps": 2,
+  "selected_epoch": 72,
+  "stopped_epoch": 92,
+  "global_step": 11868,
+  "checkpoint_selection": "minimum validation loss; patience20",
+  "test_users": 24772,
+  "target_users_in_semantic_id_collision_groups": 122,
+  "num_beams": 20,
+  "all_users_once": true,
+  "seen_item_exclusion": false,
+  "code_metrics": {
+    "recall@1": 0.06160180849346036,
+    "ndcg@1": 0.06160180849346036,
+    "recall@5": 0.08860810592604554,
+    "ndcg@5": 0.07523511120640715,
+    "recall@10": 0.10976102050702406,
+    "ndcg@10": 0.08202366366819253
+  },
+  "original_item_diagnostic": {
+    "tie_rule": "Preserve code rank; expand each code to ascending original item IDs; deduplicate items and truncate to K.",
+    "recall@1": 0.06039076376554174,
+    "ndcg@1": 0.06039076376554174,
+    "recall@5": 0.08816405619247537,
+    "ndcg@5": 0.07450901581681187,
+    "recall@10": 0.1093169707734539,
+    "ndcg@10": 0.08130122017353231
+  },
+  "paper_reference_not_measured_here": {
+    "source": "https://arxiv.org/html/2405.07314v3#S4.T1",
+    "row": "LETTER-TIGER / Instruments",
+    "recall@5": 0.0909,
+    "recall@10": 0.1122,
+    "ndcg@5": 0.0763,
+    "ndcg@10": 0.0831
+  },
+  "timing_scope": {
+    "trainer_invocation_seconds": 3311.6141691440134,
+    "evaluation_loop_seconds": 1644.6618009799859,
+    "excludes_environment_setup_and_input_audit": true,
+    "hardware": "NVIDIA A100 80GB",
+    "training_gpus": 2,
+    "evaluation_gpus": 1
+  },
+  "provenance": {
+    "author_commit": "8d0154e28de37dbb6e24871c508ad8ddb1921cda",
+    "training_and_native_evaluation_harness_commit": "405095d",
+    "model_sha256": "a3363d902050163e89a21f693b7f26ba1719761e7adda07a6684e6875a7bdec8",
+    "predictions_sha256": "349b65aeb4e93a73550cccf4c722df2ca1fa86440db02a67f878506d00987758",
+    "interactions_sha256": "0a11d47791d90483005da93c36d826679e20e4592d1d2b86518d5f56f218e743",
+    "item_metadata_sha256": "1d9938e576a8d964e6b977a2b63aa56402840a788eaa6685f26f0d910a7133f2",
+    "released_ids_sha256": "33c87e28c52ae367985bdf494cb49d676d181e13a39497b4ad035f46111546dd",
+    "independent_metric_audit": "Recomputed all per-user code/item ranks from predictions and original held-out targets; verified coverage, finite sorted scores, 20 distinct valid codes per user and identical aggregates.",
+    "durability": "Selected model and complete per-user predictions verified in the designated private durable store."
+  },
+  "limitations": [
+    "Single training seed; no cross-seed robustness or statistical equivalence claim.",
+    "Uses author-trained IDs with incomplete upstream tokenizer-training provenance.",
+    "The ordinary-CE control and other datasets are separate cells, not implied by this result.",
+    "Original-item diagnostics use a declared arbitrary tie rule, not a trained collision reranker.",
+    "The full paper reproduction remains incomplete."
+  ]
+}
