@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "track_id": "letter-openllama7b-v2-method-replication",
+  "claim": "Compatible-backbone tokenizer reconstruction, not original-LLaMA1 paper reproduction",
+  "method_spec": "letter-openllama-v2-method-v1.json",
+  "seed": 42,
+  "epochs": 20000,
+  "batch_size": 1024,
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "levels": 4,
+  "codes_per_level": 256,
+  "dimension": 32,
+  "clusters": 10,
+  "eval_step": 2000,
+  "checkpoint_every": 100,
+  "selection": "First minimum collision rate at scheduled evaluations; no downstream test selection",
+  "variants": {
+    "semantic": {"alpha": 0.0, "beta": 0.0},
+    "cf": {"alpha": 0.02, "beta": 0.0},
+    "diversity": {"alpha": 0.0, "beta": 0.0001},
+    "full": {"alpha": 0.02, "beta": 0.0001}
+  },
+  "datasets": {
+    "Instruments": ["semantic", "cf", "diversity", "full"],
+    "Beauty": ["semantic", "cf", "diversity", "full"],
+    "Yelp": ["semantic", "full"]
+  },
+  "declarations": [
+    "Use the authors' RQ model, initialization, objectives and epoch routines with already documented parameter-wiring fixes.",
+    "All semantic banks use the separately licensed OpenLLaMA-7B-v2 encoder; all CF banks use audited train-only 32D BCE teachers.",
+    "Alpha/beta and other numerical values are the author-confirmed Instruments starting point, transferred without test tuning to Beauty/Yelp; they are not recovered per-dataset original tokenizer recipes.",
+    "Twenty thousand means epochs, not optimizer updates. A full Instruments catalog probe measured approximately 3.9 seconds per epoch before concurrent-load effects and scheduled collision evaluation.",
+    "Bitwise full-catalog Instruments continuation after epoch3 was verified against a fresh uninterrupted epoch4 across model, optimizer, initialization flags and RNG state.",
+    "Codebooks and exported four-token IDs remain distinct per variant. No fifth uniqueness token or substitution of the released author IDs is permitted."
+  ]
+}

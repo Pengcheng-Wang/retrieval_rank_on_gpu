@@ -260,6 +260,34 @@ cross-track receipts and incomplete token audits are rejected, and this
 variant requires the auditable train-only CF teacher rather than an
 unprovenanceable released teacher tensor.
 
+### Full-catalog tokenizer execution
+
+The [frozen reconstruction matrix](../configs/letter-tokenizer-reconstruction-v1.json)
+contains ten real fits: semantic-only, collaborative-only, diversity-only
+and full-regularizer variants for Instruments and Beauty; semantic-only
+and full variants for Yelp. All preserve **20,000 epochs**, not steps.
+The author-confirmed Instruments regularization settings are explicitly
+transferred to the other datasets without test tuning, not presented as
+recovered per-dataset original recipes.
+
+A full 9,922-item Instruments run was interrupted after epoch3 and
+resumed in a new process. Its epoch4 model, optimizer, all RNG state,
+initialization flags and selection state were bitwise identical to a
+fresh uninterrupted run. Initial real per-epoch measurements were roughly
+3.9seconds for Instruments,4.6seconds for Beauty and7.5seconds for Yelp
+under the observed concurrent load. Thus the declared epoch budgets are
+approximately22,26 and42hours before initialization, scheduled evaluation
+and interruption overhead; these are estimates, not completed runtimes.
+
+`bank_tokenizers.py` exports immutable bundles containing both the latest
+and selected earlier checkpoint, the exact configuration and complete
+optimizer/RNG state. Worker-local snapshots are transferred to the sole
+writer before shared-storage access. A bundle completion marker is not
+a training-completion claim: resumable files live in `payload/`, and
+only a final-phase bundle plus its checksum-bound acknowledgment admits
+the exported IDs to downstream training. Original native source and
+losses remain unchanged by this persistence adapter.
+
 ## 💾 Operations and persistence
 
 Allocation binding, SSH transport, process identities, node/GPU assignments,
