@@ -288,6 +288,49 @@ only a final-phase bundle plus its checksum-bound acknowledgment admits
 the exported IDs to downstream training. Original native source and
 losses remain unchanged by this persistence adapter.
 
+### Code-distribution and collaborative-transfer analyses
+
+`scripts/letter/mechanisms.py` prepares the paper's distribution and
+collaborative-signal diagnostics, but rejects an unfinished tokenizer:
+both the selected state and the actual sealed20,000-epoch state are
+required. No result from a synthetic fixture or intermediate checkpoint
+is presented as a completed mechanism experiment.
+
+The first-level assignment counts retain unused codes, sort by frequency
+with ascending-code tie breaks, and group15 codes at a time, as described
+for Figure6. PCA centers the first codebook and retains three components
+without spherical rescaling; explained variance and the sign convention
+are saved, rather than claiming to recover unspecified plot preprocessing.[^4]
+
+For Table4-style analysis, the declared primary neighbor is the most
+cosine-similar **non-self** CF item; the primary overlap is the fraction
+of matching level-qualified tokens. Dot-product neighbors, token-set
+Jaccard and common-prefix overlap are sensitivity diagnostics, not
+alternatives selected for proximity to the paper's numbers. The paper
+does not fully specify the similarity normalization or overlap formula.[^4]
+
+The optional CF-transfer experiment sums codebook rows selected by the
+final exported identifiers in native residual order and replaces only
+the real item rows of the frozen32D SASRec teacher. It leaves padding,
+other learned parameters and vector scale unchanged; it does not refit.
+Evaluation retains all original users, full real-item candidates and
+repeat targets, saves per-user top10 outputs, and breaks exact ties by
+original item ID. This is a declared reconstruction with our auditable
+teacher, not the separate50D Table1 SASRec reference or a recovery of
+unreleased author analysis code.
+
+The real native SASRec identity-swap gate covered100 training histories
+and the full9,922-item catalog: replacing its item rows with its own
+exported CF bank preserved scores bitwise and left padding unchanged.
+Sequential NumPy residual sums also matched Torch float32 addition.
+These certify the analysis path, not a Table3 recommendation result.
+The harness-written teacher checkpoint contains floating validation
+metadata unsupported by Torch1.13's restricted pickle reader; its
+dedicated loader verifies the owned checkpoint hash before using the
+ordinary checkpoint reader, then checks the loaded schema. This is not a fallback for
+downloaded backbone weights, which retain their separate patched-reader
+and safetensors contract.
+
 ## 💾 Operations and persistence
 
 Allocation binding, SSH transport, process identities, node/GPU assignments,
@@ -319,3 +362,4 @@ private execution record rather than disappearing from the final analysis.
 [^1]: HuggyLLaMA LLaMA1-7B model card and license at the inspected revision. https://huggingface.co/huggyllama/llama-7b/blob/4782ad278652c7c71b72204d462d6d01eaaf7549/README.md
 [^2]: Transformers 4.31.0 Trainer resume arithmetic and epoch replay. https://github.com/huggingface/transformers/blob/v4.31.0/src/transformers/trainer.py#L1703-L1758 ; Accelerate 0.21.0 sampler preparation: https://github.com/huggingface/accelerate/blob/v0.21.0/src/accelerate/data_loader.py#L737-L746 ; PyTorch 1.13.1 RandomSampler: https://github.com/pytorch/pytorch/blob/v1.13.1/torch/utils/data/sampler.py#L117-L133
 [^3]: Pinned OpenLLaMA-7B-v2 model card, architecture/tokenizer guidance and checkpoint license. https://huggingface.co/openlm-research/open_llama_7b_v2/blob/e5961def23172a2384543940e773ab676033c963/README.md ; publisher license: https://raw.githubusercontent.com/openlm-research/open_llama/6e7f73eab7e799e2464f38ed977e537bae02873e/LICENSE
+[^4]: LETTER code distributions, PCA visualization and collaborative-signal experiments, Sections4.3.2-4.3.4. https://arxiv.org/html/2405.07314v3#S4.SS3.SSS2 ; https://arxiv.org/html/2405.07314v3#S4.SS3.SSS3 ; https://arxiv.org/html/2405.07314v3#S4.SS3.SSS4

@@ -45,7 +45,9 @@ Instruments and Yelp but rejects Beauty's untouched auxiliary-task corpus:
 masking, and841 have prompt/full token-prefix mismatches. These are
 prompt-variant counts, not unique users. Empty auxiliary targets are
 also retained in the failure evidence. No silent filtering or recipe
-change has been used to bypass this gate.
+change has been used to bypass this gate. The complete aggregate
+[LC corpus audit](../results/2026-10-28-letter/lc-corpus-audit-openllama-released-id.json)
+preserves every task group, length distribution and failure count.
 
 The original LLaMA1 track remains blocked on model access. The OpenLLaMA
 track is a separately named compatible-method replication; these semantic

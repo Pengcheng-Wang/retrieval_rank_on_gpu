@@ -1,0 +1,863 @@
+{
+  "status": "complete_read_only_corpus_audits",
+  "not_a_model_training_result": true,
+  "exact_original_llama1_reproduction": false,
+  "datasets": [
+    {
+      "dataset": "Instruments",
+      "claim": "RELEASED-ID COMPATIBILITY/BRINGUP HYBRID",
+      "admission": "PASS",
+      "probe": false,
+      "generation_finish_reason": "N/A (static author-rendered targets; no generation)",
+      "totals": {
+        "status": "pass",
+        "expected": 2687125,
+        "total": 2687125,
+        "strict_clean": 2687125,
+        "missing_or_extra_records": 0,
+        "over_cap": 0,
+        "defects": {},
+        "diagnostics": {
+          "prefix_common_tokens": 227503617,
+          "prompt_unk_tokens": 0,
+          "full_unk_tokens": 0,
+          "target_unk_tokens": 0,
+          "prompt_bos_tokens": 2687125,
+          "full_bos_tokens": 2687125,
+          "target_bos_tokens": 0,
+          "prompt_eos_tokens": 0,
+          "full_eos_tokens": 2687125,
+          "target_eos_tokens": 2687125,
+          "full_tokens_beyond_cap": 0,
+          "contextual_target_tokens_beyond_cap": 0,
+          "native_algorithm_parity": 2662353,
+          "intended_labels_parity": 2662353,
+          "native_supervised_tokens": 13311765,
+          "native_supervised_eos_tokens": 2662353,
+          "response_trigger_checks": 2687125,
+          "native_test_parity": 24772
+        },
+        "length_tokens": {
+          "prompt": {
+            "p50": 76.0,
+            "p90": 126.0,
+            "p99": 162.0,
+            "max": 167
+          },
+          "full": {
+            "p50": 81.0,
+            "p90": 131.0,
+            "p99": 167.0,
+            "max": 172
+          },
+          "target": {
+            "p50": 5.0,
+            "p90": 5.0,
+            "p99": 5.0,
+            "max": 5
+          },
+          "contextual_target": {
+            "p50": 5.0,
+            "p90": 5.0,
+            "p99": 5.0,
+            "max": 5
+          }
+        }
+      },
+      "groups": {
+        "train/seqrec": {
+          "status": "pass",
+          "expected": 2241229,
+          "total": 2241229,
+          "strict_clean": 2241229,
+          "over_cap": 0,
+          "defects": {},
+          "length_tokens": {
+            "prompt": {
+              "p50": 75.0,
+              "p90": 128.0,
+              "p99": 164.0,
+              "max": 167
+            },
+            "full": {
+              "p50": 80.0,
+              "p90": 133.0,
+              "p99": 169.0,
+              "max": 172
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 131837,
+          "prompt_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "expected_variants": 2241229,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        },
+        "valid/seqrec": {
+          "status": "pass",
+          "expected": 421124,
+          "total": 421124,
+          "strict_clean": 421124,
+          "over_cap": 0,
+          "defects": {},
+          "length_tokens": {
+            "prompt": {
+              "p50": 81.0,
+              "p90": 115.0,
+              "p99": 161.0,
+              "max": 167
+            },
+            "full": {
+              "p50": 86.0,
+              "p90": 120.0,
+              "p99": 166.0,
+              "max": 172
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 24772,
+          "prompt_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "expected_variants": 421124,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        },
+        "test/seqrec": {
+          "status": "pass",
+          "expected": 24772,
+          "total": 24772,
+          "strict_clean": 24772,
+          "over_cap": 0,
+          "defects": {},
+          "length_tokens": {
+            "prompt": {
+              "p50": 81.0,
+              "p90": 116.0,
+              "p99": 156.0,
+              "max": 156
+            },
+            "full": {
+              "p50": 86.0,
+              "p90": 121.0,
+              "p99": 161.0,
+              "max": 161
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 24772,
+          "prompt_ids": [
+            0
+          ],
+          "expected_variants": 24772,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        }
+      },
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "model_revision": "e5961def23172a2384543940e773ab676033c963",
+      "tokenizer_vocab_sha256": "548fc1fd386065c2eb864ec9fbcf1653f357ffb9f38549c35a2391600990ba90",
+      "corpus_sha256": {
+        "inter": "0a11d47791d90483005da93c36d826679e20e4592d1d2b86518d5f56f218e743",
+        "item": "1d9938e576a8d964e6b977a2b63aa56402840a788eaa6685f26f0d910a7133f2",
+        "index": "33c87e28c52ae367985bdf494cb49d676d181e13a39497b4ad035f46111546dd"
+      },
+      "source_sha256": {
+        "data.py": "cfd7733325670792c0da32393752c49116cd2b0ce097ffd629cda1c224bddecc",
+        "collator.py": "e1ec6dec9aadf3c123ea45656fe2c58dc102ac075ca78bf9dff7df47cb5c29b8",
+        "utils.py": "8c1139a496cd74479e862472a57dd5c5eccb3870e17fb64b2f4d02063fd252e5",
+        "modeling_letter.py": "c4798e82bfd0c5a16acebb551e08d0e421765d028981288ee6680cdc7f49c9fc",
+        "prompt.py": "2415f1a2bece1fd27f961efd5beb3a52e0e997ba39c1f3825fec1292bf84f7d7"
+      },
+      "audit_sha256": "ec8cb052d1a137e514c5554b3a4ed7843860d800700a7562e2c442b0b21aee71",
+      "all_fingerprints_reverified": true,
+      "durability": "complete unchanged native audit and diagnostics verified in the designated private store"
+    },
+    {
+      "dataset": "Beauty",
+      "claim": "RELEASED-ID COMPATIBILITY/BRINGUP HYBRID",
+      "admission": "FAIL",
+      "probe": false,
+      "generation_finish_reason": "N/A (static author-rendered targets; no generation)",
+      "totals": {
+        "status": "fail",
+        "expected": 3072191,
+        "total": 3072191,
+        "strict_clean": 3063119,
+        "missing_or_extra_records": 0,
+        "over_cap": 168,
+        "defects": {
+          "all_masked": 91,
+          "eos_lost": 168,
+          "full_over_cap": 168,
+          "incomplete_code": 91,
+          "intended_labels_mismatch": 1003,
+          "prompt_over_cap": 91,
+          "response_trigger_lost_to_truncation": 91,
+          "empty_response": 4404,
+          "empty_response_field": 8074,
+          "prefix_mismatch": 841,
+          "target_over_cap": 77
+        },
+        "diagnostics": {
+          "prefix_common_tokens": 277331699,
+          "prompt_unk_tokens": 0,
+          "full_unk_tokens": 0,
+          "target_unk_tokens": 0,
+          "prompt_bos_tokens": 3072191,
+          "full_bos_tokens": 3072191,
+          "target_bos_tokens": 0,
+          "prompt_eos_tokens": 0,
+          "full_eos_tokens": 3072191,
+          "target_eos_tokens": 3072191,
+          "full_tokens_beyond_cap": 193464,
+          "contextual_target_tokens_beyond_cap": 88876,
+          "native_algorithm_parity": 3049828,
+          "intended_labels_parity": 3048825,
+          "native_supervised_tokens": 31997225,
+          "native_supervised_eos_tokens": 3049660,
+          "response_trigger_checks": 3072191,
+          "native_test_parity": 22363
+        },
+        "length_tokens": {
+          "prompt": {
+            "p50": 77.0,
+            "p90": 150.0,
+            "p99": 223.0,
+            "max": 6950
+          },
+          "full": {
+            "p50": 84.0,
+            "p90": 157.0,
+            "p99": 312.0,
+            "max": 6955
+          },
+          "target": {
+            "p50": 5.0,
+            "p90": 5.0,
+            "p99": 155.0,
+            "max": 6895
+          },
+          "contextual_target": {
+            "p50": 5.0,
+            "p90": 5.0,
+            "p99": 155.0,
+            "max": 6895
+          }
+        }
+      },
+      "groups": {
+        "train/item2index": {
+          "status": "fail",
+          "expected": 229919,
+          "total": 229919,
+          "strict_clean": 229828,
+          "over_cap": 91,
+          "defects": {
+            "all_masked": 91,
+            "eos_lost": 91,
+            "full_over_cap": 91,
+            "incomplete_code": 91,
+            "intended_labels_mismatch": 91,
+            "prompt_over_cap": 91,
+            "response_trigger_lost_to_truncation": 91
+          },
+          "length_tokens": {
+            "prompt": {
+              "p50": 97.0,
+              "p90": 262.0,
+              "p99": 552.0,
+              "max": 6950
+            },
+            "full": {
+              "p50": 102.0,
+              "p90": 267.0,
+              "p99": 557.0,
+              "max": 6955
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 12101,
+          "prompt_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "expected_variants": 229919,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        },
+        "train/index2item": {
+          "status": "fail",
+          "expected": 205717,
+          "total": 205717,
+          "strict_clean": 196736,
+          "over_cap": 77,
+          "defects": {
+            "empty_response": 4404,
+            "empty_response_field": 8074,
+            "intended_labels_mismatch": 912,
+            "prefix_mismatch": 841,
+            "eos_lost": 77,
+            "full_over_cap": 77,
+            "target_over_cap": 77
+          },
+          "length_tokens": {
+            "prompt": {
+              "p50": 45.0,
+              "p90": 54.0,
+              "p99": 56.0,
+              "max": 56
+            },
+            "full": {
+              "p50": 90.0,
+              "p90": 251.0,
+              "p99": 544.0,
+              "max": 6951
+            },
+            "target": {
+              "p50": 43.0,
+              "p90": 203.0,
+              "p99": 495.0,
+              "max": 6895
+            },
+            "contextual_target": {
+              "p50": 44.0,
+              "p90": 203.0,
+              "p99": 495.0,
+              "max": 6895
+            }
+          },
+          "base_records": 12101,
+          "prompt_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "expected_variants": 205717,
+          "target_kind": "text",
+          "coverage_status": "pass"
+        },
+        "train/seqrec": {
+          "status": "pass",
+          "expected": 2234021,
+          "total": 2234021,
+          "strict_clean": 2234021,
+          "over_cap": 0,
+          "defects": {},
+          "length_tokens": {
+            "prompt": {
+              "p50": 77.0,
+              "p90": 150.0,
+              "p99": 164.0,
+              "max": 167
+            },
+            "full": {
+              "p50": 82.0,
+              "p90": 155.0,
+              "p99": 169.0,
+              "max": 172
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 131413,
+          "prompt_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "expected_variants": 2234021,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        },
+        "valid/seqrec": {
+          "status": "pass",
+          "expected": 380171,
+          "total": 380171,
+          "strict_clean": 380171,
+          "over_cap": 0,
+          "defects": {},
+          "length_tokens": {
+            "prompt": {
+              "p50": 81.0,
+              "p90": 119.0,
+              "p99": 162.0,
+              "max": 167
+            },
+            "full": {
+              "p50": 86.0,
+              "p90": 124.0,
+              "p99": 167.0,
+              "max": 172
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 22363,
+          "prompt_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "expected_variants": 380171,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        },
+        "test/seqrec": {
+          "status": "pass",
+          "expected": 22363,
+          "total": 22363,
+          "strict_clean": 22363,
+          "over_cap": 0,
+          "defects": {},
+          "length_tokens": {
+            "prompt": {
+              "p50": 81.0,
+              "p90": 121.0,
+              "p99": 156.0,
+              "max": 156
+            },
+            "full": {
+              "p50": 86.0,
+              "p90": 126.0,
+              "p99": 161.0,
+              "max": 161
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 22363,
+          "prompt_ids": [
+            0
+          ],
+          "expected_variants": 22363,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        }
+      },
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "model_revision": "e5961def23172a2384543940e773ab676033c963",
+      "tokenizer_vocab_sha256": "44427b1321e0dcd5f240b2e129e7ed056de4111e97a0284de702fd08de64c375",
+      "corpus_sha256": {
+        "inter": "8809584b8b78fa6561771c88911ed65bd716fc9926fca1e581e6a1ab578ccfd5",
+        "item": "74aeddf911548aadfcd1dab326c16678ed4ac74457e874da300d63a94bdb2330",
+        "index": "be3fb890e59b5443824cdebc560ef349191b97f20d3aecad4727de2d6b212c82"
+      },
+      "source_sha256": {
+        "data.py": "cfd7733325670792c0da32393752c49116cd2b0ce097ffd629cda1c224bddecc",
+        "collator.py": "e1ec6dec9aadf3c123ea45656fe2c58dc102ac075ca78bf9dff7df47cb5c29b8",
+        "utils.py": "8c1139a496cd74479e862472a57dd5c5eccb3870e17fb64b2f4d02063fd252e5",
+        "modeling_letter.py": "c4798e82bfd0c5a16acebb551e08d0e421765d028981288ee6680cdc7f49c9fc",
+        "prompt.py": "2415f1a2bece1fd27f961efd5beb3a52e0e997ba39c1f3825fec1292bf84f7d7"
+      },
+      "audit_sha256": "16c5cdb3976d6f469d7e16687438409e6c16588cbc502ae6f61dbe964bc00b78",
+      "all_fingerprints_reverified": true,
+      "durability": "complete unchanged native audit and diagnostics verified in the designated private store"
+    },
+    {
+      "dataset": "Yelp",
+      "claim": "RELEASED-ID COMPATIBILITY/BRINGUP HYBRID",
+      "admission": "PASS",
+      "probe": false,
+      "generation_finish_reason": "N/A (static author-rendered targets; no generation)",
+      "totals": {
+        "status": "pass",
+        "expected": 4373795,
+        "total": 4373795,
+        "strict_clean": 4373795,
+        "missing_or_extra_records": 0,
+        "over_cap": 0,
+        "defects": {},
+        "diagnostics": {
+          "prefix_common_tokens": 420836501,
+          "prompt_unk_tokens": 0,
+          "full_unk_tokens": 0,
+          "target_unk_tokens": 0,
+          "prompt_bos_tokens": 4373795,
+          "full_bos_tokens": 4373795,
+          "target_bos_tokens": 0,
+          "prompt_eos_tokens": 0,
+          "full_eos_tokens": 4373795,
+          "target_eos_tokens": 4373795,
+          "full_tokens_beyond_cap": 0,
+          "contextual_target_tokens_beyond_cap": 0,
+          "native_algorithm_parity": 4343364,
+          "intended_labels_parity": 4343364,
+          "native_supervised_tokens": 21716820,
+          "native_supervised_eos_tokens": 4343364,
+          "response_trigger_checks": 4373795,
+          "native_test_parity": 30431
+        },
+        "length_tokens": {
+          "prompt": {
+            "p50": 84.0,
+            "p90": 153.0,
+            "p99": 164.0,
+            "max": 167
+          },
+          "full": {
+            "p50": 89.0,
+            "p90": 158.0,
+            "p99": 169.0,
+            "max": 172
+          },
+          "target": {
+            "p50": 5.0,
+            "p90": 5.0,
+            "p99": 5.0,
+            "max": 5
+          },
+          "contextual_target": {
+            "p50": 5.0,
+            "p90": 5.0,
+            "p99": 5.0,
+            "max": 5
+          }
+        }
+      },
+      "groups": {
+        "train/seqrec": {
+          "status": "pass",
+          "expected": 3826037,
+          "total": 3826037,
+          "strict_clean": 3826037,
+          "over_cap": 0,
+          "defects": {},
+          "length_tokens": {
+            "prompt": {
+              "p50": 84.0,
+              "p90": 154.0,
+              "p99": 164.0,
+              "max": 167
+            },
+            "full": {
+              "p50": 89.0,
+              "p90": 159.0,
+              "p99": 169.0,
+              "max": 172
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 225061,
+          "prompt_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "expected_variants": 3826037,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        },
+        "valid/seqrec": {
+          "status": "pass",
+          "expected": 517327,
+          "total": 517327,
+          "strict_clean": 517327,
+          "over_cap": 0,
+          "defects": {},
+          "length_tokens": {
+            "prompt": {
+              "p50": 82.0,
+              "p90": 141.0,
+              "p99": 164.0,
+              "max": 167
+            },
+            "full": {
+              "p50": 87.0,
+              "p90": 146.0,
+              "p99": 169.0,
+              "max": 172
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 30431,
+          "prompt_ids": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "expected_variants": 517327,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        },
+        "test/seqrec": {
+          "status": "pass",
+          "expected": 30431,
+          "total": 30431,
+          "strict_clean": 30431,
+          "over_cap": 0,
+          "defects": {},
+          "length_tokens": {
+            "prompt": {
+              "p50": 86.0,
+              "p90": 146.0,
+              "p99": 156.0,
+              "max": 156
+            },
+            "full": {
+              "p50": 91.0,
+              "p90": 151.0,
+              "p99": 161.0,
+              "max": 161
+            },
+            "target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            },
+            "contextual_target": {
+              "p50": 5.0,
+              "p90": 5.0,
+              "p99": 5.0,
+              "max": 5
+            }
+          },
+          "base_records": 30431,
+          "prompt_ids": [
+            0
+          ],
+          "expected_variants": 30431,
+          "target_kind": "four-token SID plus EOS",
+          "coverage_status": "pass"
+        }
+      },
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "model_revision": "e5961def23172a2384543940e773ab676033c963",
+      "tokenizer_vocab_sha256": "bcae13439c8a6c310c473e5ae1b14d10ad065fa888b64a249bb7e1796e547710",
+      "corpus_sha256": {
+        "inter": "22069fef8afd1d53fe9e0aaa385a6c93f7b43e43574fb10f5f5155fa2c869a97",
+        "item": "8f58a9d54111fc10ccd675f99e6f2afe988cd0ee70b40f1e37d04f9aea764c2d",
+        "index": "7468278b33ae2174c0d230d5e49d0c93e1dedd9cdc8c5f58c983574c14a62b2b"
+      },
+      "source_sha256": {
+        "data.py": "cfd7733325670792c0da32393752c49116cd2b0ce097ffd629cda1c224bddecc",
+        "collator.py": "e1ec6dec9aadf3c123ea45656fe2c58dc102ac075ca78bf9dff7df47cb5c29b8",
+        "utils.py": "8c1139a496cd74479e862472a57dd5c5eccb3870e17fb64b2f4d02063fd252e5",
+        "modeling_letter.py": "c4798e82bfd0c5a16acebb551e08d0e421765d028981288ee6680cdc7f49c9fc",
+        "prompt.py": "2415f1a2bece1fd27f961efd5beb3a52e0e997ba39c1f3825fec1292bf84f7d7"
+      },
+      "audit_sha256": "bead8ff156dd8d8adffb8d7902dbf58287c1c608d7b5a66a6bcae4f702691b02",
+      "all_fingerprints_reverified": true,
+      "durability": "complete unchanged native audit and diagnostics verified in the designated private store"
+    }
+  ],
+  "note": "Counts enumerate every possible native training/validation prompt variant, not unique users. FAIL is retained; no rows were filtered or truncated by this audit."
+}
