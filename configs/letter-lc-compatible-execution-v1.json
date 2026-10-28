@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "claim": "released-ID compatible-backbone hybrid",
+  "exact_original_llama1_reproduction": false,
+  "fresh_compatible_tokenizer_reconstruction": false,
+  "method_spec": "letter-openllama-v2-method-v1.json",
+  "input_protocol": "letter-reproduction-v1.json",
+  "admitted_dataset": "Instruments",
+  "other_datasets": {
+    "Beauty": "Blocked: complete native corpus FAIL; no filtering or correction authorized.",
+    "Yelp": "Corpus PASS, but native 1759 microbatches / accumulation2 is not exact-resume safe. Separate geometry gate required."
+  },
+  "attention": "eager",
+  "optimizer_sharding": "none",
+  "optimizer_deviation": "Explicit unsharded native AdamW on four A10080GB devices instead of the native launcher ZeRO2 configuration. Not an exact hardware/parallelism reproduction.",
+  "gradient_checkpointing": true,
+  "trainable_parameters": "All seven native LoRA projections plus modules_to_save.default embedding/head; original_module copies frozen.",
+  "continuation": {
+    "require_real7b_gate": true,
+    "comparison": "bitwise, with no relaxed tolerance",
+    "bounded_gate_rows": 100,
+    "prepared_loader_epoch_integral": true,
+    "native_stochastic_prompts": "All 17 unchanged native templates remain possible.",
+    "loader_amendment": "Zero-worker non-prefetch DataLoaderShard; first resumed prompt collation receives saved Python/NumPy RNG before Trainer restores Torch/CUDA RNG. Process-local only, native sampler and existing guarded epoch replay retained.",
+    "ddp_resume_bucket_priming": "A resume-only native backward primes and rebuilds DDP's initial oversized reduction bucket without an optimizer update, parameter change, or RNG advance. This restores the uninterrupted reduction order.",
+    "deterministic_torch_algorithms": true,
+    "checkpoint_content": "Adapter including saved modules, optimizer, scheduler, all-rank RNG, sampler generators, ordered-input traces and validation callback state.",
+    "save_interval_updates": 50,
+    "save_first_update": true,
+    "save_every_full_epoch": true
+  },
+  "selection": "Complete four-epoch budget; minimum native validation loss, earliest tie; held-out test untouched until immutable selection and durable bank acknowledgment.",
+  "author_position_sets_primary": true,
+  "evaluation": {
+    "policies": ["author-position-sets", "full-prefix-trie-correction"],
+    "precision": "Native BF16 base/saved embedding-head with FP32 LoRA under PEFT0.4, unmerged; not the int8 training copy.",
+    "beams": 20,
+    "max_new_tokens": 5,
+    "all_users": true,
+    "drop_last": false,
+    "seen_item_exclusion": false,
+    "adaptive_beams": false,
+    "scores": "Raw finite sequence scores retained; no invalid-code filtering.",
+    "native_duplicates": "Preserve the released LC metric behavior: no code deduplication.",
+    "item_diagnostic": "Stable distinct-code order; ascending original item IDs inside each collision group.",
+    "one_evaluation_per_frozen_checkpoint_policy": true
+  },
+  "persistence": "Worker saves independent immutable scratch snapshots. Node zero alone pulls, serializes durable writes under the common bank lock, verifies every hash, and returns a model/config/seal-bound acknowledgment before training proceeds beyond each save."
+}
