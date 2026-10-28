@@ -91,6 +91,26 @@ def fresh_output_directory(
     return displaced
 
 
+def encoder_track(receipt: dict, method_spec: Path | None) -> str:
+    if method_spec is None:
+        if (receipt.get("encoder") != "LLaMA1-7B"
+                or receipt.get("track_id") not in (None, "letter-original-llama1")
+                or receipt.get("exact_original_llama1_reproduction", True) is not True):
+            raise ValueError("The original-encoder gate cannot admit an alternative backbone")
+        return "letter-original-llama1"
+    from download_openllama import MODEL_ID, REVISION, validate_track
+
+    spec = json.loads(method_spec.read_text(encoding="utf-8"))
+    validate_track(spec)
+    if (receipt.get("encoder") != "OpenLLaMA-7B-v2" or receipt.get("track_id") != spec["track_id"]
+            or receipt.get("model_id") != MODEL_ID or receipt.get("revision") != REVISION
+            or receipt.get("exact_original_llama1_reproduction") is not False
+            or receipt.get("smoke") is not False
+            or receipt.get("method_spec_sha256") != file_sha256(method_spec)):
+        raise ValueError("Alternative encoder receipt does not match the explicitly declared method track")
+    return spec["track_id"]
+
+
 def verify_real_inputs(args, semantic: np.ndarray) -> str:
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
     reference = manifest["datasets"][args.dataset]
@@ -98,18 +118,26 @@ def verify_real_inputs(args, semantic: np.ndarray) -> str:
         require_hash(args.upstream / "data" / args.dataset / f"{args.dataset}.{kind}.json",
                      reference["sha256"][kind])
     receipt = json.loads(args.embedding_receipt.read_text(encoding="utf-8"))
-    if (receipt.get("status") != "pass" or receipt.get("encoder") != "LLaMA1-7B"
+    method_spec = getattr(args, "method_spec", None)
+    encoder_track(receipt, method_spec)
+    if (receipt.get("status") != "pass"
             or receipt.get("item_order") != "row_equals_zero_based_item_id"
             or semantic.shape != (reference["items"], 4096)
             or receipt.get("item_json_sha256") != reference["sha256"]["item"]
             or not receipt.get("model_files_sha256") or not receipt.get("tokenizer_files_sha256")
             or receipt.get("token_audit", {}).get("status") != "pass"):
-        raise ValueError("A complete original-encoder embedding/row-order audit is required")
+        raise ValueError("A complete declared-encoder embedding/row-order audit is required")
+    if method_spec is not None:
+        audit = receipt["token_audit"]
+        if (audit.get("records") != 2 * reference["items"]
+                or audit.get("strict_clean") != audit["records"] or audit.get("over_cap") != 0):
+            raise ValueError("The compatible encoder requires an all-field, no-truncation audit")
+        require_hash(args.embedding_receipt.parent / "run-config.json", receipt["run_config_sha256"])
     require_hash(args.semantic, receipt["embeddings_sha256"])
     if receipt["shape"] != list(semantic.shape) or receipt["dataset"] != args.dataset:
         raise ValueError("Embedding audit dataset/shape mismatch")
     cf_hash = file_sha256(args.cf)
-    if (args.dataset == "Instruments"
+    if (method_spec is None and args.dataset == "Instruments"
             and cf_hash == manifest["sources"]["letter"]["released_instruments_cf_sha256"]):
         return "author_released_item_tensor_training_provenance_unavailable"
     teacher_receipt = json.loads((args.cf.parent / "completed.json").read_text(encoding="utf-8"))
@@ -293,11 +321,21 @@ def train(args) -> None:
     validate_embeddings(semantic, collaborative, args.dimension)
     validate_spec(args.codes, args.epsilons, args.clusters, args.dimension, len(semantic))
     cf_provenance = "synthetic_fixture" if args.synthetic else verify_real_inputs(args, semantic)
+    method_spec = getattr(args, "method_spec", None)
+    if args.synthetic and method_spec is not None:
+        raise ValueError("Synthetic fixtures must not be labeled as a real backbone-method track")
     model_type, trainer_type, dataset_type, source_receipts = load_author(
         args.upstream, args.output / "author-rq",
     )
     spec = {
         "dataset": args.dataset, "synthetic_fixture": args.synthetic, "seed": args.seed,
+        "track_id": ("synthetic_fixture" if args.synthetic else
+                     encoder_track(json.loads(args.embedding_receipt.read_text()), method_spec)),
+        "method_spec_sha256": file_sha256(method_spec) if method_spec is not None else None,
+        "embedding_receipt_sha256": file_sha256(args.embedding_receipt) if not args.synthetic else None,
+        "claim_type": ("synthetic_correctness_fixture" if args.synthetic else
+                       "compatible_backbone_method_replication" if method_spec is not None else
+                       "original_encoder_tokenizer_reconstruction"),
         "cf_provenance": cf_provenance,
         "semantic_sha256": file_sha256(args.semantic), "cf_sha256": file_sha256(args.cf),
         "semantic_shape": list(semantic.shape), "cf_shape": list(collaborative.shape),
@@ -377,6 +415,7 @@ def train(args) -> None:
     export = export_indices(model, dataset, args.clusters, args.output / "export", args.seed, recovery_root)
     write_json(args.output / "completed.json", {
         "status": "complete", "synthetic_fixture": args.synthetic,
+        "track_id": spec["track_id"], "claim_type": spec["claim_type"],
         "selected_epoch": selected_state["epoch"] + 1, "selected_checkpoint": selected,
         "export": export, "wall_seconds_this_invocation": time.monotonic() - started,
         "run_config_sha256": file_sha256(args.output / "run-config.json"),
@@ -390,6 +429,7 @@ def main() -> None:
     parser.add_argument("--dataset", required=True)
     parser.add_argument("--embedding-receipt", type=Path)
     parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--method-spec", type=Path)
     parser.add_argument("--synthetic", action="store_true")
     parser.add_argument("--codes", nargs="+", type=int, default=[256] * 4)
     parser.add_argument("--epsilons", nargs="+", type=float, default=[0, 0, 0, 0.003])

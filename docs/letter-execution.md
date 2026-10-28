@@ -202,12 +202,63 @@ with 128 codes/level and 20 diversity clusters emitted eight-token IDs,
 confirming that requested structure reaches the model and exporter rather
 than being silently truncated by `zip` or a six-prefix list.
 
-Those are correctness gates, **not paper measurements**. Real execution
+Those are correctness gates, **not paper measurements**. The original track
 requires a complete original-encoder embedding receipt with model/tokenizer
 hashes, full token-audit status, metadata hash, row order and embedding hash.
 CF inputs must match either the exact released Instruments tensor or a
 completed, dataset-bound teacher reconstruction. No alternative encoder
 or synthetic matrix may silently enter a paper run.
+
+## 🔬 Explicit compatible-backbone track
+
+Original LLaMA1 access is still unconfirmed. The separately declared
+[OpenLLaMA method track](../configs/letter-openllama-v2-method-v1.json)
+uses `openlm-research/open_llama_7b_v2` at
+`e5961def23172a2384543940e773ab676033c963`, whose publisher explicitly
+licenses the checkpoint under Apache-2.0.[^3] This is an architectural
+substitution, **not original-LLaMA1 numerical reproduction**. Changing both
+the semantic encoder and eventual generator constitutes two coupled
+substitutions; it must remain distinct from the released-ID replays.
+
+The download helper verifies the pinned asset inventory, Git/LFS hashes,
+architecture and tokenizer bytes. Downloaded pickle tensors are read only
+with `weights_only=True` in a separate patched Torch2.13 process, never
+the legacy training interpreter. Safetensors conversion checks every
+tensor's shape, dtype and bytes; the original training environment is
+unchanged. The slow tokenizer is explicitly selected with `legacy=True`,
+as required by the publisher's tokenizer guidance.[^3]
+
+`scripts/letter/encode.py` calls the authors' unchanged
+`generate_text` and `generate_item_embedding` functions. It retains
+batch1, float32, separate masked field means, their equal average and no
+additional normalization. Every cleaned field was tokenized without
+truncation before GPU encoding:
+
+| Dataset | Fields audited | Token p50 / p90 / p99 / max | Over 2048 | Emptied by native cleaner |
+| --- | ---: | --- | ---: | ---: |
+| Instruments | 19,844 | 29 / 198 / 437 / 1,464 | 0 | 0 |
+| Beauty | 24,202 | 28 / 149 / 410 / 713 | 0 | 85 |
+| Yelp | 40,066 | 9 / 23 / 39 / 78 | 0 | 0 |
+
+The real 7B encoder produced finite `100 x 4096` float32 smoke banks for
+all three datasets. An interrupted, chunk-resumed Instruments bank was
+**byte-identical** to an independent unchunked call to the original
+encoder routine on the same first100 items. These are encoding/parity
+gates, not recommendation-quality results or real LC-Rec training gates.
+
+Full encoding uses immutable item-range chunks with data/model/recipe
+checksums and serialized durable export. The initial synchronous exporter
+left its GPU waiting on the shared storage lock, so the same unchanged
+encoder now runs independently per dataset and `bank_semantics.py` exports
+sealed chunks asynchronously through the same single writer. A final
+checksum-bound acknowledgment, not merely completed local computation,
+establishes durable completion. No pooling, dtype or tokenization changed.
+The compatible track must be
+explicitly supplied to `tokenizer_run.py --method-spec`; without it, an
+alternative encoder is rejected by the original gate. Smoke banks,
+cross-track receipts and incomplete token audits are rejected, and this
+variant requires the auditable train-only CF teacher rather than an
+unprovenanceable released teacher tensor.
 
 ## 💾 Operations and persistence
 
@@ -239,3 +290,4 @@ private execution record rather than disappearing from the final analysis.
 
 [^1]: HuggyLLaMA LLaMA1-7B model card and license at the inspected revision. https://huggingface.co/huggyllama/llama-7b/blob/4782ad278652c7c71b72204d462d6d01eaaf7549/README.md
 [^2]: Transformers 4.31.0 Trainer resume arithmetic and epoch replay. https://github.com/huggingface/transformers/blob/v4.31.0/src/transformers/trainer.py#L1703-L1758 ; Accelerate 0.21.0 sampler preparation: https://github.com/huggingface/accelerate/blob/v0.21.0/src/accelerate/data_loader.py#L737-L746 ; PyTorch 1.13.1 RandomSampler: https://github.com/pytorch/pytorch/blob/v1.13.1/torch/utils/data/sampler.py#L117-L133
+[^3]: Pinned OpenLLaMA-7B-v2 model card, architecture/tokenizer guidance and checkpoint license. https://huggingface.co/openlm-research/open_llama_7b_v2/blob/e5961def23172a2384543940e773ab676033c963/README.md ; publisher license: https://raw.githubusercontent.com/openlm-research/open_llama/6e7f73eab7e799e2464f38ed977e537bae02873e/LICENSE

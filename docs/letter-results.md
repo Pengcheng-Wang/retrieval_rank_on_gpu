@@ -1,6 +1,6 @@
-# LETTER reproduction: initial measured result
+# LETTER reproduction: measured results
 
-_2026-10-28. One completed seed42 cell; the broader reproduction is still running._
+_2026-10-28. Verified seed42 temperature pairs for Instruments and Beauty; the broader reproduction is still running._
 
 ---
 
@@ -14,8 +14,10 @@ that the tokenizer training or complete paper has been reproduced.[^1]
 | Result | Recall@5 | Recall@10 | NDCG@5 | NDCG@10 |
 | --- | ---: | ---: | ---: | ---: |
 | Paper reference, not measured here | 0.09090 | 0.11220 | 0.07630 | 0.08310 |
-| Measured semantic-code metric | 0.08861 | 0.10976 | 0.07524 | 0.08202 |
-| Same predictions, original-item diagnostic | 0.08816 | 0.10932 | 0.07451 | 0.08130 |
+| Measured temperature0.7, code metric | 0.08861 | 0.10976 | 0.07524 | 0.08202 |
+| Measured temperature1.0, code metric | 0.08833 | 0.10980 | 0.07486 | 0.08175 |
+| Temperature0.7, original-item diagnostic | 0.08816 | 0.10932 | 0.07451 | 0.08130 |
+| Temperature1.0, original-item diagnostic | 0.08792 | 0.10907 | 0.07422 | 0.08101 |
 
 All four paper-style metrics fall within the predeclared
 `max(0.002, 5% of paper value)` approximate-agreement band. That is an
@@ -33,6 +35,88 @@ pass over every prediction verified the original held-out target, finite
 descending scores, 20 distinct valid codes, complete user coverage and both
 sets of aggregate metrics. Exact values and artifact hashes are in the
 [measurement record](../results/2026-10-28-letter/instruments-seed42-tau07.json).
+
+## 📏 Temperature-control comparison
+
+The matched ordinary-CE arm also selected epoch72 and stopped at epoch92.
+It uses the **same full LETTER ID bank**, not semantic-only TIGER IDs.
+Its Recall@10 is 0.10980 and NDCG@10 is 0.08175; the paper's corresponding
+ordinary-loss ablation reports 0.1092 and 0.0819.[^2]
+
+In this seed, lowering temperature from 1.0 to 0.7 yields **one fewer
+Recall@10 hit**, alongside a small positive NDCG point difference.
+None of the four marginal paired-user intervals excludes zero:
+
+| Code metric | Difference, 0.7 minus 1.0 | Marginal 95% interval |
+| --- | ---: | --- |
+| Recall@5 | +0.000283 | [-0.001979, +0.002383] |
+| Recall@10 | -0.000040 | [-0.002382, +0.002383] |
+| NDCG@5 | +0.000378 | [-0.001109, +0.001823] |
+| NDCG@10 | +0.000277 | [-0.001079, +0.001647] |
+
+This does **not establish a temperature benefit in this seed**; it also
+does not prove equivalence or absence of an effect. The analysis uses the
+predeclared 2,000 paired-user percentile bootstrap replicates, seed20261027,
+with complete matched users/targets and no exclusions. Outcomes are bounded
+and concentrated at zero, so no normal-distribution assumption is imposed.
+Intervals are unadjusted and conditional on these trained models; they
+exclude training-seed uncertainty and do not separately model cross-user
+dependence through shared items.
+
+The [complete comparison](../results/2026-10-28-letter/instruments-seed42-temperature-comparison.json)
+includes original-item diagnostics, win/tie/loss counts, matched-control checks
+and prediction hashes. The [control record](../results/2026-10-28-letter/instruments-seed42-tau10.json)
+retains its metrics and timing limitations. Seeds17/23 were already declared
+before these results; their purpose is to measure training variability, not
+to retune these arms using the test outcomes.
+
+## 📊 Beauty released-ID replay
+
+The frozen seed42, temperature0.7 run yields Recall@10 **0.06421** and
+NDCG@10 **0.03463**, both below the paper's reported points.[^1]
+
+| Result | Recall@5 | Recall@10 | NDCG@5 | NDCG@10 |
+| --- | ---: | ---: | ---: | ---: |
+| Paper reference, not measured here | 0.04310 | 0.06720 | 0.02860 | 0.03640 |
+| Measured temperature0.7, code metric | 0.04074 | 0.06421 | 0.02708 | 0.03463 |
+| Measured temperature1.0, code metric | 0.04329 | 0.06775 | 0.02837 | 0.03625 |
+| Temperature0.7, original-item diagnostic | 0.04047 | 0.06394 | 0.02685 | 0.03441 |
+| Temperature1.0, original-item diagnostic | 0.04275 | 0.06739 | 0.02804 | 0.03597 |
+
+Recall@5 **misses the advisory agreement band**: the absolute gap is
+0.002363, exceeding `max(0.002, 0.05 * 0.0431) = 0.002155`. The other three
+metrics fall within that engineering band, which is not an equivalence
+test. No threshold was relaxed and no test-guided retraining was performed.
+
+The model selected epoch77 and stopped at97. Evaluation covered all
+**22,363 users** once, including 46 targets in collision groups. It uses
+the declared continuation-safe Beauty geometry, two workers with
+microbatch512 and accumulation1; this is not an unchanged replay of the
+original microbatch configuration. The independent audit recomputed every
+code/item metric, checked the validation-minimum selection and verified the
+durable model and prediction hashes. See the [complete measurement](../results/2026-10-28-letter/beauty-seed42-tau07.json).
+
+The [ordinary-loss control](../results/2026-10-28-letter/beauty-seed42-tau10.json)
+selected epoch84 and stopped at104. All four point estimates favor
+temperature1.0. Under the same predeclared paired-user bootstrap:
+
+| Code metric | Difference, 0.7 minus 1.0 | Marginal 95% interval |
+| --- | ---: | --- |
+| Recall@5 | -0.002549 | [-0.005054, -0.000179] |
+| Recall@10 | -0.003533 | [-0.006484, -0.000804] |
+| NDCG@5 | -0.001297 | [-0.002991, +0.000365] |
+| NDCG@10 | -0.001619 | [-0.003278, -0.000040] |
+
+This is a **negative fixed-temperature contrast**, not evidence of a
+general temperature benefit: temperature0.7 has 79 fewer Recall@10 hits.
+Three code-metric intervals exclude zero, but they are marginal,
+unadjusted and conditional on this seed's two trained models. They do
+not establish cross-seed or family-wise significance. Under original-item
+diagnostics, only the Recall@10 interval excludes zero; the NDCG@10
+interval includes it. All diagnostics are retained in the
+[complete paired analysis](../results/2026-10-28-letter/beauty-seed42-temperature-comparison.json).
+The result is not used to select a new recipe or to recover missing
+dataset-specific author settings from test performance.
 
 ## 🔍 Identity and interpretation
 
@@ -55,14 +139,18 @@ latency/QPS measurements or a hardware comparison with the paper.
 ## 📋 Remaining coverage
 
 The same-ID, temperature-one control is a separate ordinary-CE comparison;
-it must not be relabeled the semantic-only TIGER baseline. The Beauty and
-Yelp pairs, seed replications, full tokenizer reconstruction, LC-Rec, and
-the other paper baselines/analyses are not established by this cell.
+it must not be relabeled the semantic-only TIGER baseline. The complete
+Yelp pair, seed replications, full tokenizer reconstruction, LC-Rec, and
+the other paper baselines/analyses are not established by these cells.
 
 Three train-only BCE SASRec teachers have been completed and durably banked
 for the reconstruction phase. Original LLaMA1-7B access is still required
 for the original semantic encoder and LC-Rec. Synthetic tokenizer/LoRA
 correctness gates are not substituted for those real-data experiments.
+A separately labeled Apache-licensed OpenLLaMA variant has passed full
+semantic token audits and real7B encoding/continuation gates; it is **not**
+an original-LLaMA1 reproduction or a recommendation-score result. Its
+encoding and provenance contract is documented in the execution notes.
 
 The [execution notes](letter-execution.md) describe the frozen source,
 resume correction, declared geometry changes and storage contracts.
@@ -71,3 +159,4 @@ Operational progress and allocation details remain local and Git-ignored.
 ## 🔗 Reference
 
 [^1]: Wang et al. "Learnable Item Tokenization for Generative Recommendation," arXiv 2405.07314v3, Table1. https://arxiv.org/html/2405.07314v3#S4.T1
+[^2]: The same paper, Table2, variant(3). https://arxiv.org/html/2405.07314v3#S4.T2

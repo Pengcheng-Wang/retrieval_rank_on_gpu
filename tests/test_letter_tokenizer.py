@@ -1,4 +1,5 @@
 import importlib
+import json
 import sys
 from pathlib import Path
 
@@ -66,3 +67,33 @@ def test_interrupted_output_is_quarantined_without_deleting_it(tmp_path):
     (directory / "completed.json").write_text('{"status":"complete"}')
     with pytest.raises(FileExistsError):
         rq().fresh_output_directory(directory, "completed.json")
+
+
+def test_compatible_encoder_requires_its_explicit_track():
+    spec = ROOT / "configs" / "letter-openllama-v2-method-v1.json"
+    config = json.loads(spec.read_text())
+    receipt = {
+        "encoder": "OpenLLaMA-7B-v2", "track_id": config["track_id"],
+        "model_id": config["model"]["id"], "revision": config["model"]["revision"],
+        "exact_original_llama1_reproduction": False, "smoke": False,
+        "method_spec_sha256": rq().file_sha256(spec),
+    }
+    with pytest.raises(ValueError):
+        rq().encoder_track(receipt, None)
+    assert rq().encoder_track(receipt, spec) == config["track_id"]
+    with pytest.raises(ValueError):
+        rq().encoder_track({**receipt, "smoke": True}, spec)
+    with pytest.raises(ValueError):
+        rq().encoder_track({**receipt, "revision": "different"}, spec)
+    with pytest.raises(ValueError):
+        rq().encoder_track({**receipt, "method_spec_sha256": "different"}, spec)
+
+
+def test_original_encoder_gate_stays_distinct_from_variant():
+    spec = ROOT / "configs" / "letter-openllama-v2-method-v1.json"
+    receipt = {"encoder": "LLaMA1-7B"}
+    assert rq().encoder_track(receipt, None) == "letter-original-llama1"
+    with pytest.raises(ValueError):
+        rq().encoder_track(receipt, spec)
+    with pytest.raises(ValueError):
+        rq().encoder_track({**receipt, "exact_original_llama1_reproduction": False}, None)

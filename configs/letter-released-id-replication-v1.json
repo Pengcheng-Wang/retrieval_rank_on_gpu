@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "phase": "independent_training_seed_replication",
+  "recipe": "letter-released-id-execution-v1.json",
+  "original_preregistration": "letter-reproduction-v1.json / experiment_design.replication_seeds",
+  "replication_seeds": [17, 23],
+  "datasets": ["Instruments", "Beauty", "Yelp"],
+  "temperatures": [0.7, 1.0],
+  "additional_cells": 12,
+  "admission": "The original plan specified these seeds before any results. Admission uses verified runtime/data/resume gates, not favorable test scores.",
+  "changes_relative_to_seed42": "Training/evaluation seed only; freeze data, ID banks, geometry, learning rate, temperature arms and checkpoint-selection policy.",
+  "reporting": "Report all seeds separately and across-seed mean/SD. Keep within-seed paired-user intervals distinct from training-seed variability.",
+  "scope": "Released-ID replay and matched ordinary-CE controls, not semantic-only TIGER baselines or a full tokenizer reconstruction."
+}
