@@ -227,8 +227,10 @@ attempt directories and durable receipts.
 - [ ] Measure CPU clustering separately in a tokenizer timing probe before authorizing full retraining
 
 The tokenizer initialization probe must retain the full catalog, or a
-feasible fixture with at least as many points as centers. **Do not initialize
-a 256-center quantizer with a 100-item smoke sample.**
+feasible fixture with at least 512 items for the released 256-center
+capacity formula. With 256-511 items that formula gives zero maximum
+cluster capacity. **Do not initialize the quantizer with a 100-item smoke
+sample.**
 
 The commands below are **Linux commands on the supplied AML node**, after
 the compatibility patches and validated environment exist. `LETTER_ROOT`,
@@ -245,7 +247,9 @@ cd "$LETTER_ROOT/LETTER-TIGER"
 test $((1024 % (256 * LETTER_WORLD_SIZE))) -eq 0
 ACCUM=$((1024 / (256 * LETTER_WORLD_SIZE)))
 test "$ACCUM" -ge 1
-torchrun --standalone --nproc_per_node="$LETTER_WORLD_SIZE" finetune.py \
+torchrun --rdzv_backend=c10d --rdzv_endpoint=localhost:0 \
+  --rdzv_id="letter-tiger-$(date +%s)-$$" \
+  --nproc_per_node="$LETTER_WORLD_SIZE" finetune.py \
   --base_model "$LETTER_ROOT/LETTER-TIGER/ckpt/TIGER" \
   --data_path "$LETTER_ROOT/data" --dataset Instruments \
   --index_file .index.json --seed 42 \
@@ -262,7 +266,9 @@ cd "$LETTER_ROOT/LETTER-LC-Rec"
 test $((64 % (8 * LETTER_WORLD_SIZE))) -eq 0
 ACCUM=$((64 / (8 * LETTER_WORLD_SIZE)))
 test "$ACCUM" -ge 1
-torchrun --standalone --nproc_per_node="$LETTER_WORLD_SIZE" lora_finetune.py \
+torchrun --rdzv_backend=c10d --rdzv_endpoint=localhost:0 \
+  --rdzv_id="letter-lc-$(date +%s)-$$" \
+  --nproc_per_node="$LETTER_WORLD_SIZE" lora_finetune.py \
   --base_model "$LLAMA1_7B" --data_path "$LETTER_ROOT/data" \
   --dataset Instruments --index_file .index.json --seed 42 \
   --output_dir "$LETTER_RUN_DIR/lc-rec" \
@@ -291,7 +297,8 @@ python test.py \
   --test_batch_size 2 --num_beams 20 --sample_num -1 \
   --metrics hit@5,hit@10,ndcg@5,ndcg@10
 cd "$LETTER_ROOT/LETTER-LC-Rec"
-torchrun --standalone --nproc_per_node=1 test_ddp.py \
+torchrun --rdzv_backend=c10d --rdzv_endpoint=localhost:0 \
+  --rdzv_id="letter-eval-$(date +%s)-$$" --nproc_per_node=1 test_ddp.py \
   --base_model "$LLAMA1_7B" --ckpt_path "$LETTER_RUN_DIR/lc-rec" \
   --data_path "$LETTER_ROOT/data" --dataset Instruments \
   --index_file .index.json --seed 42 --test_prompt_ids 0 \
@@ -303,6 +310,9 @@ torchrun --standalone --nproc_per_node=1 test_ddp.py \
 The upstream name `hit@K` equals Recall@K for this single-target protocol.
 Keep that naming conversion explicit in reports. These native commands do
 not by themselves implement the separately planned item/trie diagnostics.
+Use explicit unique rendezvous IDs and port zero for concurrent launches:
+the pinned Torch 1.13.1 `--standalone` mode hardcodes port 29400, which can
+make independent launchers share a rendezvous server.
 
 Instruments reference targets: LETTER-TIGER R@10 `0.1122`, N@10 `0.0831`;
 LETTER-LC-Rec R@10 `0.1115`, N@10 `0.0854`. Diagnose discrepancies in source,
