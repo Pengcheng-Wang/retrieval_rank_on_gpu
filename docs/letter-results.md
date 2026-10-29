@@ -150,7 +150,29 @@ replacement and3.614 for diversity-only. This describes a distribution differenc
 it is not a causal test or permission to retune the reported experiment. The
 compatible semantic encoder, reconstructed teacher and declared analysis
 conventions remain limitations. Other tokenizer conditions and datasets are
-not inferred from these two results.
+not inferred from these two Instruments results.
+
+All four Beauty tokenizer variants have also completed20,000 epochs. Their
+raw replacement results show the same limitation: CF regularization improves
+on semantic/diversity-only replacements, but none preserves the original
+teacher's accuracy.
+
+| Beauty condition | Recall@10 | NDCG@10 | Selected tokenizer epoch |
+| --- | ---: | ---: | ---: |
+| Original frozen teacher, reused reference | 0.04163 | 0.01931 | N/A |
+| Semantic-only replacement | 0.00550 | 0.00252 | 18,000 |
+| CF-regularized replacement | 0.01623 | 0.00754 | 20,000 |
+| Diversity-only replacement | 0.00461 | 0.00197 | 12,000 |
+| Full replacement | 0.01731 | 0.00814 | 20,000 |
+
+Under the predeclared cosine-neighbor / matching-position convention,
+Beauty code overlap is0.06340 /0.12210 /0.06599 /0.11371 for semantic / CF /
+diversity / full, respectively. Better overlap is not interchangeable with
+better recommendation accuracy. Every replacement prediction and residual
+vector sum was checked independently against the selected checkpoint and
+actual exported IDs; the original teacher reference was reused unchanged.
+[Exact Beauty results](../results/2026-10-29-letter/beauty-embedding-replacements-v1.json)
+retain the negative findings and descriptive, uncalibrated vector norms.
 
 [Verified component metrics and provenance](../results/2026-10-29-letter/verified-components-v1.json)
 retain exact values, source/checkpoint/prediction hashes, coverage and the

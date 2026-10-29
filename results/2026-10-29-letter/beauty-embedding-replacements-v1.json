@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "status": "independently_verified",
+  "dataset": "Beauty",
+  "scope": "Table3-style raw item-embedding replacement and declared CF-neighbor overlap, using completed20k compatible-backbone tokenizers; not a fresh-ID generative result or original-weight reproduction.",
+  "tokenizer_epochs_completed": 20000,
+  "teacher_reference_reused": true,
+  "reference": {
+    "users": 22363,
+    "metrics": {
+      "recall@5": 0.02164289227742253,
+      "recall@10": 0.041631265930331354,
+      "ndcg@5": 0.01290132023693872,
+      "ndcg@10": 0.019308868374027174
+    },
+    "seen_item_exclusion": false,
+    "tie_rule": "original_item_id_ascending",
+    "history_limit": 50,
+    "device": "cpu",
+    "predictions_sha256": "2e8e4c752aa4f3ccfc01260395ef4a7c6f1d5f524d5fd5e5b79e2d63f39cf2f2",
+    "items": 12101,
+    "selected_epoch": 180,
+    "teacher_sha256": "edaf813f236dcaf6c93b5afa351df98ed9a3f7a888f15d1825f89e46361a0454",
+    "independently_recomputed": true,
+    "wall_seconds": 16.564015398005722
+  },
+  "variants": {
+    "semantic": {
+      "status": "pass",
+      "kind": "independent_completed_RQ_analysis_check",
+      "dataset": "Beauty",
+      "variant": "semantic",
+      "users": 22363,
+      "selected_epoch": 18000,
+      "new_original_teacher_scoring": false,
+      "metrics": {
+        "recall@5": 0.0027724366140499932,
+        "recall@10": 0.005500156508518535,
+        "ndcg@5": 0.0016483129146536493,
+        "ndcg@10": 0.0025157073341653216
+      },
+      "cosine_neighbor_overlap": 0.06340385092141146,
+      "exported_vectors_match_selected_codebook_sum": true,
+      "analysis_completed_sha256": "6485f1d6f5615e8d1b1d4f4a6077213f48ea5c0835eb10328fa15848622a04e7",
+      "posthoc_descriptive_norms": {
+        "original_median": 1.724777390553032,
+        "quantized_median": 3.7442457205287254,
+        "normalization_or_refit_applied": false
+      },
+      "verification_sha256": "db23e3a79cf4becde44435ed9902591f68cb27f5045de3914f9a162c46cdeada"
+    },
+    "cf": {
+      "status": "pass",
+      "kind": "independent_completed_RQ_analysis_check",
+      "dataset": "Beauty",
+      "variant": "cf",
+      "users": 22363,
+      "selected_epoch": 20000,
+      "new_original_teacher_scoring": false,
+      "metrics": {
+        "recall@5": 0.008764477037964494,
+        "recall@10": 0.016232169208066895,
+        "ndcg@5": 0.005149575721731589,
+        "ndcg@10": 0.0075356353073233176
+      },
+      "cosine_neighbor_overlap": 0.12209734732666722,
+      "exported_vectors_match_selected_codebook_sum": true,
+      "analysis_completed_sha256": "c7a218251190ac00cd46908cb1f1878a1be98710ccca209fffc13227652ccaf9",
+      "posthoc_descriptive_norms": {
+        "original_median": 1.724777390553032,
+        "quantized_median": 8.162125764056999,
+        "normalization_or_refit_applied": false
+      },
+      "verification_sha256": "d238b708c5224747258ade9e28cec2a825df60f60563f38be11ccf76fce60eb7"
+    },
+    "diversity": {
+      "status": "pass",
+      "kind": "independent_completed_RQ_analysis_check",
+      "dataset": "Beauty",
+      "variant": "diversity",
+      "users": 22363,
+      "selected_epoch": 12000,
+      "new_original_teacher_scoring": false,
+      "metrics": {
+        "recall@5": 0.0016992353440951572,
+        "recall@10": 0.004605822116889505,
+        "ndcg@5": 0.0010540720192271237,
+        "ndcg@10": 0.001967282127278728
+      },
+      "cosine_neighbor_overlap": 0.06598628212544418,
+      "exported_vectors_match_selected_codebook_sum": true,
+      "analysis_completed_sha256": "b6384f07b7d2bada1d7aeb70b8e63df2c6207da4bfc3540f37b1597843fef6e7",
+      "posthoc_descriptive_norms": {
+        "original_median": 1.724777390553032,
+        "quantized_median": 3.6924914787358523,
+        "normalization_or_refit_applied": false
+      },
+      "verification_sha256": "5c746971cf98b6c2623b30c461315329ecd097533f606f98b4592b2aded7a268"
+    },
+    "full": {
+      "status": "pass",
+      "kind": "independent_completed_RQ_analysis_check",
+      "dataset": "Beauty",
+      "variant": "full",
+      "users": 22363,
+      "selected_epoch": 20000,
+      "new_original_teacher_scoring": false,
+      "metrics": {
+        "recall@5": 0.008496176720475786,
+        "recall@10": 0.017305370478021734,
+        "ndcg@5": 0.005318614358840447,
+        "ndcg@10": 0.008135038691891038
+      },
+      "cosine_neighbor_overlap": 0.11370961077596893,
+      "exported_vectors_match_selected_codebook_sum": true,
+      "analysis_completed_sha256": "f25e7237a62480452969e375b8334b15e8c21bece526bde5235e10f7b3a6908f",
+      "posthoc_descriptive_norms": {
+        "original_median": 1.724777390553032,
+        "quantized_median": 8.096990580115634,
+        "normalization_or_refit_applied": false
+      },
+      "verification_sha256": "e5d7fedc6cd1b1c21b4f9f9a17f32806f7bf70d151d52fce04ed7c1f17997f44"
+    }
+  },
+  "normalization_or_refit_applied": false,
+  "durability": "Full private outputs and independent checks banked as four separate immutable model-analysis bundles."
+}
