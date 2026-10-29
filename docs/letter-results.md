@@ -50,6 +50,14 @@ change has been used to bypass this gate. The complete aggregate
 [LC corpus audit](../results/2026-10-28-letter/lc-corpus-audit-openllama-released-id.json)
 preserves every task group, length distribution and failure count.
 
+A subsequent [CPU-only Beauty admission study](letter-beauty-admission.md)
+also rejected conditioning auxiliary sampling on each item's valid native
+templates. Five original items have **zero valid `index2item` templates**;
+all 85 freshly rendered variants for those items failed the unchanged checks.
+Their maximum length was only 560 tokens, so increasing context would not
+repair these particular boundary/empty-response defects. No sampler, item
+filter or Beauty LC training variant was admitted.
+
 The original LLaMA1 track remains blocked on model access. The OpenLLaMA
 track is a separately named compatible-method replication; these semantic
 features were not used to obtain the released-ID scores above. The remainder
