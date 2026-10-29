@@ -311,13 +311,34 @@ does not fully specify the similarity normalization or overlap formula.[^4]
 
 The optional CF-transfer experiment sums codebook rows selected by the
 final exported identifiers in native residual order and replaces only
-the real item rows of the frozen32D SASRec teacher. It leaves padding,
-other learned parameters and vector scale unchanged; it does not refit.
+the real item rows of the frozen32D SASRec teacher. It preserves padding
+and all other learned parameters; inserted vectors are neither normalized
+nor rescaled to the original embedding norms, and the model is not refitted.
 Evaluation retains all original users, full real-item candidates and
 repeat targets, saves per-user top10 outputs, and breaks exact ties by
 original item ID. This is a declared reconstruction with our auditable
 teacher, not the separate50D Table1 SASRec reference or a recovery of
 unreleased author analysis code.
+
+`--rank-replacement` now requires `--cf-reference` (the immutable banked
+reference bundle) and `--cf-reference-manifest` (the published
+[`frozen-teacher-references-cpu-v1.json`](../results/2026-10-28-letter/frozen-teacher-references-cpu-v1.json)).
+The original teacher is not scored again: `cf_reference.py` verifies the
+published completion/configuration anchors, all payload and source hashes,
+teacher and input identities, every original target/ranking, and recomputed
+metrics before copying the frozen predictions. Only the quantized replacement
+receives new neural scoring.
+
+Reference comparisons require the recorded CPU float32 runtime, two intra-op
+threads and one inter-op thread. The CLI establishes that execution mode;
+incompatible devices, versions or thread settings fail closed. The archived
+scorer and current module must have identical ASTs outside the analysis caller
+and CLI, with byte-identical dependent helpers. Their whole-module hashes are
+recorded separately rather than rewriting old provenance. Use the exact original
+input manifest bytes, not a normalized archive copy. Output directories may not
+overlap the reference, tokenizer, teacher or upstream inputs. Statistics-only
+analysis keeps its original valid-input behavior and still requires the full
+20,000-epoch tokenizer; cache availability never bypasses that gate.
 
 The real native SASRec identity-swap gate covered100 training histories
 and the full9,922-item catalog: replacing its item rows with its own

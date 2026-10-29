@@ -192,8 +192,17 @@ def analyze(args) -> None:
     from prepare import read_release
     from tokenizer_run import format_codes
 
+    if args.rank_replacement and (
+        not getattr(args, "cf_reference", None) or not getattr(args, "cf_reference_manifest", None)
+    ):
+        raise ValueError("CF replacement requires a frozen reference bundle and published manifest")
     if args.output.exists():
         raise FileExistsError("Mechanism-analysis outputs are immutable")
+    output = args.output.resolve()
+    for source in (args.tokenizer_run, args.teacher, args.upstream):
+        source = source.resolve()
+        if source == output or source in output.parents or output in source.parents:
+            raise ValueError("Mechanism-analysis output must not overlap immutable inputs")
     manifest = json.loads(args.manifest.read_text())
     interactions, items, _ = read_release(args.upstream, manifest, args.dataset)
     config = json.loads((args.tokenizer_run / "run-config.json").read_text())
@@ -233,6 +242,10 @@ def analyze(args) -> None:
     require_hash(args.teacher / "run-config.json", teacher_done["config_sha256"])
     require_hash(args.teacher / "item-embeddings.pt", config["cf_sha256"])
     require_hash(args.teacher / "item-embeddings.pt", teacher_done["item_embeddings_sha256"])
+    if args.rank_replacement:
+        from cf_reference import verified_reference
+
+        verified_reference(args)
     cf = torch.load(args.teacher / "item-embeddings.pt", map_location="cpu", weights_only=True).numpy()
     books = [state["model"][f"rq.vq_layers.{level}.embedding.weight"].cpu().numpy()
              for level in range(codes.shape[1])]
@@ -278,10 +291,9 @@ def analyze(args) -> None:
         )
         if not torch.equal(model.item_emb.weight[1:].detach().cpu(), torch.as_tensor(cf)):
             raise ValueError("Selected CF model rows differ from the regularization/neighbor bank")
-        report["cf_original_reference"] = rank_cf(
-            model, interactions, model_args.maxlen, args.device,
-            args.output / "cf-original-predictions.json",
-        )
+        from cf_reference import reuse_reference
+
+        report["cf_original_reference"] = reuse_reference(args)
         replace_item_embeddings(model, vectors)
         report["cf_quantized_replacement"] = rank_cf(
             model, interactions, model_args.maxlen, args.device,
@@ -304,7 +316,18 @@ def main() -> None:
     parser.add_argument("--rank-replacement", action="store_true")
     parser.add_argument("--sasrec", type=Path)
     parser.add_argument("--device", choices=("cpu", "cuda:0"), default="cpu")
-    analyze(parser.parse_args())
+    parser.add_argument("--cf-reference", type=Path)
+    parser.add_argument("--cf-reference-manifest", type=Path)
+    args = parser.parse_args()
+    if args.rank_replacement:
+        if args.device != "cpu" or not args.cf_reference or not args.cf_reference_manifest:
+            parser.error("CF replacement requires CPU, --cf-reference and --cf-reference-manifest")
+        import torch
+
+        torch.set_num_threads(2)
+        torch.set_num_interop_threads(1)
+        torch.use_deterministic_algorithms(True)
+    analyze(args)
 
 
 if __name__ == "__main__":
