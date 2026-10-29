@@ -1,6 +1,6 @@
 # LETTER reproduction: measured results
 
-_2026-10-28, 12:31 PDT. The 18-cell released-ID matrix and 18 conventional reference cells are complete; end-to-end reconstruction remains unfinished._
+_2026-10-28. The 18-cell released-ID matrix, 18 conventional reference cells and three frozen-teacher reference evaluations are complete; end-to-end reconstruction remains unfinished._
 
 ---
 
@@ -63,6 +63,38 @@ track is a separately named compatible-method replication; these semantic
 features were not used to obtain the released-ID scores above. The remainder
 of this report preserves the initial single-seed findings and their
 conditional paired-user intervals.
+
+## 📊 Frozen 32-dimensional teacher references
+
+The already-fitted BCE SASRec teachers now have separately recorded test
+references for the later Table 3 embedding-replacement comparison. These are
+**32-dimensional teachers**, not the 50-dimensional SASRec benchmark above.
+No new weights were fitted or reselected, and no partial tokenizer or
+quantized embedding was used.
+
+| Dataset | Recall@10 | NDCG@10 | Users | Validation-selected epoch |
+| --- | ---: | ---: | ---: | ---: |
+| Instruments | 0.08130 | 0.04269 | 24,772 | 80 |
+| Beauty | 0.04163 | 0.01931 | 22,363 | 180 |
+| Yelp | 0.03299 | 0.01609 | 30,431 | 201 |
+
+All three fits completed their fixed 201 epochs before this evaluation. A
+100-user validation-only parity check passed for each model before any test
+scoring. Evaluation covered every user and original catalog item, used history
+50 including the validation interaction, excluded no seen items, and resolved
+score ties by ascending original item ID. Scoring was CPU float32 with two
+intra-op threads and one inter-op thread. Every saved prediction was checked
+against its original target, and all four R/N@5/10 metrics were independently
+recomputed.
+
+[Exact metrics and provenance](../results/2026-10-28-letter/frozen-teacher-references-cpu-v1.json)
+include checkpoint and prediction hashes. The predictions, pre-test protocol,
+admission evidence and exact scorer are durably banked. The original fitting
+receipts remain immutable; separate evaluation receipts record this test access.
+Later replacement comparisons must reuse these frozen references with matching
+teacher identities and scoring semantics. **Quantized-replacement results remain
+pending**; these references alone do not reproduce Table 3 or establish a
+tokenizer benefit.
 
 ## 📊 Instruments released-ID replay
 
