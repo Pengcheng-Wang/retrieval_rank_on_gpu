@@ -1,0 +1,266 @@
+{
+  "schema_version": 1,
+  "status": "independently_verified_completed_components",
+  "study_status": "in_progress",
+  "date": "2026-10-29",
+  "exact_original_llama1_reproduction": false,
+  "lc_instruments": {
+    "status": "pass",
+    "claim": "released-ID compatible-backbone hybrid",
+    "dataset": "Instruments",
+    "selected_checkpoint": "checkpoint-6180",
+    "selected_complete_sha256": "55d4ecdbdad3bfa36d699a701eaa6fa86d176f086fc1b19d86353ea3dede2d1d",
+    "final_run_bank_ack_sha256": "65b9b4d5bdb4fd6b201621a1168970ee366cb0e631eb10f4af469130c2b15697",
+    "full_training_updates": 8240,
+    "full_epochs": 4,
+    "native_duplicate_code_ndcg_preserved": true,
+    "new_model_inference": false,
+    "results": {
+      "author-position-sets": {
+        "status": "independently_verified",
+        "users": 24772,
+        "code": {
+          "recall@1": 0.07011948974648798,
+          "ndcg@1": 0.07011948974648798,
+          "recall@5": 0.09668173744550299,
+          "ndcg@5": 0.08344296202734978,
+          "recall@10": 0.11609882124979816,
+          "ndcg@10": 0.08971526658550477
+        },
+        "item": {
+          "recall@1": 0.06862586791538834,
+          "ndcg@1": 0.06862586791538834,
+          "recall@5": 0.09639916034232197,
+          "ndcg@5": 0.08272636541128106,
+          "recall@10": 0.11589698046181172,
+          "ndcg@10": 0.08901797545253828
+        },
+        "invalid_codes": 1837,
+        "total_beams": 495440,
+        "duplicate_codes": 0,
+        "prediction_sha256": {
+          "predictions-rank-0.jsonl": "c44b5fb1791c8d08474d6ecbce37904104d2755be91e65c13a0a0f7efb64c318",
+          "predictions-rank-1.jsonl": "4e059f73fbe384cd56eb2e97c269a4b874a0f83fcd8126b8a7af3bc53af015b8",
+          "predictions-rank-2.jsonl": "0dcd601cfc163ec06315f5c70926de42b5ee93f4ad03a7ec08f7277138911a7d",
+          "predictions-rank-3.jsonl": "386b0b2b4726946e522656b5a026935ce7705c38553fbc1eefaeef8f3f1b0647"
+        },
+        "evaluation_config_sha256": "82d0a343f08ed400c94993e590b4bd8305dd893965131bb987a63f88af37f90e",
+        "evaluation_completed_sha256": "ecd773ae3dbffb60afbb3c0afc7e80f6f454882d50d233c7d85e07bc47dc9cda",
+        "evaluation_bank_ack_sha256": "2dfaf36548e2bd493e709ea8287178c030f2c435c50e5bd0a5824b1612d92f8b"
+      },
+      "full-prefix-trie-correction": {
+        "status": "independently_verified",
+        "users": 24772,
+        "code": {
+          "recall@1": 0.07015985790408526,
+          "ndcg@1": 0.07015985790408526,
+          "recall@5": 0.09668173744550299,
+          "ndcg@5": 0.08346802517618908,
+          "recall@10": 0.11617955756499274,
+          "ndcg@10": 0.0897657565577194
+        },
+        "item": {
+          "recall@1": 0.06862586791538834,
+          "ndcg@1": 0.06862586791538834,
+          "recall@5": 0.09639916034232197,
+          "ndcg@5": 0.08272636541128106,
+          "recall@10": 0.11589698046181172,
+          "ndcg@10": 0.08901797545253828
+        },
+        "invalid_codes": 0,
+        "total_beams": 495440,
+        "duplicate_codes": 0,
+        "prediction_sha256": {
+          "predictions-rank-0.jsonl": "d230f4f1820329089f8b35055be1902661bcc332d3ebf5ab44ab9f956ab8beaf",
+          "predictions-rank-1.jsonl": "7698f8d38ebf6503d22b305a941bed1e8e25e5a7f499f6b555e3fb896e4069bd",
+          "predictions-rank-2.jsonl": "4ab8f619fd1790fad2bb513db566aa786e82072a827f70230c9012cb7f86ae60",
+          "predictions-rank-3.jsonl": "f02b52155e8699d045454250c5159a9efab2aeb9bc799796f38d1fc99f6f36f2"
+        },
+        "evaluation_config_sha256": "1a8c52ff499457725b83c08623dc423a0e6d312f9d230eafb616a90daa66363c",
+        "evaluation_completed_sha256": "8d973fc54e983e1ed63636501929708e508b2270177c727d3a874ce069d03b4a",
+        "evaluation_bank_ack_sha256": "4a0999743bcb1e3df9cea3c74b7c6a4c1f7bc32711ee78c22fa39f52eefea451"
+      }
+    }
+  },
+  "bigrec_yelp": {
+    "status": "complete",
+    "track": "bigrec-openllama7b-v2-title-grounding-compatible-v1",
+    "dataset": "Yelp",
+    "exact_original_weights_reproduction": false,
+    "users": 30431,
+    "catalog_items": 20033,
+    "metrics": {
+      "recall@1": 0.009792645657388847,
+      "ndcg@1": 0.009792645657388847,
+      "recall@5": 0.014064605172357136,
+      "ndcg@5": 0.01207166167837341,
+      "recall@10": 0.016660642108376325,
+      "ndcg@10": 0.012890588339205027
+    },
+    "metric_identity": "original_LETTER_item_id",
+    "title_diagnostics_not_item_metrics": {
+      "catalog_title_equivalence_metrics": {
+        "recall@1": 0.014886135848312576,
+        "ndcg@1": 0.014886135848312576,
+        "recall@5": 0.016562058427261675,
+        "ndcg@5": 0.015765293717817593,
+        "recall@10": 0.01840228714140186,
+        "ndcg@10": 0.01633719743131945
+      },
+      "literal_generated_title_match_rate": 0.014820413394236141,
+      "original_item_metrics_by_ambiguity_stratum": {
+        "ambiguous_title_targets": {
+          "users": 8508,
+          "original_item_metrics": {
+            "recall@1": 0.004936530324400564,
+            "ndcg@1": 0.004936530324400564,
+            "recall@5": 0.014809590973201692,
+            "ndcg@5": 0.010241496065971563,
+            "recall@10": 0.019158439116126,
+            "ndcg@10": 0.011638312217493361
+          }
+        },
+        "unique_title_targets": {
+          "users": 21923,
+          "original_item_metrics": {
+            "recall@1": 0.01167723395520686,
+            "ndcg@1": 0.01167723395520686,
+            "recall@5": 0.013775486931533094,
+            "ndcg@5": 0.012781922547338181,
+            "recall@10": 0.01569128312730922,
+            "ndcg@10": 0.013376578634489546
+          }
+        }
+      }
+    },
+    "primary_finish_reasons": {
+      "eos": 30396,
+      "length": 35
+    },
+    "all_beam_finish_reasons": {
+      "eos": 121383,
+      "length": 341
+    },
+    "failed_or_length_filtered_users": 0,
+    "seen_item_exclusion": false,
+    "generation_beams": 4,
+    "grounding_queries_per_user": 1,
+    "distance": "unnormalized_l2_float32",
+    "binding": {
+      "track": "bigrec-openllama7b-v2-title-grounding-compatible-v1",
+      "dataset": "Yelp",
+      "admission_sha256": "7f1eeaa5bce0f3ac6ac3163d2da21763f8f4b0b539723474823e96b69e593623",
+      "selected_sha256": "86a37f587e30e2e67b6f076732408eb09501b1d26c0756a85cdef5c9c6fbf27c",
+      "recipe_sha256": "f48bbb3952d004b086e96b9b3397d49acf75f8a956c9cb20ceb69b3268ad8dd8",
+      "model": {
+        "model_id": "openlm-research/open_llama_7b_v2",
+        "revision": "e5961def23172a2384543940e773ab676033c963",
+        "files": {
+          "config.json": "a184b02448fd8164d686a73262846759a86862b8ee0d1ef141d6289aacb892e2",
+          "generation_config.json": "d36794768a4d6604d5107e6512264cad829f073b69718e08273751897ef0c3b9",
+          "model-00001-of-00002.safetensors": "a4c1a4daa945d56842583673572003387ad4f08b536ecdef01f03bb42f0ef2f5",
+          "model-00002-of-00002.safetensors": "db3672c83cb21be600f38996c2d01e0f77d36a2bbe2420ccdd9c529b6b18f100",
+          "model.safetensors.index.json": "1fea933c4e1e0beb48d84c40cc25bdcda4282e737cca2cfc012cdbe1e5d0c8ba",
+          "tokenizer.model": "91b289e85fa20fd375d8b33dc12f77616f18abc6359804471d1fafcb425fecb8",
+          "tokenizer_config.json": "5a979515b1e98186bdceb56439d17f24bfa68baa669e50e150cc3933c07da3a2",
+          "special_tokens_map.json": "3833453daeb8222e7a04fc85758cfe429dab30f5fc901d18d389105c501784ad"
+        },
+        "parent_receipt_sha256": "5b2cd2acffec655c28c14c37e9840a1526625f9bbd4bea9c7377dec36df3518b",
+        "weight_loading": "local_files_only_use_safetensors"
+      },
+      "source": {
+        "bigrec_train.py": "210a2b9ef7b37c2a89d3d866f6a65c76ebb7c0ed80ee4a071338a0725860b27f",
+        "bigrec_checkpoint.py": "785ec78572273864db5a5b7f946a5fad1b1c2c6c3655f4d4cb8104d3c1a285b4",
+        "bigrec_source.py": "7d4e3fdb7ee80a5d7cee29dc0ed6a863404f62c7c42aac849fade4b05592927a",
+        "bigrec_data.py": "3a988947cb3fa34b5a42016e8d02414ac27e7110a6c7417f062daedafae1d0be",
+        "bigrec_evaluate.py": "ba29b35801cdefa928379f18092a5917bb4143d06c962640316fc13fdb8bcd6b"
+      },
+      "test_users": 30431,
+      "catalog_items": 20033
+    },
+    "full_saved_query_catalog_rankings_recomputed": true,
+    "independent_verification_sha256": "6e1ec2883965b6800460dbe6c2a296feefb1905ed91f1cf5fd7bf8f5cbb8bcef"
+  },
+  "instruments_raw_embedding_replacement": {
+    "scope": "Complete20k tokenizers; raw residual-codebook sums replace real item rows of the frozen32Dteacher. No rescaling or refit.",
+    "reference": {
+      "users": 24772,
+      "metrics": {
+        "recall@5": 0.05744388826093977,
+        "recall@10": 0.08130146940093654,
+        "ndcg@5": 0.03501328023285779,
+        "ndcg@10": 0.0426884106182929
+      },
+      "seen_item_exclusion": false,
+      "tie_rule": "original_item_id_ascending",
+      "history_limit": 50,
+      "device": "cpu",
+      "predictions_sha256": "a8c4e57817561c59345950a5ac739a27ad798e6321fbcf9a6a53683fba7ad8e1",
+      "items": 9922,
+      "selected_epoch": 80,
+      "teacher_sha256": "1f3f6a1936c2fb38f6a6d2bbb58615f8348d988adc0360751834e1e5f134f308",
+      "independently_recomputed": true,
+      "wall_seconds": 15.423847675003344
+    },
+    "reference_reused_without_neural_rescoring": true,
+    "variants": {
+      "full": {
+        "status": "pass",
+        "kind": "independent_completed_RQ_analysis_check",
+        "variant": "full",
+        "users": 24772,
+        "new_original_teacher_scoring": false,
+        "metrics": {
+          "recall@5": 0.012312288067172614,
+          "recall@10": 0.021556596156951397,
+          "ndcg@5": 0.0073785001153435816,
+          "ndcg@10": 0.010330759896026893
+        },
+        "exported_vectors_match_selected_codebook_sum": true,
+        "analysis_completed_sha256": "9255e5fe6cd2f3cd76d04dc397792ccf5ecb3cd91f2cfa1127470f47e2adc0dd",
+        "posthoc_descriptive_norms": {
+          "original_norm_quantiles": [
+            1.2588730536785433,
+            1.6397429287721335,
+            1.967134460440242
+          ],
+          "quantized_norm_quantiles": [
+            8.707681850888314,
+            10.343481262076931,
+            13.878343591846377
+          ],
+          "normalization_or_refit_applied": false
+        }
+      },
+      "diversity": {
+        "status": "pass",
+        "kind": "independent_completed_RQ_analysis_check",
+        "variant": "diversity",
+        "users": 24772,
+        "new_original_teacher_scoring": false,
+        "metrics": {
+          "recall@5": 0.0026239302438236718,
+          "recall@10": 0.005207492330050057,
+          "ndcg@5": 0.0015693352564618472,
+          "ndcg@10": 0.0023912147534480427
+        },
+        "exported_vectors_match_selected_codebook_sum": true,
+        "analysis_completed_sha256": "71c08bb92e0e2fe6356b83c7f36f06564c445f87f784082fd925f3cca2f41f0e",
+        "posthoc_descriptive_norms": {
+          "original_norm_quantiles": [
+            1.2588730536785433,
+            1.6397429287721335,
+            1.967134460440242
+          ],
+          "quantized_norm_quantiles": [
+            3.613954260234734,
+            4.154172346892256,
+            4.619704001505135
+          ],
+          "normalization_or_refit_applied": false
+        }
+      }
+    },
+    "limitations": "Compatible encoder and reconstructed teacher; no original-weight/Table3 numerical reproduction claim. Norm summaries are post-hoc descriptions, not causal tests."
+  }
+}

@@ -1,6 +1,6 @@
 # LETTER reproduction: measured results
 
-_2026-10-28. The 18-cell released-ID matrix, 18 conventional reference cells and three frozen-teacher reference evaluations are complete; end-to-end reconstruction remains unfinished._
+_Updated 2026-10-29. Completed components are reported separately below; the full fresh-ID comparison and paper reproduction remain unfinished._
 
 ---
 
@@ -39,8 +39,9 @@ still requires our fresh-ID, same-backbone comparisons. Compare item
 metrics with item metrics, not with the paper's code-string matching.
 
 All three auditable CF teachers and all three compatible-backbone semantic
-embedding banks are complete and durably acknowledged. **No fresh tokenizer
-fit or LC-Rec fit has completed.** The full native LC corpus audit admits
+embedding banks are complete and durably acknowledged. Some full-budget
+tokenizer and compatible LC-Rec components have now completed, with their
+measurements separated below. The full native LC corpus audit admits
 Instruments and Yelp but rejects Beauty's untouched auxiliary-task corpus:
 168 prompt variants exceed2048 tokens,91 have no supervised response after
 masking, and841 have prompt/full token-prefix mismatches. These are
@@ -91,10 +92,70 @@ recomputed.
 include checkpoint and prediction hashes. The predictions, pre-test protocol,
 admission evidence and exact scorer are durably banked. The original fitting
 receipts remain immutable; separate evaluation receipts record this test access.
-Later replacement comparisons must reuse these frozen references with matching
-teacher identities and scoring semantics. **Quantized-replacement results remain
-pending**; these references alone do not reproduce Table 3 or establish a
-tokenizer benefit.
+Replacement comparisons reuse these frozen references with matching teacher
+identities and scoring semantics. The first completed-tokenizer results below
+are partial coverage; these references alone do not establish a tokenizer benefit.
+
+## 📊 Completed compatible-backbone components
+
+These are **seed42, OpenLLaMA-7B-v2 compatible-backbone measurements**, not
+original-LLaMA1 reproduction. LC uses the authors' released ID bank, not our
+newly fitted tokenizer. BIGRec is the separately declared 1,024-prefix few-shot
+reference, not an all-data baseline.
+
+| Experiment | Dataset | Metric identity | Recall@10 | NDCG@10 |
+| --- | --- | --- | ---: | ---: |
+| LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
+| LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
+| LC, either policy | Instruments | Item diagnostic | 0.11590 | 0.08902 |
+| BIGRec, native title generation + frozen-base L2 | Yelp | Original item | 0.01666 | 0.01289 |
+
+LC completed all four epochs / 8,240 updates and selected checkpoint6,180
+solely from validation loss. Both fixed20-beam evaluations covered all24,772
+users. Independent verification checked every target, beam, score, item
+expansion, per-rank checksum and final-run/evaluation bank authorization.
+Native constraints emitted1,837 invalid codes among495,440 beams; the full
+trie emitted zero. Aggregate item metrics are identical, so format validity
+should not be presented as a demonstrated item-quality gain.
+
+BIGRec Yelp completed50 epochs, then four-beam/128-token generation and
+single-best-title grounding for all30,431 users against all20,033 original
+items. Every saved query's full-catalog L2 ranking was independently recomputed,
+without new model generation or encoding. No users were removed:35 first-beam
+answers reached the length limit. Title-equivalence Recall@10 is0.01840, a
+separate diagnostic rather than a replacement for original-item Recall@10.
+
+## 📉 First raw embedding-replacement results
+
+Both Instruments tokenizers below completed the entire20,000-epoch budget.
+The full model's collision-selected checkpoint is epoch18,000; diversity-only
+selected epoch20,000. Their actual exported IDs index the selected codebooks.
+Raw residual-order vector sums replace only the frozen32D teacher's real item
+rows, without normalization, rescaling or refitting.
+
+| Instruments condition | Recall@10 | NDCG@10 |
+| --- | ---: | ---: |
+| Original frozen teacher, reused reference | 0.08130 | 0.04269 |
+| Full tokenizer's raw quantized replacement | 0.02156 | 0.01033 |
+| Diversity-only tokenizer's raw quantized replacement | 0.00521 | 0.00239 |
+
+**Both replacements perform worse than the original teacher** in this declared
+reconstruction. The full tokenizer performs better than diversity-only, but
+this does not reproduce a gain over the teacher or establish a generative-model
+gain. Every per-user metric and the selected-codebook vector sum were independently
+verified; the original teacher was not scored again.
+
+Post-hoc median item-vector norms are1.259 for the teacher,8.708 for the full
+replacement and3.614 for diversity-only. This describes a distribution difference;
+it is not a causal test or permission to retune the reported experiment. The
+compatible semantic encoder, reconstructed teacher and declared analysis
+conventions remain limitations. Other tokenizer conditions and datasets are
+not inferred from these two results.
+
+[Verified component metrics and provenance](../results/2026-10-29-letter/verified-components-v1.json)
+retain exact values, source/checkpoint/prediction hashes, coverage and the
+separate diagnostic identities. Raw predictions and learned vectors remain
+private and durably banked.
 
 ## 📊 Instruments released-ID replay
 
