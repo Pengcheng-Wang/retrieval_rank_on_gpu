@@ -252,6 +252,40 @@ conditional on real GPU admission, followed by the same separate final-run
 bank-before-test protocol and both banked evaluations. No other device or job
 is used as a fallback. Beauty remains unadmitted.
 
+## 🛡️ Narrow exporter-timeout recovery
+
+`lc_recovery.py` is a separately versioned CPU-only wrapper around the frozen
+continuation queue, not a rewrite of the learner or final-evaluation pipeline.
+It retains the existing queue plan, state, reservations, final-run bank-before-test
+checks, both decoder policies, and the isolated Yelp queue.
+
+Automatic recovery is restricted to the exact rank-zero `TimeoutError` emitted
+by the frozen `wait_for_ack` callback. Every other error is explicitly blocked.
+Before one future launch, the wrapper requires:
+
+- Unchanged learner/support/launcher, admission, run configuration, and input
+  fingerprints.
+- The failed step to remain the latest complete checkpoint and current failed
+  generation, with matching independent snapshot, all-rank state, and bank ack.
+- No owned supervisor, launcher, torchrun, or rank process, and no compute user
+  on the four assigned GPUs.
+- The original exporter to remain alive without uninterruptible I/O; the common
+  bank lock must be immediately acquirable. No exporter restart, storage reset,
+  or writer bypass is attempted.
+- Matching worker, exporter-inbox, and durable receipts plus verified durable
+  checkpoint bytes under that lock.
+
+An exclusive, persisted failure identity is reserved on both nodes before launch.
+A bounded storage permit remains protected by the node-zero lock until the worker
+returns its launch result. The worker rechecks source, generation, process and
+GPU state, and remotely verifies the live writer/lock lease immediately before
+starting the unchanged launcher. Lost, uncertain, raced, or aborted reservations
+are preserved and are never automatically retried for that failure.
+
+An explicitly parent-handled historical failure is recorded as consumed without
+launching anything. An active parent-owned learner is observation-only. The
+wrapper's inspection mode is read-only and records that no launch was invoked.
+
 [^model]: Pinned compatible backbone: https://huggingface.co/openlm-research/open_llama_7b_v2/tree/e5961def23172a2384543940e773ab676033c963
 [^author]: Pinned official LETTER repository: https://github.com/HonghuiBao2000/LETTER/tree/8d0154e28de37dbb6e24871c508ad8ddb1921cda
 [^launcher]: Native LC training integration: https://github.com/HonghuiBao2000/LETTER/blob/8d0154e28de37dbb6e24871c508ad8ddb1921cda/LETTER-LC-Rec/lora_finetune.py
