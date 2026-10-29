@@ -1,0 +1,33 @@
+[project]
+name = "letter-p5-reference-env"
+version = "0.1.0"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    "torch==1.13.1+cu117; sys_platform == 'linux'",
+    "numpy==1.24.4",
+    "scipy==1.10.1",
+    "scikit-learn==1.2.2",
+    "networkx==2.8.8",
+    "transformers==4.26.0",
+    "tokenizers==0.13.3",
+    "sentencepiece==0.1.99",
+    "huggingface-hub==0.16.4",
+    "safetensors==0.3.3",
+    "nvidia-cuda-runtime-cu11==11.7.99; sys_platform == 'linux'",
+    "nvidia-cusparse-cu11==11.7.4.91; sys_platform == 'linux'",
+    "tqdm==4.66.1",
+    "pytest==8.3.5",
+    "setuptools==68.2.2",
+    "wheel==0.41.2",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu117"
+url = "https://download.pytorch.org/whl/cu117"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu117" }
+
+[tool.uv]
+environments = ["sys_platform == 'linux'"]
