@@ -1,6 +1,8 @@
 * text=auto
 *.sh text eol=lf
 *.py text eol=lf
+# Frozen BIGRec execution and maintenance hashes include CRLF on every platform.
+scripts/letter/bigrec_*.py text eol=crlf
 *.cu text eol=lf
 *.cpp text eol=lf
 *.cuh text eol=lf
