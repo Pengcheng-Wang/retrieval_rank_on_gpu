@@ -96,19 +96,42 @@ Replacement comparisons reuse these frozen references with matching teacher
 identities and scoring semantics. The first completed-tokenizer results below
 are partial coverage; these references alone do not establish a tokenizer benefit.
 
-## 📊 Completed compatible-backbone components
+## 📊 Newly verified generative-model results
 
-These are **seed42, OpenLLaMA-7B-v2 compatible-backbone measurements**, not
-original-LLaMA1 reproduction. LC uses the authors' released ID bank, not our
-newly fitted tokenizer. BIGRec is the separately declared 1,024-prefix few-shot
-reference, not an all-data baseline.
+These are **seed42 measurements**, not a completed multi-seed ablation.
+LC and BIGRec use the separately declared OpenLLaMA-7B-v2 compatible backbone,
+not original LLaMA1. LC still uses the authors' released ID bank. Fresh-ID T5
+uses newly trained IDs with OpenLLaMA only as the semantic encoder; its
+generator is the authors' randomly initialized small T5. P5 is a separately
+declared pretrained-T5 reference reconstruction. BIGRec uses1,024 training
+prefixes, not all training examples.
 
 | Experiment | Dataset | Metric identity | Recall@10 | NDCG@10 |
 | --- | --- | --- | ---: | ---: |
+| Fresh-ID T5, diversity-only, temperature1 | Instruments | Code | 0.10798 | 0.08091 |
+| Fresh-ID T5, diversity-only, temperature1 | Instruments | Item diagnostic | 0.10754 | 0.08019 |
+| P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
 | LC, either policy | Instruments | Item diagnostic | 0.11590 | 0.08902 |
+| BIGRec, title generation + frozen-base L2 | Instruments | Original item | 0.05010 | 0.03858 |
 | BIGRec, native title generation + frozen-base L2 | Yelp | Original item | 0.01666 | 0.01289 |
+
+The first genuine fresh-ID cell completed98 epochs with the fixed200-epoch
+maximum and patience20, selecting epoch78 by validation loss. Its tokenizer
+completed all20,000 epochs before admission. Independent checks covered all
+24,772 targets,20 distinct valid beams per user, code/item metrics,98 validation
+records, selected/final model identity and complete durable run/evaluation/result
+inventories. **One diversity-only cell does not establish a full-model gain**;
+semantic-only, CF-only and full-model comparisons and the other seeds remain
+unfinished.
+
+P5 CID completed all20 epochs /206,000 updates and selected the earliest
+validation Recall@10 maximum at epoch4. Every prediction in all20 validation
+epochs and the final24,772-user test was independently recomputed. The frozen
+selection, one-test binding, complete state seals and durable result inventory
+were checked. This CID catalog has no canonical-string collisions, so its
+primary and original-item metrics coincide; that is not assumed for title IDs.
 
 LC completed all four epochs / 8,240 updates and selected checkpoint6,180
 solely from validation loss. Both fixed20-beam evaluations covered all24,772
@@ -124,6 +147,19 @@ items. Every saved query's full-catalog L2 ranking was independently recomputed,
 without new model generation or encoding. No users were removed:35 first-beam
 answers reached the length limit. Title-equivalence Recall@10 is0.01840, a
 separate diagnostic rather than a replacement for original-item Recall@10.
+
+BIGRec Instruments likewise completed50 epochs and all24,772 users. Every
+saved query was independently reranked against all9,922 catalog items without
+new model inference. All first-beam answers ended with EOS; three secondary
+beams reached the length limit. Its selected model, catalog, summary and
+independent audit are banked, but **raw-chunk archiving is still in progress**:
+251 expensive-artifact acknowledgments remained at the23:24 UTC snapshot.
+This is a numerical result, not a claim that the full pipeline has finished
+durable export.
+
+[Exact new metrics and audit provenance](../results/2026-10-29-letter/verified-native-generative-v1.json)
+separate completed numerical checks from artifact-persistence status. The
+19-file audit packet preserves the executed audit programs and dependencies.
 
 ## 📉 First raw embedding-replacement results
 

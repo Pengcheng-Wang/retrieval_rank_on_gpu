@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "status": "independently_verified_metrics_with_explicit_durability_status",
+  "study_status": "in_progress",
+  "date": "2026-10-29",
+  "model_inference_performed_for_independent_audits": false,
+  "private_audit_packet": {
+    "files": 19,
+    "durability": "checksum_verified",
+    "contents": "Exact audit programs, helper dependencies, producer summaries, independent verification records and capture-time durability status"
+  },
+  "fresh_t5_instruments_diversity": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh native20k tokenizer, compatible semantic encoder, random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Instruments",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "diversity",
+    "alpha": 0.0,
+    "beta": 0.0001,
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 20000,
+    "semantic_encoder": {
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "revision": "e5961def23172a2384543940e773ab676033c963",
+      "role": "item semantic encoder only, not the downstream T5 generator"
+    },
+    "generator": {
+      "initialization": "author random T5 configuration",
+      "layers": 4,
+      "d_model": 128,
+      "d_ff": 1024,
+      "heads": 6,
+      "d_kv": 64,
+      "vocabulary": "native observed SID-token inventory plus original tokenizer vocabulary"
+    },
+    "training_epochs": 98,
+    "training_updates": 12642,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 78,
+    "selected_checkpoint": "checkpoint-10062",
+    "validation_evaluations_checked": 98,
+    "test_users": 24772,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.06087518165670919,
+      "ndcg@1": 0.06087518165670919,
+      "recall@5": 0.08784111093169708,
+      "ndcg@5": 0.07444290188413252,
+      "recall@10": 0.10798482157274342,
+      "ndcg@10": 0.08091223399975726
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.05962376877119328,
+      "ndcg@1": 0.05962376877119328,
+      "recall@5": 0.08743742935572421,
+      "ndcg@5": 0.07374345018894612,
+      "recall@10": 0.10754077183917327,
+      "ndcg@10": 0.08018779152909594
+    },
+    "index_sha256": "1ec3c957d5d1f1c2ffff1afa3b8d471c1cf7af136229b34f174775a43414102a",
+    "model_sha256": "f73530d380633c0bfec9ff8331aa12dbff19c34056878dfbf920c5c07c5a2a20",
+    "predictions_sha256": "5ff4a4dba8c90cabd7daddd28ebbb21a5f43a0a8267b60353949f0a5ef56e1da",
+    "result_sha256": "d0b3f83aa2e0c858224a947bbeab40333906e955b318b8bb27ff6a322b40e20e",
+    "independent_verification_sha256": "d5aece65963b0366688d2c58a612d6fc2bd416c3d4d406cc736995b7e74d653a",
+    "audit_source_sha256": "451ea6514717ff8d6a82f10d669665d65ac6d9c017df00c251c92a1710d07ad6",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
+  "p5_instruments_cid": {
+    "status": "independently_verified_and_banked",
+    "claim": "Declared native-code P5 CID reference reconstruction, not recovered exact LETTER Table1 settings",
+    "dataset": "Instruments",
+    "representation": "CID",
+    "seed": 42,
+    "training_epochs": 20,
+    "training_updates": 206000,
+    "selection": "earliest maximum full-user validation Recall@10",
+    "selected_epoch": 4,
+    "selected_update": 41200,
+    "validation_epochs_independently_recomputed": 20,
+    "validation_users_per_epoch": 24772,
+    "test_users": 24772,
+    "test_evaluations": 1,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "metric_identity": "original_item_equal_to_canonical_string_for_this_collision_free_CID_catalog",
+    "metrics": {
+      "recall@5": 0.07916195704828032,
+      "recall@10": 0.09623768771193282,
+      "ndcg@5": 0.06860509301696478,
+      "ndcg@10": 0.07409068120509346
+    },
+    "predictions_sha256": "0c65bd15beccfd131afed19331ea65d296afca486e9e8ba1c7ab3e16fb3df0f3",
+    "selected_seal_sha256": "7b428f54e4e10ce2245a5da379381f54b2e72696eb42007722b0b54adbbb7468",
+    "result_seal_sha256": "1d6d2d6d47f616246e96704ea4a1b4c9e6f3d1cb6f1788bdd5c9eb6e15194a49",
+    "result_sha256": "3b4e19ab828933f2209411c57880bdd40265f3dfed1463ab0ddb0b17e325bc9e",
+    "bank_receipt_sha256": "63b9614b5974adddac6c53c0f29ff5c5b898826efca2bbda552578bfc734dd81",
+    "independent_verification_sha256": "eaa564e230d9a277a1426ab41c40e8bed18bb9c708c1da4a36606bb961ae31f2",
+    "audit_source_sha256": "d216a6df0a816e9061513cc897695131e8074e5a46a03fb308cc82880d305c05",
+    "durability": "Selected/final state and result seals checked against durable acknowledgments; result inventory matches durable receipt"
+  },
+  "bigrec_instruments": {
+    "status": "independently_verified_metrics_raw_chunk_archiving_in_progress",
+    "claim": "Compatible OpenLLaMA-7B-v2 few-shot title-generation and frozen-base grounding reference",
+    "dataset": "Instruments",
+    "seed": 42,
+    "exact_original_weights_reproduction": false,
+    "training_prefixes": 1024,
+    "training_epochs": 50,
+    "test_users": 24772,
+    "catalog_items": 9922,
+    "generation_beams": 4,
+    "maximum_new_tokens": 128,
+    "grounding_queries_per_user": 1,
+    "distance": "unnormalized_l2_float32",
+    "metric_identity": "original_LETTER_item_id",
+    "seen_item_exclusion": false,
+    "failed_or_length_filtered_users": 0,
+    "metrics": {
+      "recall@1": 0.03092200871952204,
+      "ndcg@1": 0.03092200871952204,
+      "recall@5": 0.03903600839657678,
+      "ndcg@5": 0.03485324449507263,
+      "recall@10": 0.05009688357823349,
+      "ndcg@10": 0.03858043284054198
+    },
+    "primary_finish_reasons": {
+      "eos": 24772
+    },
+    "all_beam_finish_reasons": {
+      "eos": 99085,
+      "length": 3
+    },
+    "all_saved_query_full_catalog_rankings_recomputed": true,
+    "independent_verification_sha256": "19683f45b61f42a74521c7200232d5ca11b6aa09ac73ac343f356a7dc1400f4e",
+    "audit_source_sha256": "35f991ac7efebacf1d99d513e83529f42b1c10f07757346a86119f1bea4801d3",
+    "durability": {
+      "raw_archive_snapshot_utc": "2026-10-29T23:24:39.512510+00:00",
+      "selected_model_catalog_summary_and_independent_audit": "banked",
+      "remaining_expensive_artifact_acknowledgments": 251,
+      "pipeline_phase": "all_expensive_artifacts_waiting",
+      "all_raw_chunks_archived": false
+    }
+  }
+}
