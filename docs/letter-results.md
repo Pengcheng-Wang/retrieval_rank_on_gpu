@@ -1,6 +1,6 @@
 # LETTER reproduction: measured results
 
-_Updated 2026-10-29. Completed components are reported separately below; the full fresh-ID comparison and paper reproduction remain unfinished._
+_Updated 2026-10-30. Completed components are reported separately below; the full multi-seed reproduction remains unfinished._
 
 ---
 
@@ -124,6 +124,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, semantic+CF, temperature1 | Beauty | Item diagnostic | 0.06305 | 0.03342 |
 | Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Code | 0.06019 | 0.03240 |
 | Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Item diagnostic | 0.06005 | 0.03225 |
+| Fresh-ID T5, full tokenizer, temperature1 | Beauty | Code | 0.06283 | 0.03412 |
+| Fresh-ID T5, full tokenizer, temperature1 | Beauty | Item diagnostic | 0.06256 | 0.03389 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
@@ -230,6 +232,17 @@ so this seed does not establish a downstream diversity-objective gain. Exact
 cell and comparison packets are
 `verified-results/fresh-beauty-diversity-s42-t10-v1` and
 `verified-results/fresh-beauty-diversity-vs-semantic-v1`.
+
+Beauty full-tokenizer temperature1 completed97 epochs and selected epoch77.
+Code R10/N10 is0.06283/0.03412 and item diagnostic is0.06256/0.03389.
+Full-minus-semantic Recall@10 is+0.00344 by code, paired95% interval
+[+0.00049,+0.00653], and+0.00362 by item
+[+0.00063,+0.00671]; both NDCG@10 intervals include zero. Against CF, all
+Recall@10/NDCG@10 intervals include zero. Against diversity, only the marginal
+code NDCG@10 interval excludes zero; Recall@10 and item NDCG@10 remain
+inconclusive. Exact cell and comparison packets are
+`verified-results/fresh-beauty-full-s42-t10-v1` and
+`verified-results/fresh-beauty-full-comparisons-v1`.
 
 P5 CID completed all20 epochs /206,000 updates and selected the earliest
 validation Recall@10 maximum at epoch4. Every prediction in all20 validation

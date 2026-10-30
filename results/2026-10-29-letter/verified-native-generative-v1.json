@@ -575,6 +575,131 @@
     "private_evidence_bundle": "verified-results/fresh-beauty-diversity-s42-t10-v1",
     "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
   },
+  "fresh_t5_beauty_full": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh full LETTER tokenizer, compatible semantic encoder, reconstructed CF teacher and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Beauty",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "full",
+    "tokenizer_objectives": {
+      "alpha": 0.02,
+      "beta": 0.0001
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 20000,
+    "tokenizer_index_sha256": "fabf688126079a28ad0e02ed97b5bfb7b576426b9661c9a283e8f12c0f7b9c85",
+    "training_epochs": 97,
+    "training_updates": 12513,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 77,
+    "selected_checkpoint": "checkpoint-9933",
+    "validation_evaluations_checked": 97,
+    "test_users": 22363,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.013370299154854,
+      "ndcg@1": 0.013370299154854,
+      "recall@5": 0.040602781379957965,
+      "ndcg@5": 0.026995427815828178,
+      "recall@10": 0.06282699101193936,
+      "ndcg@10": 0.03412133652748771
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.013191432276528194,
+      "ndcg@1": 0.013191432276528194,
+      "recall@5": 0.04033448106246926,
+      "ndcg@5": 0.02677104904013593,
+      "recall@10": 0.06255869069445065,
+      "ndcg@10": 0.03389434396241447
+    },
+    "full_minus_semantic_same_seed_temperature": {
+      "paired_users": 22363,
+      "bootstrap_seed": 20261027,
+      "bootstrap_replicates": 2000,
+      "code_recall@10": {
+        "difference": 0.003443187407771766,
+        "ci_low": 0.0004918839153959665,
+        "ci_high": 0.00652864105889192
+      },
+      "code_ndcg@10": {
+        "difference": 0.001673121539162343,
+        "ci_low": -0.00006543255379119122,
+        "ci_high": 0.0034406316356826593
+      },
+      "item_recall@10": {
+        "difference": 0.003622054286097572,
+        "ci_low": 0.0006260340741403211,
+        "ci_high": 0.006707507937217726
+      },
+      "item_ndcg@10": {
+        "difference": 0.0017032185755409242,
+        "ci_low": -0.00003954491328705792,
+        "ci_high": 0.003471150825426685
+      },
+      "interpretation": "Recall@10 intervals are positive while NDCG@10 intervals include zero; this is conditional single-seed evidence.",
+      "comparison_sha256": "e4adce30f0b8923a2b2be79497da9f5d53b6b1fe41b4d6ebc0af4da2e2f8cf1f"
+    },
+    "full_minus_cf_same_seed_temperature": {
+      "code_recall@10": {
+        "difference": -0.00040245047623306356,
+        "ci_low": -0.003622054286097572,
+        "ci_high": 0.0026382864553056388
+      },
+      "code_ndcg@10": {
+        "difference": 0.0005427494809168601,
+        "ci_low": -0.0011539745073649152,
+        "ci_high": 0.0021249521337087488
+      },
+      "item_recall@10": {
+        "difference": -0.0004918839153959665,
+        "ci_low": -0.0036678889236685594,
+        "ci_high": 0.0025935697357241873
+      },
+      "item_ndcg@10": {
+        "difference": 0.0004761340437123058,
+        "ci_low": -0.0012052728440523942,
+        "ci_high": 0.002093907112479242
+      },
+      "interpretation": "All Recall@10 and NDCG@10 intervals include zero.",
+      "comparison_sha256": "3438f937a6c793bd9b703771bab639e4708bf69034b499ff63863177a3003f6b"
+    },
+    "full_minus_diversity_same_seed_temperature": {
+      "code_recall@10": {
+        "difference": 0.0026382864553056388,
+        "ci_low": -0.00040245047623306356,
+        "ci_high": 0.005723740106425792
+      },
+      "code_ndcg@10": {
+        "difference": 0.0017197046543432645,
+        "ci_low": 0.000044112172188157586,
+        "ci_high": 0.0034274501309804733
+      },
+      "item_recall@10": {
+        "difference": 0.0025041362965612843,
+        "ci_low": -0.0004918839153959665,
+        "ci_high": 0.0055448732280999865
+      },
+      "item_ndcg@10": {
+        "difference": 0.0016397305979508905,
+        "ci_low": -0.000033090659177985055,
+        "ci_high": 0.0033505272596098972
+      },
+      "interpretation": "Only the marginal code NDCG@10 interval excludes zero; Recall@10 and item NDCG@10 remain inconclusive.",
+      "comparison_sha256": "034c1976ad68c27b491260eb380456cce99d85c4fe400844bfcc698964c2c674"
+    },
+    "model_sha256": "fa62180bec5dccc14a709af49e11b73e814895e4a125bb2a7357a4b8d400b2e2",
+    "predictions_sha256": "41b1e1a0530b274750e164f0540b72fc0ba20b0f253e61f907e739dd547f8b71",
+    "result_sha256": "85601f9ffd6f3529a451d23df43a4d20b6f05e27712074ad1de5a782f14f9e3b",
+    "independent_verification_sha256": "d44285c871544a8fcd30f32fb560248b4501069386a60a7f08c2af93857351d6",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-beauty-full-s42-t10-v1",
+    "comparison_evidence_bundle": "verified-results/fresh-beauty-full-comparisons-v1",
+    "durability": "Complete run, all-user evaluation, final result and paired-comparison receipts are checksum verified"
+  },
   "p5_instruments_cid": {
     "status": "independently_verified_and_banked",
     "claim": "Declared native-code P5 CID reference reconstruction, not recovered exact LETTER Table1 settings",
