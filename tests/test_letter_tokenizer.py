@@ -2,6 +2,7 @@ import importlib
 import json
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -43,6 +44,52 @@ def test_eight_level_export_and_collision_accounting():
     assert rq().collision_groups(codes) == [[0, 1]]
     with pytest.raises(ValueError):
         rq().format_codes(np.array([[-1, 2]]))
+
+
+def test_figure8_gate_is_bounded_and_never_final_tokenizer_identity():
+    assert rq().experiment_purpose(False, 20000) == {
+        "kind": "tokenizer_reconstruction",
+        "admissible_final_tokenizer": True,
+    }
+    assert rq().experiment_purpose(True, 2) == {
+        "kind": "figure8_parameterization_cost_gate",
+        "admissible_final_tokenizer": False,
+    }
+    with pytest.raises(ValueError, match="bounded"):
+        rq().experiment_purpose(True, 11)
+
+
+def test_runtime_receipt_checks_actual_nondefault_codebooks_and_sid_length():
+    def layer(codes, epsilon):
+        return SimpleNamespace(
+            n_e=codes,
+            e_dim=32,
+            sk_epsilon=epsilon,
+            embedding=SimpleNamespace(weight=SimpleNamespace(shape=(codes, 32))),
+        )
+
+    codes = [512] * 8
+    epsilons = [0] * 7 + [0.003]
+    model = SimpleNamespace(
+        n_clusters=20,
+        e_dim=32,
+        num_emb_list=codes,
+        sk_epsilons=epsilons,
+        rq=SimpleNamespace(vq_layers=[layer(count, epsilon)
+                                     for count, epsilon in zip(codes, epsilons)]),
+    )
+    receipt = rq().runtime_model_receipt(model, codes, epsilons, 20, 32)
+    assert receipt == {
+        "levels": 8,
+        "codebook_shapes": [[512, 32]] * 8,
+        "clusters": 20,
+        "epsilons": epsilons,
+        "emitted_sid_length": 8,
+        "last_token_prefix": "h",
+    }
+    model.rq.vq_layers[-1].embedding.weight.shape = (256, 32)
+    with pytest.raises(ValueError, match="codebook"):
+        rq().runtime_model_receipt(model, codes, epsilons, 20, 32)
 
 
 def test_input_embeddings_are_aligned_finite_matrices():

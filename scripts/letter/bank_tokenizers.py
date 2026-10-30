@@ -68,6 +68,8 @@ def snapshot(run: Path, staging: Path) -> dict | None:
     final_bytes = completion.read_bytes() if completion.is_file() else None
     final = json.loads(final_bytes) if final_bytes is not None else None
     config = json.loads((run / "run-config.json").read_text(encoding="utf-8"))
+    if config.get("purpose", {}).get("admissible_final_tokenizer") is False:
+        raise ValueError("A parameterization cost gate is not a final tokenizer and cannot be banked")
     if config.get("synthetic_fixture") is not False or not config.get("track_id"):
         raise ValueError("Only explicitly identified real tokenizer runs can be banked here")
     latest_bytes = marker.read_bytes()

@@ -71,6 +71,23 @@ def test_quantizer_snapshot_never_admits_unsealed_or_redirected_state(tmp_path):
         module().snapshot(run, tmp_path / "staging")
 
 
+def test_parameterization_cost_gate_is_never_banked_as_tokenizer_state(tmp_path):
+    from protocol import write_json
+
+    run = tmp_path / "rq"
+    config = make_run(run)
+    write_json(run / "run-config.json", {
+        **config,
+        "purpose": {
+            "kind": "figure8_parameterization_cost_gate",
+            "admissible_final_tokenizer": False,
+        },
+    })
+    with pytest.raises(ValueError, match="parameterization|final tokenizer"):
+        module().snapshot(run, tmp_path / "staging")
+    assert not (tmp_path / "staging").exists()
+
+
 def test_quantizer_acknowledgment_requires_the_exact_complete_run(tmp_path):
     from protocol import file_sha256, write_json
 

@@ -51,6 +51,35 @@ def validate_spec(codes, epsilons, clusters: int, dimension: int, items: int) ->
             raise ValueError("Item count exceeds the author's constrained initialization capacity")
 
 
+def experiment_purpose(parameterization_gate: bool, epochs: int) -> dict:
+    if parameterization_gate and epochs > 10:
+        raise ValueError("Figure 8 parameterization gates must remain bounded to at most 10 epochs")
+    return {
+        "kind": ("figure8_parameterization_cost_gate"
+                 if parameterization_gate else "tokenizer_reconstruction"),
+        "admissible_final_tokenizer": not parameterization_gate,
+    }
+
+
+def runtime_model_receipt(model, codes, epsilons, clusters: int, dimension: int) -> dict:
+    layers = list(model.rq.vq_layers)
+    expected_shapes = [[count, dimension] for count in codes]
+    actual_shapes = [list(layer.embedding.weight.shape) for layer in layers]
+    if (len(layers) != len(codes) or list(model.num_emb_list) != list(codes)
+            or model.e_dim != dimension or model.n_clusters != clusters
+            or list(model.sk_epsilons) != list(epsilons)
+            or actual_shapes != expected_shapes
+            or any(layer.n_e != count or layer.e_dim != dimension
+                   or layer.sk_epsilon != epsilon
+                   for layer, count, epsilon in zip(layers, codes, epsilons))):
+        raise ValueError("Actual tokenizer codebook/runtime parameterization differs from the request")
+    return {
+        "levels": len(codes), "codebook_shapes": actual_shapes, "clusters": clusters,
+        "epsilons": list(epsilons), "emitted_sid_length": len(codes),
+        "last_token_prefix": chr(ord("a") + len(codes) - 1),
+    }
+
+
 def validate_embeddings(semantic, collaborative, dimension: int) -> None:
     if (semantic.ndim != 2 or collaborative.ndim != 2
             or semantic.shape[0] != collaborative.shape[0] or collaborative.shape[1] != dimension):
@@ -327,6 +356,7 @@ def train(args) -> None:
     model_type, trainer_type, dataset_type, source_receipts = load_author(
         args.upstream, args.output / "author-rq",
     )
+    purpose = experiment_purpose(args.parameterization_gate, args.epochs)
     spec = {
         "dataset": args.dataset, "synthetic_fixture": args.synthetic, "seed": args.seed,
         "track_id": ("synthetic_fixture" if args.synthetic else
@@ -345,8 +375,8 @@ def train(args) -> None:
         "epochs": args.epochs, "eval_step": min(args.eval_step, args.epochs),
         "source": source_receipts, "harness_sha256": file_sha256(Path(__file__)),
         "num_workers": 0, "selection": "first minimum collision rate at scheduled evaluations",
+        "purpose": purpose,
     }
-    bind_run_config(args.output, spec)
     dataset = dataset_type(str(args.semantic))
     model = model_type(
         in_dim=semantic.shape[1], num_emb_list=args.codes, e_dim=args.dimension, layers=args.layers,
@@ -355,6 +385,10 @@ def train(args) -> None:
         alpha=args.alpha, beta=args.beta, n_clusters=args.clusters, sample_strategy="all",
         cf_embedding=collaborative,
     )
+    spec["runtime_parameterization"] = runtime_model_receipt(
+        model, args.codes, args.epsilons, args.clusters, args.dimension,
+    )
+    bind_run_config(args.output, spec)
 
     class ManagedTrainer(trainer_type):
         def constrained_km(self, data, n_clusters=10):
@@ -419,6 +453,7 @@ def train(args) -> None:
         "selected_epoch": selected_state["epoch"] + 1, "selected_checkpoint": selected,
         "export": export, "wall_seconds_this_invocation": time.monotonic() - started,
         "run_config_sha256": file_sha256(args.output / "run-config.json"),
+        "purpose": purpose,
     })
 
 
@@ -431,6 +466,7 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--method-spec", type=Path)
     parser.add_argument("--synthetic", action="store_true")
+    parser.add_argument("--parameterization-gate", action="store_true")
     parser.add_argument("--codes", nargs="+", type=int, default=[256] * 4)
     parser.add_argument("--epsilons", nargs="+", type=float, default=[0, 0, 0, 0.003])
     parser.add_argument("--dimension", type=int, default=32)
@@ -452,6 +488,9 @@ def main() -> None:
         parser.error("Training and checkpoint intervals must be positive")
     if any(not math.isfinite(v) or v < 0 for v in (args.alpha, args.beta)):
         parser.error("Regularization strengths must be finite and nonnegative")
+    if args.synthetic and args.parameterization_gate:
+        parser.error("Figure 8 parameterization gates require the real audited inputs")
+    experiment_purpose(args.parameterization_gate, args.epochs)
     for field in ("upstream", "semantic", "cf", "output"):
         setattr(args, field, getattr(args, field).resolve())
     train(args)
