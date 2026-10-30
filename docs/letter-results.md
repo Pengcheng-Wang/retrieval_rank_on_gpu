@@ -128,6 +128,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature1 | Beauty | Item diagnostic | 0.06256 | 0.03389 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Code | 0.06260 | 0.03369 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Item diagnostic | 0.06234 | 0.03355 |
+| Fresh-ID T5, semantic-only, temperature1 | Yelp | Code | 0.04045 | 0.02094 |
+| Fresh-ID T5, semantic-only, temperature1 | Yelp | Item diagnostic | 0.03608 | 0.01903 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
@@ -136,6 +138,16 @@ prefixes, not all training examples.
 | BIGRec, title generation + frozen-base L2 | Instruments | Original item | 0.05010 | 0.03858 |
 | BIGRec, title generation + frozen-base L2 | Beauty | Original item | 0.02589 | 0.01439 |
 | BIGRec, native title generation + frozen-base L2 | Yelp | Original item | 0.01666 | 0.01289 |
+
+The Yelp semantic-only arm completed175 epochs and selected epoch155 by
+validation loss. Its all30,431-user code Recall@10/NDCG@10 is
+0.04045/0.02094; the declared original-item collision diagnostic is
+0.03608/0.01903. The larger code-to-item gap is consistent with its853 excess
+collision items, but does not identify collisions as the sole cause. Every
+prediction, validation record, model binding and durable file was independently
+verified and banked at `verified-results/fresh-yelp-semantic-s42-t10-v1`.
+The remaining Yelp component and generation-loss arms are still required before
+interpreting the full ablation.
 
 The first genuine fresh-ID cell completed98 epochs with the fixed200-epoch
 maximum and patience20, selecting epoch78 by validation loss. Its tokenizer

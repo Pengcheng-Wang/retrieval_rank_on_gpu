@@ -753,6 +753,62 @@
     "comparison_evidence_bundle": "verified-results/fresh-beauty-full-comparisons-v1",
     "durability": "Complete run, all-user evaluation, final result and paired-comparison receipts are checksum verified"
   },
+  "fresh_t5_yelp_semantic": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh semantic-only tokenizer, compatible semantic encoder and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Yelp",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "semantic",
+    "tokenizer_objectives": {
+      "alpha": 0.0,
+      "beta": 0.0
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 12000,
+    "tokenizer_index_sha256": "5bd01b6a8e96b3062e777f0fdd099bca44a5854fbc70f1079542475d5475c328",
+    "tokenizer_collisions": {
+      "unique_sids": 19180,
+      "excess_collision_items": 853,
+      "collision_groups": 396,
+      "items_in_collision_groups": 1249,
+      "largest_group": 65
+    },
+    "training_epochs": 175,
+    "training_updates": 38500,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 155,
+    "selected_checkpoint": "checkpoint-34100",
+    "validation_evaluations_checked": 175,
+    "test_users": 30431,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.007426637310637179,
+      "ndcg@1": 0.007426637310637179,
+      "recall@5": 0.023331471197134503,
+      "ndcg@5": 0.015445762202259955,
+      "recall@10": 0.040452170484045875,
+      "ndcg@10": 0.02094201424570094
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.007098025040255003,
+      "ndcg@1": 0.007098025040255003,
+      "recall@5": 0.021491242482994315,
+      "ndcg@5": 0.014353862124650394,
+      "recall@10": 0.03608162728796293,
+      "ndcg@10": 0.01903037415008851
+    },
+    "model_sha256": "98f900ec867c76f89b756121625f16693e3b9942beb371884360f45f969fb9e0",
+    "predictions_sha256": "6731a64a6810c0c41f29ba28cc72d1002b03b3396c5ec9ea87b3c20971dfd397",
+    "result_sha256": "225222ded08078f36d04460e03863cdb0171fb532dbef60373a89257d9b7c04a",
+    "independent_verification_sha256": "a3ec0d14ea046c36ba45145f8082e1344fa7a2fe984d116442eb95f21b281f4c",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-yelp-semantic-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
   "p5_instruments_cid": {
     "status": "independently_verified_and_banked",
     "claim": "Declared native-code P5 CID reference reconstruction, not recovered exact LETTER Table1 settings",
