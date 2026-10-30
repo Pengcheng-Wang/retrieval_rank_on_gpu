@@ -120,6 +120,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature0.7 | Instruments | Item diagnostic | 0.10807 | 0.07959 |
 | Fresh-ID T5, semantic-only, temperature1 | Beauty | Code | 0.05938 | 0.03245 |
 | Fresh-ID T5, semantic-only, temperature1 | Beauty | Item diagnostic | 0.05894 | 0.03219 |
+| Fresh-ID T5, semantic+CF, temperature1 | Beauty | Code | 0.06323 | 0.03358 |
+| Fresh-ID T5, semantic+CF, temperature1 | Beauty | Item diagnostic | 0.06305 | 0.03342 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
@@ -202,6 +204,20 @@ item diagnostics are0.05894/0.03219. Every prediction, validation record,
 tokenizer identity and durable file was independently verified. This is one
 compatible-backbone cell; the remaining Beauty component and generation-loss
 rows are still required before interpreting Table2.
+
+The Beauty semantic+CF arm also completed and was recovered without changing
+its recipe after a fail-closed exporter race. Trainer rotated a sealed
+checkpoint while it was being copied; v5 resumed exact full state from
+step11,099, completed epoch93 with the unchanged epoch73 selection, banked the
+run before evaluation and passed the generic all-user audit. Code R10/N10 is
+0.06323/0.03358 and item diagnostic is0.06305/0.03342.
+CF-minus-semantic Recall@10 is+0.00385 by code, paired95% interval
+[+0.00089,+0.00684], and+0.00411 by item
+[+0.00112,+0.00711]. NDCG@10 intervals include zero. This is positive
+single-seed Recall evidence, not a universal component claim. Exact recovery
+and comparison evidence are banked at
+`openllama-v2/fresh-t5-v3/operational/fresh-rq-v5-recovery-result` and
+`verified-results/fresh-beauty-cf-vs-semantic-v1`.
 
 P5 CID completed all20 epochs /206,000 updates and selected the earliest
 validation Recall@10 maximum at epoch4. Every prediction in all20 validation

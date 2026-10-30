@@ -296,6 +296,12 @@ non-source copy error remain fatal. This preserves fail-closed exporter
 supervision without draining a valid fit merely because Trainer rotated an old
 sealed checkpoint during copying.
 
+This path was exercised by the Beauty semantic+CF cell: the original controller
+drained at sealed step11,099, a versioned controller adopted the exact protected
+work tree, resumed full state and completed epoch93 with the prior epoch73
+selection unchanged. Its complete evaluation and independent audit are reported
+in `letter-results.md`.
+
 ### Admitted RQ dependency correction
 
 `fresh_rq_admission.py` is the versioned entry point for the two explicitly

@@ -410,6 +410,94 @@
     "private_evidence_bundle": "verified-results/fresh-beauty-semantic-s42-t10-v1",
     "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
   },
+  "fresh_t5_beauty_cf": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh semantic-plus-CF tokenizer, compatible semantic encoder and random native T5 generator; exact full-state v5 recovery from an exporter rotation race; not original-LLaMA1 reproduction",
+    "dataset": "Beauty",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "cf",
+    "tokenizer_objectives": {
+      "alpha": 0.02,
+      "beta": 0.0
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 20000,
+    "tokenizer_index_sha256": "68ba0f5702f9bc1bddbb389adbead1ed5fdd19460ff579ed0334f352bcccfa2f",
+    "training_epochs": 93,
+    "training_updates": 11997,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 73,
+    "selected_checkpoint": "checkpoint-9417",
+    "validation_evaluations_checked": 93,
+    "test_users": 22363,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "recovery": {
+      "cause": "Trainer rotated a sealed checkpoint while the exporter copied it; Python aggregated source ENOENT failures as shutil.Error",
+      "drained_global_step": 11099,
+      "drained_checkpoint_complete_sha256": "a46616df7976da551b59b9e19b864060431703a6a968a99dda234432eec2a5e1",
+      "resume": "exact complete model, optimizer, scheduler, RNG and callback state",
+      "source_commit": "30a75e0",
+      "protected_pre_adoption_files": 3769,
+      "protected_pre_adoption_bytes": 21010229051,
+      "selection_unchanged": true,
+      "private_evidence_bundle": "openllama-v2/fresh-t5-v3/operational/fresh-rq-v5-recovery-result"
+    },
+    "code_metrics": {
+      "recall@1": 0.012386531324062066,
+      "ndcg@1": 0.012386531324062066,
+      "recall@5": 0.04100523185619103,
+      "ndcg@5": 0.02645920100635048,
+      "recall@10": 0.06322944148817243,
+      "ndcg@10": 0.033578587046570844
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.01220766444573626,
+      "ndcg@1": 0.01220766444573626,
+      "recall@5": 0.04082636497786522,
+      "ndcg@5": 0.026296733898658366,
+      "recall@10": 0.06305057460984662,
+      "ndcg@10": 0.03341820991870215
+    },
+    "cf_minus_semantic_same_seed_temperature": {
+      "paired_users": 22363,
+      "bootstrap_seed": 20261027,
+      "bootstrap_replicates": 2000,
+      "code_recall@10": {
+        "difference": 0.0038456378840048292,
+        "ci_low": 0.0008943343916290301,
+        "ci_high": 0.00684165809596208
+      },
+      "code_ndcg@10": {
+        "difference": 0.0011303720582454837,
+        "ci_low": -0.000562423442457644,
+        "ci_high": 0.002863096034215578
+      },
+      "item_recall@10": {
+        "difference": 0.004113938201493538,
+        "ci_low": 0.0011179179895362877,
+        "ci_high": 0.00710995841345079
+      },
+      "item_ndcg@10": {
+        "difference": 0.001227084531828618,
+        "ci_low": -0.00046597703993198373,
+        "ci_high": 0.002932058368687249
+      },
+      "interpretation": "Recall@5/10 intervals are positive; NDCG@5/10 intervals include zero. This is conditional single-seed evidence.",
+      "comparison_sha256": "18e9ef85556625c2519b5e70747b09177e245234eb00be3dcb9430abd5855a1f",
+      "private_evidence_bundle": "verified-results/fresh-beauty-cf-vs-semantic-v1"
+    },
+    "model_sha256": "8b5a397e59ba80d810e181f31705ed4402e958d41925b83bc5a840b1db30a865",
+    "predictions_sha256": "31e917c55a8ea837154ba3f132e0838ce2834191eaddac05ebc04d0cd9f81e2d",
+    "result_sha256": "e8af7fa553b3d86b65855f8b7001a91fea0abc428d028be8a4929a896532bfd8",
+    "independent_verification_sha256": "907dd45e81805159ff2d6a3649fc9a9fd353bafe1928dc71956d7c7ee174d267",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-beauty-cf-s42-t10-v1",
+    "durability": "Complete recovered run, all-user evaluation and final result receipts match immutable local inventories"
+  },
   "p5_instruments_cid": {
     "status": "independently_verified_and_banked",
     "claim": "Declared native-code P5 CID reference reconstruction, not recovered exact LETTER Table1 settings",
