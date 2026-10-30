@@ -117,6 +117,56 @@
       "item_ndcg@10": -0.00012371431981414438,
       "interpretation": "Descriptive single-seed point differences only; Recall improves while NDCG is effectively flat/slightly lower."
     },
+    "temperature_0p7_control": {
+      "status": "independently_verified_and_banked",
+      "training_epochs": 92,
+      "selected_epoch": 72,
+      "selected_checkpoint": "checkpoint-9288",
+      "code_metrics": {
+        "recall@5": 0.08667043436137575,
+        "recall@10": 0.10859034393670274,
+        "ndcg@5": 0.07321947684046091,
+        "ndcg@10": 0.08024902748606368
+      },
+      "original_item_diagnostic": {
+        "recall@5": 0.0864685935733893,
+        "recall@10": 0.108065557887938,
+        "ndcg@5": 0.07266544669916816,
+        "ndcg@10": 0.07958900375765099
+      },
+      "paired_user_tau0p7_minus_tau1": {
+        "users": 24772,
+        "bootstrap_seed": 20261027,
+        "bootstrap_replicates": 2000,
+        "code_recall@10": {
+          "difference": -0.0008477313095430325,
+          "ci_low": -0.003391934442112062,
+          "ci_high": 0.001695462619086065
+        },
+        "code_ndcg@10": {
+          "difference": -0.000538939278549221,
+          "ci_low": -0.001993056400583215,
+          "ci_high": 0.0009355005626702616
+        },
+        "item_recall@10": {
+          "difference": -0.0007266268367511707,
+          "ci_low": -0.0032708299693202,
+          "ci_high": 0.0018165670918779268
+        },
+        "item_ndcg@10": {
+          "difference": -0.0004750734516308583,
+          "ci_low": -0.0019352406425271963,
+          "ci_high": 0.000983413444923127
+        },
+        "interpretation": "All predeclared marginal intervals include zero; this seed does not establish a temperature0.7 benefit."
+      },
+      "model_sha256": "b7b157fb800c66af4ab31101ed2a83969cb58a638f187a3f84f683aff4372326",
+      "predictions_sha256": "a0e7996b8ba4a4835594ef5780c399a46bd367b0339b6d882c890114f4cfc085",
+      "result_sha256": "2c7cfc6ba34a28f00cd8f154b3de6686124e60277841dc0736886afd78ba61a8",
+      "independent_verification_sha256": "1b0d3b1fa6582eab2e066946fa695166358f9a4949f4820c9eb84b1dab104256",
+      "comparison_sha256": "c348fdc9d45ee198e650b3ce7d773a7c63d3070812983cc19c31a569b364c64e",
+      "private_evidence_bundle": "verified-results/fresh-instruments-full-t07-s42-v1"
+    },
     "model_sha256": "4cb23c0f3f6845755c0d0c510c9bb772c5666ed73a2fefa22c4e4c00b635bd84",
     "predictions_sha256": "e18ac894d46c8f66052f33a09a4db5a13bcdfacffae85978eadc5331b14dedcb",
     "result_sha256": "b76344c10082fbe6bdd3a0ac11390942bee387e4edf38e4ed9e36478de1abafe",
