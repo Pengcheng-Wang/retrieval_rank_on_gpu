@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "status": "verified_parameterization_and_cost_gate",
+  "study_status": "in_progress",
+  "scientific_result": false,
+  "dataset": "Instruments",
+  "seed": 42,
+  "purpose": {
+    "kind": "figure8_parameterization_cost_gate",
+    "admissible_final_tokenizer": false
+  },
+  "configuration": {
+    "epochs": 1,
+    "batch_size": 1024,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "alpha": 0.02,
+    "beta": 0.0001,
+    "levels": 8,
+    "codes_per_level": 512,
+    "dimension": 32,
+    "clusters": 20,
+    "epsilons": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.003
+    ]
+  },
+  "runtime_parameterization": {
+    "codebook_shapes": [
+      [512, 32],
+      [512, 32],
+      [512, 32],
+      [512, 32],
+      [512, 32],
+      [512, 32],
+      [512, 32],
+      [512, 32]
+    ],
+    "emitted_sid_length": 8,
+    "last_token_prefix": "h"
+  },
+  "coverage": {
+    "items": 9922,
+    "codes_shape": [9922, 8],
+    "minimum_code": 0,
+    "maximum_code": 511
+  },
+  "timing": {
+    "wall_seconds": 307.7899805189809,
+    "training_epoch_seconds": 7.925803015008569,
+    "initialization_validation_checkpoint_export_seconds": 299.8641775039723,
+    "projected_20000_epoch_training_only_hours": 44.03223897226983,
+    "projection_excludes": [
+      "scheduled collision evaluations",
+      "checkpoint serialization",
+      "final collision repair and export",
+      "storage contention",
+      "downstream T5 retraining and evaluation"
+    ]
+  },
+  "one_epoch_diagnostic_not_quality_result": {
+    "collision_rate": 0.9975811328361217,
+    "collision_retries": 20,
+    "unique_ids_after_retries": 2102,
+    "excess_collision_items_after_retries": 7820,
+    "largest_collision_group": 417,
+    "utilization_by_level": [3, 1, 4, 5, 1, 1, 1, 447]
+  },
+  "hashes": {
+    "checkpoint_state_sha256": "dba54037d5af9768becde583694f772af5da3e9aa37b78f8129fb2490311c90f",
+    "run_config_sha256": "6f83e8999cad2ba5f8b48ab845ce64808f9063de8fff84488a1733811697b781",
+    "index_sha256": "90c8951aedd86b22f13dcf873cde60d61d070379683cc2c5f6b63509348d6b2c",
+    "codes_sha256": "11bc2dd59f4b3b21616b22eae7dd042e2d0b7e287f4eefc0e9276467a211be5d",
+    "independent_verification_source_sha256": "051c448e939b87a15f2cfb1c7b5dc2c3650518b103da8c867826d39c6fddce1f"
+  },
+  "validation": {
+    "local_tests": "14 passed, 3 native-only skips",
+    "native_tests": "17 passed",
+    "independent_checkpoint_and_export_audit": "pass",
+    "final_tokenizer_banking_rejected": true,
+    "private_evidence_bundle": "analysis-controls/figure8-parameterization-gate-v1"
+  },
+  "interpretation": "The most structurally demanding requested Figure 8 tokenizer shape is executable and emits the requested eight-token identifiers. The one-epoch collision values are deliberately undertrained diagnostics, not recommendation or tokenizer-quality results. The measured cost supports bounded, separately budgeted one-factor sweeps rather than a Cartesian search."
+}

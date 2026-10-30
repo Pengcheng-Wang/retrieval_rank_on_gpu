@@ -202,6 +202,23 @@ with 128 codes/level and 20 diversity clusters emitted eight-token IDs,
 confirming that requested structure reaches the model and exporter rather
 than being silently truncated by `zip` or a six-prefix list.
 
+The full-catalog Figure8 cost gate additionally executed the most demanding
+requested structure on all9,922 Instruments items:8 levels,512 codes/level
+and20 clusters. The actual checkpoint contained eight `[512,32]` codebooks,
+and export emitted valid eight-token IDs ending in the `h` prefix. One training
+epoch took7.93 seconds; initialization, validation, checkpointing and the
+deliberately undertrained collision export brought wall time to307.79 seconds.
+The measured training-only lower bound is therefore about44.03 GPU-hours for
+20,000 epochs, excluding scheduled evaluations, export, storage and downstream
+T5 work.
+
+`--parameterization-gate` marks these bounded runs as inadmissible final
+tokenizers. The normal tokenizer banker rejects them before creating staging,
+even when they contain a complete checkpoint and export. Their one-epoch
+collision values are cost/correctness diagnostics, never recommendation or
+tokenizer-quality results. Exact gate measurements and limitations are in the
+[parameterization record](../results/2026-10-29-letter/figure8-parameterization-gate-v1.json).
+
 Those are correctness gates, **not paper measurements**. The original track
 requires a complete original-encoder embedding receipt with model/tokenizer
 hashes, full token-audit status, metadata hash, row order and embedding hash.
