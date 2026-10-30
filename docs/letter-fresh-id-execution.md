@@ -289,7 +289,11 @@ A normal exporter exit is accepted only with exit code zero and a validated
 training-complete marker, including model and run-configuration checksums. The
 exporter is never included in the training process session; explicit exporter
 shutdown still acquires the shared bank lock first, so it cannot interrupt
-durable IO.
+durable IO. Each checkpoint's durable copy and local `.banked.json`
+acknowledgment are committed inside that same lock. This prevents shutdown
+between the marker's temporary write and atomic rename; an older interrupted
+marker was retained as evidence and recovered only after rehashing every
+durable checkpoint file.
 
 Resume is explicit and restricted to the run's highest complete sealed state.
 The helper verifies model/optimizer/scheduler, callback state, every rank's RNG,
