@@ -117,6 +117,7 @@ prefixes, not all training examples.
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
 | LC, either policy | Instruments | Item diagnostic | 0.11590 | 0.08902 |
 | BIGRec, title generation + frozen-base L2 | Instruments | Original item | 0.05010 | 0.03858 |
+| BIGRec, title generation + frozen-base L2 | Beauty | Original item | 0.02589 | 0.01439 |
 | BIGRec, native title generation + frozen-base L2 | Yelp | Original item | 0.01666 | 0.01289 |
 
 The first genuine fresh-ID cell completed98 epochs with the fixed200-epoch
@@ -173,6 +174,16 @@ repeated for this persistence check.
 include completed numerical and persistence checks. The original19-file audit
 packet preserves the executed metric programs and dependencies; a separate
 final-durability packet preserves the complete raw-object verification.
+
+BIGRec Beauty also completed all22,363 users, and every saved query was
+independently reranked against all12,101 original items. Recall@10 is0.02589
+and NDCG@10 is0.01439. There were225 first-beam length finishes and1,043
+length finishes across all beams; no user was filtered. Literal generated-title
+match rate is0.00340. The title-equivalence and original-item Recall@10 values
+coincide here, while title-equivalence NDCG@10 is0.01441; it remains a diagnostic,
+not a replacement metric. Numerical/model/catalog/summary evidence is banked.
+Raw shard export was still draining with336 acknowledgments pending at the
+capture point, so complete persistence remains separately gated.
 
 ## 📉 First raw embedding-replacement results
 

@@ -212,5 +212,55 @@
       "final_durability_verification_sha256": "580dbe652bc16db72fbdb1320cb521128b122900a7633f87ac433afd9b14dcf1",
       "private_evidence_bundle": "verified-results/bigrec-instruments-final-durability-v1"
     }
+  },
+  "bigrec_beauty": {
+    "status": "independently_verified_metrics_raw_chunk_archiving_in_progress",
+    "claim": "Compatible OpenLLaMA-7B-v2 few-shot title-generation and frozen-base grounding reference",
+    "dataset": "Beauty",
+    "seed": 42,
+    "exact_original_weights_reproduction": false,
+    "training_prefixes": 1024,
+    "training_epochs": 50,
+    "test_users": 22363,
+    "catalog_items": 12101,
+    "generation_beams": 4,
+    "maximum_new_tokens": 128,
+    "grounding_queries_per_user": 1,
+    "distance": "unnormalized_l2_float32",
+    "metric_identity": "original_LETTER_item_id",
+    "seen_item_exclusion": false,
+    "failed_or_length_filtered_users": 0,
+    "metrics": {
+      "recall@1": 0.005500156508518535,
+      "ndcg@1": 0.005500156508518535,
+      "recall@5": 0.017707820954254796,
+      "ndcg@5": 0.011742948098748473,
+      "recall@10": 0.025890980637660422,
+      "ndcg@10": 0.01438841200865081
+    },
+    "title_diagnostics_not_item_metrics": {
+      "recall@10": 0.025890980637660422,
+      "ndcg@10": 0.014405561099897525,
+      "literal_generated_title_match_rate": 0.0033984706881903144
+    },
+    "primary_finish_reasons": {
+      "eos": 22138,
+      "length": 225
+    },
+    "all_beam_finish_reasons": {
+      "eos": 88409,
+      "length": 1043
+    },
+    "all_saved_query_full_catalog_rankings_recomputed": true,
+    "result_sha256": "8729883d05ceb17b1555e40d7b9a22e9091c818863a41f29f1bd104f177aa90f",
+    "independent_verification_sha256": "fb831f1d79d8772e6a88f69fc9df70cfc303d509ca3147ae77d55011d537b941",
+    "audit_source_sha256": "35f991ac7efebacf1d99d513e83529f42b1c10f07757346a86119f1bea4801d3",
+    "private_evidence_bundle": "verified-results/bigrec-beauty-metrics-v1",
+    "durability": {
+      "selected_model_catalog_summary_and_independent_audit": "banked",
+      "remaining_expensive_artifact_acknowledgments": 336,
+      "pipeline_phase": "all_expensive_artifacts_waiting",
+      "all_raw_chunks_archived": false
+    }
   }
 }
