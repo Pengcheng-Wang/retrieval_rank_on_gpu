@@ -112,6 +112,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, diversity-only, temperature1 | Instruments | Item diagnostic | 0.10754 | 0.08019 |
 | Fresh-ID T5, semantic-only, temperature1 | Instruments | Code | 0.10786 | 0.07989 |
 | Fresh-ID T5, semantic-only, temperature1 | Instruments | Item diagnostic | 0.10750 | 0.07922 |
+| Fresh-ID T5, semantic+CF, temperature1 | Instruments | Code | 0.10843 | 0.08117 |
+| Fresh-ID T5, semantic+CF, temperature1 | Instruments | Item diagnostic | 0.10811 | 0.08057 |
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Code | 0.10944 | 0.08079 |
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Item diagnostic | 0.10879 | 0.08006 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Instruments | Code | 0.10859 | 0.08025 |
@@ -130,7 +132,7 @@ completed all20,000 epochs before admission. Independent checks covered all
 24,772 targets,20 distinct valid beams per user, code/item metrics,98 validation
 records, selected/final model identity and complete durable run/evaluation/result
 inventories. **One diversity-only cell does not establish a full-model gain**;
-CF-only and the other seeds remain unfinished.
+the other datasets and seeds remain unfinished.
 
 The same seed/temperature full-tokenizer arm completed99 epochs and selected
 epoch79. Independent checks again covered every user, beam, validation loss,
@@ -151,6 +153,13 @@ item Recall@10 is+0.00129 with paired95% interval
 [-0.00078,+0.00256]. All intervals include zero, so this seed does not establish
 a recommendation gain from the added objectives.
 
+The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
+0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
+Recall@10 and NDCG@10 intervals all include zero. Only NDCG@5 excludes zero:
+code+0.00177[+0.00013,+0.00347] and item
++0.00179[+0.00013,+0.00348]. This marginal single-seed result does not
+establish a broad recommendation gain.
+
 For the same full tokenizer and seed, temperature0.7 selected epoch72 and
 temperature1 selected epoch79. All four code/item R/N@5/10 point differences
 favor temperature1. For code Recall@10, the0.7-minus1 difference is-0.000848
@@ -159,6 +168,30 @@ with marginal95% interval[-0.003392,+0.001695]; code NDCG@10 is-0.000539
 [-0.003271,+0.001817], and item NDCG@10 is-0.000475
 [-0.001935,+0.000983]. All predeclared paired-user intervals include zero,
 so this seed establishes neither a lower-temperature benefit nor equivalence.
+
+### Instruments Table 2 component attribution
+
+All five Instruments rows are now complete under the same compatible
+reconstruction and all-user protocol. The two generation-loss rows reuse the
+exact same full-tokenizer identifier bank.
+
+| Tokenizer / generation loss | Paper R10 / N10 | Measured code R10 / N10 |
+| --- | ---: | ---: |
+| Semantic-only / ordinary CE | 0.1058 / 0.0797 | 0.10786 / 0.07989 |
+| Semantic+CF / ordinary CE | 0.1078 / 0.0810 | 0.10843 / 0.08117 |
+| Semantic+diversity / ordinary CE | 0.1075 / 0.0809 | 0.10798 / 0.08091 |
+| All regularizers / ordinary CE | 0.1092 / 0.0819 | 0.10944 / 0.08079 |
+| All regularizers / ranking-guided CE | 0.1122 / 0.0831 | 0.10859 / 0.08025 |
+
+The first four measured point rows closely track the paper, but paired-user
+intervals do not establish Recall@10/NDCG@10 gains for CF, diversity or full
+versus semantic-only. Ranking-guided minus ordinary CE is negative at this
+seed—code R10-0.00085[-0.00339,+0.00170] and N10
+-0.00054[-0.00199,+0.00094]—with all intervals including zero. Thus the
+five-row point pattern is partly reproduced, while the claimed component and
+ranking-loss gains are not established. [Exact rows, paired statistics and
+provenance](../results/2026-10-29-letter/table2-instruments-v1.json) are banked
+at `verified-results/table2-instruments-v1`.
 
 P5 CID completed all20 epochs /206,000 updates and selected the earliest
 validation Recall@10 maximum at epoch4. Every prediction in all20 validation
@@ -364,19 +397,23 @@ equal mass.
 | Tokenizer | Top-quintile training share | Top-quintile generated share | Shift |
 | --- | ---: | ---: | ---: |
 | Semantic-only | 46.57% | 59.99% | +13.41 pp |
+| Semantic+CF | 57.49% | 74.33% | +16.84 pp |
+| Semantic+diversity | 48.41% | 60.37% | +11.96 pp |
 | Full | 56.77% | 74.26% | +17.49 pp |
 
-Both models over-generate popular codes. Under this atomic-code estimator, the
-full tokenizer is more concentrated: its full-minus-semantic top-quintile shift
-is+4.08 percentage points with paired95% interval[+3.93,+4.23]. This ordering
-persists for top1/top10/top20 outputs, reciprocal/DCG beam weighting,
-catalog-assignment popularity and tie-preserving midranks. A full-identifier
-popularity alternative is highly concentrated for both models but slightly
-reverses the between-tokenizer ordering, so no universal bias-reduction or
-causal claim is made. Beam frequency is decoding dependent, not a calibrated
-probability or fairness measure. [Exact bins, robustness analyses and audit
-provenance](../results/2026-10-29-letter/figure3-generation-bias-v1.json) are
-banked at `verified-results/figure3-generation-bias-v1`.
+All variants over-generate popular codes. Relative to semantic-only, CF
+increases the shift by+3.43 percentage points, paired95% interval
+[+3.28,+3.57]; diversity reduces it by-1.45[-1.59,-1.31]; full increases it
+by+4.08[+3.93,+4.23]. The declared diversity objective therefore reduces
+relative generation amplification in this estimator, while CF dominates the
+full tokenizer's increased concentration. Full nevertheless uses more atomic
+code types, showing that catalog utilization and generated popularity
+concentration are distinct. Full-identifier grouping and beam weighting remain
+decoding-dependent sensitivities, so no causal or fairness claim is made.
+[Exact four-tokenizer bins, comparisons and audit
+provenance](../results/2026-10-29-letter/figure3-tokenizer-ablation-v2.json) are
+banked at `verified-results/figure3-tokenizer-ablation-v2`; the earlier
+semantic/full-only packet remains immutable.
 
 ## 📊 Instruments released-ID replay
 
