@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "status": "completed_descriptive_mechanism_diagnostics",
+  "study_status": "in_progress",
+  "scope": "Figure6 first-code assignment distributions and Figure7 center-only PCA of selected first-codebook embeddings. These are descriptive reconstruction diagnostics, not recommendation-quality or fairness proofs.",
+  "group_size": 15,
+  "pca_components": 3,
+  "pca_normalization": "center_only_no_spherical_rescaling",
+  "datasets": {
+    "Instruments": {
+      "semantic": {
+        "selected_epoch": 18000,
+        "utilized_first_codes": 104,
+        "first_code_entropy_bits": 6.424729359386575,
+        "pca_explained_variance_ratio": [0.2567414629669021, 0.19697777532606303, 0.12462251628731362],
+        "pca_first_three_total": 0.5783417545802787
+      },
+      "cf": {
+        "selected_epoch": 18000,
+        "utilized_first_codes": 84,
+        "first_code_entropy_bits": 5.754883124451832,
+        "pca_explained_variance_ratio": [0.11017542825052269, 0.0962849908294553, 0.088902213455235],
+        "pca_first_three_total": 0.295362632535213,
+        "rq_compatibility_policy": "rq-kmeans-cdf-endpoint-v1"
+      },
+      "diversity": {
+        "selected_epoch": 20000,
+        "utilized_first_codes": 73,
+        "first_code_entropy_bits": 5.996479994888509,
+        "pca_explained_variance_ratio": [0.3591399272130929, 0.16699070947546843, 0.10685962202445304],
+        "pca_first_three_total": 0.6329902587130143
+      },
+      "full": {
+        "selected_epoch": 18000,
+        "utilized_first_codes": 158,
+        "first_code_entropy_bits": 6.458466171224335,
+        "pca_explained_variance_ratio": [0.2638442017143398, 0.15571141733216118, 0.10214685715018351],
+        "pca_first_three_total": 0.5217024761966844
+      }
+    },
+    "Beauty": {
+      "semantic": {
+        "selected_epoch": 18000,
+        "utilized_first_codes": 111,
+        "first_code_entropy_bits": 6.393554193143782,
+        "pca_explained_variance_ratio": [0.2533081380402301, 0.1759090879240239, 0.15119619883039226],
+        "pca_first_three_total": 0.5804134247946463
+      },
+      "cf": {
+        "selected_epoch": 20000,
+        "utilized_first_codes": 164,
+        "first_code_entropy_bits": 6.66838753598544,
+        "pca_explained_variance_ratio": [0.0955615991265028, 0.07277507185404991, 0.06568234921547124],
+        "pca_first_three_total": 0.23401902019602394
+      },
+      "diversity": {
+        "selected_epoch": 12000,
+        "utilized_first_codes": 66,
+        "first_code_entropy_bits": 5.806261269646073,
+        "pca_explained_variance_ratio": [0.28661028723952076, 0.2173267591078897, 0.1106937216741191],
+        "pca_first_three_total": 0.6146307680215295
+      },
+      "full": {
+        "selected_epoch": 20000,
+        "utilized_first_codes": 179,
+        "first_code_entropy_bits": 6.746264557339915,
+        "pca_explained_variance_ratio": [0.19368878062963743, 0.14159517055560103, 0.11355235442812452],
+        "pca_first_three_total": 0.44883630561336296
+      }
+    }
+  },
+  "interpretation": [
+    "Full regularization has the highest first-code utilization and entropy on both datasets.",
+    "Diversity-only has the lowest first-code utilization on both datasets under this compatible reconstruction, despite its intended anti-collapse role.",
+    "CF regularization reduces first-code utilization on Instruments but increases it strongly on Beauty, so no dataset-independent effect is established.",
+    "Higher or lower PCA concentration is not treated as recommendation quality or equitable code use."
+  ],
+  "private_evidence": "Full counts, sorted groups and all 256 three-dimensional PCA coordinates remain in the independently verified mechanism-results bundles."
+}

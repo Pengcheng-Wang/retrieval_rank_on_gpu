@@ -259,6 +259,33 @@ retain exact values, source/checkpoint/prediction hashes, coverage and the
 separate diagnostic identities. Raw predictions and learned vectors remain
 private and durably banked.
 
+### Figure 6/7 distribution and PCA diagnostics
+
+The selected tokenizers also reproduce the paper's first-code assignment
+histograms and center-only PCA inputs. The table reports first-level utilization
+out of256, entropy in bits and the total variance explained by the first three
+PCA components.
+
+| Dataset / tokenizer | Utilized codes | Entropy | PCA-3 variance |
+| --- | ---: | ---: | ---: |
+| Instruments semantic | 104 | 6.425 | 0.578 |
+| Instruments CF | 84 | 5.755 | 0.295 |
+| Instruments diversity | 73 | 5.996 | 0.633 |
+| Instruments full | 158 | 6.458 | 0.522 |
+| Beauty semantic | 111 | 6.394 | 0.580 |
+| Beauty CF | 164 | 6.668 | 0.234 |
+| Beauty diversity | 66 | 5.806 | 0.615 |
+| Beauty full | 179 | 6.746 | 0.449 |
+
+Full regularization has the highest utilization and entropy on both datasets.
+Diversity-only has the lowest utilization in both, so its intended anti-collapse
+effect is not reproduced under this compatible reconstruction. CF changes the
+distribution in opposite directions across datasets. PCA concentration is
+descriptive only and is not interpreted as recommendation quality, semantic
+fairness or proof of balanced usage. [Exact diagnostics](../results/2026-10-29-letter/tokenizer-distribution-pca-v1.json)
+retain all ratios and reconstruction conventions; raw grouped counts and
+coordinates remain in the private mechanism bundles.
+
 ## 📊 Instruments released-ID replay
 
 The first LETTER-TIGER run produces Recall@10 **0.10976** and NDCG@10
