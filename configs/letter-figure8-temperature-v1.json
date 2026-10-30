@@ -19,6 +19,10 @@
   "comparison_metrics": ["recall@5", "recall@10", "ndcg@5", "ndcg@10"],
   "metric_identities": ["code", "item"],
   "test_selection": "descriptive only; no best-temperature field or recipe selection",
+  "preflight_temperatures": [0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2],
+  "preflight_batches_per_rank": 3,
+  "require_completed_inactive_fresh_queue": true,
+  "require_distinct_gpu_lease": true,
   "tokenizer_barrier": [
     "alpha-0p001",
     "alpha-0p01",

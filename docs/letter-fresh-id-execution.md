@@ -390,8 +390,23 @@ Admission requires all15 nonbaseline tokenizer one-factor arms to have complete,
 checksum-verified durable bundles. It also pins the exact completed
 Instruments/full tokenizer bundle, selected/final states, index/codes hashes,
 the current39-cell queue binding, and the already measured temperature0.7/1.0
-reference results. The five arms run sequentially in the declared order and
-are fresh random small-T5 fits; no arm warm-starts from another temperature.
+reference results. The existing39-cell queue must additionally report all cells
+durably complete and its driver lock must be inactive. Every result
+acknowledgment and durable result receipt is rechecked before admission. The
+five arms run sequentially in the declared order and are fresh random small-T5
+fits; no arm warm-starts from another temperature.
+
+Before admission, a setup-only two-rank GPU preflight reconstructs the same
+stage/audit and instantiates all seven temperatures (`0.6` through `1.2`,
+including the two references) in separate fresh processes. It requires the
+initial model-state hash to match across both ranks and all temperatures, and
+the first three rank-local training-batch tensor hashes to match across
+temperatures. No optimizer step or test evaluation is run by this preflight.
+Its complete probe tree is independently banked and its receipt, stage, audit,
+plan and source hashes are bound into the admission. The final queue binding
+also freezes every temperature-specific control plus the reused fresh
+lifecycle, banking, training and evaluation sources; a changed control tree
+cannot resume against the existing binding.
 
 The temperature driver composes the same stage, audit, gate, ownership,
 checkpoint-exporter, run-before-test banking and all-user20-beam evaluation
@@ -400,8 +415,10 @@ fresh queue's devices2/3. Both controllers still serialize durable writes
 through the common node0 bank lock. Within-arm selection remains earliest
 minimum validation loss with patience20. Across temperatures, test results are
 descriptive only: every temperature is compared against the predeclared
-temperature1.0 reference with paired-user marginal intervals, and no
-best-temperature or recipe-selection field is produced.
+temperature1.0 reference with paired-user marginal intervals. The seven-point
+aggregator rejects any mismatch in experiment lineage, inputs, options,
+harness, runtime versions, users or targets, emits all six predeclared
+contrasts, and has no best-temperature or recipe-selection field.
 
 The allocation itself is never canceled. A job-wide preemption still requires
 the task's external allocation/lifecycle owner to restore the same admitted

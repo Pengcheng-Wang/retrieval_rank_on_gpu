@@ -64,7 +64,8 @@ def compare_arms(left_path: Path, right_path: Path, seed: int, replicates: int) 
         raise ValueError("Arms do not have the same paired users, split and dataset")
     for field in ("dataset", "seed", "inputs", "author_source", "options", "world_size",
                   "initialization", "tokenizer_vocab_sha256", "model_config",
-                  "harness_sha256", "trainer_source_sha256", "versions"):
+                  "harness_sha256", "trainer_source_sha256", "versions",
+                  "experiment_lineage"):
         if left_config["source_run"][field] != right_config["source_run"][field]:
             raise ValueError(f"Unmatched training control: {field}")
     users = sorted(left_rows)
