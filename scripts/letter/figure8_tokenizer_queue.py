@@ -620,7 +620,9 @@ def load_admissions(
         arm, separator, raw_path = value.partition("=")
         if not separator or arm not in ARM_ORDER or arm in admissions:
             raise ValueError("Use each --arm-admission ARM=PATH once")
-        path = require_durable_admission_path(Path(raw_path), destination, arm)
+        path = require_durable_admission_path(
+            Path(raw_path), destination, arm, plan["work_basename"],
+        )
         verify_durable_tree(path.parent)
         receipt = read_json(path)
         if (receipt.get("status") != "pass"

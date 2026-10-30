@@ -489,22 +489,26 @@ def test_arm_admission_requires_exact_spec_bundle_and_durable_receipt(tmp_path):
         )
 
 
-def test_arm_admission_path_must_be_exact_durable_namespace(tmp_path):
+@pytest.mark.parametrize(
+    "work_basename",
+    ("fresh-t5-figure8-tokenizer-v1", "fresh-t5-figure8-tokenizer-v2"),
+)
+def test_arm_admission_path_must_be_exact_durable_namespace(tmp_path, work_basename):
     destination = tmp_path / "destination"
-    durable = destination / "openllama-v2" / "fresh-t5-figure8-tokenizer-v1"
+    durable = destination / "openllama-v2" / work_basename
     exact = durable / "operational" / "admissions" / "levels-2" / "admission.json"
     exact.parent.mkdir(parents=True)
     exact.write_text("{}")
 
     assert module().require_durable_admission_path(
-        exact, destination, "levels-2",
+        exact, destination, "levels-2", work_basename,
     ) == exact.resolve()
-    local = tmp_path / "fresh-t5-figure8-tokenizer-v1" / "admissions" / "levels-2"
+    local = tmp_path / work_basename / "admissions" / "levels-2"
     local.mkdir(parents=True)
     (local / "admission.json").write_text("{}")
     with pytest.raises(ValueError, match="durable admission namespace"):
         module().require_durable_admission_path(
-            local / "admission.json", destination, "levels-2",
+            local / "admission.json", destination, "levels-2", work_basename,
         )
 
 

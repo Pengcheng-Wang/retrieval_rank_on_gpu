@@ -61,11 +61,14 @@ def main() -> None:
     output_dir = require_unredirected(
         args.output_dir, work, f"{args.arm} admission output",
     )
-    if (work != root / "fresh-t5-figure8-tokenizer-v1"
-            or output_dir != work / "admissions" / args.arm
-            or plan_path.name != "letter-figure8-tokenizer-v1.json"):
-        raise ValueError("Figure8 tokenizer admission paths escape the isolated namespace")
     plan = load_plan(plan_path)
+    expected_plan_name = (
+        f"letter-figure8-tokenizer-v{plan['schema_version']}.json"
+    )
+    if (work != root / plan["work_basename"]
+            or output_dir != work / "admissions" / args.arm
+            or plan_path.name != expected_plan_name):
+        raise ValueError("Figure8 tokenizer admission paths escape the isolated namespace")
     expected_spec = arm_tokenizer_spec(plan, args.arm)
     execution = load_execution(
         control / "configs" / "letter-fresh-id-execution-v1.json",
@@ -87,6 +90,7 @@ def main() -> None:
     if output_dir.exists():
         raise FileExistsError("Figure8 tokenizer arm admission is immutable")
     output_dir.mkdir(parents=True)
+    durable_root = destination / "openllama-v2" / plan["work_basename"]
     admission = {
         "status": "pass",
         "kind": "figure8_tokenizer_arm_admission_v1",
@@ -97,19 +101,14 @@ def main() -> None:
         "tokenizer_spec": expected_spec,
         "source_sha256": source_hashes(control / "scripts" / "letter"),
         "work": str(work),
-        "durable_root": str(
-            destination / "openllama-v2" / "fresh-t5-figure8-tokenizer-v1"
-        ),
+        "durable_root": str(durable_root),
         "claim":
             "Admission uses tokenizer specification and durable hashes only; "
             "no downstream validation or test metric was read.",
     }
     write_json(output_dir / "admission.json", admission)
     shutil.copyfile(spec_path, output_dir / "arm-spec.json")
-    target = (
-        destination / "openllama-v2" / "fresh-t5-figure8-tokenizer-v1"
-        / "operational" / "admissions" / args.arm
-    )
+    target = durable_root / "operational" / "admissions" / args.arm
     with (root / "bank.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         copy_artifact(output_dir, target)

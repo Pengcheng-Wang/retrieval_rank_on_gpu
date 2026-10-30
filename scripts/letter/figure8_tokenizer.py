@@ -394,10 +394,10 @@ def verify_durable_tree(path: Path) -> dict:
 
 
 def require_durable_admission_path(
-    path: Path, destination: Path, arm: str,
+    path: Path, destination: Path, arm: str, work_basename: str,
 ) -> Path:
     expected = (
-        destination / "openllama-v2" / "fresh-t5-figure8-tokenizer-v1"
+        destination / "openllama-v2" / work_basename
         / "operational" / "admissions" / arm / "admission.json"
     )
     if (path.absolute() != expected.absolute()
