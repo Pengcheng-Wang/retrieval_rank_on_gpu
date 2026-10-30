@@ -103,7 +103,7 @@
     "durability": "Selected/final state and result seals checked against durable acknowledgments; result inventory matches durable receipt"
   },
   "bigrec_instruments": {
-    "status": "independently_verified_metrics_raw_chunk_archiving_in_progress",
+    "status": "independently_verified_and_fully_banked",
     "claim": "Compatible OpenLLaMA-7B-v2 few-shot title-generation and frozen-base grounding reference",
     "dataset": "Instruments",
     "seed": 42,
@@ -138,11 +138,23 @@
     "independent_verification_sha256": "19683f45b61f42a74521c7200232d5ca11b6aa09ac73ac343f356a7dc1400f4e",
     "audit_source_sha256": "35f991ac7efebacf1d99d513e83529f42b1c10f07757346a86119f1bea4801d3",
     "durability": {
-      "raw_archive_snapshot_utc": "2026-10-29T23:24:39.512510+00:00",
-      "selected_model_catalog_summary_and_independent_audit": "banked",
-      "remaining_expensive_artifact_acknowledgments": 251,
-      "pipeline_phase": "all_expensive_artifacts_waiting",
-      "all_raw_chunks_archived": false
+      "status": "complete",
+      "pipeline_completed_sha256": "c21c82db021a50d51bfba2f615803ab47e1546e0b6e001e094ae375bbbd5ea4e",
+      "objects": 880,
+      "object_kinds": {
+        "checkpoint": 101,
+        "evaluation": 1,
+        "other": 1,
+        "generation": 388,
+        "grounding": 388,
+        "selected": 1
+      },
+      "bytes_reverified": 5459503184,
+      "pending_run_exports": 0,
+      "every_outbox_payload_reverified": true,
+      "every_durable_file_checksum_reverified": true,
+      "final_durability_verification_sha256": "580dbe652bc16db72fbdb1320cb521128b122900a7633f87ac433afd9b14dcf1",
+      "private_evidence_bundle": "verified-results/bigrec-instruments-final-durability-v1"
     }
   }
 }

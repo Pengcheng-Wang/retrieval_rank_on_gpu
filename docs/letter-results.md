@@ -152,14 +152,17 @@ BIGRec Instruments likewise completed50 epochs and all24,772 users. Every
 saved query was independently reranked against all9,922 catalog items without
 new model inference. All first-beam answers ended with EOS; three secondary
 beams reached the length limit. Its selected model, catalog, summary and
-independent audit are banked, but **raw-chunk archiving is still in progress**:
-251 expensive-artifact acknowledgments remained at the23:24 UTC snapshot.
-This is a numerical result, not a claim that the full pipeline has finished
-durable export.
+independent audit are banked. The pipeline subsequently reached zero backlog.
+A final pass under the common writer lock reverified all880 outbox objects and
+every durable file checksum:101 checkpoints,388 generation shards,388
+grounding shards, the selected model, evaluation summary and exporter
+handshake, totaling5.46 GB. No generation, encoding, grounding or ranking was
+repeated for this persistence check.
 
 [Exact new metrics and audit provenance](../results/2026-10-29-letter/verified-native-generative-v1.json)
-separate completed numerical checks from artifact-persistence status. The
-19-file audit packet preserves the executed audit programs and dependencies.
+include completed numerical and persistence checks. The original19-file audit
+packet preserves the executed metric programs and dependencies; a separate
+final-durability packet preserves the complete raw-object verification.
 
 ## 📉 First raw embedding-replacement results
 
