@@ -122,6 +122,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, semantic-only, temperature1 | Beauty | Item diagnostic | 0.05894 | 0.03219 |
 | Fresh-ID T5, semantic+CF, temperature1 | Beauty | Code | 0.06323 | 0.03358 |
 | Fresh-ID T5, semantic+CF, temperature1 | Beauty | Item diagnostic | 0.06305 | 0.03342 |
+| Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Code | 0.06019 | 0.03240 |
+| Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Item diagnostic | 0.06005 | 0.03225 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
@@ -219,6 +221,15 @@ single-seed Recall evidence, not a universal component claim. Exact recovery
 and comparison evidence are banked at
 `openllama-v2/fresh-t5-v3/operational/fresh-rq-v5-recovery-result` and
 `verified-results/fresh-beauty-cf-vs-semantic-v1`.
+
+Beauty semantic+diversity completed102 epochs and selected epoch82. Code
+R10/N10 is0.06019/0.03240; item diagnostic is0.06005/0.03225.
+Diversity-minus-semantic R10 is+0.00080 by code and+0.00112 by item, while
+N10 is effectively flat. All paired Recall/NDCG intervals at5/10 include zero,
+so this seed does not establish a downstream diversity-objective gain. Exact
+cell and comparison packets are
+`verified-results/fresh-beauty-diversity-s42-t10-v1` and
+`verified-results/fresh-beauty-diversity-vs-semantic-v1`.
 
 P5 CID completed all20 epochs /206,000 updates and selected the earliest
 validation Recall@10 maximum at epoch4. Every prediction in all20 validation
