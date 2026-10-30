@@ -569,6 +569,32 @@ def test_training_never_retries_a_foreign_occupancy_failure(tmp_path, monkeypatc
     assert calls == ["launch"]
 
 
+def test_gate_proof_generation_probe_receives_the_gpu_lease(tmp_path, monkeypatch):
+    runtime = object.__new__(pipeline.Runtime)
+    runtime.scripts = tmp_path / "control"
+    stage, audit, gate = tmp_path / "stage", tmp_path / "audit", tmp_path / "gate"
+    calls = []
+    monkeypatch.setattr(runtime, "audit", lambda *args: None)
+    monkeypatch.setattr(pipeline, "verify_stage", lambda _: {"dataset": "Beauty"})
+    monkeypatch.setattr(pipeline, "validate_training", lambda *args, **kwargs: {})
+    monkeypatch.setattr(pipeline, "select_resume", lambda _: "checkpoint-3")
+
+    def invoke(argv, label, *args, gpu=False, **kwargs):
+        calls.append((label, gpu))
+        if label == "gate-proof":
+            write_json(gate / "gate.json", {"status": "pass"})
+
+    monkeypatch.setattr(runtime, "invoke", invoke)
+
+    assert runtime.gate(stage, audit, gate) == {"status": "pass"}
+    assert calls == [
+        ("gate-continuous", True),
+        ("gate-stopped", True),
+        ("gate-resumed", True),
+        ("gate-proof", True),
+    ]
+
+
 @pytest.mark.skipif(os.name != "posix", reason="Linux process-session identity is required")
 def test_gpu_invoke_uses_a_process_session_and_records_start_time(tmp_path, monkeypatch):
     runtime = object.__new__(pipeline.Runtime)

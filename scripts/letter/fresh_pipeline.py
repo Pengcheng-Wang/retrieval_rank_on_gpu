@@ -724,7 +724,7 @@ class Runtime:
         self.invoke([
             "python", self.scripts / "fresh_ids.py", "check-gate",
             "--stage", stage, "--audit", audit, "--gate", gate,
-        ], "gate-proof")
+        ], "gate-proof", gpu=True)
         return read_json(gate / "gate.json")
 
     def admit(self, cell: dict, bundle: Path) -> Path:
