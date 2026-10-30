@@ -269,6 +269,31 @@ actual exported IDs; the original teacher reference was reused unchanged.
 [Exact Beauty results](../results/2026-10-29-letter/beauty-embedding-replacements-v1.json)
 retain the negative findings and descriptive, uncalibrated vector norms.
 
+### Table 4 CF-neighbor code similarity
+
+The Table4-style analysis has now been independently recomputed for every
+catalog item in Instruments and Beauty. The primary convention uses one
+non-self cosine-nearest item in the frozen reconstructed32D CF teacher space
+and measures the fraction of four level-qualified code positions that match.
+
+| Dataset | Paper TIGER | Semantic | CF-only | Diversity-only | Full | Paper LETTER |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Instruments | 0.0849 | 0.03512 | 0.09922 | 0.03968 | 0.08411 | 0.2760 |
+| Beauty | 0.1135 | 0.06340 | 0.12210 | 0.06599 | 0.11371 | 0.3312 |
+
+Full-minus-semantic overlap is+0.04898 on Instruments with paired item-bootstrap
+95% interval[+0.04631,+0.05145], and+0.05031 on Beauty
+[+0.04756,+0.05310]. Thus collaborative regularization clearly increases this
+declared overlap measure, but the full results remain far below the paper's
+LETTER values. CF-only is higher than full in both datasets, while
+diversity-only remains close to semantic-only. Dot-product-neighbor sensitivity
+is lower in magnitude but preserves that broad ordering. These intervals are
+conditional descriptive uncertainty, not population inference; the compatible
+teacher/tokenizers and the paper's underspecified normalization, tie and overlap
+rules remain limitations. [Exact per-variant intervals, sensitivities and
+provenance](../results/2026-10-29-letter/table4-code-similarity-v1.json) are
+banked at `verified-results/table4-code-similarity-v1`.
+
 [Verified component metrics and provenance](../results/2026-10-29-letter/verified-components-v1.json)
 retain exact values, source/checkpoint/prediction hashes, coverage and the
 separate diagnostic identities. Raw predictions and learned vectors remain

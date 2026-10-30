@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "status": "independently_recomputed_table4_style_code_similarity",
+  "claim_boundary": "Declared reconstruction because the paper does not fully specify neighbor normalization, tie handling, or overlap formula",
+  "primary": {
+    "neighbor": "one non-self cosine-nearest item in reconstructed frozen CF space",
+    "overlap": "matching level-qualified code positions divided by four",
+    "unit": "catalog item"
+  },
+  "datasets": {
+    "Instruments": {
+      "paper": {
+        "semantic_only_TIGER": 0.0849,
+        "full_LETTER": 0.276
+      },
+      "measured": {
+        "semantic": {
+          "cosine": {
+            "mean": 0.03512396694214876,
+            "ci_low": 0.03290667204192703,
+            "ci_high": 0.03736645837532755,
+            "sd": 0.11225183068733496,
+            "items": 9922
+          },
+          "dot_product_sensitivity": {
+            "mean": 0.00937311026002822,
+            "ci_low": 0.008314855875831485,
+            "ci_high": 0.01045656117718202,
+            "sd": 0.052771490725824696,
+            "items": 9922
+          },
+          "index_sha256": "66954b900105db8235951feb87f82326250ef1cac49d984ebae1f3a4740c4a57",
+          "codes_sha256": "40879ba071d794cc40b4b63edea7ae4d7f312730c7132de5255c300409fada7b",
+          "cf_embeddings_sha256": "be837526785d710588c24901e3639d7a1d9a79b1fe8dc48d963cedc4241df52a",
+          "selected_state_sha256": "78ab058d1166270e7f20b32bfb3e0ed4fb595c71482e90fbc1050cb234351949",
+          "mechanism_result_sha256": "465990cd04e7cea2ff993cc3871d5e6c9876de053e4059eaa70a3229650a9e28"
+        },
+        "cf": {
+          "cosine": {
+            "mean": 0.0992239467849224,
+            "ci_low": 0.0963005190485789,
+            "ci_high": 0.10214737452126586,
+            "sd": 0.15090995852535102,
+            "items": 9922
+          },
+          "dot_product_sensitivity": {
+            "mean": 0.01746119733924612,
+            "ci_low": 0.016100584559564604,
+            "ci_high": 0.018847006651884702,
+            "sd": 0.06839731337313769,
+            "items": 9922
+          },
+          "index_sha256": "cbf2aeaf8b954bdd2358ebfdad16d8cecd30a6e77de49c23b8b1c77c0806e3a2",
+          "codes_sha256": "ac062cf720c41da31d755e16de19a1d346c5388a39dabb02f5b3f137d24160f8",
+          "cf_embeddings_sha256": "be837526785d710588c24901e3639d7a1d9a79b1fe8dc48d963cedc4241df52a",
+          "selected_state_sha256": "98879f75a93cfc2627cc68fcafe9c9277154b04aab56f17ecc103c9aa7f89475",
+          "mechanism_result_sha256": "243fd71a6ef5e738bc1679a9b23238353ed8c2988856860d8cbb113390ccdf26"
+        },
+        "diversity": {
+          "cosine": {
+            "mean": 0.039684539407377546,
+            "ci_low": 0.03744204797419875,
+            "ci_high": 0.04182624470872808,
+            "sd": 0.11608240498167895,
+            "items": 9922
+          },
+          "dot_product_sensitivity": {
+            "mean": 0.010532150776053215,
+            "ci_low": 0.009498463011489619,
+            "ci_high": 0.01169119129207821,
+            "sd": 0.05558187518152778,
+            "items": 9922
+          },
+          "index_sha256": "1ec3c957d5d1f1c2ffff1afa3b8d471c1cf7af136229b34f174775a43414102a",
+          "codes_sha256": "e7d422b179a60a2f561617cd35b8bc2fd3ffef77ee53d8462fc3aac1a4d72698",
+          "cf_embeddings_sha256": "be837526785d710588c24901e3639d7a1d9a79b1fe8dc48d963cedc4241df52a",
+          "selected_state_sha256": "e93b7ef31379dc5e58a3bd91e0f18a9f47109719a459d9bbd052059a7e7a46c4",
+          "mechanism_result_sha256": "71c08bb92e0e2fe6356b83c7f36f06564c445f87f784082fd925f3cca2f41f0e"
+        },
+        "full": {
+          "cosine": {
+            "mean": 0.08410602701068333,
+            "ci_low": 0.08120779580729691,
+            "ci_high": 0.08677685950413223,
+            "sd": 0.1445995622742222,
+            "items": 9922
+          },
+          "dot_product_sensitivity": {
+            "mean": 0.016503729086877646,
+            "ci_low": 0.01524390243902439,
+            "ci_high": 0.017839145333602098,
+            "sd": 0.06771056586655537,
+            "items": 9922
+          },
+          "index_sha256": "44048e87910d0367ebe1733e1fcec6d833f2d51b02241fc3edc5800194e82a74",
+          "codes_sha256": "00444111176fd11997ab4c6450dffd417360dec501506b0a9133fb104a2c2688",
+          "cf_embeddings_sha256": "be837526785d710588c24901e3639d7a1d9a79b1fe8dc48d963cedc4241df52a",
+          "selected_state_sha256": "59a2dcc4f61c6c9fd15d96d946db33fa590a9689af55e7b08400d48eb2d001f9",
+          "mechanism_result_sha256": "9255e5fe6cd2f3cd76d04dc397792ccf5ecb3cd91f2cfa1127470f47e2adc0dd"
+        }
+      },
+      "full_minus_semantic_paired_items": {
+        "mean": 0.04898206006853457,
+        "ci_low": 0.046310597661761745,
+        "ci_high": 0.05145132029832695,
+        "sd": 0.13078454880642656,
+        "items": 9922
+      },
+      "paper_minus_measured": {
+        "semantic": 0.04977603305785124,
+        "full": 0.1918939729893167
+      },
+      "neighbor_identity_shared_across_variants": true,
+      "nearest_neighbor_tie_rule": "float64 argmax; lowest original item ID wins exact ties"
+    },
+    "Beauty": {
+      "paper": {
+        "semantic_only_TIGER": 0.1135,
+        "full_LETTER": 0.3312
+      },
+      "measured": {
+        "semantic": {
+          "cosine": {
+            "mean": 0.06340385092141146,
+            "ci_low": 0.06090405751590778,
+            "ci_high": 0.06588350136352367,
+            "sd": 0.1408844246388874,
+            "items": 12101
+          },
+          "dot_product_sensitivity": {
+            "mean": 0.0450995785472275,
+            "ci_low": 0.043095611932898105,
+            "ci_high": 0.047166039996694484,
+            "sd": 0.1112752543562753,
+            "items": 12101
+          },
+          "index_sha256": "e0833f54468ca42497d6cb3b9a3c72f35033540443fda7eed176e309dec0ae73",
+          "codes_sha256": "a2ae701986fd37280afe8140360811a22f0f95123fe06572c51d648924ff7531",
+          "cf_embeddings_sha256": "4cd4cff04693524fed7568956428c80d361536a70ece47a66da15b100db9f0ff",
+          "selected_state_sha256": "4f72e14917fa20061afc3f9d64b8a9d1c856555e002b715a35ba23ec10e3b395",
+          "mechanism_result_sha256": "6485f1d6f5615e8d1b1d4f4a6077213f48ea5c0835eb10328fa15848622a04e7"
+        },
+        "cf": {
+          "cosine": {
+            "mean": 0.12209734732666722,
+            "ci_low": 0.11903974878109247,
+            "ci_high": 0.12492820841252789,
+            "sd": 0.16166135641852833,
+            "items": 12101
+          },
+          "dot_product_sensitivity": {
+            "mean": 0.07761755226840757,
+            "ci_low": 0.07513790182629534,
+            "ci_high": 0.08005536732501446,
+            "sd": 0.13222045641104596,
+            "items": 12101
+          },
+          "index_sha256": "68ba0f5702f9bc1bddbb389adbead1ed5fdd19460ff579ed0334f352bcccfa2f",
+          "codes_sha256": "b3aa8669c177c3546f5d4a1c0f0eb44440849ffad56792565e279959c16527a5",
+          "cf_embeddings_sha256": "4cd4cff04693524fed7568956428c80d361536a70ece47a66da15b100db9f0ff",
+          "selected_state_sha256": "706d3371fe386eb7a064bf69ac0c9295a0e9b28c01d3c2bcaa22930d5f275ba0",
+          "mechanism_result_sha256": "c7a218251190ac00cd46908cb1f1878a1be98710ccca209fffc13227652ccaf9"
+        },
+        "diversity": {
+          "cosine": {
+            "mean": 0.06598628212544418,
+            "ci_low": 0.06342451037104371,
+            "ci_high": 0.06848659201718865,
+            "sd": 0.14289219010716628,
+            "items": 12101
+          },
+          "dot_product_sensitivity": {
+            "mean": 0.048095198743905464,
+            "ci_low": 0.04609123212957607,
+            "ci_high": 0.05024429799190149,
+            "sd": 0.11413837995795005,
+            "items": 12101
+          },
+          "index_sha256": "d9726f61f2edb51369b131f23a565d3a94684091f30d3fcb8deba6645a873a42",
+          "codes_sha256": "1ff664e08501c5110a632d9ae45850faf0784078fbe3e594fa40a9787c6cef3a",
+          "cf_embeddings_sha256": "4cd4cff04693524fed7568956428c80d361536a70ece47a66da15b100db9f0ff",
+          "selected_state_sha256": "3a925ebe43881ea5f5ee0b78842f00fedc0a5d308ded195e317179b8a1ff6fe3",
+          "mechanism_result_sha256": "b6384f07b7d2bada1d7aeb70b8e63df2c6207da4bfc3540f37b1597843fef6e7"
+        },
+        "full": {
+          "cosine": {
+            "mean": 0.11370961077596893,
+            "ci_low": 0.11083743079084374,
+            "ci_high": 0.1165399553755888,
+            "sd": 0.16003888359449028,
+            "items": 12101
+          },
+          "dot_product_sensitivity": {
+            "mean": 0.07005619370299976,
+            "ci_low": 0.06778365424345095,
+            "ci_high": 0.07261848194364103,
+            "sd": 0.12942094871377555,
+            "items": 12101
+          },
+          "index_sha256": "fabf688126079a28ad0e02ed97b5bfb7b576426b9661c9a283e8f12c0f7b9c85",
+          "codes_sha256": "65034d0ffa4dfa48a3f7d08bbde2672c04c3c076c612b0c9e90281713e40a9f4",
+          "cf_embeddings_sha256": "4cd4cff04693524fed7568956428c80d361536a70ece47a66da15b100db9f0ff",
+          "selected_state_sha256": "e0d8d7539c1db85c85ec320c4b4d84ca3cf9486e4ffc8c0f002d9f5c38c1d9b5",
+          "mechanism_result_sha256": "f25e7237a62480452969e375b8334b15e8c21bece526bde5235e10f7b3a6908f"
+        }
+      },
+      "full_minus_semantic_paired_items": {
+        "mean": 0.05030575985455747,
+        "ci_low": 0.04755805305346666,
+        "ci_high": 0.05309530204115362,
+        "sd": 0.15509630937217983,
+        "items": 12101
+      },
+      "paper_minus_measured": {
+        "semantic": 0.050096149078588545,
+        "full": 0.21749038922403108
+      },
+      "neighbor_identity_shared_across_variants": true,
+      "nearest_neighbor_tie_rule": "float64 argmax; lowest original item ID wins exact ties"
+    }
+  },
+  "bootstrap": {
+    "seed": 20261027,
+    "replicates": 2000,
+    "method": "item-resampling percentile 95% interval conditional on the fixed teacher and tokenizers"
+  },
+  "all_neighbors_and_item_overlaps_recomputed": true,
+  "all_mechanism_results_and_durable_receipts_verified": true,
+  "model_inference_performed": false,
+  "audit_source_sha256": "32a51f09483af85cea8a158903b4ce04a9f275ae9edfb9d9ad067ad5db04bf49"
+}
