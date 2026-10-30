@@ -20,6 +20,7 @@ from fresh_ids import (
     require_canonical, select_resume, stage_real, validate_audit, validate_scope,
     validate_training, verify_evaluation, verify_stage, write_json,
 )
+from protocol import require_hash
 
 
 def queue_cells(spec: dict) -> list[dict]:
@@ -175,6 +176,7 @@ def wait_for_training(training: subprocess.Popen, exporter: subprocess.Popen,
 class Runtime:
     def __init__(self, binding: Path, project: Path, control: Path, work: Path):
         self.binding, self.project, self.control = binding, project, control
+        self.rq_verifier = None
         self.root, self.destination = validate_scope(binding)
         if (not work.is_absolute() or work.is_symlink() or work.resolve().parent != self.root
                 or not re.fullmatch(r"fresh-t5-[A-Za-z0-9][A-Za-z0-9_.-]*", work.name)
@@ -301,7 +303,7 @@ class Runtime:
                 bundle=bundle, durable_bundle=self.destination / "openllama-v2" / "tokenizers" / bundle.name,
                 semantic=self.root / "embeddings-openllama-v2-v1" / cell["dataset"],
                 teacher=self.root / "incoming" / f"{cell['dataset']}-cf-bce-s42", output=stage,
-            ))
+            ), rq_verifier=self.rq_verifier)
         staged = verify_stage(stage)
         require_real_stage(staged)
         if (staged["experiment_lineage"]["execution_sha256"] != file_sha256(self.execution)
@@ -438,9 +440,7 @@ class Runtime:
         return result
 
 
-def driver(runtime: Runtime, checks: int) -> None:
-    import fcntl
-
+def queue_binding(runtime: Runtime) -> dict:
     binding = {
         "execution_sha256": file_sha256(runtime.execution), "job_binding_sha256": file_sha256(runtime.binding),
         "adapter_sha256": file_sha256(runtime.scripts / "fresh_ids.py"),
@@ -449,18 +449,58 @@ def driver(runtime: Runtime, checks: int) -> None:
         "control": str(runtime.control), "work": str(runtime.work),
         "queue": queue_cells(runtime.spec),
     }
-    marker = runtime.work / "queue-binding.json"
+    if getattr(runtime, "operational_admission", None) is not None:
+        binding["operational_admission"] = runtime.operational_admission
+    return binding
+
+
+def bind_queue(work: Path, binding: dict, adoption_path: Path | None = None) -> Path:
+    marker = work / "queue-binding.json"
+    if adoption_path is not None:
+        adoption = read_json(adoption_path)
+        old_name, new_name = adoption["previous_binding_file"], adoption["new_binding_file"]
+        allowed = r"queue-binding(?:-[a-z0-9-]+)?\.json"
+        if (adoption.get("kind") != "fresh_queue_operational_adoption"
+                or adoption["work"] != str(work) or binding["work"] != str(work)
+                or not re.fullmatch(allowed, old_name) or not re.fullmatch(allowed, new_name)
+                or old_name == new_name or adoption["new_binding"] != binding):
+            raise ValueError("Invalid same-work, versioned operational adoption")
+        previous = work / old_name
+        require_hash(previous, adoption["previous_binding_sha256"])
+        old = read_json(previous)
+        operational = {"adapter_sha256", "driver_sha256", "control", "operational_admission"}
+        if ({key: value for key, value in old.items() if key not in operational}
+                != {key: value for key, value in binding.items() if key not in operational}):
+            raise ValueError("Operational adoption must preserve recipe, queue, inputs and all work/run paths")
+        protected = Path(adoption["protected_files"])
+        require_hash(protected, adoption["protected_files_sha256"])
+        for name, metadata in read_json(protected).items():
+            path = work / name
+            if not path.resolve().is_relative_to(work.resolve()) or path.is_symlink():
+                raise ValueError("Protected artifact escapes the adopted work directory")
+            require_hash(path, metadata["sha256"])
+        marker = work / new_name
     if marker.exists() and read_json(marker) != binding:
         raise ValueError("Readiness queue is frozen to different source/configuration bytes")
     if not marker.exists():
         write_json(marker, binding)
+    return marker
+
+
+def driver(runtime: Runtime, checks: int, *, adoption: Path | None = None) -> None:
+    import fcntl
+
+    binding = queue_binding(runtime)
     roots = [runtime.root / "rq-snapshots", runtime.root / "rq-bank-incoming" / "node-1",
              runtime.root / "rq-bank-incoming" / "node-2"]
     with (runtime.work / "driver.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        marker = bind_queue(runtime.work, binding, adoption)
         write_json(runtime.work / "driver.json", {
             "pid": os.getpid(), "started_unix": time.time(), "argv": sys.argv,
             "queue_binding_sha256": file_sha256(marker), "max_idle_checks": checks,
+            "queue_binding_file": marker.name,
+            "adoption_sha256": file_sha256(adoption) if adoption is not None else None,
         })
         for check in range(checks):
             pending = [cell for cell in binding["queue"] if not cell_is_banked(runtime.work, cell)]

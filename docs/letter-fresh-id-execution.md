@@ -197,6 +197,15 @@ cannot reuse an older immutable queue binding. Inspect and stop only the
 positively identified idle waiter before replacement; preserve its old
 source, queue, logs and gate receipts.
 
+An explicit operational adoption is the exception when a live study must retain
+its work/run paths. It publishes a **new binding file**, never rewrites the old
+binding, and requires the old digest, the exact new binding, and a checksummed
+snapshot of protected existing artifacts. Recipe, queue order, seeds,
+temperatures, allocation binding, work paths and durable paths must agree.
+Only controller source/control identity and the declared operational admission
+policy may change. Adoption and execution acquire the same exclusive driver
+lease before any binding is written.
+
 The remote command has this shape:
 
 ```bash
@@ -272,6 +281,41 @@ Partial evaluations are retained in numbered attempt directories; a later
 fixed-budget attempt uses a new directory, with at most three attempts. Completed
 stages/runs/results and incomplete durable destinations are never overwritten.
 An incomplete durable copy therefore blocks rather than silently replacing it.
+
+### Admitted RQ dependency correction
+
+`fresh_rq_admission.py` is the versioned entry point for the two explicitly
+admitted Instruments semantic/CF continuations described in `rq_recovery.md`.
+Its helper and dependency hashes, trusted admission digest, capsule locations
+and exact scope come only from the private integration contract.
+
+The pinned recovery wrapper calls the **original native full-budget verifier
+first**. The shared `fresh_ids.verify_rq` binding is never replaced, so the helper's
+own import cannot recurse into its wrapper. Successful repaired admission then
+requires exact checkpoint/export attestations and the complete checksum-verified
+durable repair capsule under the node0 bank lock. Missing, stale or mismatched
+evidence fails closed; there is no native-only fallback for either repaired run.
+Unrelated arms retain the native verifier's result unchanged.
+
+The optional `stage_real(..., rq_verifier=...)` hook adds the complete verified
+`rq_compatibility` object at both the experiment-lineage root and its RQ record
+**before** constructing a new manifest. An existing stage is never relabeled.
+A selected checkpoint predating the correction remains native and untouched;
+the attestation distinguishes that case from correction-enabled continuation
+and export.
+
+This controller runs with GPUs hidden from its own Python process. Child
+training/generation commands still receive the explicit two-GPU lease and retain
+their original recipe. A probe of real sealed training-argument metadata showed
+that `map_location="cpu"` alone could initialize CUDA when devices were visible;
+the same metadata loaded with devices hidden without initializing CUDA.
+That observation does not establish the historical cause of earlier prelaunch
+occupancy failures. The foreign-occupancy guard is unchanged.
+
+No RQ package overlay is installed or put on the T5 environment's import path.
+Only the pinned verification modules are loaded. The learned-index vocabulary is
+derived from the actual frozen IDs; the earlier synthetic fixture's vocabulary
+size is not a requirement for real runs.
 
 The allocation itself is never canceled. A job-wide preemption still requires
 the task's external allocation/lifecycle owner to restore the same admitted

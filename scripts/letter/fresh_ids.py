@@ -591,7 +591,12 @@ def validate_scope(binding: Path) -> tuple[Path, Path]:
     return Path(str(root)), Path(str(destination))
 
 
-def stage_real(args) -> dict:
+def attach_rq_compatibility(lineage: dict, rq: dict) -> None:
+    if "rq_compatibility" in rq:
+        lineage["rq_compatibility"] = copy.deepcopy(rq["rq_compatibility"])
+
+
+def stage_real(args, *, rq_verifier=None) -> dict:
     import fcntl
 
     root, destination = validate_scope(args.binding)
@@ -604,7 +609,8 @@ def stage_real(args) -> dict:
     manifest = read_json(args.manifest)
     verify_original(args.upstream, manifest, args.dataset)
     inputs = verify_inputs(args.semantic, args.teacher, spec, manifest, args.dataset)
-    rq = verify_rq(args.bundle, spec, manifest, args.dataset, args.variant)
+    verifier = verify_rq if rq_verifier is None else rq_verifier
+    rq = verifier(args.bundle, spec, manifest, args.dataset, args.variant)
     with (root / "bank.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         durable = verify_durable(args.bundle, args.durable_bundle)
@@ -620,6 +626,7 @@ def stage_real(args) -> dict:
         "input_provenance": inputs, "rq": rq, "durable_proof": durable,
         "index_sha256": rq["index_sha256"], "codes_sha256": rq["codes_sha256"],
     }
+    attach_rq_compatibility(lineage, rq)
     return build_stage(
         args.output, args.project, args.upstream, args.manifest, args.execution, args.dataset,
         args.bundle / "payload" / "export" / "index.json",
