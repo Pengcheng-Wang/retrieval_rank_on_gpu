@@ -24,6 +24,12 @@ def module():
     return importlib.import_module("fresh_ids")
 
 
+def test_frozen_bank_sources_match_their_canonical_hashes():
+    m = module()
+    for name, digest in m.FROZEN_BANK.items():
+        assert m.canonical_hash(SCRIPTS / name) == digest
+
+
 def pipeline():
     assert (SCRIPTS / "fresh_pipeline.py").is_file(), "Bounded fresh-ID queue is missing"
     return importlib.import_module("fresh_pipeline")
