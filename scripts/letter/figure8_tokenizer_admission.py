@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 from pathlib import Path
 
 from bank import copy_artifact
@@ -14,7 +15,7 @@ from figure8_tokenizer import (
     load_plan,
     verify_arm_admission,
 )
-from fresh_ids import file_sha256, validate_scope, write_json
+from fresh_ids import file_sha256, load_execution, validate_scope, write_json
 from fresh_rq_admission import require_unredirected
 
 
@@ -66,6 +67,12 @@ def main() -> None:
         raise ValueError("Figure8 tokenizer admission paths escape the isolated namespace")
     plan = load_plan(plan_path)
     expected_spec = arm_tokenizer_spec(plan, args.arm)
+    execution = load_execution(
+        control / "configs" / "letter-fresh-id-execution-v1.json",
+        control / "configs" / "letter-reproduction-v1.json",
+        control / "configs" / "letter-openllama-v2-method-v1.json",
+        control / "configs" / "letter-tokenizer-reconstruction-v1.json",
+    )
     audit = json.loads(audit_path.read_text(encoding="utf-8"))
     with (root / "bank.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_SH)
@@ -75,6 +82,7 @@ def main() -> None:
             spec_path,
             destination / "openllama-v2" / "figure8-tokenizers",
             expected_spec,
+            execution,
         )
     if output_dir.exists():
         raise FileExistsError("Figure8 tokenizer arm admission is immutable")
@@ -97,7 +105,7 @@ def main() -> None:
             "no downstream validation or test metric was read.",
     }
     write_json(output_dir / "admission.json", admission)
-    write_json(output_dir / "arm-spec.json", expected_spec)
+    shutil.copyfile(spec_path, output_dir / "arm-spec.json")
     target = (
         destination / "openllama-v2" / "fresh-t5-figure8-tokenizer-v1"
         / "operational" / "admissions" / args.arm

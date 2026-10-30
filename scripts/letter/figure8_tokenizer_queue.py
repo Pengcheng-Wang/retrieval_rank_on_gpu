@@ -612,7 +612,9 @@ class ArmRuntime(Runtime):
         return result
 
 
-def load_admissions(values: list[str], plan: dict, destination: Path) -> dict[str, dict]:
+def load_admissions(
+    values: list[str], plan: dict, destination: Path, execution: dict,
+) -> dict[str, dict]:
     admissions = {}
     for value in values:
         arm, separator, raw_path = value.partition("=")
@@ -647,11 +649,14 @@ def load_admissions(values: list[str], plan: dict, destination: Path) -> dict[st
         spec_path = path.parent / "arm-spec.json"
         if not spec_path.is_file():
             raise ValueError(f"Figure8 arm admission has no immutable spec: {arm}")
-        verify_arm_admission(
+        verified = verify_arm_admission(
             arm, audit, spec_path,
             destination / "openllama-v2" / "figure8-tokenizers",
             receipt["tokenizer_spec"],
+            execution,
         )
+        if verified != receipt["arm_identity"]:
+            raise ValueError(f"Figure8 durable admission identity differs: {arm}")
         receipt["_path"] = path
         admissions[arm] = receipt
     return admissions
@@ -702,7 +707,7 @@ def main() -> None:
     with (runtime.root / "bank.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_SH)
         admissions = load_admissions(
-            args.arm_admission, plan, runtime.destination,
+            args.arm_admission, plan, runtime.destination, runtime.spec,
         )
     runtime.admissions = admissions
     cells = tokenizer_cells()

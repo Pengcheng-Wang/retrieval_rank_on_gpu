@@ -21,6 +21,53 @@ def compare_module():
     return importlib.import_module("figure8_tokenizer_compare")
 
 
+def execution():
+    return json.loads(
+        (ROOT / "configs" / "letter-fresh-id-execution-v1.json").read_text()
+    )
+
+
+def normalized_bundle_config(spec, items):
+    frozen = execution()
+    levels = len(spec["codes"])
+    return {
+        **spec,
+        "cf_provenance": "training_only_BCE_teacher_reconstruction",
+        "cf_sha256": frozen["datasets"]["Instruments"]["cf_sha256"],
+        "cf_shape": [items, 32],
+        "claim_type": frozen["claim_type"],
+        "embedding_receipt_sha256":
+            frozen["datasets"]["Instruments"]["embedding_receipt_sha256"],
+        "harness_sha256":
+            "21e3909b8ea84793779820db8442e83b12a8597e3caf9d294d9f18bcb95a4532",
+        "learning_rate": 0.001,
+        "method_spec_sha256": frozen["method_spec_canonical_sha256"],
+        "num_workers": 0,
+        "purpose": {
+            "admissible_final_tokenizer": True,
+            "kind": "tokenizer_reconstruction",
+        },
+        "runtime_parameterization": {
+            "clusters": spec["clusters"],
+            "codebook_shapes": [
+                [size, spec["dimension"]] for size in spec["codes"]
+            ],
+            "emitted_sid_length": levels,
+            "epsilons": spec["epsilons"],
+            "last_token_prefix": "abcdefgh"[levels - 1],
+            "levels": levels,
+        },
+        "selection": "first minimum collision rate at scheduled evaluations",
+        "semantic_sha256":
+            frozen["datasets"]["Instruments"]["semantic_sha256"],
+        "semantic_shape": [items, 4096],
+        "source": frozen["rq"]["source"],
+        "synthetic_fixture": False,
+        "track_id": frozen["track_id"],
+        "weight_decay": 0.0001,
+    }
+
+
 def test_tokenizer_queue_is_exact_and_isolated():
     cells = module().tokenizer_cells()
 
@@ -80,6 +127,125 @@ def test_arm_specs_change_exactly_one_tokenizer_factor():
         assert len(changed) == 1
         assert spec["seed"] == 42 and spec["epochs"] == 20000
         assert len(spec["codes"]) == len(spec["epsilons"])
+
+
+def test_real_levels2_operational_spec_projects_to_frozen_science():
+    plan = module().load_plan(
+        ROOT / "configs" / "letter-figure8-tokenizer-v1.json"
+    )
+    expected = module().arm_tokenizer_spec(plan, "levels-2")
+    spec = {
+        "alpha": 0.02,
+        "batch_size": 1024,
+        "beta": 0.0001,
+        "cf": "/scratch/letter_20261028_a77dfb13/runs/Instruments-cf-bce-s42/item-embeddings.pt",
+        "checkpoint_every": 500,
+        "clusters": 10,
+        "codes": [256, 256],
+        "control": "/scratch/letter_20261028_a77dfb13/figure8-sweeps-v1/control",
+        "dataset": "Instruments",
+        "dimension": 32,
+        "embedding_receipt": "/scratch/letter_20261028_a77dfb13/embeddings-openllama-v2-v1/Instruments/embedding-receipt.json",
+        "epochs": 20000,
+        "epsilons": [0.0, 0.003],
+        "eval_step": 2000,
+        "gpu": 1,
+        "host": "node-1",
+        "kind": "figure8-one-factor-tokenizer-v1",
+        "layers": [2048, 1024, 512, 256, 128, 64],
+        "manifest": "/scratch/letter_20261028_a77dfb13/figure8-sweeps-v1/control/configs/letter-reproduction-v1.json",
+        "method_spec": "/scratch/letter_20261028_a77dfb13/figure8-sweeps-v1/control/configs/letter-openllama-v2-method-v1.json",
+        "output": "/scratch/letter_20261028_a77dfb13/figure8-sweeps-v1/runs/levels-2",
+        "root": "/scratch/letter_20261028_a77dfb13",
+        "seed": 42,
+        "semantic": "/scratch/letter_20261028_a77dfb13/embeddings-openllama-v2-v1/Instruments/embeddings.npy",
+    }
+
+    assert hashlib.sha256(
+        (json.dumps(spec, indent=2) + "\n").encode()
+    ).hexdigest() == "395ac8a97ec3d089e6f7a93bfc5f7f8f0a1123fbab74a7beccefd9a3ad973b2e"
+    assert module().validate_arm_launch_spec(
+        spec, expected, "levels-2",
+    ) == expected
+    with pytest.raises(ValueError, match="scientific"):
+        module().validate_arm_launch_spec(
+            {**spec, "epsilons": [0.0, 0.0]}, expected, "levels-2",
+        )
+    with pytest.raises(ValueError, match="operational"):
+        module().validate_arm_launch_spec(
+            {**spec, "output": spec["output"].replace("levels-2", "levels-6")},
+            expected,
+            "levels-2",
+        )
+
+
+def test_real_levels2_bundle_config_requires_normalized_provenance():
+    plan = module().load_plan(
+        ROOT / "configs" / "letter-figure8-tokenizer-v1.json"
+    )
+    expected = module().arm_tokenizer_spec(plan, "levels-2")
+    execution = json.loads(
+        (ROOT / "configs" / "letter-fresh-id-execution-v1.json").read_text()
+    )
+    config = {
+        **expected,
+        "cf_provenance": "training_only_BCE_teacher_reconstruction",
+        "cf_sha256": execution["datasets"]["Instruments"]["cf_sha256"],
+        "cf_shape": [9922, 32],
+        "claim_type": execution["claim_type"],
+        "embedding_receipt_sha256":
+            execution["datasets"]["Instruments"]["embedding_receipt_sha256"],
+        "harness_sha256":
+            "21e3909b8ea84793779820db8442e83b12a8597e3caf9d294d9f18bcb95a4532",
+        "learning_rate": 0.001,
+        "method_spec_sha256": execution["method_spec_canonical_sha256"],
+        "num_workers": 0,
+        "purpose": {
+            "admissible_final_tokenizer": True,
+            "kind": "tokenizer_reconstruction",
+        },
+        "runtime_parameterization": {
+            "clusters": 10,
+            "codebook_shapes": [[256, 32], [256, 32]],
+            "emitted_sid_length": 2,
+            "epsilons": [0.0, 0.003],
+            "last_token_prefix": "b",
+            "levels": 2,
+        },
+        "seed": 42,
+        "selection": "first minimum collision rate at scheduled evaluations",
+        "semantic_sha256":
+            execution["datasets"]["Instruments"]["semantic_sha256"],
+        "semantic_shape": [9922, 4096],
+        "source": execution["rq"]["source"],
+        "synthetic_fixture": False,
+        "track_id": execution["track_id"],
+        "weight_decay": 0.0001,
+    }
+
+    assert module().validate_arm_run_config(
+        config, expected, execution, items=9922,
+    ) == config
+    with pytest.raises(ValueError, match="runtime parameterization"):
+        module().validate_arm_run_config(
+            {
+                **config,
+                "runtime_parameterization": {
+                    **config["runtime_parameterization"],
+                    "levels": 4,
+                },
+            },
+            expected,
+            execution,
+            items=9922,
+        )
+    with pytest.raises(ValueError, match="provenance"):
+        module().validate_arm_run_config(
+            {**config, "cf_sha256": "0" * 64},
+            expected,
+            execution,
+            items=9922,
+        )
 
 
 @pytest.mark.parametrize(
@@ -220,18 +386,41 @@ def test_arm_admission_requires_exact_spec_bundle_and_durable_receipt(tmp_path):
     arm = "levels-2"
     spec = {
         "dataset": "Instruments", "codes": [256, 256],
-        "epsilons": [0.0, 0.003], "clusters": 10,
+        "epsilons": [0.0, 0.003], "dimension": 32,
+        "layers": [2048, 1024, 512, 256, 128, 64], "clusters": 10,
         "alpha": 0.02, "beta": 0.0001, "seed": 42, "epochs": 20000,
+        "batch_size": 1024, "eval_step": 2000,
     }
     spec_path = tmp_path / f"{arm}.json"
-    spec_path.write_text(json.dumps(spec))
+    launch_spec = {
+        **spec,
+        "cf": "/scratch/letter_fixture/runs/Instruments-cf-bce-s42/item-embeddings.pt",
+        "checkpoint_every": 500,
+        "control": "/scratch/letter_fixture/figure8-sweeps-v1/control",
+        "embedding_receipt":
+            "/scratch/letter_fixture/embeddings-openllama-v2-v1/Instruments/embedding-receipt.json",
+        "gpu": 1,
+        "host": "node-1",
+        "kind": "figure8-one-factor-tokenizer-v1",
+        "manifest":
+            "/scratch/letter_fixture/figure8-sweeps-v1/control/configs/letter-reproduction-v1.json",
+        "method_spec":
+            "/scratch/letter_fixture/figure8-sweeps-v1/control/configs/letter-openllama-v2-method-v1.json",
+        "output": "/scratch/letter_fixture/figure8-sweeps-v1/runs/levels-2",
+        "root": "/scratch/letter_fixture",
+        "semantic":
+            "/scratch/letter_fixture/embeddings-openllama-v2-v1/Instruments/embeddings.npy",
+    }
+    spec_path.write_text(json.dumps(launch_spec))
     bundle = tmp_path / "durable" / "levels-2-completed-deadbeef"
     payload = bundle / "payload"
     (payload / "export").mkdir(parents=True)
     (bundle / "completed.json").write_text('{"status":"complete"}')
     (payload / "completed.json").write_text('{"status":"complete"}')
-    (payload / "run-config.json").write_text(json.dumps(spec))
     indices, codes = identifier_bank(6, 2, 256)
+    (payload / "run-config.json").write_text(
+        json.dumps(normalized_bundle_config(spec, len(indices)))
+    )
     (payload / "export" / "index.json").write_text(json.dumps(indices))
     np.save(payload / "export" / "codes.npy", codes, allow_pickle=False)
     write_bank_receipt(bundle)
@@ -246,21 +435,25 @@ def test_arm_admission_requires_exact_spec_bundle_and_durable_receipt(tmp_path):
     }
 
     admitted = module().verify_arm_admission(
-        arm, audit, spec_path, tmp_path / "durable", expected_spec=spec,
+        arm, audit, spec_path, tmp_path / "durable",
+        expected_spec=spec, execution=execution(),
     )
 
     assert admitted["bundle"] == bundle.name
     assert admitted["bank"]["levels"] == 2
+    assert admitted["spec_sha256"] == sha(spec_path)
     audit["bundle"] = "levels-6-completed-cross-arm"
     with pytest.raises(ValueError, match="arm bundle"):
         module().verify_arm_admission(
-            arm, audit, spec_path, tmp_path / "durable", expected_spec=spec,
+            arm, audit, spec_path, tmp_path / "durable",
+            expected_spec=spec, execution=execution(),
         )
     audit["bundle"] = bundle.name
     (bundle / "bank-receipt.json").unlink()
     with pytest.raises(ValueError, match="durable"):
         module().verify_arm_admission(
-            arm, audit, spec_path, tmp_path / "durable", expected_spec=spec,
+            arm, audit, spec_path, tmp_path / "durable",
+            expected_spec=spec, execution=execution(),
         )
 
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 import copy
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import numpy as np
 
@@ -25,6 +25,17 @@ FORBIDDEN_RESULT_FIELDS = {
     "winner", "best_arm", "best_temperature", "selected_by_test",
     "recommended_arm", "recommended_temperature",
 }
+SCIENTIFIC_SPEC_FIELDS = (
+    "dataset", "codes", "epsilons", "dimension", "layers", "clusters",
+    "alpha", "beta", "seed", "epochs", "batch_size", "eval_step",
+)
+LAUNCH_SPEC_FIELDS = set(SCIENTIFIC_SPEC_FIELDS) | {
+    "cf", "checkpoint_every", "control", "embedding_receipt", "gpu", "host",
+    "kind", "manifest", "method_spec", "output", "root", "semantic",
+}
+FIGURE8_TOKENIZER_HARNESS_SHA256 = (
+    "21e3909b8ea84793779820db8442e83b12a8597e3caf9d294d9f18bcb95a4532"
+)
 
 
 def baseline_tokenizer_spec() -> dict:
@@ -65,6 +76,99 @@ def arm_tokenizer_spec(plan: dict, arm: str) -> dict:
     else:
         raise ValueError("Unknown Figure8 tokenizer factor")
     return spec
+
+
+def validate_arm_launch_spec(spec: dict, expected: dict, arm: str) -> dict:
+    if set(spec) != LAUNCH_SPEC_FIELDS:
+        raise ValueError("Figure8 tokenizer operational specification schema differs")
+    projection = {field: spec[field] for field in SCIENTIFIC_SPEC_FIELDS}
+    if projection != expected:
+        raise ValueError("Figure8 tokenizer scientific specification differs")
+    root = PurePosixPath(spec["root"])
+    control = root / "figure8-sweeps-v1" / "control"
+    expected_paths = {
+        "control": control,
+        "manifest": control / "configs" / "letter-reproduction-v1.json",
+        "method_spec":
+            control / "configs" / "letter-openllama-v2-method-v1.json",
+        "output": root / "figure8-sweeps-v1" / "runs" / arm,
+        "semantic":
+            root / "embeddings-openllama-v2-v1" / "Instruments"
+            / "embeddings.npy",
+        "embedding_receipt":
+            root / "embeddings-openllama-v2-v1" / "Instruments"
+            / "embedding-receipt.json",
+        "cf":
+            root / "runs" / "Instruments-cf-bce-s42"
+            / "item-embeddings.pt",
+    }
+    if (not root.is_absolute()
+            or root.parent != PurePosixPath("/scratch")
+            or spec["kind"] != "figure8-one-factor-tokenizer-v1"
+            or spec["checkpoint_every"] != 500
+            or not re.fullmatch(r"node-\d+", spec["host"])
+            or type(spec["gpu"]) is not int
+            or spec["gpu"] < 0
+            or any(
+                not isinstance(spec[name], str)
+                or PurePosixPath(spec[name]) != path
+                or PurePosixPath(spec[name]).as_posix() != spec[name]
+                for name, path in expected_paths.items()
+            )):
+        raise ValueError("Figure8 tokenizer operational specification differs")
+    return projection
+
+
+def validate_arm_run_config(
+    config: dict, expected: dict, execution: dict, items: int,
+) -> dict:
+    if {field: config.get(field) for field in SCIENTIFIC_SPEC_FIELDS} != expected:
+        raise ValueError("Figure8 tokenizer bundle scientific specification differs")
+    levels = len(expected["codes"])
+    runtime = {
+        "clusters": expected["clusters"],
+        "codebook_shapes": [
+            [size, expected["dimension"]] for size in expected["codes"]
+        ],
+        "emitted_sid_length": levels,
+        "epsilons": expected["epsilons"],
+        "last_token_prefix": PREFIXES[levels - 1],
+        "levels": levels,
+    }
+    if config.get("runtime_parameterization") != runtime:
+        raise ValueError("Figure8 tokenizer runtime parameterization differs")
+    dataset = execution["datasets"]["Instruments"]
+    provenance = {
+        "cf_provenance": "training_only_BCE_teacher_reconstruction",
+        "cf_sha256": dataset["cf_sha256"],
+        "cf_shape": [items, 32],
+        "claim_type": execution["claim_type"],
+        "embedding_receipt_sha256": dataset["embedding_receipt_sha256"],
+        "learning_rate": execution["rq"]["options"]["learning_rate"],
+        "method_spec_sha256": execution["method_spec_canonical_sha256"],
+        "num_workers": execution["rq"]["options"]["num_workers"],
+        "purpose": {
+            "admissible_final_tokenizer": True,
+            "kind": "tokenizer_reconstruction",
+        },
+        "selection": execution["rq"]["options"]["selection"],
+        "semantic_sha256": dataset["semantic_sha256"],
+        "semantic_shape": [items, execution["semantic_encoder"]["dimension"]],
+        "source": execution["rq"]["source"],
+        "synthetic_fixture": False,
+        "track_id": execution["track_id"],
+        "weight_decay": execution["rq"]["options"]["weight_decay"],
+    }
+    if (any(config.get(key) != value for key, value in provenance.items())
+            or config.get("harness_sha256")
+            != FIGURE8_TOKENIZER_HARNESS_SHA256):
+        raise ValueError("Figure8 tokenizer bundle provenance differs")
+    expected_keys = set(SCIENTIFIC_SPEC_FIELDS) | set(provenance) | {
+        "harness_sha256", "runtime_parameterization",
+    }
+    if set(config) != expected_keys:
+        raise ValueError("Figure8 tokenizer normalized bundle schema differs")
+    return config
 
 
 def tokenizer_cells() -> list[dict]:
@@ -296,23 +400,25 @@ def require_durable_admission_path(
 
 
 def verify_arm_admission(
-    arm: str, audit: dict, spec_path: Path, durable_root: Path, expected_spec: dict,
+    arm: str, audit: dict, spec_path: Path, durable_root: Path,
+    expected_spec: dict, execution: dict,
 ) -> dict:
     if arm not in ARM_ORDER or audit.get("status") != "pass" or audit.get("arm") != arm:
         raise ValueError("Figure8 arm audit identity differs")
     bundle_name = audit.get("bundle", "")
     if not re.fullmatch(re.escape(arm) + r"-completed-[A-Za-z0-9_.-]+", bundle_name):
         raise ValueError("Figure8 arm bundle name is not bound to its arm")
-    if spec_path.is_symlink() or json.loads(spec_path.read_text(encoding="utf-8")) != expected_spec:
-        raise ValueError("Figure8 arm specification differs")
+    if spec_path.is_symlink():
+        raise ValueError("Figure8 arm specification is redirected")
+    launch_spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    validate_arm_launch_spec(launch_spec, expected_spec, arm)
     bundle = durable_root / bundle_name
     durable = verify_durable_tree(bundle)
     payload = bundle / "payload"
     config = json.loads((payload / "run-config.json").read_text(encoding="utf-8"))
-    if any(config.get(key) != value for key, value in expected_spec.items()):
-        raise ValueError("Figure8 arm final bundle uses another specification")
     codes = np.load(payload / "export" / "codes.npy", allow_pickle=False)
     indices = json.loads((payload / "export" / "index.json").read_text(encoding="utf-8"))
+    validate_arm_run_config(config, expected_spec, execution, len(indices))
     bank = validate_identifier_bank(
         indices, codes, len(indices), list(expected_spec["codes"]),
     )
