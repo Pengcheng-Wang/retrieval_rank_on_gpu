@@ -110,6 +110,8 @@ prefixes, not all training examples.
 | --- | --- | --- | ---: | ---: |
 | Fresh-ID T5, diversity-only, temperature1 | Instruments | Code | 0.10798 | 0.08091 |
 | Fresh-ID T5, diversity-only, temperature1 | Instruments | Item diagnostic | 0.10754 | 0.08019 |
+| Fresh-ID T5, full tokenizer, temperature1 | Instruments | Code | 0.10944 | 0.08079 |
+| Fresh-ID T5, full tokenizer, temperature1 | Instruments | Item diagnostic | 0.10879 | 0.08006 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
@@ -125,6 +127,14 @@ records, selected/final model identity and complete durable run/evaluation/resul
 inventories. **One diversity-only cell does not establish a full-model gain**;
 semantic-only, CF-only and full-model comparisons and the other seeds remain
 unfinished.
+
+The same seed/temperature full-tokenizer arm completed99 epochs and selected
+epoch79. Independent checks again covered every user, beam, validation loss,
+model byte and durable receipt. Relative to diversity-only, full regularization
+raises code Recall@10 by0.00145 and item Recall@10 by0.00125, while code/item
+NDCG@10 are lower by about0.00012. These mixed single-seed point differences
+do not establish a uniform component gain. Semantic-only, CF-only and
+replication-seed cells remain unfinished.
 
 P5 CID completed all20 epochs /206,000 updates and selected the earliest
 validation Recall@10 maximum at epoch4. Every prediction in all20 validation

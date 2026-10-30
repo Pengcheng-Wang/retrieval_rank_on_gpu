@@ -69,6 +69,62 @@
     "audit_source_sha256": "451ea6514717ff8d6a82f10d669665d65ac6d9c017df00c251c92a1710d07ad6",
     "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
   },
+  "fresh_t5_instruments_full": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh full LETTER tokenizer, compatible semantic encoder, reconstructed CF teacher and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Instruments",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "full",
+    "tokenizer_objectives": {
+      "alpha": 0.02,
+      "beta": 0.0001
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 18000,
+    "tokenizer_index_sha256": "44048e87910d0367ebe1733e1fcec6d833f2d51b02241fc3edc5800194e82a74",
+    "training_epochs": 99,
+    "training_updates": 12771,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 79,
+    "selected_checkpoint": "checkpoint-10191",
+    "validation_evaluations_checked": 99,
+    "test_users": 24772,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.06010818666236073,
+      "ndcg@1": 0.06010818666236073,
+      "recall@5": 0.08699337962215405,
+      "ndcg@5": 0.07359770647661615,
+      "recall@10": 0.10943807524624576,
+      "ndcg@10": 0.08078796676461285
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.0589375100920394,
+      "ndcg@1": 0.0589375100920394,
+      "recall@5": 0.08654932988858388,
+      "ndcg@5": 0.07292811878571635,
+      "recall@10": 0.10879218472468917,
+      "ndcg@10": 0.0800640772092818
+    },
+    "full_minus_diversity_same_seed_temperature": {
+      "code_recall@10": 0.0014532536735023388,
+      "code_ndcg@10": -0.00012426723514441518,
+      "item_recall@10": 0.001251412885515904,
+      "item_ndcg@10": -0.00012371431981414438,
+      "interpretation": "Descriptive single-seed point differences only; Recall improves while NDCG is effectively flat/slightly lower."
+    },
+    "model_sha256": "4cb23c0f3f6845755c0d0c510c9bb772c5666ed73a2fefa22c4e4c00b635bd84",
+    "predictions_sha256": "e18ac894d46c8f66052f33a09a4db5a13bcdfacffae85978eadc5331b14dedcb",
+    "result_sha256": "b76344c10082fbe6bdd3a0ac11390942bee387e4edf38e4ed9e36478de1abafe",
+    "independent_verification_sha256": "18908efdc7e60b4415f49863cb8da3b56fa7bf97fe449fd0f3f4c063a5bb09f5",
+    "audit_source_sha256": "9c3c12b4a5d3ceeb91cf56b79fabefeaf5adeceee7fd45cf8c09224aec577827",
+    "private_evidence_bundle": "verified-results/fresh-instruments-full-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
   "p5_instruments_cid": {
     "status": "independently_verified_and_banked",
     "claim": "Declared native-code P5 CID reference reconstruction, not recovered exact LETTER Table1 settings",
