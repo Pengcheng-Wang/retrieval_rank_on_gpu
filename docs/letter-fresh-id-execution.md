@@ -377,6 +377,32 @@ Only the pinned verification modules are loaded. The learned-index vocabulary is
 derived from the actual frozen IDs; the earlier synthetic fixture's vocabulary
 size is not a requirement for real runs.
 
+### Separate Figure 8 temperature queue
+
+The five additional Figure8 loss temperatures (`0.6`, `0.8`, `0.9`, `1.1`,
+`1.2`) are not appended to the live39-cell queue. They use
+`letter-figure8-temperature-v1.json`, a separate direct-child work directory
+`fresh-t5-figure8-temperature-v1`, and therefore a separate durable subtree.
+The existing queue binding, order, stages, results and acknowledgments remain
+unchanged.
+
+Admission requires all15 nonbaseline tokenizer one-factor arms to have complete,
+checksum-verified durable bundles. It also pins the exact completed
+Instruments/full tokenizer bundle, selected/final states, index/codes hashes,
+the current39-cell queue binding, and the already measured temperature0.7/1.0
+reference results. The five arms run sequentially in the declared order and
+are fresh random small-T5 fits; no arm warm-starts from another temperature.
+
+The temperature driver composes the same stage, audit, gate, ownership,
+checkpoint-exporter, run-before-test banking and all-user20-beam evaluation
+lifecycle, but uses an explicitly declared two-GPU pair disjoint from the live
+fresh queue's devices2/3. Both controllers still serialize durable writes
+through the common node0 bank lock. Within-arm selection remains earliest
+minimum validation loss with patience20. Across temperatures, test results are
+descriptive only: every temperature is compared against the predeclared
+temperature1.0 reference with paired-user marginal intervals, and no
+best-temperature or recipe-selection field is produced.
+
 The allocation itself is never canceled. A job-wide preemption still requires
 the task's external allocation/lifecycle owner to restore the same admitted
 paths and restart the driver; this component does not create another allocation

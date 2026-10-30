@@ -128,6 +128,7 @@ def _integer(value: str) -> int | None:
 
 
 def capture_gpu_snapshot(
+    indexes: tuple[int, ...] = GPU_INDEXES,
     runner: Callable = subprocess.run, clock: Callable[[], float] = time.time,
 ) -> dict:
     gpu_result = runner(
@@ -150,7 +151,7 @@ def capture_gpu_snapshot(
         if len(parts) != 3:
             continue
         index, memory = _integer(parts[0]), _integer(parts[2])
-        if index in GPU_INDEXES:
+        if index in indexes:
             gpus[str(index)] = {"uuid": parts[1], "memory_used_mib": memory}
     clients = []
     for line in client_result.stdout.splitlines():
@@ -250,18 +251,23 @@ def classify_gpu_snapshot(
     }
 
 
-def _baseline_for(snapshot: dict) -> dict:
+def _baseline_for(snapshot: dict, expected_indexes: tuple[int, ...]) -> dict:
     indexes = [int(index) for index in sorted(snapshot.get("gpus", {}), key=int)]
-    if indexes != list(GPU_INDEXES):
+    if indexes != list(expected_indexes):
         raise GpuOccupancyError("Assigned GPU UUID/memory snapshot is incomplete")
     gpus = snapshot["gpus"]
-    if any(not isinstance(gpus[str(index)].get("memory_used_mib"), int) for index in GPU_INDEXES):
+    if any(
+        not isinstance(gpus[str(index)].get("memory_used_mib"), int)
+        for index in expected_indexes
+    ):
         raise GpuOccupancyError("Assigned GPU memory accounting is unavailable")
     return {
-        "gpu_indexes": list(GPU_INDEXES),
-        "gpu_uuids": {str(index): gpus[str(index)]["uuid"] for index in GPU_INDEXES},
+        "gpu_indexes": list(expected_indexes),
+        "gpu_uuids": {
+            str(index): gpus[str(index)]["uuid"] for index in expected_indexes
+        },
         "memory_used_mib": {
-            str(index): gpus[str(index)]["memory_used_mib"] for index in GPU_INDEXES
+            str(index): gpus[str(index)]["memory_used_mib"] for index in expected_indexes
         },
     }
 
@@ -273,6 +279,7 @@ def wait_for_gpu_quiescence(
     monotonic: Callable[[], float] = time.monotonic,
     sleep: Callable[[float], None] = time.sleep,
     process_reader: Callable[[int], dict | None] = read_process_identity,
+    gpu_indexes: tuple[int, ...] = GPU_INDEXES,
 ) -> dict:
     if quiet_samples < 2 or quiet_seconds <= 0 or timeout_seconds < quiet_seconds:
         raise ValueError("GPU quiescence requires a bounded multi-sample quiet window")
@@ -296,7 +303,7 @@ def wait_for_gpu_quiescence(
             ) from error
         provisional = baseline
         if provisional is None:
-            current_candidate = _baseline_for(current)
+            current_candidate = _baseline_for(current, gpu_indexes)
             if baseline_candidate != current_candidate:
                 baseline_candidate = current_candidate
                 clean_started, clean_count = None, 0
@@ -544,10 +551,17 @@ def wait_for_training(training: subprocess.Popen, exporter: subprocess.Popen,
 
 
 class Runtime:
-    def __init__(self, binding: Path, project: Path, control: Path, work: Path):
+    def __init__(
+        self, binding: Path, project: Path, control: Path, work: Path,
+        gpu_indexes: tuple[int, int] = GPU_INDEXES,
+    ):
         if os.environ.get("CUDA_VISIBLE_DEVICES", "") != "":
             raise RuntimeError("The fresh-ID controller must be CPU-only; GPU children receive explicit leases")
+        if (len(gpu_indexes) != 2 or len(set(gpu_indexes)) != 2
+                or any(type(index) is not int or index < 0 for index in gpu_indexes)):
+            raise ValueError("Select exactly two distinct physical GPU indexes")
         self.binding, self.project, self.control = binding, project, control
+        self.gpu_indexes = tuple(gpu_indexes)
         self.rq_verifier = None
         self.root, self.destination = validate_scope(binding)
         if (not work.is_absolute() or work.is_symlink() or work.resolve().parent != self.root
@@ -574,13 +588,14 @@ class Runtime:
         self._owned_gpu_processes = {}
 
     def command(self, argv: list, seed: int = 42, gpu: bool = False) -> tuple[list[str], dict]:
-        visible = "2,3" if gpu else ""
+        assigned = ",".join(map(str, getattr(self, "gpu_indexes", GPU_INDEXES)))
+        visible = assigned if gpu else ""
         command = [
             "bash", str(self.env), "env", f"CUDA_VISIBLE_DEVICES={visible}",
             "PYTHONDONTWRITEBYTECODE=1",
         ] + list(map(str, argv))
         # env.sh validates the physical allocation before the inner env command hides or exposes CUDA.
-        env = {**os.environ, "CUDA_VISIBLE_DEVICES": "2,3", "LETTER_SEED": str(seed)}
+        env = {**os.environ, "CUDA_VISIBLE_DEVICES": assigned, "LETTER_SEED": str(seed)}
         return command, env
 
     def invoke(self, argv: list, label: str, seed: int = 42,
@@ -590,12 +605,15 @@ class Runtime:
             raise ValueError("Exporter supervision requires both the process and completion validator")
         directory = self.work / "commands" / f"{label}-{time.time_ns()}"
         directory.mkdir(parents=True, exist_ok=False)
+        gpu_indexes = getattr(self, "gpu_indexes", GPU_INDEXES)
         prelaunch = None
         if gpu:
             prelaunch = wait_for_gpu_quiescence(
-                capture_gpu_snapshot, self.gpu_baseline, directory / "gpu-prelaunch.json",
+                lambda: capture_gpu_snapshot(gpu_indexes),
+                self.gpu_baseline, directory / "gpu-prelaunch.json",
                 owners=[entry[1] for entry in self._owned_gpu_processes.values()],
                 drain_owned=self._drain_gpu_owner,
+                gpu_indexes=gpu_indexes,
             )
         command, env = self.command(argv, seed, gpu=gpu)
         with (directory / "output.log").open("x", encoding="utf-8") as log:
@@ -608,12 +626,13 @@ class Runtime:
             identity = None
             if gpu:
                 gpu_uuids = [
-                    prelaunch["gpus"][str(index)]["uuid"] for index in GPU_INDEXES
+                    prelaunch["gpus"][str(index)]["uuid"] for index in gpu_indexes
                 ]
                 identity = self._record_owned_process(process, label, gpu_uuids)
             write_json(directory / "command.json", {
                 "argv": command, "pid": process.pid,
-                "cuda_visible_devices": "2,3" if gpu else "",
+                "cuda_visible_devices":
+                    ",".join(map(str, gpu_indexes)) if gpu else "",
                 "letter_seed": seed, "started_unix": time.time(),
                 "supervised_exporter_pid": exporter.pid if exporter is not None else None,
                 "owned_training_session": gpu,
@@ -635,11 +654,13 @@ class Runtime:
                     raise
                 else:
                     wait_for_gpu_quiescence(
-                        capture_gpu_snapshot, self.gpu_baseline, directory / "gpu-release.json",
+                        lambda: capture_gpu_snapshot(gpu_indexes),
+                        self.gpu_baseline, directory / "gpu-release.json",
                         owners=[
                             entry[1] for entry in self._owned_gpu_processes.values()
                         ],
                         drain_owned=self._drain_gpu_owner,
+                        gpu_indexes=gpu_indexes,
                     )
                     self._owned_gpu_processes.pop(process.pid, None)
             else:
@@ -753,6 +774,7 @@ class Runtime:
         from bank_watch import checkpoint_artifacts
 
         require_real_stage(verify_stage(stage))
+        gpu_indexes = getattr(self, "gpu_indexes", GPU_INDEXES)
         def completed() -> bool:
             from evaluate import verify_model_binding
 
@@ -774,11 +796,13 @@ class Runtime:
         log_dir = self.work / "commands" / f"checkpoint-watcher-{cell['run_id']}-{time.time_ns()}"
         log_dir.mkdir(parents=True)
         idle = wait_for_gpu_quiescence(
-            capture_gpu_snapshot, self.gpu_baseline, log_dir / "gpu-before-banker.json",
+            lambda: capture_gpu_snapshot(gpu_indexes),
+            self.gpu_baseline, log_dir / "gpu-before-banker.json",
             owners=[entry[1] for entry in self._owned_gpu_processes.values()],
             drain_owned=self._drain_gpu_owner,
+            gpu_indexes=gpu_indexes,
         )
-        gpu_uuids = [idle["gpus"][str(index)]["uuid"] for index in GPU_INDEXES]
+        gpu_uuids = [idle["gpus"][str(index)]["uuid"] for index in gpu_indexes]
         command, env = self.command(watcher, gpu=False)
         with (log_dir / "output.log").open("x", encoding="utf-8") as log:
             banker = subprocess.Popen(
@@ -908,7 +932,8 @@ def queue_binding(runtime: Runtime) -> dict:
     binding = {
         "execution_sha256": file_sha256(runtime.execution), "job_binding_sha256": file_sha256(runtime.binding),
         "adapter_sha256": file_sha256(runtime.scripts / "fresh_ids.py"),
-        "driver_sha256": file_sha256(Path(__file__)), "cuda_visible_devices": [2, 3],
+        "driver_sha256": file_sha256(Path(__file__)),
+        "cuda_visible_devices": list(runtime.gpu_indexes),
         "root": str(runtime.root), "durable_root": str(runtime.bank_root),
         "control": str(runtime.control), "work": str(runtime.work),
         "queue": queue_cells(runtime.spec),

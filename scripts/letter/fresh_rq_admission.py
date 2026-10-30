@@ -347,7 +347,7 @@ class CompatibilityRuntime(Runtime):
             "trusted_admission_sha256": self.rq_verifier.settings["trusted_admission_sha256"],
             "scope": sorted(self.rq_verifier.scope),
             "controller_cuda_visible_devices": "",
-            "training_cuda_visible_devices": [2, 3],
+            "training_cuda_visible_devices": list(self.gpu_indexes),
         }
 
     def admit(self, cell: dict, bundle: Path) -> Path:

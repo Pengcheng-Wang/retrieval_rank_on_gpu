@@ -348,6 +348,47 @@ def test_cpu_helpers_hide_cuda_while_gpu_children_keep_the_lease(tmp_path):
     assert gpu_env["LETTER_SEED"] == "17"
 
 
+def test_runtime_can_bind_a_distinct_two_gpu_pair_for_separate_work(tmp_path):
+    runtime = object.__new__(pipeline.Runtime)
+    runtime.env = tmp_path / "env.sh"
+    runtime.gpu_indexes = (0, 1)
+
+    command, environment = runtime.command(["python", "run.py"], gpu=True)
+
+    assert "CUDA_VISIBLE_DEVICES=0,1" in command
+    assert environment["CUDA_VISIBLE_DEVICES"] == "0,1"
+
+
+def test_gpu_snapshot_filters_to_the_explicit_physical_pair():
+    outputs = iter([
+        "0, GPU-0, 4\n1, GPU-1, 6\n2, GPU-2, 8\n",
+        "GPU-0, 11, python, 100\nGPU-2, 22, python, 200\n",
+    ])
+
+    def run(*args, **kwargs):
+        return SimpleNamespace(stdout=next(outputs))
+
+    result = pipeline.capture_gpu_snapshot(indexes=(0, 1), runner=run, clock=lambda: 7.0)
+
+    assert result == {
+        "timestamp": 7.0,
+        "gpus": {
+            "0": {"uuid": "GPU-0", "memory_used_mib": 4},
+            "1": {"uuid": "GPU-1", "memory_used_mib": 6},
+        },
+        "clients": [
+            {
+                "gpu_uuid": "GPU-0", "pid": 11,
+                "process_name": "python", "used_memory_mib": 100,
+            },
+            {
+                "gpu_uuid": "GPU-2", "pid": 22,
+                "process_name": "python", "used_memory_mib": 200,
+            },
+        ],
+    }
+
+
 def test_banker_cuda_regression_drains_banker_and_prevents_torchrun(tmp_path, monkeypatch):
     runtime = object.__new__(pipeline.Runtime)
     runtime.work, runtime.root, runtime.env = tmp_path / "work", tmp_path, tmp_path / "env.sh"
