@@ -110,6 +110,8 @@ prefixes, not all training examples.
 | --- | --- | --- | ---: | ---: |
 | Fresh-ID T5, diversity-only, temperature1 | Instruments | Code | 0.10798 | 0.08091 |
 | Fresh-ID T5, diversity-only, temperature1 | Instruments | Item diagnostic | 0.10754 | 0.08019 |
+| Fresh-ID T5, semantic-only, temperature1 | Instruments | Code | 0.10786 | 0.07989 |
+| Fresh-ID T5, semantic-only, temperature1 | Instruments | Item diagnostic | 0.10750 | 0.07922 |
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Code | 0.10944 | 0.08079 |
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Item diagnostic | 0.10879 | 0.08006 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Instruments | Code | 0.10859 | 0.08025 |
@@ -128,16 +130,26 @@ completed all20,000 epochs before admission. Independent checks covered all
 24,772 targets,20 distinct valid beams per user, code/item metrics,98 validation
 records, selected/final model identity and complete durable run/evaluation/result
 inventories. **One diversity-only cell does not establish a full-model gain**;
-semantic-only, CF-only and full-model comparisons and the other seeds remain
-unfinished.
+CF-only and the other seeds remain unfinished.
 
 The same seed/temperature full-tokenizer arm completed99 epochs and selected
 epoch79. Independent checks again covered every user, beam, validation loss,
 model byte and durable receipt. Relative to diversity-only, full regularization
 raises code Recall@10 by0.00145 and item Recall@10 by0.00125, while code/item
 NDCG@10 are lower by about0.00012. These mixed single-seed point differences
-do not establish a uniform component gain. Semantic-only, CF-only and
-replication-seed cells remain unfinished.
+do not establish a uniform component gain.
+
+The repaired semantic-only tokenizer's T5 arm also completed99 epochs and
+selected epoch79. Its code R10/N10 is0.10786/0.07989 and item diagnostic is
+0.10750/0.07922. The tokenizer lineage discloses exactly one guarded training
+endpoint correction at epoch16,401 and zero validation/export corrections; no
+native bitwise identity is claimed past the original crash. Full-minus-semantic
+item Recall@10 is+0.00129 with paired95% interval
+[-0.00149,+0.00436], and item NDCG@10 is+0.00084
+[-0.00081,+0.00250]. Code Recall@10 is+0.00157
+[-0.00121,+0.00452], and code NDCG@10 is+0.00090
+[-0.00078,+0.00256]. All intervals include zero, so this seed does not establish
+a recommendation gain from the added objectives.
 
 For the same full tokenizer and seed, temperature0.7 selected epoch72 and
 temperature1 selected epoch79. All four code/item R/N@5/10 point differences
@@ -288,6 +300,33 @@ descriptive only and is not interpreted as recommendation quality, semantic
 fairness or proof of balanced usage. [Exact diagnostics](../results/2026-10-29-letter/tokenizer-distribution-pca-v1.json)
 retain all ratios and reconstruction conventions; raw grouped counts and
 coordinates remain in the private mechanism bundles.
+
+### Figure 3 generation-bias reconstruction
+
+Because the paper and released repository do not publish the exact Figure3
+aggregation script, this is an explicitly qualified reconstruction rather than
+an exact replay. The frozen primary estimator ranks position-specific learned
+atomic codes by target-side frequency in the exact generator training examples,
+uses the paper's five20% rank intervals with fractional tie allocation, and
+gives every test user, each of20 valid beams and each learned code position
+equal mass.
+
+| Tokenizer | Top-quintile training share | Top-quintile generated share | Shift |
+| --- | ---: | ---: | ---: |
+| Semantic-only | 46.57% | 59.99% | +13.41 pp |
+| Full | 56.77% | 74.26% | +17.49 pp |
+
+Both models over-generate popular codes. Under this atomic-code estimator, the
+full tokenizer is more concentrated: its full-minus-semantic top-quintile shift
+is+4.08 percentage points with paired95% interval[+3.93,+4.23]. This ordering
+persists for top1/top10/top20 outputs, reciprocal/DCG beam weighting,
+catalog-assignment popularity and tie-preserving midranks. A full-identifier
+popularity alternative is highly concentrated for both models but slightly
+reverses the between-tokenizer ordering, so no universal bias-reduction or
+causal claim is made. Beam frequency is decoding dependent, not a calibrated
+probability or fairness measure. [Exact bins, robustness analyses and audit
+provenance](../results/2026-10-29-letter/figure3-generation-bias-v1.json) are
+banked at `verified-results/figure3-generation-bias-v1`.
 
 ## 📊 Instruments released-ID replay
 
