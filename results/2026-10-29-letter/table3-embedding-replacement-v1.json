@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "status": "independently_recomputed_table3_style_embedding_replacement",
+  "claim_boundary": "Raw sequential float32 codebook sums replace only real item rows in the frozen reconstructed BCE teacher; no normalization, rescaling or refitting",
+  "datasets": {
+    "Instruments": {
+      "paper": {
+        "semantic_only_TIGER": {
+          "recall@5": 0.005,
+          "recall@10": 0.015,
+          "ndcg@5": 0.0024,
+          "ndcg@10": 0.0049
+        },
+        "full_LETTER": {
+          "recall@5": 0.008,
+          "recall@10": 0.0159,
+          "ndcg@5": 0.0038,
+          "ndcg@10": 0.0058
+        }
+      },
+      "measured": {
+        "semantic": {
+          "metrics": {
+            "recall@5": 0.00250282577103181,
+            "recall@10": 0.00472307443888261,
+            "ndcg@5": 0.001373925892819299,
+            "ndcg@10": 0.002091462927944083
+          },
+          "teacher_reference": {
+            "recall@5": 0.05744388826093977,
+            "recall@10": 0.08130146940093654,
+            "ndcg@5": 0.03501328023285779,
+            "ndcg@10": 0.0426884106182929
+          },
+          "predictions_sha256": "5b6bf11d64195096a164e2ae69621e8f979a44b8e267bfeca0618ae65a0e2976",
+          "mechanism_result_sha256": "465990cd04e7cea2ff993cc3871d5e6c9876de053e4059eaa70a3229650a9e28",
+          "index_sha256": "66954b900105db8235951feb87f82326250ef1cac49d984ebae1f3a4740c4a57",
+          "selected_state_sha256": "78ab058d1166270e7f20b32bfb3e0ed4fb595c71482e90fbc1050cb234351949"
+        },
+        "full": {
+          "metrics": {
+            "recall@5": 0.012312288067172614,
+            "recall@10": 0.021556596156951397,
+            "ndcg@5": 0.0073785001153435816,
+            "ndcg@10": 0.010330759896026893
+          },
+          "teacher_reference": {
+            "recall@5": 0.05744388826093977,
+            "recall@10": 0.08130146940093654,
+            "ndcg@5": 0.03501328023285779,
+            "ndcg@10": 0.0426884106182929
+          },
+          "predictions_sha256": "dc00f640f063f145b99fbb48334eb8c9f6f6a779b7952238869b7ac2eaa259c0",
+          "mechanism_result_sha256": "9255e5fe6cd2f3cd76d04dc397792ccf5ecb3cd91f2cfa1127470f47e2adc0dd",
+          "index_sha256": "44048e87910d0367ebe1733e1fcec6d833f2d51b02241fc3edc5800194e82a74",
+          "selected_state_sha256": "59a2dcc4f61c6c9fd15d96d946db33fa590a9689af55e7b08400d48eb2d001f9"
+        }
+      },
+      "full_minus_semantic_paired_users": {
+        "recall@5": {
+          "difference": 0.009809462296140804,
+          "ci_low": 0.008315840465041175,
+          "ci_high": 0.011303084127240433,
+          "wins": 300,
+          "ties": 24415,
+          "losses": 57
+        },
+        "recall@10": {
+          "difference": 0.01683352171806879,
+          "ci_low": 0.014814104634264491,
+          "ci_high": 0.018811561440335862,
+          "wins": 520,
+          "ties": 24149,
+          "losses": 103
+        },
+        "ndcg@5": {
+          "difference": 0.006004574222524291,
+          "ci_low": 0.005075309858040403,
+          "ci_high": 0.006935710936989207,
+          "wins": 304,
+          "ties": 24410,
+          "losses": 58
+        },
+        "ndcg@10": {
+          "difference": 0.00823929696808281,
+          "ci_low": 0.0072216942308286226,
+          "ci_high": 0.009242229625604542,
+          "wins": 532,
+          "ties": 24136,
+          "losses": 104
+        }
+      },
+      "teacher_reference_reused_unchanged": {
+        "recall@5": 0.05744388826093977,
+        "recall@10": 0.08130146940093654,
+        "ndcg@5": 0.03501328023285779,
+        "ndcg@10": 0.0426884106182929
+      },
+      "paper_minus_measured": {
+        "semantic": {
+          "recall@5": 0.00249717422896819,
+          "recall@10": 0.01027692556111739,
+          "ndcg@5": 0.0010260741071807008,
+          "ndcg@10": 0.0028085370720559166
+        },
+        "full": {
+          "recall@5": -0.004312288067172614,
+          "recall@10": -0.005656596156951396,
+          "ndcg@5": -0.0035785001153435816,
+          "ndcg@10": -0.004530759896026894
+        }
+      }
+    },
+    "Beauty": {
+      "paper": {
+        "semantic_only_TIGER": {
+          "recall@5": 0.0128,
+          "recall@10": 0.0213,
+          "ndcg@5": 0.0064,
+          "ndcg@10": 0.0085
+        },
+        "full_LETTER": {
+          "recall@5": 0.0175,
+          "recall@10": 0.0343,
+          "ndcg@5": 0.0076,
+          "ndcg@10": 0.0118
+        }
+      },
+      "measured": {
+        "semantic": {
+          "metrics": {
+            "recall@5": 0.0027724366140499932,
+            "recall@10": 0.005500156508518535,
+            "ndcg@5": 0.0016483129146536493,
+            "ndcg@10": 0.0025157073341653216
+          },
+          "teacher_reference": {
+            "recall@5": 0.02164289227742253,
+            "recall@10": 0.041631265930331354,
+            "ndcg@5": 0.01290132023693872,
+            "ndcg@10": 0.019308868374027174
+          },
+          "predictions_sha256": "3517b32746a986f0f2e17aa260bffc925f29a4afb196722d708d28ded6a6163b",
+          "mechanism_result_sha256": "6485f1d6f5615e8d1b1d4f4a6077213f48ea5c0835eb10328fa15848622a04e7",
+          "index_sha256": "e0833f54468ca42497d6cb3b9a3c72f35033540443fda7eed176e309dec0ae73",
+          "selected_state_sha256": "4f72e14917fa20061afc3f9d64b8a9d1c856555e002b715a35ba23ec10e3b395"
+        },
+        "full": {
+          "metrics": {
+            "recall@5": 0.008496176720475786,
+            "recall@10": 0.017305370478021734,
+            "ndcg@5": 0.005318614358840447,
+            "ndcg@10": 0.008135038691891038
+          },
+          "teacher_reference": {
+            "recall@5": 0.02164289227742253,
+            "recall@10": 0.041631265930331354,
+            "ndcg@5": 0.01290132023693872,
+            "ndcg@10": 0.019308868374027174
+          },
+          "predictions_sha256": "1957187d64a81a5f613a2d304ee037110f9161d21886761e54d88c3bd8e4cd94",
+          "mechanism_result_sha256": "f25e7237a62480452969e375b8334b15e8c21bece526bde5235e10f7b3a6908f",
+          "index_sha256": "fabf688126079a28ad0e02ed97b5bfb7b576426b9661c9a283e8f12c0f7b9c85",
+          "selected_state_sha256": "e0d8d7539c1db85c85ec320c4b4d84ca3cf9486e4ffc8c0f002d9f5c38c1d9b5"
+        }
+      },
+      "full_minus_semantic_paired_users": {
+        "recall@5": {
+          "difference": 0.005723740106425792,
+          "ci_low": 0.004337521799400796,
+          "ci_high": 0.007065241693869338,
+          "wins": 188,
+          "ties": 22115,
+          "losses": 60
+        },
+        "recall@10": {
+          "difference": 0.011805213969503197,
+          "ci_low": 0.009791843670348343,
+          "ci_high": 0.01368443410991369,
+          "wins": 382,
+          "ties": 21863,
+          "losses": 118
+        },
+        "ndcg@5": {
+          "difference": 0.0036703014441868075,
+          "ci_low": 0.0027809752806253855,
+          "ci_high": 0.004572238387888446,
+          "wins": 189,
+          "ties": 22113,
+          "losses": 61
+        },
+        "ndcg@10": {
+          "difference": 0.0056193313577257145,
+          "ci_low": 0.004648778102186259,
+          "ci_high": 0.00663825366680542,
+          "wins": 384,
+          "ties": 21859,
+          "losses": 120
+        }
+      },
+      "teacher_reference_reused_unchanged": {
+        "recall@5": 0.02164289227742253,
+        "recall@10": 0.041631265930331354,
+        "ndcg@5": 0.01290132023693872,
+        "ndcg@10": 0.019308868374027174
+      },
+      "paper_minus_measured": {
+        "semantic": {
+          "recall@5": 0.010027563385950008,
+          "recall@10": 0.015799843491481464,
+          "ndcg@5": 0.004751687085346351,
+          "ndcg@10": 0.0059842926658346795
+        },
+        "full": {
+          "recall@5": 0.009003823279524216,
+          "recall@10": 0.016994629521978263,
+          "ndcg@5": 0.002281385641159553,
+          "ndcg@10": 0.0036649613081089615
+        }
+      }
+    }
+  },
+  "bootstrap": {
+    "seed": 20261027,
+    "replicates": 2000,
+    "method": "paired-user percentile 95% intervals conditional on fixed models"
+  },
+  "all_predictions_and_metrics_recomputed": true,
+  "all_mechanism_payloads_and_durable_receipts_verified": true,
+  "model_inference_performed": false,
+  "audit_source_sha256": "edd5be5f4c9ab9f793e459d2392695d337ce0e6cdd7dddcec2d6782221157454"
+}

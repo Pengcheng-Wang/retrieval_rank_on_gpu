@@ -269,6 +269,31 @@ actual exported IDs; the original teacher reference was reused unchanged.
 [Exact Beauty results](../results/2026-10-29-letter/beauty-embedding-replacements-v1.json)
 retain the negative findings and descriptive, uncalibrated vector norms.
 
+### Table 3 embedding-replacement comparison
+
+The paper's Table3 rows and the declared reconstructions can now be compared
+directly. Metrics remain original-item full-catalog ranking after replacing the
+frozen teacher's item matrix; no refitting is performed.
+
+| Dataset / tokenizer | Paper R10 / N10 | Measured R10 / N10 |
+| --- | ---: | ---: |
+| Instruments semantic-only / TIGER | 0.0150 / 0.0049 | 0.00472 / 0.00209 |
+| Instruments full / LETTER | 0.0159 / 0.0058 | 0.02156 / 0.01033 |
+| Beauty semantic-only / TIGER | 0.0213 / 0.0085 | 0.00550 / 0.00252 |
+| Beauty full / LETTER | 0.0343 / 0.0118 | 0.01731 / 0.00814 |
+
+Full-minus-semantic Recall@10 is+0.01683 on Instruments with paired-user95%
+interval[+0.01481,+0.01881], and+0.01181 on Beauty
+[+0.00979,+0.01368]. Corresponding NDCG@10 differences are+0.00824
+[+0.00722,+0.00924] and+0.00562[+0.00465,+0.00664]. Full therefore improves
+substantially over semantic-only within these fixed reconstructed models, but
+every replacement remains far below the unchanged original teacher
+(R10 0.08130/0.04163). The Instruments full point exceeds the paper's Table3
+point while Beauty remains below it; neither licenses an overall
+recommendation-gain claim. [Exact paired statistics and
+provenance](../results/2026-10-29-letter/table3-embedding-replacement-v1.json)
+are banked at `verified-results/table3-embedding-replacement-v1`.
+
 ### Table 4 CF-neighbor code similarity
 
 The Table4-style analysis has now been independently recomputed for every
