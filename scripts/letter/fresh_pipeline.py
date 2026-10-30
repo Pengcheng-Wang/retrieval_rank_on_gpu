@@ -23,6 +23,13 @@ from fresh_ids import (
 from protocol import require_hash
 
 
+GPU_INDEXES = (2, 3)
+
+
+class GpuOccupancyError(RuntimeError):
+    """Assigned GPU ownership could not be proved without touching a foreign process."""
+
+
 def queue_cells(spec: dict) -> list[dict]:
     cells = []
     for seed in spec["training"]["seeds"]:
@@ -87,14 +94,335 @@ def cell_is_banked(work: Path, cell: dict) -> bool:
     return True
 
 
-def free_assigned_gpus() -> bool:
-    result = subprocess.run(
-        ["nvidia-smi", "--query-gpu=index,memory.used", "--format=csv,noheader,nounits"],
+def read_process_identity(pid: int, proc_root: Path = Path("/proc")) -> dict | None:
+    try:
+        text = (proc_root / str(pid) / "stat").read_text()
+        close = text.rfind(")")
+        fields = text[close + 2:].split()
+        return {
+            "pid": int(pid), "ppid": int(fields[1]), "pgid": int(fields[2]),
+            "session_id": int(fields[3]), "start_time_ticks": int(fields[19]),
+        }
+    except (FileNotFoundError, IndexError, OSError, ValueError):
+        return None
+
+
+def capture_process_identity(
+    pid: int, label: str, gpu_uuids: list[str],
+    process_reader: Callable[[int], dict | None] = read_process_identity,
+) -> dict:
+    identity = process_reader(pid)
+    if identity is None:
+        raise GpuOccupancyError(f"Could not record process identity for {label} PID {pid}")
+    return {
+        **identity, "label": label, "gpu_uuids": sorted(gpu_uuids),
+        "members": {str(pid): identity["start_time_ticks"]},
+    }
+
+
+def _integer(value: str) -> int | None:
+    try:
+        return int(value.strip())
+    except (AttributeError, ValueError):
+        return None
+
+
+def capture_gpu_snapshot(
+    runner: Callable = subprocess.run, clock: Callable[[], float] = time.time,
+) -> dict:
+    gpu_result = runner(
+        [
+            "nvidia-smi", "--query-gpu=index,uuid,memory.used",
+            "--format=csv,noheader,nounits",
+        ],
         check=True, capture_output=True, text=True, timeout=30,
     )
-    memory = {int(parts[0]): int(parts[1]) for line in result.stdout.splitlines()
-              if len(parts := line.split(",")) == 2}
-    return all(index in memory and memory[index] == 0 for index in (2, 3))
+    client_result = runner(
+        [
+            "nvidia-smi", "--query-compute-apps=gpu_uuid,pid,process_name,used_gpu_memory",
+            "--format=csv,noheader,nounits",
+        ],
+        check=True, capture_output=True, text=True, timeout=30,
+    )
+    gpus = {}
+    for line in gpu_result.stdout.splitlines():
+        parts = [part.strip() for part in line.split(",", 2)]
+        if len(parts) != 3:
+            continue
+        index, memory = _integer(parts[0]), _integer(parts[2])
+        if index in GPU_INDEXES:
+            gpus[str(index)] = {"uuid": parts[1], "memory_used_mib": memory}
+    clients = []
+    for line in client_result.stdout.splitlines():
+        parts = [part.strip() for part in line.split(",", 3)]
+        if len(parts) != 4:
+            continue
+        clients.append({
+            "gpu_uuid": parts[0], "pid": _integer(parts[1]),
+            "process_name": parts[2], "used_memory_mib": _integer(parts[3]),
+        })
+    return {"timestamp": clock(), "gpus": gpus, "clients": clients}
+
+
+def _descends_from(
+    actual: dict, ancestor_pid: int, process_reader: Callable[[int], dict | None],
+) -> bool:
+    seen = set()
+    current = actual
+    while current is not None and current["pid"] not in seen:
+        if current["pid"] == ancestor_pid:
+            return True
+        seen.add(current["pid"])
+        if current["ppid"] <= 1:
+            return False
+        current = process_reader(current["ppid"])
+    return False
+
+
+def _matching_owner(
+    pid: int, gpu_uuid: str, owners: list[dict],
+    process_reader: Callable[[int], dict | None],
+) -> dict | None:
+    actual = process_reader(pid)
+    if actual is None:
+        return None
+    for owner in owners:
+        if gpu_uuid not in owner["gpu_uuids"]:
+            continue
+        member_start = owner.get("members", {}).get(str(pid))
+        if (member_start == actual["start_time_ticks"]
+                and actual["pgid"] == owner["pgid"]
+                and actual["session_id"] == owner["session_id"]):
+            return owner
+        leader = process_reader(owner["pid"])
+        if (leader is None or leader["start_time_ticks"] != owner["start_time_ticks"]
+                or leader["pgid"] != owner["pgid"]
+                or leader["session_id"] != owner["session_id"]):
+            continue
+        if (actual["session_id"] == owner["session_id"]
+                and _descends_from(actual, owner["pid"], process_reader)):
+            owner.setdefault("members", {})[str(pid)] = actual["start_time_ticks"]
+            return owner
+    return None
+
+
+def classify_gpu_snapshot(
+    snapshot: dict, baseline: dict, owners: list[dict],
+    process_reader: Callable[[int], dict | None] = read_process_identity,
+) -> dict:
+    expected_uuids = baseline["gpu_uuids"]
+    for index in map(str, baseline["gpu_indexes"]):
+        gpu = snapshot.get("gpus", {}).get(index)
+        if (gpu is None or gpu.get("uuid") != expected_uuids[index]
+                or not isinstance(gpu.get("memory_used_mib"), int)):
+            return {
+                "status": "foreign", "owned_clients": [], "owned_owner_pids": [],
+                "foreign_clients": [{"reason": "missing_or_changed_gpu_identity", "gpu_index": index}],
+            }
+    assigned = set(expected_uuids.values())
+    owned_clients, foreign_clients, owned_pids = [], [], set()
+    for value in snapshot.get("clients", []):
+        gpu_uuid = value.get("gpu_uuid")
+        if gpu_uuid not in assigned:
+            if gpu_uuid in {None, "", "N/A"}:
+                foreign_clients.append({**value, "reason": "unknown_gpu_uuid"})
+            continue
+        pid = value.get("pid")
+        owner = _matching_owner(pid, gpu_uuid, owners, process_reader) if isinstance(pid, int) else None
+        if owner is None:
+            foreign_clients.append({**value, "reason": "unowned_or_reused_process"})
+        else:
+            owned_clients.append(value)
+            owned_pids.add(owner["pid"])
+    if foreign_clients:
+        status = "foreign"
+    elif owned_clients:
+        status = "owned_live"
+    else:
+        memory = {
+            index: snapshot["gpus"][index]["memory_used_mib"]
+            for index in map(str, baseline["gpu_indexes"])
+        }
+        status = "clean" if memory == baseline["memory_used_mib"] else "residual_memory"
+    return {
+        "status": status, "owned_clients": owned_clients,
+        "owned_owner_pids": sorted(owned_pids), "foreign_clients": foreign_clients,
+    }
+
+
+def _baseline_for(snapshot: dict) -> dict:
+    indexes = [int(index) for index in sorted(snapshot.get("gpus", {}), key=int)]
+    if indexes != list(GPU_INDEXES):
+        raise GpuOccupancyError("Assigned GPU UUID/memory snapshot is incomplete")
+    gpus = snapshot["gpus"]
+    if any(not isinstance(gpus[str(index)].get("memory_used_mib"), int) for index in GPU_INDEXES):
+        raise GpuOccupancyError("Assigned GPU memory accounting is unavailable")
+    return {
+        "gpu_indexes": list(GPU_INDEXES),
+        "gpu_uuids": {str(index): gpus[str(index)]["uuid"] for index in GPU_INDEXES},
+        "memory_used_mib": {
+            str(index): gpus[str(index)]["memory_used_mib"] for index in GPU_INDEXES
+        },
+    }
+
+
+def wait_for_gpu_quiescence(
+    snapshotter: Callable[[], dict], baseline_path: Path, evidence_path: Path, *,
+    owners: tuple[dict, ...] | list[dict], drain_owned: Callable[[dict], object],
+    quiet_samples: int = 3, quiet_seconds: float = 2.0, timeout_seconds: float = 120.0,
+    monotonic: Callable[[], float] = time.monotonic,
+    sleep: Callable[[float], None] = time.sleep,
+    process_reader: Callable[[int], dict | None] = read_process_identity,
+) -> dict:
+    if quiet_samples < 2 or quiet_seconds <= 0 or timeout_seconds < quiet_seconds:
+        raise ValueError("GPU quiescence requires a bounded multi-sample quiet window")
+    owners = list(owners)
+    baseline = read_json(baseline_path) if baseline_path.is_file() else None
+    baseline_candidate = None
+    started, clean_started, clean_count = monotonic(), None, 0
+    samples, drained = [], set()
+    interval = quiet_seconds / (quiet_samples - 1)
+    while True:
+        observed = monotonic()
+        try:
+            current = snapshotter()
+        except Exception as error:
+            write_json(evidence_path, {
+                "status": "snapshot_failed_prelaunch",
+                "error": f"{type(error).__name__}: {error}", "samples": samples,
+            })
+            raise GpuOccupancyError(
+                "GPU ownership snapshot failed before launch; no GPU process was started"
+            ) from error
+        provisional = baseline
+        if provisional is None:
+            current_candidate = _baseline_for(current)
+            if baseline_candidate != current_candidate:
+                baseline_candidate = current_candidate
+                clean_started, clean_count = None, 0
+            provisional = baseline_candidate
+        classification = classify_gpu_snapshot(
+            current, provisional, owners, process_reader=process_reader,
+        )
+        samples.append({
+            "observed_monotonic": observed, "snapshot": current,
+            "classification": classification,
+        })
+        status = classification["status"]
+        if status == "foreign":
+            write_json(evidence_path, {
+                "status": "blocked_foreign", "samples": samples,
+                "drained_owned_pids": sorted(drained),
+            })
+            raise GpuOccupancyError("Assigned GPUs contain a foreign or unidentifiable client")
+        if status == "owned_live":
+            for pid in classification["owned_owner_pids"]:
+                if pid not in drained:
+                    drain_owned(next(owner for owner in owners if owner["pid"] == pid))
+                    drained.add(pid)
+            clean_started, clean_count = None, 0
+        elif status == "clean":
+            if clean_started is None:
+                clean_started, clean_count = observed, 1
+            else:
+                clean_count += 1
+            quiet = observed - clean_started
+            if clean_count >= quiet_samples and quiet >= quiet_seconds:
+                if baseline is None:
+                    baseline = baseline_candidate
+                    write_json(baseline_path, baseline)
+                write_json(evidence_path, {
+                    "status": "launchable", "baseline": baseline,
+                    "clean_samples": clean_count, "quiet_seconds": quiet,
+                    "samples": samples, "drained_owned_pids": sorted(drained),
+                })
+                return current
+        else:
+            clean_started, clean_count = None, 0
+        if monotonic() - started >= timeout_seconds:
+            write_json(evidence_path, {
+                "status": "blocked_ambiguous", "baseline": baseline,
+                "samples": samples, "drained_owned_pids": sorted(drained),
+            })
+            raise GpuOccupancyError(
+                "Assigned GPUs did not return to their recorded idle baseline within the bounded wait"
+            )
+        sleep(interval)
+
+
+def monitor_gpu_process(
+    process: subprocess.Popen, owner: dict, baseline: dict, evidence_path: Path, *,
+    snapshotter: Callable[[], dict] = capture_gpu_snapshot,
+    drain_owned: Callable[[dict], object],
+    other_owners: tuple[dict, ...] | list[dict] = (),
+    process_reader: Callable[[int], dict | None] = read_process_identity,
+    exporter: subprocess.Popen | None = None,
+    completed: Callable[[], bool] | None = None,
+    sleep: Callable[[float], None] = time.sleep, poll_seconds: float = 1.0,
+) -> int:
+    if (exporter is None) != (completed is None):
+        raise ValueError("Exporter supervision requires both the process and completion validator")
+    samples = []
+    while True:
+        if exporter is not None:
+            error = _exporter_error(exporter, completed)
+            if error:
+                receipt = {
+                    "status": "exporter_failed", "exporter_pid": exporter.pid,
+                    "exporter_returncode": exporter.poll(), "training_pid": process.pid,
+                    "error": error, "drain": "requested", "unix": time.time(),
+                }
+                write_json(evidence_path.parent / "supervision.json", receipt)
+                drain = drain_owned(owner)
+                write_json(
+                    evidence_path.parent / "supervision.json",
+                    {**receipt, "drain": drain, "training_returncode": process.poll()},
+                )
+                raise ExporterFailure(error)
+        try:
+            current = snapshotter()
+        except Exception as error:
+            drain_owned(owner)
+            write_json(evidence_path, {
+                "status": "snapshot_failed_after_spawn", "owner": owner,
+                "error": f"{type(error).__name__}: {error}", "samples": samples,
+            })
+            raise GpuOccupancyError(
+                "GPU ownership snapshot failed after spawn; the owned process group was drained"
+            ) from error
+        owners = [owner, *other_owners]
+        classification = classify_gpu_snapshot(current, baseline, owners, process_reader=process_reader)
+        samples.append({"snapshot": current, "classification": classification})
+        if classification["status"] == "foreign":
+            drain_owned(owner)
+            write_json(evidence_path, {
+                "status": "foreign_after_spawn", "owner": owner, "samples": samples,
+            })
+            raise GpuOccupancyError(
+                "A foreign GPU client appeared after spawn; the owned process group was drained"
+            )
+        unexpected = sorted(
+            set(classification["owned_owner_pids"]) - {owner["pid"]}
+        )
+        if unexpected:
+            for pid in unexpected:
+                drain_owned(next(value for value in other_owners if value["pid"] == pid))
+            drain_owned(owner)
+            write_json(evidence_path, {
+                "status": "owned_lifecycle_violation", "owner": owner,
+                "unexpected_owned_pids": unexpected, "samples": samples,
+            })
+            raise GpuOccupancyError(
+                "An unexpected owned GPU client appeared after spawn; lifecycle groups were drained"
+            )
+        code = process.poll()
+        if code is not None:
+            write_json(evidence_path, {
+                "status": "process_exited", "returncode": code,
+                "owner": owner, "samples": samples,
+            })
+            return code
+        sleep(poll_seconds)
 
 
 class ExporterFailure(RuntimeError):
@@ -130,19 +458,61 @@ def wait_for_exporter(exporter: subprocess.Popen, log: Path, completed: Callable
         time.sleep(.2)
 
 
-def _drain_owned_training(training: subprocess.Popen) -> str:
-    if training.poll() is not None:
+def _drain_owned_training(training: subprocess.Popen, identity: dict | None = None) -> str:
+    exited = training.poll() is not None
+    current = read_process_identity(training.pid) if identity is not None else None
+    live_members = []
+    if identity is not None:
+        for pid, start_time in identity.get("members", {}).items():
+            member = read_process_identity(int(pid))
+            if (member is not None and member["start_time_ticks"] == start_time
+                    and member["pgid"] == identity["pgid"]
+                    and member["session_id"] == identity["session_id"]):
+                live_members.append(member)
+    if exited and not live_members:
         return "already_exited"
-    if os.name != "posix" or os.getpgid(training.pid) != training.pid:
+    if identity is not None and (
+        not exited and (
+            current is None
+            or current["start_time_ticks"] != identity["start_time_ticks"]
+            or current["pgid"] != identity["pgid"]
+            or current["session_id"] != identity["session_id"]
+        )
+    ):
+        raise ExporterFailure("Refusing to signal a reused or changed training process identity")
+    if os.name != "posix" or (not exited and os.getpgid(training.pid) != training.pid):
         raise ExporterFailure("Refusing to signal a training launcher outside its owned process session")
     # Native ranks handle SIGTERM by sealing state at a step boundary. The banker is not in this session.
-    os.killpg(training.pid, signal.SIGTERM)
-    try:
-        training.wait(timeout=120)
-    except subprocess.TimeoutExpired as error:
-        raise ExporterFailure(
-            f"Graceful drain requested for owned training PID {training.pid}, but exit is still pending"
-        ) from error
+    os.killpg(identity["pgid"] if identity is not None else training.pid, signal.SIGTERM)
+    if not exited:
+        try:
+            training.wait(timeout=120)
+        except subprocess.TimeoutExpired as error:
+            raise ExporterFailure(
+                f"Graceful drain requested for owned training PID {training.pid}, but exit is still pending"
+            ) from error
+    deadline = time.monotonic() + 120
+    while True:
+        remaining = []
+        if identity is not None:
+            for pid, start_time in identity.get("members", {}).items():
+                member = read_process_identity(int(pid))
+                if (member is not None and member["start_time_ticks"] == start_time
+                        and member["pgid"] == identity["pgid"]
+                        and member["session_id"] == identity["session_id"]):
+                    remaining.append(pid)
+        try:
+            os.killpg(identity["pgid"] if identity is not None else training.pid, 0)
+            group_exists = True
+        except ProcessLookupError:
+            group_exists = False
+        if not remaining and not group_exists:
+            break
+        if time.monotonic() >= deadline:
+            raise ExporterFailure(
+                f"Owned GPU process group remains live after graceful drain: {remaining}"
+            )
+        time.sleep(.2)
     return "completed"
 
 
@@ -175,6 +545,8 @@ def wait_for_training(training: subprocess.Popen, exporter: subprocess.Popen,
 
 class Runtime:
     def __init__(self, binding: Path, project: Path, control: Path, work: Path):
+        if os.environ.get("CUDA_VISIBLE_DEVICES", "") != "":
+            raise RuntimeError("The fresh-ID controller must be CPU-only; GPU children receive explicit leases")
         self.binding, self.project, self.control = binding, project, control
         self.rq_verifier = None
         self.root, self.destination = validate_scope(binding)
@@ -198,37 +570,100 @@ class Runtime:
         self.work.mkdir(exist_ok=True)
         self.bank_root = self.destination / "openllama-v2" / self.work.name
         self.scripts = control / "scripts" / "letter"
+        self.gpu_baseline = self.work / "gpu-idle-baseline.json"
+        self._owned_gpu_processes = {}
 
-    def command(self, argv: list, seed: int = 42) -> tuple[list[str], dict]:
-        command = ["bash", str(self.env), "env", "PYTHONDONTWRITEBYTECODE=1"] + list(map(str, argv))
+    def command(self, argv: list, seed: int = 42, gpu: bool = False) -> tuple[list[str], dict]:
+        visible = "2,3" if gpu else ""
+        command = [
+            "bash", str(self.env), "env", f"CUDA_VISIBLE_DEVICES={visible}",
+            "PYTHONDONTWRITEBYTECODE=1",
+        ] + list(map(str, argv))
+        # env.sh validates the physical allocation before the inner env command hides or exposes CUDA.
         env = {**os.environ, "CUDA_VISIBLE_DEVICES": "2,3", "LETTER_SEED": str(seed)}
         return command, env
 
     def invoke(self, argv: list, label: str, seed: int = 42,
                exporter: subprocess.Popen | None = None,
-               completed: Callable[[], bool] | None = None) -> None:
+               completed: Callable[[], bool] | None = None, gpu: bool = False) -> None:
         if (exporter is None) != (completed is None):
             raise ValueError("Exporter supervision requires both the process and completion validator")
         directory = self.work / "commands" / f"{label}-{time.time_ns()}"
         directory.mkdir(parents=True, exist_ok=False)
-        command, env = self.command(argv, seed)
+        prelaunch = None
+        if gpu:
+            prelaunch = wait_for_gpu_quiescence(
+                capture_gpu_snapshot, self.gpu_baseline, directory / "gpu-prelaunch.json",
+                owners=[entry[1] for entry in self._owned_gpu_processes.values()],
+                drain_owned=self._drain_gpu_owner,
+            )
+        command, env = self.command(argv, seed, gpu=gpu)
         with (directory / "output.log").open("x", encoding="utf-8") as log:
             if exporter is not None:
                 error = _exporter_error(exporter, completed)
                 if error:
                     raise ExporterFailure(error)
             process = subprocess.Popen(command, cwd=self.root, env=env, stdout=log, stderr=log,
-                                       start_new_session=exporter is not None)
+                                       start_new_session=gpu)
+            identity = None
+            if gpu:
+                gpu_uuids = [
+                    prelaunch["gpus"][str(index)]["uuid"] for index in GPU_INDEXES
+                ]
+                identity = self._record_owned_process(process, label, gpu_uuids)
             write_json(directory / "command.json", {
-                "argv": command, "pid": process.pid, "cuda_visible_devices": "2,3",
+                "argv": command, "pid": process.pid,
+                "cuda_visible_devices": "2,3" if gpu else "",
                 "letter_seed": seed, "started_unix": time.time(),
                 "supervised_exporter_pid": exporter.pid if exporter is not None else None,
-                "owned_training_session": exporter is not None,
+                "owned_training_session": gpu,
+                "process_identity": identity,
             })
-            code = (wait_for_training(process, exporter, completed, directory)
-                    if exporter is not None else process.wait())
+            if gpu:
+                baseline = read_json(self.gpu_baseline)
+                try:
+                    code = monitor_gpu_process(
+                        process, identity, baseline, directory / "gpu-monitor.json",
+                        drain_owned=self._drain_gpu_owner,
+                        other_owners=[
+                            entry[1] for pid, entry in self._owned_gpu_processes.items()
+                            if pid != process.pid
+                        ],
+                        exporter=exporter, completed=completed,
+                    )
+                except GpuOccupancyError:
+                    raise
+                else:
+                    wait_for_gpu_quiescence(
+                        capture_gpu_snapshot, self.gpu_baseline, directory / "gpu-release.json",
+                        owners=[
+                            entry[1] for entry in self._owned_gpu_processes.values()
+                        ],
+                        drain_owned=self._drain_gpu_owner,
+                    )
+                    self._owned_gpu_processes.pop(process.pid, None)
+            else:
+                code = process.wait()
         if code:
             raise RuntimeError(f"{label} exited {code}; preserved {directory}")
+
+    def _drain_gpu_owner(self, owner: dict) -> str:
+        entry = self._owned_gpu_processes.get(owner["pid"])
+        if entry is None or entry[1]["start_time_ticks"] != owner["start_time_ticks"]:
+            raise GpuOccupancyError("Refusing to signal an unrecorded or reused GPU process identity")
+        return _drain_owned_training(entry[0], owner)
+
+    def _record_owned_process(
+        self, process: subprocess.Popen, label: str, gpu_uuids: list[str],
+    ) -> dict:
+        try:
+            identity = capture_process_identity(process.pid, label, gpu_uuids)
+        except Exception:
+            if process.poll() is None:
+                _drain_owned_training(process)
+            raise
+        self._owned_gpu_processes[process.pid] = (process, identity)
+        return identity
 
     def bank(self, source: Path, relative: str) -> None:
         self.invoke([
@@ -264,8 +699,6 @@ class Runtime:
             return result
         if gate.exists():
             raise FileExistsError("Interrupted native gate preserved; choose a new gate attempt")
-        if not free_assigned_gpus():
-            raise RuntimeError("Assigned GPUs 2/3 are occupied; no foreign process will be touched")
         gate.mkdir(parents=True)
         common = [
             "--upstream", stage / "upstream", "--manifest", stage / "manifest.json",
@@ -286,6 +719,7 @@ class Runtime:
                     stage / "project" / "scripts" / "letter" / "trace_train.py",
                     "--trace-dir", gate / "traces" / name, "--output", gate / output,
                 ] + common + extra, f"gate-{name}",
+                gpu=True,
             )
         self.invoke([
             "python", self.scripts / "fresh_ids.py", "check-gate",
@@ -339,10 +773,24 @@ class Runtime:
         ]
         log_dir = self.work / "commands" / f"checkpoint-watcher-{cell['run_id']}-{time.time_ns()}"
         log_dir.mkdir(parents=True)
-        command, env = self.command(watcher)
+        idle = wait_for_gpu_quiescence(
+            capture_gpu_snapshot, self.gpu_baseline, log_dir / "gpu-before-banker.json",
+            owners=[entry[1] for entry in self._owned_gpu_processes.values()],
+            drain_owned=self._drain_gpu_owner,
+        )
+        gpu_uuids = [idle["gpus"][str(index)]["uuid"] for index in GPU_INDEXES]
+        command, env = self.command(watcher, gpu=False)
         with (log_dir / "output.log").open("x", encoding="utf-8") as log:
-            banker = subprocess.Popen(command, cwd=self.root, env=env, stdout=log, stderr=log)
-            write_json(log_dir / "command.json", {"pid": banker.pid, "argv": command})
+            banker = subprocess.Popen(
+                command, cwd=self.root, env=env, stdout=log, stderr=log, start_new_session=True,
+            )
+            banker_identity = self._record_owned_process(
+                banker, "checkpoint-watcher", gpu_uuids,
+            )
+            write_json(log_dir / "command.json", {
+                "pid": banker.pid, "argv": command, "cuda_visible_devices": "",
+                "process_identity": banker_identity,
+            })
             try:
                 wait_for_exporter(banker, log_dir / "output.log", completed)
                 if completed():
@@ -352,8 +800,6 @@ class Runtime:
                     if output.exists() and any(output.iterdir()):
                         validate_training(output, stage, audit, cell["seed"], cell["temperature"])
                         extra = ["--resume", select_resume(output)]
-                    if not free_assigned_gpus():
-                        raise RuntimeError("Assigned GPUs became occupied before native T5 launch")
                     try:
                         self.invoke(torchrun_prefix(cell["run_id"]) + [
                             stage / "project" / "scripts" / "letter" / "run.py",
@@ -363,8 +809,10 @@ class Runtime:
                             "--learning-rate", 0.0005, "--epochs", 200, "--effective-batch", 1024,
                             "--batch-size", self.spec["datasets"][cell["dataset"]]["micro_batch_size"],
                         ] + extra, "train-" + cell["run_id"], cell["seed"],
-                            exporter=banker, completed=completed)
+                            exporter=banker, completed=completed, gpu=True)
                     except ExporterFailure:
+                        raise
+                    except GpuOccupancyError:
                         raise
                     except RuntimeError:
                         if attempt + 1 == self.spec["queue"]["max_invocation_failures"]:
@@ -378,8 +826,24 @@ class Runtime:
                 with (self.root / "bank.lock").open("a") as lock:
                     fcntl.flock(lock, fcntl.LOCK_EX)
                     if banker.poll() is None:
+                        current = read_process_identity(banker.pid)
+                        if (current is None
+                                or current["start_time_ticks"] != banker_identity["start_time_ticks"]):
+                            raise ExporterFailure(
+                                "Checkpoint banker PID identity changed before shutdown"
+                            )
                         banker.terminate()
-                        banker.wait(timeout=30)
+                        try:
+                            banker.wait(timeout=30)
+                        except subprocess.TimeoutExpired as error:
+                            raise ExporterFailure(
+                                "Checkpoint banker did not exit within 30 seconds"
+                            ) from error
+                    current = read_process_identity(banker.pid)
+                    if (current is not None
+                            and current["start_time_ticks"] == banker_identity["start_time_ticks"]):
+                        raise ExporterFailure("Checkpoint banker identity remains live after shutdown")
+                    self._owned_gpu_processes.pop(banker.pid, None)
                 if (output / "run-config.json").exists():
                     for artifact in checkpoint_artifacts(output, self.work / "checkpoint-snapshots"):
                         with (self.root / "bank.lock").open("a") as lock:
@@ -422,7 +886,7 @@ class Runtime:
                 "--upstream", stage / "upstream", "--manifest", stage / "manifest.json",
                 "--dataset", cell["dataset"], "--checkpoint", output, "--output", evaluation,
                 "--seed", cell["seed"], "--split", "test", "--beams", 20, "--batch-size", 16,
-            ], "evaluate-" + cell["run_id"], cell["seed"])
+            ], "evaluate-" + cell["run_id"], cell["seed"], gpu=True)
         result = verify_evaluation(stage, audit, output, evaluation)
         self.bank(evaluation, f"evaluations/{cell['run_id']}/{evaluation.name}")
         result["durability"] = "run and complete all-user predictions checksum-verified by node0 banker"
@@ -517,8 +981,12 @@ def driver(runtime: Runtime, checks: int, *, adoption: Path | None = None) -> No
     with (runtime.work / "driver.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         marker = bind_queue(runtime.work, binding, adoption)
+        controller_identity = capture_process_identity(
+            os.getpid(), "fresh-controller", [],
+        )
         write_json(runtime.work / "driver.json", {
             "pid": os.getpid(), "started_unix": time.time(), "argv": sys.argv,
+            "process_identity": controller_identity,
             "queue_binding_sha256": file_sha256(marker), "max_idle_checks": checks,
             "queue_binding_file": marker.name,
             "adoption_sha256": file_sha256(adoption) if adoption is not None else None,
@@ -546,7 +1014,7 @@ def driver(runtime: Runtime, checks: int, *, adoption: Path | None = None) -> No
                       "unix": time.time(), "gpu_occupied_by_waiter": False, "cells": statuses}
             write_json(runtime.work / "status.json", status)
             print(json.dumps(status), flush=True)
-            if ready and free_assigned_gpus():
+            if ready:
                 cell, bundle = ready[0]
                 write_json(runtime.work / "status.json", {**status, "status": "executing", "cell": cell})
                 try:

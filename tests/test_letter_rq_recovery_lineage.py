@@ -1,13 +1,16 @@
 """Compatibility evidence is mandatory without rewriting native RQ contracts."""
 
 import hashlib
+import io
 import importlib.util
 import json
 from pathlib import Path
 import shutil
 import sys
 import types
+import zipfile
 
+import numpy as np
 import pytest
 
 
@@ -28,6 +31,96 @@ def write_json(path, value):
     path.write_text(json.dumps(value, sort_keys=True) + "\n")
 
 
+def write_event_archive(path, fault=None):
+    from rq_recovery_compat import endpoint_candidates, POLICY
+    from rq_recovery_runtime import array_sha
+
+    weights = np.zeros((1, 256), dtype=np.float32)
+    weights[0, 0] = 1
+    weights[0, 255] = 3 * 2.0 ** -25
+    potential = weights.sum()
+    draws = np.array([0, 0.5, np.nextafter(float(potential), 0)])
+    candidates = np.searchsorted(np.cumsum(weights, dtype=np.float64), draws)
+    _, correction = endpoint_candidates(weights, potential, draws, candidates)
+    before_keys = np.arange(624, dtype=np.uint32)
+    after_keys = before_keys[::-1].copy()
+    source_input = np.ones((2, 2))
+    evidence_input = np.full((2, 2), 2.0) if fault == "wrong_input_evidence" else source_input
+    evidence = io.BytesIO()
+    np.savez(
+        evidence, X=evidence_input, x_squared_norms=np.ones(2),
+        distances=weights, potential=potential, draws=draws, candidates=candidates,
+        rng_before_keys=before_keys, rng_after_draw_keys=after_keys,
+    )
+    evidence_bytes = evidence.getvalue()
+    evidence_name = "correction-task-1-0.npz"
+    context = {
+        "call_id": "call-1", "epoch": 16401, "phase": "training", "level": 0,
+        "expected_input_sha256": array_sha(source_input), "initialization_seeds": [17],
+        "rng_before_sha256": "b" * 64,
+    }
+    context_bytes = (json.dumps(context, sort_keys=True) + "\n").encode()
+    correction.update({
+        "center": 6, "evidence": evidence_name,
+        "evidence_sha256": hashlib.sha256(evidence_bytes).hexdigest(),
+        "rng_after_draw_sha256": "c" * 64, "rng_after_draw_position": 7,
+    })
+    event = {
+        "task_id": "task-1", "pid": 7, "ppid": 1, "policy": POLICY,
+        "input_sha256": context["expected_input_sha256"], "shape": [2, 2],
+        "dtype": "float32", "n_clusters": 10, "n_local_trials": 3,
+        "rng_before_sha256": "d" * 64, "rng_before_position": 624,
+        "rng_before_keys_sha256": array_sha(before_keys), "initial_seed": 17,
+        "module_origin": "/private/overlay/k_means_.py", "module_sha256": "e" * 64,
+        "function_code_sha256": "f" * 64, "actual_init_centroids_binding": True,
+        "context": context, "context_sha256": hashlib.sha256(context_bytes).hexdigest(),
+        "status": "success", "centers_sha256": "1" * 64,
+        "rng_after_sha256": "2" * 64, "rng_after_keys_sha256": array_sha(after_keys),
+        "rng_after_position": 8, "corrections": [correction],
+    }
+    if fault == "failed_task":
+        event["status"] = "failure"
+    elif fault == "wrong_context":
+        event["context"]["expected_input_sha256"] = "9" * 64
+    elif fault == "wrong_policy":
+        event["corrections"][0]["policy"] = "unapproved"
+    elif fault == "wrong_evidence":
+        evidence_bytes += b"tampered"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("contexts/call-1.json", context_bytes)
+        archive.writestr(evidence_name, evidence_bytes)
+        archive.writestr("tasks-7.jsonl", json.dumps(event, sort_keys=True) + "\n")
+
+
+def test_event_archive_is_independently_recomputed(tmp_path):
+    from rq_recovery_lineage import audit_event_archive
+
+    archive = tmp_path / "events.zip"
+    write_event_archive(archive)
+    result = audit_event_archive(archive)
+
+    assert result["summary"] == {
+        "tasks": 1, "failed_tasks": 0, "corrections": 1,
+        "phases": {"training": 1}, "worker_pids": [7],
+    }
+    assert result["corrections_by_epoch_level_phase"] == {
+        "16401": {"training": {"0": 1}},
+    }
+
+
+@pytest.mark.parametrize("fault", [
+    "failed_task", "wrong_context", "wrong_policy", "wrong_evidence",
+    "wrong_input_evidence",
+])
+def test_event_archive_rejects_failed_or_unbound_corrections(tmp_path, fault):
+    from rq_recovery_lineage import audit_event_archive
+
+    archive = tmp_path / "events.zip"
+    write_event_archive(archive, fault)
+    with pytest.raises(ValueError):
+        audit_event_archive(archive)
+
+
 @pytest.fixture
 def checkpoint(tmp_path):
     from rq_recovery_control import HARNESS, ORIGINAL_SEAL, VARIANTS
@@ -42,8 +135,9 @@ def checkpoint(tmp_path):
     })
     target = directory / "compatibility"
     target.mkdir()
-    for name in ("source.zip", "gates.zip", "events.zip"):
+    for name in ("source.zip", "gates.zip"):
         (target / name).write_bytes(b"unit artifact " + name.encode())
+    write_event_archive(target / "events.zip")
     admission = {
         "status": "admitted", "policy": POLICY, "variants": VARIANTS,
         "original_seal_sha256": ORIGINAL_SEAL,
@@ -60,7 +154,10 @@ def checkpoint(tmp_path):
         "base_state_sha256": VARIANTS["semantic"]["base_state"], "original_seal_sha256": ORIGINAL_SEAL,
         "native_harness_sha256": HARNESS, "admission_sha256": trusted, "epoch": 16402,
         "state_sha256": sha(directory / "state.pt"), "selected_checkpoint": "checkpoints/epoch-08000",
-        "runtime_summary": {"corrections": 1, "phases": {"training": 1}},
+        "runtime_summary": {
+            "tasks": 1, "failed_tasks": 0, "corrections": 1,
+            "phases": {"training": 1}, "worker_pids": [7],
+        },
         "files": file_manifest(target),
     }
     write_json(target / "attestation.json", attestation)
@@ -75,6 +172,7 @@ def test_bound_checkpoint_provenance_is_accepted(checkpoint):
 @pytest.mark.parametrize("fault", [
     "missing_attestation", "changed_state", "changed_source", "untracked_file",
     "wrong_admission", "old_purpose", "wrong_base", "wrong_epoch", "foreign_run",
+    "wrong_runtime_summary",
 ])
 def test_missing_or_unbound_provenance_fails_closed(checkpoint, fault):
     path, trusted, expected = checkpoint
@@ -99,6 +197,11 @@ def test_missing_or_unbound_provenance_fails_closed(checkpoint, fault):
             changed["epoch"] = 16403
         elif fault == "foreign_run":
             changed["run_id"] = "openllama-v2-rq-Beauty-semantic-s42"
+        elif fault == "wrong_runtime_summary":
+            changed["runtime_summary"] = {
+                "tasks": 1, "failed_tasks": 0, "corrections": 0,
+                "phases": {}, "worker_pids": [7],
+            }
         write_json(metadata, changed)
     verifier = helper()
     with pytest.raises((ValueError, FileNotFoundError)):
@@ -139,7 +242,8 @@ def final_bundle(checkpoint, monkeypatch, tmp_path):
     lineage = {
         "rq_run_id": attestation["run_id"], "run_config_sha256": attestation["run_config_sha256"],
         "selected_epoch": 8000, "selected_checkpoint": "checkpoints/epoch-08000",
-        "index_sha256": "3" * 64, "export_sha256": sha(export / "export.json"),
+        "index_sha256": "3" * 64, "codes_sha256": "4" * 64,
+        "export_sha256": sha(export / "export.json"),
     }
     calls = []
     def native(*args):
@@ -157,6 +261,14 @@ def test_native_gate_composed_and_old_selected_checkpoint_not_rewritten(final_bu
     assert len(calls) == 1
     assert result["rq_compatibility"]["selected_model_predates_correction"] is True
     assert result["rq_compatibility"]["export_corrections"] == 0
+    assert result["rq_compatibility"]["export_was_corrected"] is False
+    assert result["rq_compatibility"]["native_artifact_identity_claimed"] is False
+    assert result["rq_compatibility"]["downstream_ids_repair_dependent"] is False
+    assert result["rq_compatibility"]["corrected_index_sha256"] == "3" * 64
+    assert result["rq_compatibility"]["corrected_codes_sha256"] == "4" * 64
+    assert result["rq_compatibility"]["corrections_by_epoch_level_phase"] == {
+        "16401": {"training": {"0": 1}},
+    }
     assert not (bundle / "payload" / "checkpoints" / "epoch-08000").exists()
 
 

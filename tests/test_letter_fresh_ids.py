@@ -711,7 +711,7 @@ def test_invoke_never_starts_a_fit_with_a_dead_exporter(tmp_path, monkeypatch):
     runtime.work, runtime.root = tmp_path / "work", tmp_path
     marker = tmp_path / "training-started"
     argv = [sys.executable, "-c", f"from pathlib import Path;Path({str(marker)!r}).write_text('started')"]
-    monkeypatch.setattr(runtime, "command", lambda *args: (argv, os.environ.copy()))
+    monkeypatch.setattr(runtime, "command", lambda *args, **kwargs: (argv, os.environ.copy()))
     exporter = subprocess.Popen([sys.executable, "-c", "raise SystemExit(29)"])
     exporter.wait(timeout=10)
     with pytest.raises(p.ExporterFailure, match="29"):

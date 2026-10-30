@@ -215,7 +215,8 @@ The remote command has this shape:
 ```bash
 ROOT="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["node_directory"])' "$BINDING")"
 CUDA_VISIBLE_DEVICES=2,3 LETTER_SEED=42 \
-  bash "$ROOT/project/scripts/letter/env.sh" env PYTHONDONTWRITEBYTECODE=1 \
+  bash "$ROOT/project/scripts/letter/env.sh" env CUDA_VISIBLE_DEVICES= \
+  PYTHONDONTWRITEBYTECODE=1 \
   python "$CONTROL/scripts/letter/fresh_pipeline.py" \
   --binding "$BINDING" --project "$ROOT/project" \
   --control "$CONTROL" --work "$WORK" \
@@ -235,7 +236,7 @@ Task-local control/evidence:
 | `queue-binding.json` | Immutable configuration/source hashes and all 39 cells |
 | `driver.json`, `driver.lock` | Actual PID/command and exclusive single-driver lease |
 | `status.json` | Current waiting, executing, blocked or finished state |
-| `commands/` | PID, exact argv, assigned device mask and invocation logs |
+| `commands/` | PID/start-time/session identity, exact argv, assigned GPU UUIDs, occupancy snapshots and invocation logs |
 | `stages/`, `audits/`, `gates/` | Per-index immutable admission and preflight evidence |
 | `runs/`, `checkpoint-snapshots/` | Native run directories and sealed checkpoint snapshots |
 | `evaluations/`, `results/`, `acks/` | Preserved evaluation attempts, verified summaries and post-bank acknowledgments |
@@ -256,7 +257,26 @@ a local result JSON exists. No original upstream source or data is added to
 public Git.
 
 Training starts only after the exporter announces readiness, with a 60-second
-startup deadline. Its exit status is checked at least every five seconds while
+startup deadline. The controller and checkpoint banker have CUDA hidden; only
+gate, training and evaluation children receive devices2/3. Before every GPU
+launch the controller records index/UUID, compute-client PID/name/memory and
+aggregate memory until it observes three exact idle-baseline samples spanning
+at least two seconds. It never substitutes a nonzero-memory threshold. A live
+unidentified client, MPS/unknown client or PID with a changed `/proc` start time
+blocks launch without being signaled. No-client memory above the recorded idle
+baseline is treated as ambiguous teardown and boundedly resampled.
+
+Every GPU child starts in its own process session. The command receipt records
+PID, PGID, session ID, `/proc/<pid>/stat` start time, label and assigned GPU
+UUIDs. Occupancy remains monitored after spawn: only exact descendants of the
+recorded session are admitted. A foreign client appearing in the pre/post-spawn
+race drains and joins only the owned training group, preserves state and fails
+closed. An unexpected owned client, including a banker CUDA regression, is a
+lifecycle fault; its exact group and the new learner are drained before failure.
+After every child exit, the controller waits for recorded clients to disappear
+and for the complete idle quiet window. Evidence is retained beside the command.
+
+The exporter's exit status is checked at least every second while
 the training subprocess runs. An unexpected exit requests SIGTERM for only the
 owned, isolated training-launcher process session; the native launcher propagates
 the drain to its workers. The native step-boundary checkpoint behavior is
@@ -306,23 +326,38 @@ in `letter-results.md`.
 
 `fresh_rq_admission.py` is the versioned entry point for the two explicitly
 admitted Instruments semantic/CF continuations described in `rq_recovery.md`.
-Its helper and dependency hashes, trusted admission digest, capsule locations
-and exact scope come only from the private integration contract.
+Its helper and dependency hashes, trusted admission digest, capsule locations,
+exact scope and both durable resume-chain packages come only from the private
+integration contract. Startup also requires the integration file's SHA-256 as
+an independent command-line trust root; self-described hashes are insufficient.
+All integration/helper/capsule/durable path components are resolved inside their
+authorized roots and symlink components are rejected.
 
-The pinned recovery wrapper calls the **original native full-budget verifier
-first**. The shared `fresh_ids.verify_rq` binding is never replaced, so the helper's
-own import cannot recurse into its wrapper. Successful repaired admission then
-requires exact checkpoint/export attestations and the complete checksum-verified
-durable repair capsule under the node0 bank lock. Missing, stale or mismatched
-evidence fails closed; there is no native-only fallback for either repaired run.
-Unrelated arms retain the native verifier's result unchanged.
+The pinned recovery wrapper calls its saved **original native full-budget
+verifier directly and first**, then passes an immutable copy of that result to
+compatibility validation. A native rejection performs no capsule,
+checkpoint/export or resume-chain reads. The shared `fresh_ids.verify_rq`
+binding is never replaced, so alias recursion is rejected.
+
+Successful repaired admission independently recomputes every task and correction
+from `events.zip`, requires zero failed tasks, verifies parent input/RNG context
+and replays the pinned endpoint policy from each captured NPZ. Its recomputed
+task/correction/phase counts must equal the attestation. It also requires a
+durably banked exact-full-state chain from the authorized epoch16,400 state
+through epoch16,402 and every completed resumed checkpoint to epoch20,000.
+Each invocation has a hashed receipt proving exact model, optimizer,
+Python/NumPy/Torch/CUDA RNG restoration; the post-correction selected state has
+an additional exact export-restore receipt. Missing, partial/model-only, stale
+or mismatched evidence fails closed.
 
 The optional `stage_real(..., rq_verifier=...)` hook adds the complete verified
 `rq_compatibility` object at both the experiment-lineage root and its RQ record
 **before** constructing a new manifest. An existing stage is never relabeled.
 A selected checkpoint predating the correction remains native and untouched;
-the attestation distinguishes that case from correction-enabled continuation
-and export.
+post-correction selections disclose their exact restore proof. The lineage also
+reports correction counts by epoch/phase/level, whether export was corrected,
+and the corrected index/codes hashes. It retains the explicit statement that
+bitwise identity with a native execution past the crash is not claimed.
 
 This controller runs with GPUs hidden from its own Python process. Child
 training/generation commands still receive the explicit two-GPU lease and retain
@@ -330,7 +365,8 @@ their original recipe. A probe of real sealed training-argument metadata showed
 that `map_location="cpu"` alone could initialize CUDA when devices were visible;
 the same metadata loaded with devices hidden without initializing CUDA.
 That observation does not establish the historical cause of earlier prelaunch
-occupancy failures. The foreign-occupancy guard is unchanged.
+occupancy failures. The ownership-aware classifier strengthens rather than
+weakens the foreign-process guard.
 
 No RQ package overlay is installed or put on the T5 environment's import path.
 Only the pinned verification modules are loaded. The learned-index vocabulary is
