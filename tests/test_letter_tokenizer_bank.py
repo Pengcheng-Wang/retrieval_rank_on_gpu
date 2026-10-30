@@ -108,3 +108,21 @@ def test_node0_tokenizer_snapshot_does_not_need_ssh(tmp_path):
     result = module().worker_snapshot(args, run)
     assert result["phase"] == "checkpoint"
     module().verify_bundle(Path(result["path"]))
+
+
+def test_remote_tokenizer_snapshot_hides_cuda_from_cpu_banker(tmp_path, monkeypatch):
+    calls = []
+
+    def remote(command, **kwargs):
+        calls.append(command)
+        return SimpleNamespace(stdout="null\n", stderr="")
+
+    monkeypatch.setattr(module().subprocess, "run", remote)
+    args = SimpleNamespace(
+        source_host="node-1",
+        source_project=tmp_path / "control",
+        remote_staging=tmp_path / "staging",
+    )
+    assert module().worker_snapshot(args, tmp_path / "run") is None
+    assert calls[0][:4] == ["ssh", "-n", "-o", "BatchMode=yes"]
+    assert "CUDA_VISIBLE_DEVICES=-1" in calls[0][-1]

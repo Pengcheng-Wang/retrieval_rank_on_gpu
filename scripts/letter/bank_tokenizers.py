@@ -143,7 +143,7 @@ def worker_snapshot(args, run: Path) -> dict | None:
     if args.source_host == "node-0":
         return snapshot(run, args.remote_staging)
     command = shlex.join([
-        "env", "CUDA_VISIBLE_DEVICES=0", "bash", str(args.source_project / "scripts/letter/env.sh"),
+        "env", "CUDA_VISIBLE_DEVICES=-1", "bash", str(args.source_project / "scripts/letter/env.sh"),
         "python", str(args.source_project / "scripts/letter/bank_tokenizers.py"),
         "snapshot", "--run", str(run), "--staging", str(args.remote_staging),
     ])
