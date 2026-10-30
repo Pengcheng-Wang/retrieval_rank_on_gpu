@@ -126,6 +126,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Item diagnostic | 0.06005 | 0.03225 |
 | Fresh-ID T5, full tokenizer, temperature1 | Beauty | Code | 0.06283 | 0.03412 |
 | Fresh-ID T5, full tokenizer, temperature1 | Beauty | Item diagnostic | 0.06256 | 0.03389 |
+| Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Code | 0.06260 | 0.03369 |
+| Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Item diagnostic | 0.06234 | 0.03355 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
@@ -243,6 +245,35 @@ code NDCG@10 interval excludes zero; Recall@10 and item NDCG@10 remain
 inconclusive. Exact cell and comparison packets are
 `verified-results/fresh-beauty-full-s42-t10-v1` and
 `verified-results/fresh-beauty-full-comparisons-v1`.
+
+Beauty full-tokenizer temperature0.7 completed93 epochs and selected epoch73.
+Code R10/N10 is0.06260/0.03369 and item diagnostic is0.06234/0.03355.
+Ranking-guided-minus-ordinary code R10 is-0.00022 with paired95% interval
+[-0.00300,+0.00255], and code N10 is-0.00043
+[-0.00203,+0.00107]. Item intervals likewise include zero. Thus Beauty, like
+Instruments, does not establish a temperature0.7 benefit at this seed. Exact
+cell and five-row attribution evidence are banked at
+`verified-results/fresh-beauty-full-s42-t07-v1` and
+`verified-results/table2-beauty-v1`.
+
+### Beauty Table 2 component attribution
+
+| Tokenizer / generation loss | Paper R10 / N10 | Measured code R10 / N10 |
+| --- | ---: | ---: |
+| Semantic-only / ordinary CE | 0.0610 / 0.0331 | 0.05938 / 0.03245 |
+| Semantic+CF / ordinary CE | 0.0660 / 0.0351 | 0.06323 / 0.03358 |
+| Semantic+diversity / ordinary CE | 0.0618 / 0.0335 | 0.06019 / 0.03240 |
+| All regularizers / ordinary CE | 0.0672 / 0.0357 | 0.06283 / 0.03412 |
+| All regularizers / ranking-guided CE | 0.0672 / 0.0364 | 0.06260 / 0.03369 |
+
+CF-minus-semantic Recall@10 is positive at this seed, but its NDCG@10 interval
+includes zero. Full-minus-semantic Recall@10 is also positive while NDCG@10
+remains inconclusive. Diversity is inconclusive, and ranking-guided versus
+ordinary CE is pointwise negative with every declared interval spanning zero.
+The measured component ordering partially follows the paper, but the claimed
+ranking-loss gain is not reproduced. [Exact rows and paired
+statistics](../results/2026-10-30-letter/table2-beauty-v1.json) remain
+single-seed compatible-backbone evidence.
 
 P5 CID completed all20 epochs /206,000 updates and selected the earliest
 validation Recall@10 maximum at epoch4. Every prediction in all20 validation

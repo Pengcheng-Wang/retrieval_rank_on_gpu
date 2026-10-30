@@ -691,6 +691,59 @@
       "interpretation": "Only the marginal code NDCG@10 interval excludes zero; Recall@10 and item NDCG@10 remain inconclusive.",
       "comparison_sha256": "034c1976ad68c27b491260eb380456cce99d85c4fe400844bfcc698964c2c674"
     },
+    "temperature_0p7": {
+      "training_epochs": 93,
+      "selected_epoch": 73,
+      "selected_checkpoint": "checkpoint-9417",
+      "code_metrics": {
+        "recall@1": 0.01278898180029513,
+        "ndcg@1": 0.01278898180029513,
+        "recall@5": 0.039619013549166034,
+        "ndcg@5": 0.02629876871274833,
+        "recall@10": 0.0626034074140321,
+        "ndcg@10": 0.03368783999106426
+      },
+      "original_item_diagnostic": {
+        "recall@1": 0.012744265080713678,
+        "ndcg@1": 0.012744265080713678,
+        "recall@5": 0.03957429682958458,
+        "ndcg@5": 0.02623108308989981,
+        "recall@10": 0.0623351070965434,
+        "ndcg@10": 0.03354635523429274
+      },
+      "paired_user_tau0p7_minus_tau1": {
+        "paired_users": 22363,
+        "bootstrap_seed": 20261027,
+        "bootstrap_replicates": 2000,
+        "code_recall@10": {
+          "difference": -0.00022358359790725752,
+          "ci_low": -0.0029960202119572506,
+          "ci_high": 0.002548853016142736
+        },
+        "code_ndcg@10": {
+          "difference": -0.000433496536423504,
+          "ci_low": -0.0020301178351272283,
+          "ci_high": 0.001068159266674983
+        },
+        "item_recall@10": {
+          "difference": -0.00022358359790725752,
+          "ci_low": -0.0029971381299467867,
+          "ci_high": 0.0025935697357241873
+        },
+        "item_ndcg@10": {
+          "difference": -0.0003479887281218017,
+          "ci_low": -0.0019125028137447631,
+          "ci_high": 0.0011259090724307541
+        },
+        "interpretation": "All marginal intervals include zero; this seed does not establish a temperature0.7 benefit.",
+        "table2_result_sha256": "46d0c3e733359ee7ae2f6e4c45c0fb6f03aa47fb5f236e96f1bd74c9ca79b438"
+      },
+      "model_sha256": "422367371f6dd56870436488e509db3e09a0baf30b04096ec66b5dc077c6d426",
+      "predictions_sha256": "a2265946cfeaa2938ddf18618e4feb1028b7c8994aff6242ca9337d027e8e016",
+      "result_sha256": "07a323cacb818e1b29c38fac3c6de9ad530971afa08c5e5f1c37b2ed700fbc4f",
+      "independent_verification_sha256": "58ec2bfc3097e5a3e2a28b9918044a54c7e766dd95e20ec3e619cf0743e9220f",
+      "private_evidence_bundle": "verified-results/fresh-beauty-full-s42-t07-v1"
+    },
     "model_sha256": "fa62180bec5dccc14a709af49e11b73e814895e4a125bb2a7357a4b8d400b2e2",
     "predictions_sha256": "41b1e1a0530b274750e164f0540b72fc0ba20b0f253e61f907e739dd547f8b71",
     "result_sha256": "85601f9ffd6f3529a451d23df43a4d20b6f05e27712074ad1de5a782f14f9e3b",
