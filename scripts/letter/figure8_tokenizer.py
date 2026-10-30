@@ -1,0 +1,443 @@
+"""Frozen downstream contract for the 15 nonbaseline Figure 8 tokenizer arms."""
+
+from __future__ import annotations
+
+import json
+import re
+import copy
+from pathlib import Path
+
+import numpy as np
+
+from protocol import file_sha256, write_json
+
+
+ARM_ORDER = (
+    "alpha-0p001", "alpha-0p01", "alpha-0p1",
+    "beta-0p00001", "beta-0p001", "beta-0p01",
+    "clusters-5", "clusters-15", "clusters-20",
+    "levels-2", "levels-6", "levels-8",
+    "codes-64", "codes-128", "codes-512",
+)
+PREFIXES = "abcdefgh"
+PANEL_ORDER = ("alpha", "beta", "clusters", "levels", "codes")
+FORBIDDEN_RESULT_FIELDS = {
+    "winner", "best_arm", "best_temperature", "selected_by_test",
+    "recommended_arm", "recommended_temperature",
+}
+
+
+def baseline_tokenizer_spec() -> dict:
+    return {
+        "dataset": "Instruments",
+        "codes": [256, 256, 256, 256],
+        "epsilons": [0.0, 0.0, 0.0, 0.003],
+        "dimension": 32,
+        "layers": [2048, 1024, 512, 256, 128, 64],
+        "clusters": 10,
+        "alpha": 0.02,
+        "beta": 0.0001,
+        "seed": 42,
+        "epochs": 20000,
+        "batch_size": 1024,
+        "eval_step": 2000,
+    }
+
+
+def arm_tokenizer_spec(plan: dict, arm: str) -> dict:
+    if arm not in ARM_ORDER or arm not in plan["arms"]:
+        raise ValueError("Unknown Figure8 tokenizer arm")
+    spec = baseline_tokenizer_spec()
+    factor, value = arm.split("-", 1)
+    if factor == "alpha":
+        spec["alpha"] = float(value.replace("p", "."))
+    elif factor == "beta":
+        spec["beta"] = float(value.replace("p", "."))
+    elif factor == "clusters":
+        spec["clusters"] = int(value)
+    elif factor == "levels":
+        levels = int(value)
+        spec["codes"] = [256] * levels
+        spec["epsilons"] = [0.0] * (levels - 1) + [0.003]
+    elif factor == "codes":
+        size = int(value)
+        spec["codes"] = [size] * 4
+    else:
+        raise ValueError("Unknown Figure8 tokenizer factor")
+    return spec
+
+
+def tokenizer_cells() -> list[dict]:
+    return [
+        {
+            "arm": arm,
+            "dataset": "Instruments",
+            "seed": 42,
+            "temperature": 0.7,
+            "learning_rate": 0.0005,
+            "epochs": 200,
+            "world_size": 2,
+            "effective_batch_size": 1024,
+            "beams": 20,
+            "stage_id": f"Instruments-figure8-tokenizer-{arm}-ids-v1",
+            "run_id": f"openllama-v2-figure8-tokenizer-Instruments-{arm}-s42-t0p7-v1",
+        }
+        for arm in ARM_ORDER
+    ]
+
+
+def contains_winner_field(value) -> bool:
+    if isinstance(value, dict):
+        return any(
+            str(key).lower() in FORBIDDEN_RESULT_FIELDS
+            or contains_winner_field(child)
+            for key, child in value.items()
+        )
+    if isinstance(value, list):
+        return any(contains_winner_field(child) for child in value)
+    return False
+
+
+def load_plan(path: Path) -> dict:
+    plan = json.loads(path.read_text(encoding="utf-8"))
+    expected = {
+        "kind": "letter_figure8_tokenizer_downstream_v1",
+        "dataset": "Instruments",
+        "seed": 42,
+        "temperature": 0.7,
+        "learning_rate": 0.0005,
+        "epochs": 200,
+        "world_size": 2,
+        "effective_batch_size": 1024,
+        "beams": 20,
+        "seen_item_exclusion": False,
+        "max_new_tokens": 10,
+        "arms": list(ARM_ORDER),
+        "work_basename": "fresh-t5-figure8-tokenizer-v1",
+        "selection": "within-arm earliest minimum validation loss with patience20",
+        "test_selection": "descriptive only; no winner or recipe selection",
+        "metric_identities": ["code", "item"],
+        "comparison_metrics": ["recall@5", "recall@10", "ndcg@5", "ndcg@10"],
+        "bootstrap_seed": 20261027,
+        "bootstrap_replicates": 2000,
+    }
+    if any(plan.get(key) != value for key, value in expected.items()):
+        raise ValueError("Figure8 tokenizer downstream plan differs from the frozen scientific grid")
+    if contains_winner_field(plan):
+        raise ValueError("Figure8 tokenizer downstream plan may not contain a test-derived winner")
+    baseline = plan.get("baseline", {})
+    if (baseline.get("temperature") != 0.7
+            or baseline.get("run_id") != "openllama-v2-fresh-t5-Instruments-full-s42-t07-v1"
+            or not re.fullmatch(r"[a-f0-9]{64}", baseline.get("result_sha256", ""))):
+        raise ValueError("Figure8 tokenizer baseline identity differs")
+    return plan
+
+
+def validate_identifier_bank(
+    indices: dict, codes: np.ndarray, items: int, codebook_sizes: list[int],
+) -> dict:
+    levels = len(codebook_sizes)
+    if not 1 <= levels <= len(PREFIXES):
+        raise ValueError("Identifier levels must be between one and eight")
+    if (set(indices) != set(map(str, range(items)))
+            or any(not isinstance(indices[str(item)], list) for item in range(items))):
+        raise ValueError("Identifier bank must cover the complete contiguous catalog")
+    if not isinstance(codes, np.ndarray) or codes.shape != (items, levels):
+        raise ValueError(f"Identifier code shape must be ({items}, {levels})")
+    if codes.dtype.kind not in "iu":
+        raise ValueError("Identifier codes must be integers")
+    if any(type(size) is not int or size < 1 for size in codebook_sizes):
+        raise ValueError("Codebook sizes must be positive integers")
+    for level, size in enumerate(codebook_sizes):
+        column = codes[:, level]
+        if np.any(column < 0) or np.any(column >= size):
+            raise ValueError(f"Identifier level {level} range exceeds codebook size {size}")
+    for item, row in enumerate(codes.tolist()):
+        tokens = indices[str(item)]
+        if len(tokens) != levels:
+            raise ValueError("Identifier token count differs from requested levels")
+        for level, value in enumerate(row):
+            expected = f"<{PREFIXES[level]}_{value}>"
+            if tokens[level] != expected:
+                raise ValueError(
+                    f"Identifier prefix/value differs at item {item}, level {level}"
+                )
+    return {
+        "items": items,
+        "levels": levels,
+        "codebook_sizes": list(codebook_sizes),
+        "prefixes": list(PREFIXES[:levels]),
+        "target_tokens": levels + 1,
+    }
+
+
+def validate_variable_audit(report: dict, bank: dict, expected_records) -> dict:
+    if report.get("status") != "pass":
+        raise ValueError("Variable identifier audit did not pass")
+    target_tokens = bank["levels"] + 1
+    for split in ("train", "valid", "test"):
+        part = report.get("splits", {}).get(split, {})
+        count = expected_records[split] if isinstance(expected_records, dict) else expected_records
+        if (part.get("records") != count
+                or part.get("strict_clean") != count
+                or part.get("over_cap") != 0):
+            raise ValueError("Variable identifier audit coverage differs")
+        if part.get("target_tokens_min_max") != [target_tokens, target_tokens]:
+            raise ValueError("Every target must contain exactly L plus EOS tokens")
+        lengths = part.get("input_tokens_p50_p90_p99_max")
+        if not isinstance(lengths, list) or len(lengths) != 4 or lengths[-1] > 512:
+            raise ValueError("Every input must remain within the 512-token limit")
+        if part.get("atomic_identifier_tokens") is not True:
+            raise ValueError("Every identifier token must remain atomic")
+    return report
+
+
+def expand_items(codes: list[str], catalog: dict[str, list[int]], limit: int = 10) -> list[int]:
+    expanded = []
+    seen = set()
+    for code in codes:
+        for item in sorted(catalog[code]):
+            if item not in seen:
+                seen.add(item)
+                expanded.append(item)
+                if len(expanded) == limit:
+                    return expanded
+    return expanded
+
+
+def validate_evaluation_rows(
+    rows: list[dict], expected_users: list[str], catalog: dict[str, list[int]],
+    beams: int, max_new_tokens: int, bank: dict,
+) -> dict:
+    if beams != 20 or max_new_tokens < bank["target_tokens"]:
+        raise ValueError("Figure8 generation budget cannot represent the identifier")
+    users = [row.get("user") for row in rows]
+    if users != expected_users or len(set(users)) != len(expected_users):
+        raise ValueError("Figure8 evaluation coverage differs from the all-user order")
+    item_predictions = {}
+    for row in rows:
+        codes = row.get("codes")
+        if not isinstance(codes, list) or len(codes) != beams or len(set(codes)) != beams:
+            raise ValueError("Figure8 evaluation requires 20 complete unique beams")
+        if any(code not in catalog for code in codes):
+            raise ValueError("Figure8 evaluation emitted a code outside the catalog")
+        item_predictions[row["user"]] = expand_items(codes, catalog)
+    return {
+        "users": len(users),
+        "beams": beams,
+        "max_new_tokens": max_new_tokens,
+        "item_predictions": item_predictions,
+    }
+
+
+def bind_tokenizer_queue(work: Path, binding: dict) -> Path:
+    work.mkdir(parents=True, exist_ok=True)
+    marker = work / "figure8-tokenizer-binding.json"
+    if marker.exists() and json.loads(marker.read_text(encoding="utf-8")) != binding:
+        raise ValueError("Figure8 tokenizer queue is frozen to different bytes")
+    if not marker.exists():
+        write_json(marker, binding)
+    return marker
+
+
+def queue_binding(
+    *, plan_sha256: str, work: Path, durable_root: Path,
+    gpu_indexes: tuple[int, int], source_sha256: dict,
+) -> dict:
+    return {
+        "kind": "figure8_tokenizer_queue_v1",
+        "plan_sha256": plan_sha256,
+        "work": str(work),
+        "durable_root": str(durable_root),
+        "gpu_indexes": list(gpu_indexes),
+        "queue": tokenizer_cells(),
+        "selection": "within-arm validation only; no cross-arm or test selection",
+        "source_sha256": source_sha256,
+        "admission_policy":
+            "individual immutable arm receipts may arrive after queue binding",
+    }
+
+
+def verify_durable_tree(path: Path) -> dict:
+    marker = path / "bank-receipt.json"
+    if path.is_symlink() or not marker.is_file() or marker.is_symlink():
+        raise ValueError("Figure8 arm durable receipt is missing or redirected")
+    receipt = json.loads(marker.read_text(encoding="utf-8"))
+    files = receipt.get("files")
+    if not isinstance(files, dict) or not files:
+        raise ValueError("Figure8 arm durable receipt has no inventory")
+    actual = {
+        candidate.relative_to(path).as_posix()
+        for candidate in path.rglob("*")
+        if candidate.is_file() and candidate != marker
+    }
+    if actual != set(files):
+        raise ValueError("Figure8 arm durable inventory differs")
+    for name, metadata in files.items():
+        target = path / name
+        if (target.is_symlink() or target.stat().st_size != metadata.get("bytes")
+                or file_sha256(target) != metadata.get("sha256")):
+            raise ValueError(f"Figure8 arm durable checksum differs: {name}")
+    return {"bank_receipt_sha256": file_sha256(marker), "files": len(files)}
+
+
+def require_durable_admission_path(
+    path: Path, destination: Path, arm: str,
+) -> Path:
+    expected = (
+        destination / "openllama-v2" / "fresh-t5-figure8-tokenizer-v1"
+        / "operational" / "admissions" / arm / "admission.json"
+    )
+    if (path.absolute() != expected.absolute()
+            or path.resolve() != expected.resolve()
+            or path.is_symlink()):
+        raise ValueError("Figure8 arm must use its exact durable admission namespace")
+    return path.resolve()
+
+
+def verify_arm_admission(
+    arm: str, audit: dict, spec_path: Path, durable_root: Path, expected_spec: dict,
+) -> dict:
+    if arm not in ARM_ORDER or audit.get("status") != "pass" or audit.get("arm") != arm:
+        raise ValueError("Figure8 arm audit identity differs")
+    bundle_name = audit.get("bundle", "")
+    if not re.fullmatch(re.escape(arm) + r"-completed-[A-Za-z0-9_.-]+", bundle_name):
+        raise ValueError("Figure8 arm bundle name is not bound to its arm")
+    if spec_path.is_symlink() or json.loads(spec_path.read_text(encoding="utf-8")) != expected_spec:
+        raise ValueError("Figure8 arm specification differs")
+    bundle = durable_root / bundle_name
+    durable = verify_durable_tree(bundle)
+    payload = bundle / "payload"
+    config = json.loads((payload / "run-config.json").read_text(encoding="utf-8"))
+    if any(config.get(key) != value for key, value in expected_spec.items()):
+        raise ValueError("Figure8 arm final bundle uses another specification")
+    codes = np.load(payload / "export" / "codes.npy", allow_pickle=False)
+    indices = json.loads((payload / "export" / "index.json").read_text(encoding="utf-8"))
+    bank = validate_identifier_bank(
+        indices, codes, len(indices), list(expected_spec["codes"]),
+    )
+    required = {
+        "bundle_completed_sha256": bundle / "completed.json",
+        "run_completed_sha256": payload / "completed.json",
+        "index_sha256": payload / "export" / "index.json",
+        "codes_sha256": payload / "export" / "codes.npy",
+    }
+    if (audit.get("final_epoch") != 20000
+            or type(audit.get("selected_epoch")) is not int
+            or not 1 <= audit["selected_epoch"] <= 20000
+            or durable["bank_receipt_sha256"] != audit.get("durable_bank_receipt_sha256")
+            or any(file_sha256(path) != audit.get(field) for field, path in required.items())):
+        raise ValueError("Figure8 arm final or durable checksum identity differs")
+    return {
+        "arm": arm,
+        "bundle": bundle_name,
+        "selected_epoch": audit["selected_epoch"],
+        "final_epoch": audit["final_epoch"],
+        "spec_sha256": file_sha256(spec_path),
+        "bank_receipt_sha256": durable["bank_receipt_sha256"],
+        "bank": bank,
+        **{field: audit[field] for field in required},
+    }
+
+
+def derive_arm_manifest(
+    parent: dict, parent_sha256: str, lineage: dict, indices: dict,
+    codes: np.ndarray, codebook_sizes: list[int],
+) -> dict:
+    dataset = "Instruments"
+    source = parent["datasets"][dataset]
+    keys = (
+        "items", "users", "interactions", "training_prefix_examples",
+        "validation_users", "test_users", "sha256",
+    )
+    reference = {key: copy.deepcopy(source[key]) for key in keys}
+    bank = validate_identifier_bank(
+        indices, codes, reference["items"], codebook_sizes,
+    )
+    reference["sha256"]["index"] = lineage["index_sha256"]
+    reference["figure8_identifier_bank"] = bank
+    return {
+        "schema_version": 1,
+        "kind": "figure8_tokenizer_downstream_inputs_v1",
+        "status": "derived_inputs_not_training_results",
+        "parent_manifest_sha256": parent_sha256,
+        "experiment_lineage": copy.deepcopy(lineage),
+        "datasets": {dataset: reference},
+        "claim":
+            "One-factor Figure8 tokenizer bank with fresh random native T5; "
+            "compatible-backbone method replication.",
+    }
+
+
+def validate_stage_lineage(manifest: dict, expected: dict) -> dict:
+    if manifest.get("experiment_lineage") != expected:
+        raise ValueError("cross-arm or stale Figure8 stage lineage")
+    return manifest
+
+
+def validate_resume_identity(run: dict, cell: dict, bundle_completed_sha256: str) -> dict:
+    expected = {
+        "arm": cell["arm"],
+        "run_id": cell["run_id"],
+        "stage_id": cell["stage_id"],
+        "bundle_completed_sha256": bundle_completed_sha256,
+        "seed": 42,
+        "temperature": 0.7,
+    }
+    if any(run.get(key) != value for key, value in expected.items()):
+        raise ValueError("cross-arm or stale Figure8 resume identity")
+    if run.get("initialization") != "author random T5 configuration":
+        raise ValueError("Figure8 arms may not warm-start from another model")
+    return run
+
+
+def completed_evaluation(root: Path) -> Path | None:
+    completed = [
+        path for path in sorted(root.glob("evaluation-attempt-*"))
+        if (path / "completed.json").is_file()
+    ]
+    if len(completed) > 1:
+        raise ValueError("Ambiguous completed evaluations; never select by test performance")
+    return completed[0] if completed else None
+
+
+def execute_cell(runtime, cell: dict, admission: dict) -> dict:
+    stage = runtime.admit(cell, admission)
+    runtime.gate(cell, stage)
+    run = runtime.train(cell, stage)
+    runtime.bank_run(cell, run)
+    evaluation = runtime.evaluate(cell, stage, run)
+    runtime.bank_evaluation(cell, evaluation)
+    return runtime.publish(cell, stage, run, evaluation)
+
+
+def next_admitted_cell(
+    cells: list[dict], admissions: dict[str, dict], banked_run_ids: set[str],
+) -> dict | None:
+    for cell in cells:
+        if cell["run_id"] not in banked_run_ids and cell["arm"] in admissions:
+            return cell
+    return None
+
+
+def aggregate_panels(points: dict[str, dict], baseline: dict) -> dict:
+    if set(points) != set(ARM_ORDER):
+        raise ValueError("Figure8 panel aggregation requires all 15 nonbaseline arms")
+    panels = {}
+    for panel in PANEL_ORDER:
+        arms = [arm for arm in ARM_ORDER if arm.startswith(panel + "-")]
+        panels[panel] = {
+            "baseline": baseline,
+            "points": [{"arm": arm, **points[arm]} for arm in arms],
+        }
+    result = {
+        "status": "pass",
+        "kind": "figure8_tokenizer_panels_v1",
+        "dataset": "Instruments",
+        "fixed_temperature": 0.7,
+        "panels": panels,
+        "selection": "descriptive only; no test-based winner",
+    }
+    if contains_winner_field(result):
+        raise ValueError("Figure8 panel result may not contain a test-derived winner")
+    return result

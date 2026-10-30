@@ -560,6 +560,16 @@ was reassigned to the predeclared eight-level arm. Evidence is in
 [the final L2 receipt](../results/2026-10-30-letter/figure8-levels2-final-v1.json)
 and `verified-results/figure8-levels2-final-v1`.
 
+Downstream evaluation for the 15 nonbaseline tokenizer arms is isolated in
+`fresh-t5-figure8-tokenizer-v1`. Each completed tokenizer bank requires a fresh
+random seed-42 T5 fit at fixed temperature 0.7 and an all-user 20-beam
+evaluation; no model or checkpoint is shared across arms. The existing
+full-tokenizer temperature-0.7 result is reused for the baseline point in the
+identifier-length, codebook-size, alpha, beta and cluster panels. Together with
+the separate five-arm temperature queue, Figure 8 therefore requires **20
+additional T5 fits** beyond the already completed temperature-0.7 and
+temperature-1.0 baseline fits.
+
 ## 📊 Instruments released-ID replay
 
 The first LETTER-TIGER run produces Recall@10 **0.10976** and NDCG@10

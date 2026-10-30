@@ -425,6 +425,47 @@ the task's external allocation/lifecycle owner to restore the same admitted
 paths and restart the driver; this component does not create another allocation
 or transplant checkpoints under an unverified path.
 
+### Separate Figure 8 tokenizer-downstream queue
+
+The 15 nonbaseline tokenizer points use a third immutable namespace,
+`fresh-t5-figure8-tokenizer-v1`, with a matching durable subtree. They are not
+appended to either the 39-cell `fresh-t5-v3` queue or
+`fresh-t5-figure8-temperature-v1`; those bindings, source hashes, stages,
+results and acknowledgments remain unchanged.
+
+Each arm receives an individual CPU-only admission only after its exact
+20,000-epoch final tokenizer bundle, frozen one-factor specification, selected
+checkpoint, exported index/codes and complete durable inventory are
+checksum-verified. The queue may run the earliest admitted unbanked arm without
+waiting for unrelated tokenizer arms, but its 15-cell order and IDs are frozen.
+Stages include the arm and bundle hashes, so an interrupted run can resume only
+inside its own output with its own sealed optimizer, scheduler, callback and
+rank-RNG state. Cross-arm checkpoint reuse and warm starts are rejected.
+
+Every arm starts the author's random small-T5 configuration at seed 42 with
+temperature 0.7, learning rate `5e-4`, at most 200 epochs, two workers and
+effective batch 1,024. Temperature 0.7 is an author-supported Instruments
+reconstruction convention; the original Figure 8 per-panel configuration was
+not released. Within-arm checkpoint selection remains the earliest minimum
+validation loss with patience 20. The completed run is durably banked before
+the all-user 20-beam test is allowed to start. Multiple completed evaluation
+attempts fail closed, and test outputs cannot create a winner or alter a
+recipe.
+
+This queue uses a dedicated variable-identifier audit instead of changing the
+frozen four-token audit used by `fresh-t5-v3`. It verifies a complete contiguous
+catalog, exactly `L` level prefixes, per-level code ranges, atomic identifier
+tokens, targets of `L+1` tokens including EOS, inputs no longer than 512
+tokens, and a generation budget of at least `L+1`. Evaluation independently
+requires 20 complete unique valid beams for every user and expands collisions
+to original items in ascending item-ID order. The supported Figure 8 grid is
+`L={2,4,6,8}` and `N={64,128,256,512}`.
+
+Panel reporting reuses the existing exact full-tokenizer seed-42,
+temperature-0.7 result as the shared baseline. All 15 arm results are compared
+to it with paired-user marginal bootstrap intervals for code and original-item
+metrics. Reporting is descriptive only and contains no best-arm field.
+
 ## 🔍 Validation and limitations
 
 Run the scoped tests from Windows:
