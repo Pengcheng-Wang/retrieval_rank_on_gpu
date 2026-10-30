@@ -531,6 +531,47 @@
     "audit_source_sha256": "d216a6df0a816e9061513cc897695131e8074e5a46a03fb308cc82880d305c05",
     "durability": "Selected/final state and result seals checked against durable acknowledgments; result inventory matches durable receipt"
   },
+  "p5_instruments_semid": {
+    "status": "independently_verified_and_banked",
+    "claim": "Declared native-source P5 SemID reference reconstruction, not recovered exact LETTER Table1 settings",
+    "dataset": "Instruments",
+    "representation": "SemID",
+    "seed": 42,
+    "training_epochs": 20,
+    "training_updates": 206000,
+    "admitted_root_step": 100,
+    "locally_recorded_updates_after_root": 205900,
+    "selection": "earliest maximum full-user validation Recall@10",
+    "selected_epoch": 3,
+    "selected_update": 30900,
+    "validation_epochs_independently_recomputed": 20,
+    "validation_users_per_epoch": 24772,
+    "test_users": 24772,
+    "test_evaluations": 1,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "metric_identity": "original_item_equal_to_canonical_string_for_this_collision_free_SemID_catalog",
+    "paper_reference_not_measured_here": {
+      "recall@10": 0.0964,
+      "ndcg@10": 0.073
+    },
+    "metrics": {
+      "recall@5": 0.08489423542709511,
+      "recall@10": 0.1048764734377523,
+      "ndcg@5": 0.07287864170453355,
+      "ndcg@10": 0.07931990600296898
+    },
+    "predictions_sha256": "37cb781f8d273a624fe9115a0c5eeb0154ec8b8eb09e0d3e88effd632bb1d17d",
+    "selected_seal_sha256": "7d69bd693fe5c4f4d1623be5776a28aa4a6df71f2983a08dff1f8b9b4cf5c38d",
+    "result_seal_sha256": "3b4e995f42da48e800bf3b5b75a8a28f45db305b599515300796c814adcdb27e",
+    "result_sha256": "4fc6d1b25d8b859ea0909c1d2ba3e342dfd7a08a8da0910250cadd8e2548dad7",
+    "bank_receipt_sha256": "2d340238824a65a37d73c79e4702389c764806c2315f48f4207ba9ff0532dac3",
+    "independent_verification_sha256": "367cea43f15b27f38fb379293c9d17354209063def39aeea6cc1cad789e7bcd1",
+    "source_audit_sha256": "faff7f0b64a31875d765e510299d68d0dd897788ae5a32ed80971fd0a5a4d044",
+    "durable_audit_sha256": "27e6ff7979d843e36bc73a809a3a8a9da734e7c7855442cf67b7efe66b56e832",
+    "private_evidence_bundle": "verified-results/p5-instruments-semid-v1",
+    "durability": "All validation/test rows, selected/final state packages and every durable result file rechecked across node2 and node0"
+  },
   "bigrec_instruments": {
     "status": "independently_verified_and_fully_banked",
     "claim": "Compatible OpenLLaMA-7B-v2 few-shot title-generation and frozen-base grounding reference",

@@ -123,6 +123,7 @@ prefixes, not all training examples.
 | Fresh-ID T5, semantic+CF, temperature1 | Beauty | Code | 0.06323 | 0.03358 |
 | Fresh-ID T5, semantic+CF, temperature1 | Beauty | Item diagnostic | 0.06305 | 0.03342 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
+| P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
 | LC, either policy | Instruments | Item diagnostic | 0.11590 | 0.08902 |
@@ -225,6 +226,15 @@ epochs and the final24,772-user test was independently recomputed. The frozen
 selection, one-test binding, complete state seals and durable result inventory
 were checked. This CID catalog has no canonical-string collisions, so its
 primary and original-item metrics coincide; that is not assumed for title IDs.
+
+P5 SemID likewise completed20 epochs /206,000 updates and selected epoch3.
+The node2 audit recomputed every row of all20 full-user validation epochs and
+the one test, including205,900 locally recorded updates after the admitted
+sealed step-100 root. Node0 separately rehashed every durable result and
+selected/latest state file. R10/N10 is0.10488/0.07932, above the paper's
+declared P5-SemID0.0964/0.0730 point. This collision-free catalog again makes
+canonical and original-item metrics equal. Exact cross-node evidence is banked
+at `verified-results/p5-instruments-semid-v1`.
 
 LC completed all four epochs / 8,240 updates and selected checkpoint6,180
 solely from validation loss. Both fixed20-beam evaluations covered all24,772
