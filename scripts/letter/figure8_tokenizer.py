@@ -204,8 +204,17 @@ def contains_winner_field(value) -> bool:
 
 def load_plan(path: Path) -> dict:
     plan = json.loads(path.read_text(encoding="utf-8"))
+    versions = {
+        "letter_figure8_tokenizer_downstream_v1":
+            (1, "fresh-t5-figure8-tokenizer-v1"),
+        "letter_figure8_tokenizer_downstream_v2":
+            (2, "fresh-t5-figure8-tokenizer-v2"),
+    }
+    version = versions.get(plan.get("kind"))
+    if (version is None or plan.get("schema_version") != version[0]
+            or plan.get("work_basename") != version[1]):
+        raise ValueError("Figure8 tokenizer plan version and work namespace differ")
     expected = {
-        "kind": "letter_figure8_tokenizer_downstream_v1",
         "dataset": "Instruments",
         "seed": 42,
         "temperature": 0.7,
@@ -217,7 +226,6 @@ def load_plan(path: Path) -> dict:
         "seen_item_exclusion": False,
         "max_new_tokens": 10,
         "arms": list(ARM_ORDER),
-        "work_basename": "fresh-t5-figure8-tokenizer-v1",
         "selection": "within-arm earliest minimum validation loss with patience20",
         "test_selection": "descriptive only; no winner or recipe selection",
         "metric_identities": ["code", "item"],

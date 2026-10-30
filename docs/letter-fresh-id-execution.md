@@ -427,9 +427,13 @@ or transplant checkpoints under an unverified path.
 
 ### Separate Figure 8 tokenizer-downstream queue
 
-The 15 nonbaseline tokenizer points use a third immutable namespace,
-`fresh-t5-figure8-tokenizer-v1`, with a matching durable subtree. They are not
-appended to either the 39-cell `fresh-t5-v3` queue or
+The 15 nonbaseline tokenizer points use a third immutable namespace. The first
+operational version, `fresh-t5-figure8-tokenizer-v1`, failed closed before any
+T5 update because post-spawn monitoring sampled the legacy physical pair2/3
+instead of its configured pair6/7. That work, binding and evidence remain
+immutable. The corrected queue uses `fresh-t5-figure8-tokenizer-v2` with the
+same scientific grid and a new matching durable subtree. It is not appended to
+either the 39-cell `fresh-t5-v3` queue or
 `fresh-t5-figure8-temperature-v1`; those bindings, source hashes, stages,
 results and acknowledgments remain unchanged.
 

@@ -98,6 +98,38 @@ def test_frozen_tokenizer_plan_has_no_selection_output():
     assert not module().contains_winner_field(plan)
 
 
+def test_operational_v2_plan_preserves_the_frozen_scientific_grid():
+    original = module().load_plan(
+        ROOT / "configs" / "letter-figure8-tokenizer-v1.json"
+    )
+    replacement = module().load_plan(
+        ROOT / "configs" / "letter-figure8-tokenizer-v2.json"
+    )
+
+    assert replacement["kind"] == "letter_figure8_tokenizer_downstream_v2"
+    assert replacement["work_basename"] == "fresh-t5-figure8-tokenizer-v2"
+    for key in (
+        "dataset", "seed", "temperature", "learning_rate", "epochs",
+        "world_size", "effective_batch_size", "beams", "seen_item_exclusion",
+        "max_new_tokens", "arms", "baseline", "panels", "metric_identities",
+        "comparison_metrics", "bootstrap_seed", "bootstrap_replicates",
+        "selection", "test_selection",
+    ):
+        assert replacement[key] == original[key]
+
+
+def test_operational_plan_version_and_work_namespace_cannot_be_mixed(tmp_path):
+    plan = json.loads(
+        (ROOT / "configs" / "letter-figure8-tokenizer-v1.json").read_text()
+    )
+    plan["kind"] = "letter_figure8_tokenizer_downstream_v2"
+    path = tmp_path / "mixed-plan.json"
+    path.write_text(json.dumps(plan))
+
+    with pytest.raises(ValueError, match="version|namespace"):
+        module().load_plan(path)
+
+
 @pytest.mark.parametrize(
     "field",
     ["temperature", "max_new_tokens", "seen_item_exclusion", "selection", "arms"],

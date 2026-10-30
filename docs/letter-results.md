@@ -593,10 +593,19 @@ cell remains pending. Exact evidence is in
 [the final K5 receipt](../results/2026-10-30-letter/figure8-clusters5-final-v1.json)
 and `verified-results/figure8-clusters5-final-v1`.
 
+The `alpha=0.1` arm completed20,000 epochs and selected epoch18,000. Its
+four-token bank has25 excess collision items, largest group3 and first-level
+utilization206/256. As with K5, this does not determine the recommendation
+curve until the fixed downstream T5 cell finishes. Exact evidence is in
+[the final alpha0.1 receipt](../results/2026-10-30-letter/figure8-alpha0p1-final-v1.json)
+and `verified-results/figure8-alpha0p1-final-v1`.
+
 Downstream evaluation for the 15 nonbaseline tokenizer arms is isolated in
-`fresh-t5-figure8-tokenizer-v1`. Each completed tokenizer bank requires a fresh
-random seed-42 T5 fit at fixed temperature 0.7 and an all-user 20-beam
-evaluation; no model or checkpoint is shared across arms. The existing
+`fresh-t5-figure8-tokenizer-v2`; the preserved v1 attempt failed closed before
+any T5 update when its monitor sampled the wrong physical GPU pair. Each
+completed tokenizer bank requires a fresh random seed-42 T5 fit at fixed
+temperature 0.7 and an all-user 20-beam evaluation; no model or checkpoint is
+shared across arms. The existing
 full-tokenizer temperature-0.7 result is reused for the baseline point in the
 identifier-length, codebook-size, alpha, beta and cluster panels. Together with
 the separate five-arm temperature queue, Figure 8 therefore requires **20
