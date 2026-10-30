@@ -401,6 +401,8 @@ equal mass.
 | Semantic+diversity | 48.41% | 60.37% | +11.96 pp |
 | Full | 56.77% | 74.26% | +17.49 pp |
 
+![Reconstructed Figure 3 showing training and generated top-quintile code mass for all four tokenizer variants](../results/2026-10-29-letter/figure3-tokenizer-ablation-v2.png)
+
 All variants over-generate popular codes. Relative to semantic-only, CF
 increases the shift by+3.43 percentage points, paired95% interval
 [+3.28,+3.57]; diversity reduces it by-1.45[-1.59,-1.31]; full increases it
