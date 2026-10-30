@@ -135,6 +135,9 @@ prefixes, not all training examples.
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
 | LC, either policy | Instruments | Item diagnostic | 0.11590 | 0.08902 |
+| LC, native position-set constraints | Yelp | Code | 0.04689 | 0.02594 |
+| LC, full-prefix-trie correction | Yelp | Code | 0.04689 | 0.02594 |
+| LC, either policy | Yelp | Item diagnostic | 0.04318 | 0.02403 |
 | BIGRec, title generation + frozen-base L2 | Instruments | Original item | 0.05010 | 0.03858 |
 | BIGRec, title generation + frozen-base L2 | Beauty | Original item | 0.02589 | 0.01439 |
 | BIGRec, native title generation + frozen-base L2 | Yelp | Original item | 0.01666 | 0.01289 |
@@ -310,6 +313,16 @@ expansion, per-rank checksum and final-run/evaluation bank authorization.
 Native constraints emitted1,837 invalid codes among495,440 beams; the full
 trie emitted zero. Aggregate item metrics are identical, so format validity
 should not be presented as a demonstrated item-quality gain.
+
+Yelp LC completed its fixed six epochs /5,280 updates and selected
+checkpoint3,520 at the earliest minimum validation loss. Both decoder policies
+covered all30,431 users with20 beams. They produce identical code and
+original-item metrics: code Recall@10/NDCG@10 **.04689/.02594** and item
+**.04318/.02403**. The native position-set decoder emitted367 invalid codes
+among608,620 beams, while the full-prefix trie emitted zero; none of those
+differences changed the aggregate target-hit metrics in this run. Every saved
+row, collision expansion, checkpoint selection and durable acknowledgment was
+independently recomputed and banked at `verified-results/lc-yelp-v1`.
 
 BIGRec Yelp completed50 epochs, then four-beam/128-token generation and
 single-best-title grounding for all30,431 users against all20,033 original

@@ -82,6 +82,86 @@
       }
     }
   },
+  "lc_yelp": {
+    "status": "pass",
+    "claim": "released-ID compatible-backbone hybrid",
+    "dataset": "Yelp",
+    "selected_checkpoint": "checkpoint-3520",
+    "selected_complete_sha256": "d95f38bce7cccd8f817efe6a4aafa228a9e9b5872b2887508963bfffc22d9e88",
+    "final_run_bank_ack_sha256": "23544c0e05b31021e57db8a718e67936fedbb2aa98eacbc364648b32798c59b2",
+    "full_training_updates": 5280,
+    "full_epochs": 6,
+    "native_duplicate_code_ndcg_preserved": true,
+    "new_model_inference": false,
+    "independent_verification_sha256": "110258be4f8147066d7827e8b6f066e77051549235c9017a95a526d25cba7723",
+    "private_evidence_bundle": "verified-results/lc-yelp-v1",
+    "results": {
+      "author-position-sets": {
+        "status": "independently_verified",
+        "users": 30431,
+        "code": {
+          "recall@1": 0.010975649830764682,
+          "ndcg@1": 0.010975649830764682,
+          "recall@5": 0.029969439058854457,
+          "ndcg@5": 0.020545376551936678,
+          "recall@10": 0.04689297098353652,
+          "ndcg@10": 0.025942885561382693
+        },
+        "item": {
+          "recall@1": 0.010318425290000328,
+          "ndcg@1": 0.010318425290000328,
+          "recall@5": 0.027734875620255662,
+          "ndcg@5": 0.019113226355687768,
+          "recall@10": 0.04317965232821794,
+          "ndcg@10": 0.02403161721870143
+        },
+        "invalid_codes": 367,
+        "total_beams": 608620,
+        "duplicate_codes": 0,
+        "prediction_sha256": {
+          "predictions-rank-0.jsonl": "a178663e1d81b4bec54b2c0030493906e87dfdc41c459808f04bf30226f7ccf8",
+          "predictions-rank-1.jsonl": "3d56b9cbf634f681c17975a05865c5212c22e56667cd9702b095f06c0d604ab3",
+          "predictions-rank-2.jsonl": "fb8d899b5e726c30aad6fc6aa3ced454b6afdf99e3c63eb1429b742662c71f73",
+          "predictions-rank-3.jsonl": "799db223b9eb7c33eb136b63dcc58d8e3a38a82340e24b24fe252fdf69c133fd"
+        },
+        "evaluation_config_sha256": "9bed8182b12842e3d197dddff5828a4531bf6cc3fa13fffe448eb0384766c571",
+        "evaluation_completed_sha256": "fdd66ff79261b90a7a69a49dbf1daf10a23e2a570489ad1ff9b234953a96bd92",
+        "evaluation_bank_ack_sha256": "088db1097c3def1e11387d7fc84d1bf604874a758c77bb98ad18d0bdd005fb72"
+      },
+      "full-prefix-trie-correction": {
+        "status": "independently_verified",
+        "users": 30431,
+        "code": {
+          "recall@1": 0.010975649830764682,
+          "ndcg@1": 0.010975649830764682,
+          "recall@5": 0.029969439058854457,
+          "ndcg@5": 0.020545376551936678,
+          "recall@10": 0.04689297098353652,
+          "ndcg@10": 0.025942885561382693
+        },
+        "item": {
+          "recall@1": 0.010318425290000328,
+          "ndcg@1": 0.010318425290000328,
+          "recall@5": 0.027734875620255662,
+          "ndcg@5": 0.019113226355687768,
+          "recall@10": 0.04317965232821794,
+          "ndcg@10": 0.02403161721870143
+        },
+        "invalid_codes": 0,
+        "total_beams": 608620,
+        "duplicate_codes": 0,
+        "prediction_sha256": {
+          "predictions-rank-0.jsonl": "b8e373bd5ff4e9e90948a6ab3fabff29573c504cc6171fc6be09a5d3a3145f4b",
+          "predictions-rank-1.jsonl": "5f2c72cff1b2f4c2a24f9e1837543374bcee254911655a138ae57616c39db3eb",
+          "predictions-rank-2.jsonl": "0420d303d230da0bf83ca12e2bfca746f025318c55da3ca1aafb9c75413ac443",
+          "predictions-rank-3.jsonl": "45f6dde77e0a08805ec56316fc2c3f34f746a12b52b12a389c8b6559187f35c9"
+        },
+        "evaluation_config_sha256": "1d1d1c8d3321b958fc848093971ae80a76b2588ced4b36e40fb092de73fcff52",
+        "evaluation_completed_sha256": "c940e159ef281bfd97decc4b51c97caa87077955a46e6551cbbd32bb0131b116",
+        "evaluation_bank_ack_sha256": "cbc75f2d61e10bcc5b8889a253cd21a53dbc4a26d8165216da4990149d8cad30"
+      }
+    }
+  },
   "bigrec_yelp": {
     "status": "complete",
     "track": "bigrec-openllama7b-v2-title-grounding-compatible-v1",
