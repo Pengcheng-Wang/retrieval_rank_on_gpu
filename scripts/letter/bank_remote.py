@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import json
 import re
 import shlex
@@ -34,6 +35,54 @@ def verify_artifact(path: Path, kind: str) -> None:
         raise ValueError("Unknown artifact kind")
 
 
+def _inside(path: str | Path, root: Path) -> bool:
+    try:
+        Path(path).absolute().relative_to(root.absolute())
+        return True
+    except ValueError:
+        return False
+
+
+def _enoent(reason) -> bool:
+    if isinstance(reason, OSError):
+        return reason.errno == errno.ENOENT
+    text = str(reason)
+    return f"[Errno {errno.ENOENT}]" in text and "No such file or directory" in text
+
+
+def _checkpoint_rotated(error: Exception, source: Path) -> bool:
+    if isinstance(error, FileNotFoundError):
+        return (
+            error.errno == errno.ENOENT
+            and error.filename is not None
+            and _inside(error.filename, source)
+        )
+    if not isinstance(error, shutil.Error) or not error.args:
+        return False
+    problems = error.args[0]
+    return (
+        isinstance(problems, list)
+        and bool(problems)
+        and all(
+            isinstance(problem, tuple)
+            and len(problem) == 3
+            and _inside(problem[0], source)
+            and _enoent(problem[2])
+            for problem in problems
+        )
+    )
+
+
+def _quarantine_partial(temporary: Path, identity: str) -> None:
+    destination = temporary.parent / f".quarantine-{identity}-{uuid.uuid4().hex}"
+    temporary.rename(destination)
+    print(
+        f"QUARANTINED_PARTIAL {temporary} {destination}",
+        file=sys.stderr,
+        flush=True,
+    )
+
+
 def immutable_snapshot(source: Path, staging: Path, identity: str, kind: str) -> Path:
     destination = staging / identity
     if destination.exists():
@@ -41,13 +90,21 @@ def immutable_snapshot(source: Path, staging: Path, identity: str, kind: str) ->
         return destination
     staging.mkdir(parents=True, exist_ok=True)
     temporary = staging / f".partial-{identity}-{uuid.uuid4().hex}"
-    if kind == "checkpoint":
-        snapshot_checkpoint(source, temporary)
-    else:
-        verify_artifact(source, kind)
-        shutil.copytree(source, temporary)
-        verify_artifact(temporary, kind)
-    temporary.rename(destination)
+    try:
+        if kind == "checkpoint":
+            snapshot_checkpoint(source, temporary)
+        else:
+            verify_artifact(source, kind)
+            shutil.copytree(source, temporary)
+            verify_artifact(temporary, kind)
+        temporary.rename(destination)
+    except Exception as error:
+        if temporary.exists():
+            try:
+                _quarantine_partial(temporary, identity)
+            except Exception as quarantine_error:
+                error.add_note(f"Failed to quarantine {temporary}: {quarantine_error}")
+        raise
     return destination
 
 
@@ -71,11 +128,17 @@ def snapshot_run(run: Path, staging: Path, evaluation: Path | None, include_comp
             marker = source / "complete.json"
             if not marker.is_file():
                 continue
-            identity = f"{run.name}-{name}-{file_sha256(marker)[:12]}"
             try:
+                identity = f"{run.name}-{name}-{file_sha256(marker)[:12]}"
                 path = immutable_snapshot(source, staging, identity, "checkpoint")
-            except FileNotFoundError:
-                print(f"CHECKPOINT_ROTATED_DURING_SNAPSHOT {identity}", file=sys.stderr, flush=True)
+            except (FileNotFoundError, shutil.Error) as error:
+                if not _checkpoint_rotated(error, source):
+                    raise
+                print(
+                    f"CHECKPOINT_ROTATED_DURING_SNAPSHOT {run.name}-{name}",
+                    file=sys.stderr,
+                    flush=True,
+                )
                 continue
             result["artifacts"].append({
                 "identity": identity, "kind": "checkpoint", "path": str(path),

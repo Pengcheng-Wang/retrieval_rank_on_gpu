@@ -204,7 +204,11 @@ snapshot of protected existing artifacts. Recipe, queue order, seeds,
 temperatures, allocation binding, work paths and durable paths must agree.
 Only controller source/control identity and the declared operational admission
 policy may change. Adoption and execution acquire the same exclusive driver
-lease before any binding is written.
+lease before any binding is written. The protected manifest must enumerate the
+**exact complete pre-adoption file set**. Missing entries, added files,
+redirected paths, byte-length changes or checksum changes all reject adoption;
+the only additional file allowed on a repeated check is the already verified
+new versioned binding itself.
 
 The remote command has this shape:
 
@@ -281,6 +285,16 @@ Partial evaluations are retained in numbered attempt directories; a later
 fixed-budget attempt uses a new directory, with at most three attempts. Completed
 stages/runs/results and incomplete durable destinations are never overwritten.
 An incomplete durable copy therefore blocks rather than silently replacing it.
+
+Trainer retains only the best and latest checkpoints, so a watcher can observe a
+sealed directory just before native checkpoint rotation removes it. A source
+`ENOENT` confined to that owned checkpoint (including Python's aggregated
+`shutil.Error`) is classified as a transient rotation: the incomplete snapshot
+is renamed to a task-owned quarantine directory and the watcher retries the next
+cycle. Missing staging paths, permission errors, checksum failures and any
+non-source copy error remain fatal. This preserves fail-closed exporter
+supervision without draining a valid fit merely because Trainer rotated an old
+sealed checkpoint during copying.
 
 ### Admitted RQ dependency correction
 

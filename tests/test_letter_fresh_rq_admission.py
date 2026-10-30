@@ -334,8 +334,16 @@ def adoption_fixture(tmp_path):
     existing = work / "stages" / "old" / "manifest.json"
     write_json(existing, {"immutable": "existing stage and native contract"})
     snapshot = tmp_path / "protected.json"
-    write_json(snapshot, {"stages/old/manifest.json": {"sha256": file_sha256(existing),
-                                                    "bytes": existing.stat().st_size}})
+    write_json(snapshot, {
+        "queue-binding.json": {
+            "sha256": file_sha256(work / "queue-binding.json"),
+            "bytes": (work / "queue-binding.json").stat().st_size,
+        },
+        "stages/old/manifest.json": {
+            "sha256": file_sha256(existing),
+            "bytes": existing.stat().st_size,
+        },
+    })
     new = copy.deepcopy(old)
     new.update(adapter_sha256="5" * 64, driver_sha256="6" * 64, control="new-control",
                operational_admission={"integration_sha256": "7" * 64})
@@ -365,7 +373,10 @@ def test_versioned_queue_adoption_preserves_old_binding_work_and_stages(tmp_path
         assert after[name] == metadata
 
 
-@pytest.mark.parametrize("fault", ["recipe", "queue", "work", "old_digest", "stage_changed", "overwrite_old"])
+@pytest.mark.parametrize("fault", [
+    "recipe", "queue", "work", "old_digest", "stage_changed", "overwrite_old",
+    "unlisted_file",
+])
 def test_adoption_cannot_change_science_or_rewrite_frozen_progress(tmp_path, fault):
     assert hasattr(fresh_pipeline, "bind_queue"), "Operational adoption contract is missing"
     work, old, new, path = adoption_fixture(tmp_path)
@@ -380,6 +391,8 @@ def test_adoption_cannot_change_science_or_rewrite_frozen_progress(tmp_path, fau
         adoption["previous_binding_sha256"] = "0" * 64
     elif fault == "stage_changed":
         write_json(work / "stages/old/manifest.json", {"changed": True})
+    elif fault == "unlisted_file":
+        write_json(work / "unlisted.json", {"not": "in the protected manifest"})
     else:
         adoption["new_binding_file"] = "queue-binding.json"
     adoption["new_binding"] = new

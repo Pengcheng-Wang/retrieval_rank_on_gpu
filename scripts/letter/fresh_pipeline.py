@@ -474,11 +474,32 @@ def bind_queue(work: Path, binding: dict, adoption_path: Path | None = None) -> 
             raise ValueError("Operational adoption must preserve recipe, queue, inputs and all work/run paths")
         protected = Path(adoption["protected_files"])
         require_hash(protected, adoption["protected_files_sha256"])
-        for name, metadata in read_json(protected).items():
+        protected_files = read_json(protected)
+        if not isinstance(protected_files, dict) or not protected_files:
+            raise ValueError("Protected artifact manifest must enumerate every existing file")
+        actual_files = set()
+        for path in work.rglob("*"):
+            if path.is_symlink():
+                raise ValueError("Protected artifact tree contains a redirected path")
+            if path.is_file():
+                actual_files.add(path.relative_to(work).as_posix())
+        expected_files = set(protected_files)
+        candidate = work / new_name
+        if candidate.is_file():
+            expected_files.add(new_name)
+        if actual_files != expected_files:
+            missing = sorted(expected_files - actual_files)
+            extra = sorted(actual_files - expected_files)
+            raise ValueError(
+                f"Protected artifact file set differs: missing={missing}, extra={extra}"
+            )
+        for name, metadata in protected_files.items():
             path = work / name
             if not path.resolve().is_relative_to(work.resolve()) or path.is_symlink():
                 raise ValueError("Protected artifact escapes the adopted work directory")
             require_hash(path, metadata["sha256"])
+            if path.stat().st_size != metadata["bytes"]:
+                raise ValueError("Protected artifact byte length differs")
         marker = work / new_name
     if marker.exists() and read_json(marker) != binding:
         raise ValueError("Readiness queue is frozen to different source/configuration bytes")
