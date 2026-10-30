@@ -711,18 +711,24 @@ latency/QPS measurements or a hardware comparison with the paper.
 The same-ID, temperature-one control is a separate ordinary-CE comparison;
 it must not be relabeled the semantic-only TIGER baseline. The released-ID
 matrix, its predeclared seeds and six conventional references now have
-completed results. Full tokenizer reconstruction, LC-Rec, remaining
-generative baselines and the paper's mechanism/ablation analyses are not
-established by these cells.
+completed results. Under the separately labeled OpenLLaMA-v2 compatibility
+track, all core semantic/CF/diversity/full tokenizers for Instruments, Beauty
+and Yelp are complete, as are the tokenizer replacement/mechanism analyses,
+the Instruments and Beauty Table2 reconstructions, and the Instruments
+and Beauty Figure3 reconstructions plus the Instruments LC/P5 references.
 
 Three train-only BCE SASRec teachers have been completed and durably banked
-for the reconstruction phase. Original LLaMA1-7B access is still required
-for the original semantic encoder and LC-Rec. Synthetic tokenizer/LoRA
-correctness gates are not substituted for those real-data experiments.
-A separately labeled Apache-licensed OpenLLaMA variant has passed full
-semantic token audits and real7B encoding/continuation gates; it is **not**
-an original-LLaMA1 reproduction or a recommendation-score result. Its
-encoding and provenance contract is documented in the execution notes.
+for the reconstruction phase. Work still in progress consists of the remaining
+fresh-ID seed matrix, Yelp fresh-ID ablations, Yelp LC evaluations, the
+declared outstanding P5 references, and the remaining Figure8 tokenizer and
+temperature arms. These fixed computations are not replaced by partial
+checkpoints or correctness gates.
+
+Original LLaMA1-7B access remains unavailable, so the compatible semantic
+encoder and LC results are **not** exact original-backbone reproductions.
+Beauty's unchanged native LC corpus remains inadmissible because its complete
+audit found over-length, empty-response and token-prefix failures; no silent
+filtering or alternate Beauty LC recipe is reported.
 
 The [execution notes](letter-execution.md) describe the frozen source,
 resume correction, declared geometry changes and storage contracts.
