@@ -187,6 +187,7 @@ def rank_cf(model, interactions: dict, length: int, device: str, output: Path) -
 
 def analyze(args) -> None:
     import torch
+    from pathlib import PurePosixPath
     from bank_tokenizers import checkpoint_path, read_state
     from cf import load_model_class
     from prepare import read_release
@@ -214,7 +215,14 @@ def analyze(args) -> None:
             or config["track_id"] != "letter-openllama7b-v2-method-replication"):
         raise ValueError("Mechanism analysis requires a complete real 20,000-epoch tokenizer")
     require_hash(args.tokenizer_run / "run-config.json", done["run_config_sha256"])
-    final_state = read_state(checkpoint_path(args.tokenizer_run, latest["checkpoint"]), config)
+    latest_value = latest["checkpoint"]
+    portable = PurePosixPath(latest_value)
+    latest_checkpoint = Path(latest_value)
+    if portable.is_absolute():
+        if portable.parent.name != "checkpoints":
+            raise ValueError("Portable tokenizer checkpoint has an unexpected source path")
+        latest_checkpoint = args.tokenizer_run / "checkpoints" / portable.name
+    final_state = read_state(checkpoint_path(args.tokenizer_run, str(latest_checkpoint)), config)
     if (final_state["epoch"] + 1 != config["epochs"]
             or final_state["selected_checkpoint"] != done["selected_checkpoint"]):
         raise ValueError("The sealed final checkpoint disagrees with the epoch budget or selection")

@@ -168,6 +168,29 @@ def test_mechanism_cli_reads_real_artifact_shapes_without_refitting(tmp_path):
     assert "cf_quantized_replacement" not in report
 
 
+def test_mechanism_analysis_rebinds_portable_bundle_checkpoint_to_local_payload(tmp_path):
+    args = analysis_fixture(tmp_path)
+    module().write_json(args.tokenizer_run / "latest-state.json", {
+        "epoch": 20000,
+        "checkpoint": "/different-node/runs/fixture/checkpoints/epoch-20000",
+    })
+
+    module().analyze(args)
+
+    assert (args.output / "completed.json").is_file()
+
+
+def test_mechanism_analysis_rejects_portable_checkpoint_without_local_state(tmp_path):
+    args = analysis_fixture(tmp_path)
+    module().write_json(args.tokenizer_run / "latest-state.json", {
+        "epoch": 20000,
+        "checkpoint": "/different-node/runs/fixture/checkpoints/epoch-19000",
+    })
+
+    with pytest.raises((ValueError, FileNotFoundError)):
+        module().analyze(args)
+
+
 def test_mechanism_admission_requires_the_actual_final_checkpoint(tmp_path):
     args = analysis_fixture(tmp_path)
     (args.tokenizer_run / "checkpoints/epoch-20000/state.pt").unlink()
