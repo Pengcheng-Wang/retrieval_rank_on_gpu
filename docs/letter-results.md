@@ -187,30 +187,39 @@ capture point, so complete persistence remains separately gated.
 
 ## 📉 First raw embedding-replacement results
 
-Both Instruments tokenizers below completed the entire20,000-epoch budget.
-The full model's collision-selected checkpoint is epoch18,000; diversity-only
-selected epoch20,000. Their actual exported IDs index the selected codebooks.
-Raw residual-order vector sums replace only the frozen32D teacher's real item
-rows, without normalization, rescaling or refitting.
+All four Instruments tokenizer variants completed the entire20,000-epoch budget.
+Semantic-only, CF-only and full selected epoch18,000; diversity-only selected
+epoch20,000. Their actual exported IDs index the selected codebooks. Raw
+residual-order vector sums replace only the frozen32D teacher's real item rows,
+without normalization, rescaling or refitting.
 
 | Instruments condition | Recall@10 | NDCG@10 |
 | --- | ---: | ---: |
 | Original frozen teacher, reused reference | 0.08130 | 0.04269 |
+| Semantic-only tokenizer's raw quantized replacement | 0.00472 | 0.00209 |
+| CF-regularized tokenizer's raw quantized replacement | 0.01909 | 0.00837 |
 | Full tokenizer's raw quantized replacement | 0.02156 | 0.01033 |
 | Diversity-only tokenizer's raw quantized replacement | 0.00521 | 0.00239 |
 
-**Both replacements perform worse than the original teacher** in this declared
-reconstruction. The full tokenizer performs better than diversity-only, but
-this does not reproduce a gain over the teacher or establish a generative-model
-gain. Every per-user metric and the selected-codebook vector sum were independently
-verified; the original teacher was not scored again.
+**All four replacements perform worse than the original teacher** in this
+declared reconstruction. CF and full regularization substantially outperform
+semantic-only and diversity-only replacements, but neither reproduces a gain
+over the teacher or establishes a generative-model gain. Every per-user metric
+and selected-codebook vector sum was independently verified; the original
+teacher was not scored again.
 
-Post-hoc median item-vector norms are1.259 for the teacher,8.708 for the full
-replacement and3.614 for diversity-only. This describes a distribution difference;
-it is not a causal test or permission to retune the reported experiment. The
-compatible semantic encoder, reconstructed teacher and declared analysis
-conventions remain limitations. Other tokenizer conditions and datasets are
-not inferred from these two Instruments results.
+Post-hoc median item-vector norms are1.259 for the teacher and3.810 /8.341 /
+3.614 /8.708 for semantic /CF /diversity /full replacements. Declared
+cosine-neighbor matching-position overlap is0.03512 /0.09922 /0.03968 /0.08411.
+These describe distribution and neighborhood differences; they are not causal
+tests or permission to retune the experiment. The compatible semantic encoder,
+reconstructed teacher and declared analysis conventions remain limitations.
+
+The semantic and CF tokenizers used the disclosed endpoint compatibility
+correction: exactly one training correction each at epoch16,401, no validation
+or export corrections, and independently verified full-state continuation.
+[Exact complete Instruments results](../results/2026-10-29-letter/instruments-embedding-replacements-v1.json)
+retain that provenance and all negative findings.
 
 All four Beauty tokenizer variants have also completed20,000 epochs. Their
 raw replacement results show the same limitation: CF regularization improves

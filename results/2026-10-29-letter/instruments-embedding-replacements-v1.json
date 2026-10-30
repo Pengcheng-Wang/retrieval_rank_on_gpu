@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "status": "independently_verified_completed_variants",
+  "study_status": "in_progress",
+  "dataset": "Instruments",
+  "scope": "Raw sequential float32 residual-codebook sums replace only real item rows in the frozen32D BCE teacher. No normalization, rescaling or refit.",
+  "original_teacher_reference": {
+    "users": 24772,
+    "selected_epoch": 80,
+    "recall@10": 0.08130146940093654,
+    "ndcg@10": 0.0426884106182929,
+    "predictions_sha256": "a8c4e57817561c59345950a5ac739a27ad798e6321fbcf9a6a53683fba7ad8e1",
+    "reused_without_neural_rescoring": true,
+    "median_item_vector_norm": 1.2588729858398438
+  },
+  "variants": {
+    "semantic": {
+      "tokenizer_selected_epoch": 18000,
+      "recall@10": 0.00472307443888261,
+      "ndcg@10": 0.002091462927944083,
+      "cosine_neighbor_position_overlap": 0.03512396694214876,
+      "median_quantized_vector_norm": 3.8100810050964355,
+      "analysis_completed_sha256": "465990cd04e7cea2ff993cc3871d5e6c9876de053e4059eaa70a3229650a9e28",
+      "independent_verification_sha256": "36d972746b0e889356eac7d63d620d6d94738aabe3f90cd36e197cc8a6c56520",
+      "rq_compatibility": {
+        "policy": "rq-kmeans-cdf-endpoint-v1",
+        "corrections": 1,
+        "correction_phase": "training",
+        "correction_epoch": 16401,
+        "export_corrections": 0,
+        "export_attestation_sha256": "0f205251ac470d0fc41dbebe698c45a50258af0583ba6f826989d026d3238bc1"
+      },
+      "private_evidence_bundle": "mechanism-results/Instruments-semantic-v1"
+    },
+    "cf": {
+      "tokenizer_selected_epoch": 18000,
+      "recall@10": 0.019094138543516874,
+      "ndcg@10": 0.008372416897520099,
+      "cosine_neighbor_position_overlap": 0.0992239467849224,
+      "median_quantized_vector_norm": 8.3411226272583,
+      "analysis_completed_sha256": "243fd71a6ef5e738bc1679a9b23238353ed8c2988856860d8cbb113390ccdf26",
+      "independent_verification_sha256": "a0c99fe0d0aabb9e0608c99c7273b3f33d4141fef0cec85c382d48ff80ab94ad",
+      "rq_compatibility": {
+        "policy": "rq-kmeans-cdf-endpoint-v1",
+        "corrections": 1,
+        "correction_phase": "training",
+        "correction_epoch": 16401,
+        "export_corrections": 0,
+        "export_attestation_sha256": "942a36d811bb7daa5afd9c8cab01e20674d9eb5668dbee86ce0b083f822e6f18"
+      },
+      "private_evidence_bundle": "mechanism-results/Instruments-cf-v1"
+    },
+    "diversity": {
+      "tokenizer_selected_epoch": 20000,
+      "recall@10": 0.005207492330050057,
+      "ndcg@10": 0.0023912147534480427,
+      "cosine_neighbor_position_overlap": 0.039684539407377546,
+      "median_quantized_vector_norm": 3.613954260234734,
+      "analysis_completed_sha256": "71c08bb92e0e2fe6356b83c7f36f06564c445f87f784082fd925f3cca2f41f0e",
+      "independent_verification_sha256": "8bab3b8cabd5ac34f0184eaeab48d3dbf8c638d8fd5a93651eaaad8b4c6f8d97",
+      "private_evidence_bundle": "mechanism-results/Instruments-diversity-v1"
+    },
+    "full": {
+      "tokenizer_selected_epoch": 18000,
+      "recall@10": 0.021556596156951397,
+      "ndcg@10": 0.010330759896026893,
+      "cosine_neighbor_position_overlap": 0.08410602701068333,
+      "median_quantized_vector_norm": 8.707681850888314,
+      "analysis_completed_sha256": "9255e5fe6cd2f3cd76d04dc397792ccf5ecb3cd91f2cfa1127470f47e2adc0dd",
+      "independent_verification_sha256": "4060ccdf217d0d0017a7fe8ba21044fe08985301dd6a95ba28e4495c3ff8c7ac",
+      "private_evidence_bundle": "mechanism-results/Instruments-full-v1"
+    }
+  },
+  "validation": {
+    "all_users_recomputed": true,
+    "all_selected_codebook_sums_recomputed": true,
+    "original_reference_copied_from_verified_cache": true,
+    "normalization_or_refit_applied": false
+  },
+  "interpretation": "Every raw replacement is substantially worse than the original teacher. CF and full regularization outperform semantic-only and diversity-only replacements, but this does not establish a generative recommendation gain. Cosine-neighbor overlap is descriptive and not interchangeable with recommendation accuracy."
+}
