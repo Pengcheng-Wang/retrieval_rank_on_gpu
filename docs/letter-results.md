@@ -118,6 +118,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Item diagnostic | 0.10879 | 0.08006 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Instruments | Code | 0.10859 | 0.08025 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Instruments | Item diagnostic | 0.10807 | 0.07959 |
+| Fresh-ID T5, semantic-only, temperature1 | Beauty | Code | 0.05938 | 0.03245 |
+| Fresh-ID T5, semantic-only, temperature1 | Beauty | Item diagnostic | 0.05894 | 0.03219 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
@@ -192,6 +194,14 @@ five-row point pattern is partly reproduced, while the claimed component and
 ranking-loss gains are not established. [Exact rows, paired statistics and
 provenance](../results/2026-10-29-letter/table2-instruments-v1.json) are banked
 at `verified-results/table2-instruments-v1`.
+
+The first Beauty fresh-ID row is also complete. Its semantic-only tokenizer T5
+completed89 epochs, selected epoch69 and reports code R10/N10
+0.05938/0.03245 versus the paper's semantic-only0.0610/0.0331 row. Original
+item diagnostics are0.05894/0.03219. Every prediction, validation record,
+tokenizer identity and durable file was independently verified. This is one
+compatible-backbone cell; the remaining Beauty component and generation-loss
+rows are still required before interpreting Table2.
 
 P5 CID completed all20 epochs /206,000 updates and selected the earliest
 validation Recall@10 maximum at epoch4. Every prediction in all20 validation

@@ -361,6 +361,55 @@
     "private_evidence_bundle": "verified-results/fresh-instruments-full-s42-t10-v1",
     "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
   },
+  "fresh_t5_beauty_semantic": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh semantic-only tokenizer, compatible semantic encoder and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Beauty",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "semantic",
+    "tokenizer_objectives": {
+      "alpha": 0.0,
+      "beta": 0.0
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 18000,
+    "tokenizer_index_sha256": "e0833f54468ca42497d6cb3b9a3c72f35033540443fda7eed176e309dec0ae73",
+    "training_epochs": 89,
+    "training_updates": 11481,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 69,
+    "selected_checkpoint": "checkpoint-8901",
+    "validation_evaluations_checked": 89,
+    "test_users": 22363,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.013280865715691098,
+      "ndcg@1": 0.013280865715691098,
+      "recall@5": 0.03805392836381523,
+      "ndcg@5": 0.02564639100925311,
+      "recall@10": 0.0593838036041676,
+      "ndcg@10": 0.032448214988325445
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.01310199883736529,
+      "ndcg@1": 0.01310199883736529,
+      "recall@5": 0.03787506148548942,
+      "ndcg@5": 0.02546945957124809,
+      "recall@10": 0.05893663640835308,
+      "ndcg@10": 0.03219112538687362
+    },
+    "model_sha256": "9141730f688d3057cf72068feb459a4d79ea255e059dde296e8d6383d00694a2",
+    "predictions_sha256": "2b2a834651915a75b659008d8ddce0760f1ae6c7c7a648252c251d64fcc59c0d",
+    "result_sha256": "a2716257e6b9ac743f7b7cb61066d0b7f216ab838d12311fc0f99f34c41082b2",
+    "independent_verification_sha256": "2cff8aaea2d09023db9dff84ce6e0ff762c0418061ffc43cfd909d21ff11b91f",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-beauty-semantic-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
   "p5_instruments_cid": {
     "status": "independently_verified_and_banked",
     "claim": "Declared native-code P5 CID reference reconstruction, not recovered exact LETTER Table1 settings",
