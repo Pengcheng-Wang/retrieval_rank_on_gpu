@@ -362,6 +362,29 @@ actual exported IDs; the original teacher reference was reused unchanged.
 [Exact Beauty results](../results/2026-10-29-letter/beauty-embedding-replacements-v1.json)
 retain the negative findings and descriptive, uncalibrated vector norms.
 
+Both Yelp tokenizers also completed20,000 epochs and passed full durable
+rehashing. Semantic-only selected epoch12,000; full selected epoch16,000.
+The semantic/full exported ID banks contain853/832 excess collision items,
+respectively, with largest collision group65.
+
+Their independently audited replacement analysis preserves the same negative
+boundary as Instruments and Beauty:
+
+| Yelp condition | Recall@10 | NDCG@10 | Cosine-neighbor position overlap |
+| --- | ---: | ---: | ---: |
+| Original frozen teacher, reused reference | 0.03299 | 0.01609 | N/A |
+| Semantic-only replacement | 0.00062 | 0.00028 | 0.01141 |
+| Full replacement | 0.00342 | 0.00142 | 0.07635 |
+
+Full-minus-semantic replacement Recall@10 is+0.00279 with paired-user95%
+interval[+0.00207,+0.00352], and NDCG@10 is+0.00114
+[+0.00081,+0.00148]. Full therefore increases CF-neighbor code overlap and
+outperforms semantic-only replacement, but both replacements remain far below
+the unchanged teacher. This does not establish a generative-model gain.
+[Exact Yelp tokenizer and mechanism results](../results/2026-10-30-letter/yelp-mechanism-summary-v1.json)
+are banked at `verified-results/yelp-tokenizers-final-v1` and
+`verified-results/yelp-mechanisms-v1`.
+
 ### Table 3 embedding-replacement comparison
 
 The paper's Table3 rows and the declared reconstructions can now be compared
@@ -476,6 +499,35 @@ decoding-dependent sensitivities, so no causal or fairness claim is made.
 provenance](../results/2026-10-29-letter/figure3-tokenizer-ablation-v2.json) are
 banked at `verified-results/figure3-tokenizer-ablation-v2`; the earlier
 semantic/full-only packet remains immutable.
+
+The same frozen estimator is now complete for Beauty:
+
+| Beauty tokenizer | Top-quintile training share | Generated share | Shift |
+| --- | ---: | ---: | ---: |
+| Semantic-only | 44.11% | 53.08% | +8.97 pp |
+| Semantic+CF | 50.07% | 63.19% | +13.13 pp |
+| Semantic+diversity | 46.33% | 52.81% | +6.48 pp |
+| Full | 49.21% | 62.83% | +13.61 pp |
+
+Relative to semantic-only, CF increases the shift by+4.16 percentage points,
+paired95% interval[+3.98,+4.32]; diversity reduces it by-2.49
+[-2.61,-2.35]; full increases it by+4.65[+4.49,+4.81]. Thus the same qualitative
+pattern holds on Beauty: diversity reduces relative amplification, while CF
+drives the full model toward popular codes. The exact audited result is
+[published separately](../results/2026-10-30-letter/figure3-beauty-tokenizer-ablation-v3.json)
+and banked at `verified-results/figure3-beauty-tokenizer-ablation-v3`.
+
+### Figure 8 one-factor sweep status
+
+The two-level tokenizer arm is the first completed Figure8 sweep result. It
+finished20,000 epochs, selected epoch12,000 and emitted two-token IDs. After20
+collision retries it still has1,121 excess collision items and largest group36,
+so shorter identifiers substantially increase collisions versus the four-level
+baseline. No downstream recommendation claim is made until its fixed T5 cell is
+trained and evaluated. The exact final bundle was rehashed before node1 GPU1
+was reassigned to the predeclared eight-level arm. Evidence is in
+[the final L2 receipt](../results/2026-10-30-letter/figure8-levels2-final-v1.json)
+and `verified-results/figure8-levels2-final-v1`.
 
 ## 📊 Instruments released-ID replay
 
