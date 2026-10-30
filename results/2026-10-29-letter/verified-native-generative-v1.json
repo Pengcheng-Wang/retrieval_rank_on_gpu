@@ -264,7 +264,7 @@
     }
   },
   "bigrec_beauty": {
-    "status": "independently_verified_metrics_raw_chunk_archiving_in_progress",
+    "status": "independently_verified_and_fully_banked",
     "claim": "Compatible OpenLLaMA-7B-v2 few-shot title-generation and frozen-base grounding reference",
     "dataset": "Beauty",
     "seed": 42,
@@ -307,10 +307,23 @@
     "audit_source_sha256": "35f991ac7efebacf1d99d513e83529f42b1c10f07757346a86119f1bea4801d3",
     "private_evidence_bundle": "verified-results/bigrec-beauty-metrics-v1",
     "durability": {
-      "selected_model_catalog_summary_and_independent_audit": "banked",
-      "remaining_expensive_artifact_acknowledgments": 336,
-      "pipeline_phase": "all_expensive_artifacts_waiting",
-      "all_raw_chunks_archived": false
+      "status": "complete",
+      "pipeline_completed_sha256": "a3fe931b0a495c36861809f75bf4444eee1c600e7d6134be6be12f1b810087d3",
+      "objects": 804,
+      "object_kinds": {
+        "checkpoint": 101,
+        "evaluation": 1,
+        "other": 1,
+        "generation": 350,
+        "grounding": 350,
+        "selected": 1
+      },
+      "bytes_reverified": 5432398765,
+      "pending_run_exports": 0,
+      "every_outbox_payload_reverified": true,
+      "every_durable_file_checksum_reverified": true,
+      "final_durability_verification_sha256": "18a0bf1d47c10af1a8251321c5a8467c75af99184a5f5bd488cdcd53a87c651b",
+      "private_evidence_bundle": "verified-results/bigrec-beauty-final-durability-v1"
     }
   }
 }

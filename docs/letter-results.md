@@ -193,8 +193,11 @@ length finishes across all beams; no user was filtered. Literal generated-title
 match rate is0.00340. The title-equivalence and original-item Recall@10 values
 coincide here, while title-equivalence NDCG@10 is0.01441; it remains a diagnostic,
 not a replacement metric. Numerical/model/catalog/summary evidence is banked.
-Raw shard export was still draining with336 acknowledgments pending at the
-capture point, so complete persistence remains separately gated.
+The pipeline subsequently reached zero backlog. A final pass under the common
+writer lock reverified all804 outbox objects and every durable file checksum:
+101 checkpoints,350 generation shards,350 grounding shards, the selected
+model, evaluation summary and exporter handshake, totaling5.43 GB. This
+persistence check repeated no model generation, encoding, grounding or ranking.
 
 ## 📉 First raw embedding-replacement results
 
