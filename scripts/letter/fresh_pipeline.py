@@ -643,6 +643,7 @@ class Runtime:
                 try:
                     code = monitor_gpu_process(
                         process, identity, baseline, directory / "gpu-monitor.json",
+                        snapshotter=lambda: capture_gpu_snapshot(gpu_indexes),
                         drain_owned=self._drain_gpu_owner,
                         other_owners=[
                             entry[1] for pid, entry in self._owned_gpu_processes.items()

@@ -389,6 +389,71 @@ def test_gpu_snapshot_filters_to_the_explicit_physical_pair():
     }
 
 
+def test_runtime_monitor_samples_the_explicit_gpu_pair(tmp_path, monkeypatch):
+    runtime = object.__new__(pipeline.Runtime)
+    runtime.work, runtime.root, runtime.env = tmp_path / "work", tmp_path, tmp_path / "env.sh"
+    runtime.gpu_baseline = tmp_path / "baseline.json"
+    runtime.gpu_indexes = (6, 7)
+    runtime._owned_gpu_processes = {}
+    runtime.work.mkdir()
+    write_json(runtime.gpu_baseline, {
+        "gpu_indexes": [6, 7],
+        "gpu_uuids": {"6": "GPU-6", "7": "GPU-7"},
+        "memory_used_mib": {"6": 0, "7": 0},
+    })
+    script = tmp_path / "sleep.py"
+    script.write_text("import time\ntime.sleep(.1)\n")
+    idle = {
+        "timestamp": 1.0,
+        "gpus": {
+            "6": {"uuid": "GPU-6", "memory_used_mib": 0},
+            "7": {"uuid": "GPU-7", "memory_used_mib": 0},
+        },
+        "clients": [],
+    }
+    sampled = []
+
+    monkeypatch.setattr(
+        pipeline, "wait_for_gpu_quiescence",
+        lambda *args, **kwargs: idle,
+    )
+    monkeypatch.setattr(
+        pipeline,
+        "capture_gpu_snapshot",
+        lambda indexes=pipeline.GPU_INDEXES: sampled.append(tuple(indexes)) or idle,
+    )
+    def record(process, label, gpu_uuids):
+        identity = {
+            "pid": process.pid,
+            "ppid": 1,
+            "pgid": process.pid,
+            "session_id": process.pid,
+            "start_time_ticks": 1,
+            "label": label,
+            "gpu_uuids": sorted(gpu_uuids),
+            "members": {str(process.pid): 1},
+        }
+        runtime._owned_gpu_processes[process.pid] = (process, identity)
+        return identity
+
+    monkeypatch.setattr(runtime, "_record_owned_process", record)
+
+    def monitor(process, *args, **kwargs):
+        kwargs["snapshotter"]()
+        return process.wait(timeout=10)
+
+    monkeypatch.setattr(pipeline, "monitor_gpu_process", monitor)
+    monkeypatch.setattr(
+        runtime,
+        "command",
+        lambda *args, **kwargs: ([sys.executable, str(script)], os.environ.copy()),
+    )
+
+    runtime.invoke(["ignored"], "custom-pair-monitor", gpu=True)
+
+    assert sampled == [(6, 7)]
+
+
 def test_banker_cuda_regression_drains_banker_and_prevents_torchrun(tmp_path, monkeypatch):
     runtime = object.__new__(pipeline.Runtime)
     runtime.work, runtime.root, runtime.env = tmp_path / "work", tmp_path, tmp_path / "env.sh"
