@@ -34,7 +34,7 @@ FROZEN_HARNESS = {
 }
 FROZEN_BANK = {
     "bank.py": "444a4c5bd587078ed4e683be9e5ccf853e03b4b26ef36c63a31f66ad87008abc",
-    "bank_watch.py": "e7e699b9a7b9d71c529907fe6f19851d9a0e1c30d46e90b63ba7b126789e2f76",
+    "bank_watch.py": "65ba3c7083befcbd026df7bcd0384a56c12dc49f61a92780b537cd24a3d21c99",
     "bank_remote.py": "37b0619af97f0f38ee2e98d7dd3e1ec05238dd44f9919fa901cc8c1a40199e60",
 }
 T5_ASSETS = {

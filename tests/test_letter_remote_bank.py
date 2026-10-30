@@ -3,6 +3,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -86,6 +87,48 @@ def test_local_watcher_banks_both_latest_and_selected_best(tmp_path):
     artifacts = checkpoint_artifacts(run, tmp_path / "stage")
     assert len(artifacts) == 2
     assert all(artifact["kind"] == "checkpoint" for artifact in artifacts)
+
+
+def test_checkpoint_bank_marker_is_committed_under_the_bank_lock(tmp_path, monkeypatch):
+    import bank_watch
+
+    lock_path = tmp_path / "bank.lock"
+    state = {"locked": False}
+    original_open = Path.open
+
+    class Lock:
+        def __enter__(self):
+            state["locked"] = True
+            return self
+
+        def __exit__(self, *args):
+            state["locked"] = False
+
+    def open_path(path, *args, **kwargs):
+        if path == lock_path:
+            return Lock()
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", open_path)
+    monkeypatch.setitem(
+        sys.modules, "fcntl",
+        SimpleNamespace(LOCK_EX=1, flock=lambda *args: None),
+    )
+    monkeypatch.setattr(
+        bank_watch, "copy_artifact",
+        lambda *args: {"files": {"checkpoint": {"sha256": "1" * 64, "bytes": 1}}}
+        if state["locked"] else pytest.fail("checkpoint copy escaped the bank lock"),
+    )
+    monkeypatch.setattr(
+        bank_watch, "write_json",
+        lambda *args: None
+        if state["locked"] else pytest.fail("bank marker escaped the bank lock"),
+    )
+
+    bank_watch.bank_checkpoint(
+        tmp_path / "snapshot", tmp_path / "durable",
+        tmp_path / "marker.json", lock_path,
+    )
 
 
 def _sealed_remote_run(tmp_path):
