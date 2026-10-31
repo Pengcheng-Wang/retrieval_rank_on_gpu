@@ -23,13 +23,13 @@ from rq_recovery_runtime import file_manifest
 RECOVERY_ARMS = {
     "beta-0p001": {
         "host": "node-1",
-        "gpu": 0,
+        "gpu": 2,
         "base_epoch": 16000,
         "first_failed_epoch": 16401,
     },
     "clusters-20": {
         "host": "node-1",
-        "gpu": 1,
+        "gpu": 7,
         "base_epoch": 11000,
         "first_failed_epoch": 11431,
     },

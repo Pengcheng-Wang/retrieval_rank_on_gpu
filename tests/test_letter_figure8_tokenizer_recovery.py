@@ -35,8 +35,8 @@ def runtime():
 @pytest.mark.parametrize(
     "arm,gpu,base_epoch,failure_epoch",
     [
-        ("beta-0p001", 0, 16000, 16401),
-        ("clusters-20", 1, 11000, 11431),
+        ("beta-0p001", 2, 16000, 16401),
+        ("clusters-20", 7, 11000, 11431),
     ],
 )
 def test_recovery_scope_is_limited_to_the_two_observed_node1_faults(
@@ -57,7 +57,7 @@ def test_recovery_scope_is_limited_to_the_two_observed_node1_faults(
     }
     for changed in (
         {**spec, "host": "node-2"},
-        {**spec, "gpu": 7},
+        {**spec, "gpu": (gpu + 1) % 8},
         {**spec, "output": spec["output"] + "-other"},
     ):
         with pytest.raises(ValueError):
@@ -111,7 +111,7 @@ def test_native_failure_admission_requires_five_identical_exact_endpoint_faults(
 
 def operational_spec(arm: str = "beta-0p001") -> dict:
     root = "/scratch/letter_20261028_a77dfb13"
-    gpu = 0 if arm == "beta-0p001" else 1
+    gpu = 2 if arm == "beta-0p001" else 7
     return {
         "kind": "figure8-one-factor-tokenizer-v1",
         "root": root,
@@ -171,7 +171,7 @@ def test_probe_admission_binds_the_exact_native_state_and_control_hashes():
     digest = "a" * 64
     admission = recovery().probe_admission(
         identity={
-            "arm": "beta-0p001", "host": "node-1", "gpu": 0,
+            "arm": "beta-0p001", "host": "node-1", "gpu": 2,
             "base_epoch": 16000, "first_failed_epoch": 16401,
         },
         spec_sha256=digest,
