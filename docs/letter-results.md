@@ -98,7 +98,9 @@ are partial coverage; these references alone do not establish a tokenizer benefi
 
 ## 📊 Newly verified generative-model results
 
-These are **seed42 measurements**, not a completed multi-seed ablation.
+These are primarily **seed42 measurements**, not a completed multi-seed
+ablation. The two explicitly labeled seed17 rows are the first independent
+training-seed replication.
 LC and BIGRec use the separately declared OpenLLaMA-7B-v2 compatible backbone,
 not original LLaMA1. LC still uses the authors' released ID bank. Fresh-ID T5
 uses newly trained IDs with OpenLLaMA only as the semantic encoder; its
@@ -112,6 +114,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, diversity-only, temperature1 | Instruments | Item diagnostic | 0.10754 | 0.08019 |
 | Fresh-ID T5, semantic-only, temperature1 | Instruments | Code | 0.10786 | 0.07989 |
 | Fresh-ID T5, semantic-only, temperature1 | Instruments | Item diagnostic | 0.10750 | 0.07922 |
+| Fresh-ID T5, semantic-only, temperature1, seed17 | Instruments | Code | 0.10403 | 0.07860 |
+| Fresh-ID T5, semantic-only, temperature1, seed17 | Instruments | Item diagnostic | 0.10363 | 0.07792 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Code | 0.10843 | 0.08117 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Item diagnostic | 0.10811 | 0.08057 |
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Code | 0.10944 | 0.08079 |
@@ -203,6 +207,16 @@ item Recall@10 is+0.00129 with paired95% interval
 [-0.00121,+0.00452], and code NDCG@10 is+0.00090
 [-0.00078,+0.00256]. All intervals include zero, so this seed does not establish
 a recommendation gain from the added objectives.
+
+The independent seed17 semantic-only replication completed91 epochs and
+selected epoch71. Its code Recall@10/NDCG@10 is **.10403/.07860** and its
+original-item diagnostic is **.10363/.07792**. Relative to seed42, the code
+points are lower by.00383 Recall@10 and.00130 NDCG@10. This two-seed spread is
+descriptive training-seed variation, not an uncertainty interval or a
+significance test. Every model-selection record, all24,772 users,20 beams and
+durable run/evaluation/result byte were independently reverified in
+[the seed17 receipt](../results/2026-10-31-letter/fresh-instruments-semantic-s17-t10-v1.json)
+and `verified-results/fresh-instruments-semantic-s17-t10-v1`.
 
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
@@ -644,6 +658,16 @@ findings. Exact receipts:
 [alpha0.01](../results/2026-10-30-letter/figure8-alpha0p01-final-v1.json) and
 [beta0.00001](../results/2026-10-30-letter/figure8-beta0p00001-final-v1.json).
 
+The repaired `beta=0.001` arm also completed20,000 epochs and selected
+epoch18,000. Its four-level bank has25 excess collision items, largest group3
+and utilization129/117/256/256. The compatibility audit replayed160,080
+initialization tasks:160,079 were native-defined and bitwise matched, while
+one exact undefined CDF endpoint at epoch16,401 level0 required the admitted
+index guard; export required no correction. Native bitwise execution is not
+claimed past that crash. Exact lineage and durable evidence are in
+[the beta0.001 final receipt](../results/2026-10-31-letter/figure8-beta0p001-final-v1.json)
+and `verified-results/figure8-beta0p001-final-v1`.
+
 Downstream evaluation for the 15 nonbaseline tokenizer arms is split across
 immutable `fresh-t5-figure8-tokenizer-v2` and `v3` namespaces; v4 is reserved
 for arms whose tokenizer completion requires the audited k-means endpoint
@@ -691,6 +715,16 @@ full-tokenizer tau0.7 baseline, but no cross-arm winner or significance claim
 is made. Exact independently reverified evidence is in
 [the alpha0.01 downstream receipt](../results/2026-10-31-letter/figure8-downstream-alpha0p01-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-alpha0p01-s42-t0p7-v1`.
+
+The `alpha=0.1` downstream cell also completed at epoch92 and selected
+checkpoint9,288 /epoch72. Code Recall@10/NDCG@10 is **.10439/.07873** and
+the original-item diagnostic is **.10399/.07820**. This single seed is
+descriptively below both the shared full-tokenizer tau0.7 baseline and the
+alpha0.01 arm; no monotonic alpha trend or significance claim is made.
+Every prediction, selection record and durable byte was independently
+reverified in
+[the alpha0.1 downstream receipt](../results/2026-10-31-letter/figure8-downstream-alpha0p1-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-alpha0p1-s42-t0p7-v1`.
 
 ## 📊 Instruments released-ID replay
 

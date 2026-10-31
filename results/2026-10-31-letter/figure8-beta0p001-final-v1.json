@@ -1,0 +1,117 @@
+{
+  "status": "pass",
+  "arm": "beta-0p001",
+  "bundle": "beta-0p001-completed-18f2dc07c1de1240",
+  "selected_epoch": 18000,
+  "final_epoch": 20000,
+  "index_sha256": "74fbcbdf83d3be342e3d6d86f6339bf9536bf1800c33bd7cd5adc4a556d84c8a",
+  "codes_sha256": "abca6cc783c6d4112dc6a0ddc4591da53ce15ec976266d02e00259e26f16e874",
+  "collisions": {
+    "before": 87,
+    "after": 25,
+    "largest_group": 3
+  },
+  "utilization_by_level": [
+    129,
+    117,
+    256,
+    256
+  ],
+  "bundle_completed_sha256": "2f6e320d4574c2b70cd5e1521c4d8da0d0490ae2809439f7aeaf09ffe27989ca",
+  "run_completed_sha256": "c675b5068a73c11cb665bd2fea39ae00f1bc5759ad4395606276e4fdb0431075",
+  "durable_bank_receipt_sha256": "caf79bf3c7455d52838713e8e7eaecde81f92aeaecdc39a1cda7b17578a00e7f",
+  "files": 50,
+  "kmeans_compatibility": {
+    "policy": "rq-kmeans-cdf-endpoint-v1",
+    "classification": "compatibility correction at undefined native CDF endpoint indexing",
+    "not_claimed": "bitwise native execution past the deterministic crash",
+    "admission_sha256": "e7aabb9f7e239db361f9a68415b366bd56df8162d61d47b2901c289bab487609",
+    "base_epoch": 16000,
+    "base_state_sha256": "c4285e9e141bdede03a1a38432028bb0b2f2cea577ebe3dda599a0cb16580547",
+    "final_attestation_sha256": "b5db1ab0f1571ee694ad3c0681d94a47f3bafb525a49d55884cede96649cf306",
+    "export_attestation_sha256": "62eeffaee3974093eaf95deba121f74d251c86a4911657468f77c67113a61155",
+    "completion_used_compatibility": true,
+    "native_artifact_identity_claimed": false,
+    "selected_model_repair_dependent": true,
+    "selected_state_sha256": "d8a527128d4f7a51544290d79ea910d2e0445f9a2a98918fb7ceb4c964593b23",
+    "selected_attestation_sha256": "3b8a1592b02405318c441f9145bf75df4ed0006f0735b8169b276645c7e601ec",
+    "first_training_correction_epoch": 16401,
+    "cumulative_runtime_summary": {
+      "tasks": 160080,
+      "failed_tasks": 0,
+      "corrections": 1,
+      "phases": {
+        "training": 1
+      },
+      "worker_pids": [
+        96148,
+        96149,
+        96150,
+        96151,
+        96152,
+        96153,
+        96154,
+        96155,
+        96156,
+        96157
+      ],
+      "native_defined": 160079,
+      "native_faults": 1
+    },
+    "corrections_by_epoch_level_phase": {
+      "16401": {
+        "training": {
+          "0": 1
+        }
+      }
+    },
+    "export_corrections": 0,
+    "downstream_ids_repair_dependent": true,
+    "original_scientific_recipe_and_selection_unchanged": true,
+    "final_runtime_summary": {
+      "tasks": 160080,
+      "failed_tasks": 0,
+      "corrections": 1,
+      "phases": {
+        "training": 1
+      },
+      "worker_pids": [
+        96148,
+        96149,
+        96150,
+        96151,
+        96152,
+        96153,
+        96154,
+        96155,
+        96156,
+        96157
+      ],
+      "native_defined": 160079,
+      "native_faults": 1
+    },
+    "export_runtime_summary": {
+      "tasks": 40,
+      "failed_tasks": 0,
+      "corrections": 0,
+      "phases": {
+        "export": 0
+      },
+      "worker_pids": [
+        96148,
+        96149,
+        96150,
+        96151,
+        96152,
+        96153,
+        96154,
+        96155,
+        96156,
+        96157
+      ],
+      "native_defined": 40,
+      "native_faults": 0
+    }
+  },
+  "audit_source_sha256": "6c0acfce1350655efda4f890a2e15fe639a617c48a2f18d9f80b1d87bc22735f"
+}

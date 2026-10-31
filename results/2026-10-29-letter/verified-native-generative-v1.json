@@ -157,6 +157,57 @@
     "private_evidence_bundle": "verified-results/fresh-instruments-semantic-s42-t10-v1",
     "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
   },
+  "fresh_t5_instruments_semantic_seed17": {
+    "status": "independently_verified_and_banked",
+    "claim": "Independent training-seed replication of the fresh semantic-only tokenizer cell; compatible semantic encoder and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Instruments",
+    "seed": 17,
+    "temperature": 1.0,
+    "tokenizer_variant": "semantic",
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 18000,
+    "training_epochs": 91,
+    "training_updates": 11739,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 71,
+    "selected_checkpoint": "checkpoint-9159",
+    "validation_evaluations_checked": 91,
+    "test_users": 24772,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.060269659292749876,
+      "ndcg@1": 0.060269659292749876,
+      "recall@5": 0.08384466332956564,
+      "ndcg@5": 0.07214658243676304,
+      "recall@10": 0.10402874212820927,
+      "ndcg@10": 0.07859522284653066
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.05905861456483126,
+      "ndcg@1": 0.05905861456483126,
+      "recall@5": 0.08356208622638463,
+      "ndcg@5": 0.07151249013811738,
+      "recall@10": 0.1036250605522364,
+      "ndcg@10": 0.0779231694597897
+    },
+    "seed17_minus_seed42": {
+      "code_recall@10": -0.0038349749717422887,
+      "code_ndcg@10": -0.0012961905824280945,
+      "item_recall@10": -0.00387534312933957,
+      "item_ndcg@10": -0.0012970542086587072,
+      "interpretation": "Descriptive two-seed variation only; no paired-user interval can represent training-seed uncertainty."
+    },
+    "model_sha256": "28fd8621784d771a61754ae7dadf2670fe1b79686e94576032f710059c51cd8f",
+    "predictions_sha256": "6871f03a06663bb97986878ac2ef39af2122f8301d3053faf87a03fb64794be6",
+    "result_sha256": "10bb6de06e7afcd479e4429c7ca35b1c9411aa1c755119d7039f4d8d861d2614",
+    "independent_verification_sha256": "afab141c050d9e6c860f46f1447282339bb431654d143d80e39446de1489f1f5",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-instruments-semantic-s17-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
   "fresh_t5_instruments_cf": {
     "status": "independently_verified_and_banked",
     "claim": "Fresh semantic-plus-CF tokenizer, compatible semantic encoder and random native T5 generator; guarded repaired-RQ continuation disclosed; not original-LLaMA1 reproduction or native bitwise continuation past the crash",

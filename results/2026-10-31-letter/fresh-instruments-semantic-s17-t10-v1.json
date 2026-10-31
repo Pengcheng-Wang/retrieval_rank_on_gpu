@@ -1,0 +1,118 @@
+{
+  "status": "pass",
+  "dataset": "Instruments",
+  "variant": "semantic",
+  "seed": 17,
+  "temperature": 1.0,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.060269659292749876,
+      "ndcg@1": 0.060269659292749876,
+      "recall@5": 0.08384466332956564,
+      "ndcg@5": 0.07214658243676304,
+      "recall@10": 0.10402874212820927,
+      "ndcg@10": 0.07859522284653066
+    },
+    "item": {
+      "recall@1": 0.05905861456483126,
+      "ndcg@1": 0.05905861456483126,
+      "recall@5": 0.08356208622638463,
+      "ndcg@5": 0.07151249013811738,
+      "recall@10": 0.1036250605522364,
+      "ndcg@10": 0.0779231694597897
+    }
+  },
+  "training_epochs": 91,
+  "selected_epoch": 71.0,
+  "validation_evaluations_checked": 91,
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 18000,
+  "compatibility_corrections": 0,
+  "export_corrections": 0,
+  "lineage": {
+    "kind": "fresh-id-compatible-rebuild",
+    "track_id": "letter-openllama7b-v2-method-replication",
+    "claim_type": "compatible_backbone_method_replication",
+    "synthetic_fixture": false,
+    "exact_original_llama1_reproduction": false,
+    "dataset": "Instruments",
+    "variant": "semantic",
+    "semantic_encoder": {
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "revision": "e5961def23172a2384543940e773ab676033c963",
+      "dimension": 4096,
+      "dtype": "float32",
+      "role": "item semantic encoder only; NOT the downstream T5 generator"
+    },
+    "downstream_generator": {
+      "backend": "native LETTER-TIGER",
+      "initialization": "author random T5 configuration",
+      "d_model": 128,
+      "d_ff": 1024,
+      "d_kv": 64,
+      "num_heads": 6,
+      "num_layers": 4,
+      "dropout_rate": 0.1,
+      "max_history_items": 20,
+      "model_max_length": 512
+    },
+    "method_model_identity_applies_to": "semantic_encoder_only_in_this_T5_track",
+    "method_spec_sha256": "f7ddc830ee5e96ac4e9a8d8395d1bb0cc66d1104cf350e98c73688002ab6fa2f",
+    "execution_sha256": "fceeeefb3c28b689d50ba25ee9810211478a1cdb3cb144ae2a11dcf0ba70990a",
+    "tokenizer_recipe_sha256": "0b85ba628c9a7f679472f9bdb1d228528cb9933df750c66a552b168ece9c7482",
+    "input_provenance": {
+      "semantic_sha256": "430bcca5fe448d9ab016685747516969262ae121deaec1606988836c3b8d4933",
+      "embedding_receipt_sha256": "ff2f000ee187a91df4ef978a3fac40910129669997b68ce8e6bf5210e58ddb38",
+      "semantic_config_sha256": "823592160ba770ada0ef3029088c2fef38a58545bc2f1cdf7a2365a823d4113d",
+      "semantic_completed_sha256": "b1bee963521ac22a868b38bbf4610af6d21fe8615e1f257bd79a4416e85624cf",
+      "cf_sha256": "be837526785d710588c24901e3639d7a1d9a79b1fe8dc48d963cedc4241df52a",
+      "cf_config_sha256": "f92a34af6f178d4879e057e06629988b82f33491a594c5f850892ca630f93383",
+      "cf_completed_sha256": "ad05418628c53295e34b64de91301e2bec927f707af32cb82523eb0108eb4b82",
+      "teacher_sha256": "1f3f6a1936c2fb38f6a6d2bbb58615f8348d988adc0360751834e1e5f134f308"
+    },
+    "rq": {
+      "rq_run_id": "openllama-v2-rq-Instruments-semantic-s42",
+      "run_config_sha256": "41fd4d11003fe4fe43a424d4755354d2d60d43ba0e327e2d373d141a0995d38d",
+      "run_completed_sha256": "2da16dd70ad443bd9324d467510b56f4e5d4ddadf5f1d0d23a46db4cbde1654f",
+      "bundle_completed_sha256": "cb2ad4c4b8f49097aae1a07fb5eb58384ba548334901cf2c13b9b98df729ffba",
+      "final_epoch": 20000,
+      "final_state_sha256": "efc8d72928ed581415fdf5576136cfa7346a774c4e42b6cb8186ef50584d52fd",
+      "selected_epoch": 18000,
+      "selected_checkpoint": "checkpoints/epoch-18000",
+      "selected_state_sha256": "78ab058d1166270e7f20b32bfb3e0ed4fb595c71482e90fbc1050cb234351949",
+      "selected_receipt_sha256": "7435961d0989d7f9e9c724a4b789036eabe2299c27c4581cd13febd9c5aa86b5",
+      "index_sha256": "66954b900105db8235951feb87f82326250ef1cac49d984ebae1f3a4740c4a57",
+      "codes_sha256": "40879ba071d794cc40b4b63edea7ae4d7f312730c7132de5255c300409fada7b",
+      "export_sha256": "15ab3c57202106e3da56814028a8675a4745681b9dfa62c412be1bc0cb7500e3",
+      "collisions": {
+        "items": 9922,
+        "unique_sids": 9895,
+        "excess_collision_items": 27,
+        "collision_groups": 25,
+        "items_in_collision_groups": 52,
+        "largest_group": 3
+      }
+    },
+    "durable_proof": {
+      "bank_receipt_sha256": "36e5e3f403a57d14eef419f1805b32203513789b2e8aecc7dc86dd127e8b179b",
+      "bundle_completed_sha256": "cb2ad4c4b8f49097aae1a07fb5eb58384ba548334901cf2c13b9b98df729ffba",
+      "run_completed_sha256": "2da16dd70ad443bd9324d467510b56f4e5d4ddadf5f1d0d23a46db4cbde1654f",
+      "verification": "all durable bundle bytes checked under node0 shared bank lock"
+    },
+    "index_sha256": "66954b900105db8235951feb87f82326250ef1cac49d984ebae1f3a4740c4a57",
+    "codes_sha256": "40879ba071d794cc40b4b63edea7ae4d7f312730c7132de5255c300409fada7b"
+  },
+  "model_sha256": "28fd8621784d771a61754ae7dadf2670fe1b79686e94576032f710059c51cd8f",
+  "predictions_sha256": "6871f03a06663bb97986878ac2ef39af2122f8301d3053faf87a03fb64794be6",
+  "result_sha256": "10bb6de06e7afcd479e4429c7ca35b1c9411aa1c755119d7039f4d8d861d2614",
+  "bank_receipt_files_sha256": {
+    "runs/openllama-v2-fresh-t5-Instruments-semantic-s17-t10-v1": "2a30773e4dbecbc085c0e0cf9d0e10a2781de7c32f271fa95c32652c28802484",
+    "evaluations/openllama-v2-fresh-t5-Instruments-semantic-s17-t10-v1/evaluation-attempt-001": "eb67f97b4c645b133154ef0fe47b54bd9743fcc82e2b201412d9428f28f0a06a",
+    "results/openllama-v2-fresh-t5-Instruments-semantic-s17-t10-v1": "3ce32d727d43d6db2840b3aa5225dd92dc72b1d22ce75315e41501d236209acd"
+  },
+  "durable_receipts_match_immutable_local_inventories": true,
+  "model_inference_performed": false,
+  "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533"
+}

@@ -1,0 +1,96 @@
+{
+  "status": "verified_figure8_tokenizer_cell",
+  "arm": "alpha-0p1",
+  "experiment_lineage": {
+    "kind": "figure8-tokenizer-downstream-v1",
+    "track_id": "letter-openllama7b-v2-method-replication",
+    "claim_type": "compatible_backbone_method_replication",
+    "synthetic_fixture": false,
+    "exact_original_llama1_reproduction": false,
+    "dataset": "Instruments",
+    "arm": "alpha-0p1",
+    "tokenizer_spec": {
+      "dataset": "Instruments",
+      "codes": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "epsilons": [
+        0.0,
+        0.0,
+        0.0,
+        0.003
+      ],
+      "dimension": 32,
+      "layers": [
+        2048,
+        1024,
+        512,
+        256,
+        128,
+        64
+      ],
+      "clusters": 10,
+      "alpha": 0.1,
+      "beta": 0.0001,
+      "seed": 42,
+      "epochs": 20000,
+      "batch_size": 1024,
+      "eval_step": 2000
+    },
+    "bundle": "alpha-0p1-completed-daaade88fc2663e8",
+    "bundle_completed_sha256": "34a3c9d20649d73334ff7bee363c24812b177e3516c84dd17677ad8509026aee",
+    "bank_receipt_sha256": "ce0b26e925d9db5f4fe150320839724344602fd328a91c1d875b6b346bffa571",
+    "index_sha256": "dcfac70ff0b7224f8fe0d694bba2c237e45dc0aecc8186e169b27c9e3e934cc8",
+    "codes_sha256": "0c832419a5b2d197539310d77e01c1fe13bc82afb06b97ad5cc328da6b6a088d",
+    "plan_sha256": "e166efd755b4c0ebcd4ca68cd122f0c8807a2cb2be71e0c383df9b6ca72bd2f6",
+    "admission_sha256": "3f0ddcfdc1c410848c8bbca54aeef5c9f55fd7310f2295776c7bd03df75598db",
+    "downstream": {
+      "seed": 42,
+      "temperature": 0.7,
+      "learning_rate": 0.0005,
+      "epochs": 200,
+      "world_size": 2,
+      "effective_batch_size": 1024,
+      "beams": 20
+    }
+  },
+  "seed": 42,
+  "temperature": 0.7,
+  "all_users": 24772,
+  "beams": 20,
+  "code_metrics": {
+    "recall@1": 0.05978524140158243,
+    "ndcg@1": 0.05978524140158243,
+    "recall@5": 0.08424834490553851,
+    "ndcg@5": 0.072257865382487,
+    "recall@10": 0.10439205554658486,
+    "ndcg@10": 0.07873165446818167
+  },
+  "original_item_diagnostic": {
+    "recall@1": 0.0589375100920394,
+    "ndcg@1": 0.0589375100920394,
+    "recall@5": 0.08400613595995479,
+    "ndcg@5": 0.07177909657035392,
+    "recall@10": 0.10398837397061197,
+    "ndcg@10": 0.07819709153110035
+  },
+  "model_sha256": "e5e46992123537174d4d5270a220a6a107587d97bbe55a62414d150a9403cf8a",
+  "predictions_sha256": "3f019a792ff536b23a169c92b3a4b4b1b2760738e529761b1e365f09abc8f1e4",
+  "selected_checkpoint": "checkpoint-9288",
+  "selected_epoch": 72.0,
+  "selection": "within-arm validation only; test descriptive",
+  "independent_status": "pass",
+  "result_sha256": "1b976afdaab07f9009d608c74d3e95badbb9cc7986375bb8c84af04ad991cf58",
+  "ack_sha256": "c8d698722085e191afa3f13557e63595991d3485575e6db9ca146af1fff77b98",
+  "durable_receipts": {
+    "runs/openllama-v2-figure8-tokenizer-Instruments-alpha-0p1-s42-t0p7-v1": "25f1055ea0659d167d5bdfa94419df7e2d4d7a3ab3a838ba7e5c2ecb0265e992",
+    "evaluations/openllama-v2-figure8-tokenizer-Instruments-alpha-0p1-s42-t0p7-v1/evaluation-attempt-001": "65ff9090d584b549876da8ad0e54d45c73c65c354ec30120af3e92380f67f141",
+    "results/openllama-v2-figure8-tokenizer-Instruments-alpha-0p1-s42-t0p7-v1": "8c6b36dab92c5e655933819e62f816800ab1311ef492ebca9d2e6566737740da"
+  },
+  "all_predictions_selection_and_durable_bytes_reverified": true,
+  "model_inference_performed": false,
+  "audit_source_sha256": "c013c8b2cf3cace544e964d53f78a06a33f9ab97183e01dcd7a0a1318d56eba0"
+}
