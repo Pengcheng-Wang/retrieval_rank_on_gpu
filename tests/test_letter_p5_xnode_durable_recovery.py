@@ -205,6 +205,6 @@ def test_committed_certificate_labels_receipt_verified_durable_recovery(tmp_path
     monkeypatch.setattr(v2.socket, "gethostname", lambda: plan["bindings"]["writer_host"])
     result = v2.commit_transition(request_path, plan)
     certificate = json.loads(Path(result["certificate"]).read_text())
-    assert certificate["recovery"]["kind"] == "p5-xnode-durable-recovery-v1"
+    assert certificate["recovery"]["kind"] == "p5-ownership-durable-recovery-v1"
     assert certificate["recovery"]["cells"][cell]["historically_accepted"] is False
     assert certificate["event"]["durable_recovery"][cell] == plan["cells"][cell]

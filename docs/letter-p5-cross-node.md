@@ -194,6 +194,44 @@ ledger head plus its complete package and acknowledgment, or the distinct
 `p5-uuid-reregistration-worker-durable-root-v2` recovery evidence described
 below. Never construct a synthetic writer xnode ledger.
 
+Sequence-3 publication certificates may retain writer owners only as the
+historical identity fields `cell`, `gpu`, `lease_id`, `owner_node`, and
+`ownership_epoch`. V2 accepts exactly that compact shape without editing or
+fabricating the historical certificate. It reconstructs the successor writer
+lease from the unchanged compact identity, exact old/new private assignments,
+the receipt-verified writer checkpoint/ack/contract, the verified input
+manifest, and the newly computed canonical runtime-manifest hash. The plan
+records hashes of every reconstruction authority. A partial or extended
+unknown owner shape, writer host/GPU/epoch mismatch, old/new binding
+disagreement, foreign writer acknowledgement, changed contract/input, or
+runtime hash mismatch fails closed. Complete historical writer leases remain
+supported and preserve their unrelated fields.
+
+### Receipt-verified writer durable recovery
+
+If node-local ordinary writer bank acknowledgements were erased, do not reuse
+a stale acknowledgement or fabricate one. Use the distinct
+`p5-uuid-reregistration-writer-durable-root-v2` evidence kind. It binds the
+certified old registry event, compact or full historical writer identity,
+exact old/new assignments, durable destination, unchanged external contract,
+an exact checkpoint-directory inventory, and a selection policy.
+
+Every listed checkpoint must be a direct non-symlink child of the declared
+durable destination and have an exact writer-created `bank-receipt.json`
+covering its sealed model, training state, and seal. After receipt and file
+hash verification, v2 opens the trusted sealed training state and requires its
+embedded contract and optimizer-boundary marker to match, plus exact
+step/epoch/phase agreement with the seal. Listed roots must have legal
+monotonic P5 progress. The highest verified checkpoint is selected by default;
+a lower checkpoint requires `intentional_rollback`, a non-empty reason, and
+records every abandoned newer verified checkpoint.
+
+This authority is explicitly `p5-writer-durable-recovery-v1` with
+`historically_accepted=false`; it does not claim that a missing ordinary ack
+ever existed. Writer and worker receipt recoveries are recorded together under
+certificate recovery kind `p5-ownership-durable-recovery-v1`. They retain the
+same all-cell commit and activation-last fence.
+
 ### Receipt-verified worker durable recovery
 
 An unacknowledged successor does not prove its parent was historically

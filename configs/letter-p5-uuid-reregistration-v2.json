@@ -15,6 +15,17 @@
       "receipt-verified contiguous durable package recovery explicitly labeled as not historical acceptance"
     ]
   },
+  "retained_writer_owner_compatibility": {
+    "historical_shape": "either a complete p5-xnode-lease-v1 or exactly cell/gpu/lease_id/owner_node/ownership_epoch",
+    "compact_reconstruction_authority": [
+      "unchanged historical compact owner identity",
+      "exact old and new private cell assignments",
+      "receipt-verified writer checkpoint, acknowledgement and scientific contract",
+      "verified input manifest and newly computed canonical runtime manifest hashes"
+    ],
+    "historical_certificate_mutation": "forbidden",
+    "ambiguous_or_mismatched_identity": "fail closed"
+  },
   "worker_durable_recovery": {
     "evidence_kind": "p5-uuid-reregistration-worker-durable-root-v2",
     "recovery_kind": "p5-xnode-durable-recovery-v1",
@@ -23,6 +34,14 @@
     "lower_selection": "requires intentional_rollback with a non-empty reason and records every abandoned newer verified package",
     "successor": "optional observation only; never acceptance authority",
     "old_accepted_ledger": "read and write forbidden for this evidence kind"
+  },
+  "writer_durable_recovery": {
+    "evidence_kind": "p5-uuid-reregistration-writer-durable-root-v2",
+    "recovery_kind": "p5-writer-durable-recovery-v1",
+    "authority": "exact receipt-verified ordinary full-state checkpoints with embedded contract under the certified old event and private bindings",
+    "default_selection": "highest legally ordered fully receipt-verified checkpoint",
+    "lower_selection": "requires intentional_rollback with a non-empty reason and records every abandoned newer verified checkpoint",
+    "historical_acknowledgement": "not required and never fabricated; recovery is explicitly non-historical"
   },
   "replacement_gpu_proof": {
     "runner": "scripts/letter/replacement_gpu_proof.py",

@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import torch
 
 from test_letter_p5_xnode_reregister import fixture as v1_fixture
 from test_letter_p5_xnode_reregister import sha, write
@@ -162,6 +163,253 @@ def test_prepare_uses_writer_bank_receipts_and_worker_xnode_ledgers(tmp_path):
     assert plan["cells"]["worker-tid-small"]["evidence_kind"] == "worker-xnode"
     assert "accepted_record_sha256" not in plan["cells"]["writer-cid"]
     assert "accepted_record_sha256" in plan["cells"]["worker-tid-small"]
+
+
+def compact_writer_owners(v2, request, old_event, certificate):
+    bindings = json.loads(Path(request["old_bindings"]).read_text())
+    compact = {}
+    for cell, owner in old_event["owners"].items():
+        if bindings["cells"][cell]["role"] == "writer":
+            compact[cell] = {
+                key: owner[key] for key in (
+                    "cell", "gpu", "lease_id", "owner_node", "ownership_epoch",
+                )
+            }
+    old_event["owners"].update(compact)
+    event_sha = v2.event_sha(old_event)
+    receipt = {"files": {"ownership.json": {"sha256": event_sha, "bytes": 1}}}
+    certificate.update(
+        event=old_event, event_sha256=event_sha, bank_receipt=receipt,
+        bank_receipt_sha256=v2.digest(receipt),
+    )
+    write(Path(request["registry"]) / "committed" / "0001.json", certificate)
+    for cell, owner in old_event["owners"].items():
+        if cell in request["cells"] and bindings["cells"][cell]["role"] == "worker":
+            record_path = (
+                Path(request["registry"]).parent / "ledger" / cell / owner["lease_id"]
+                / "accepted" / "g00000001.json"
+            )
+            record = json.loads(record_path.read_text())
+            record["ack"]["registry_event_sha256"] = event_sha
+            write(record_path, record)
+    return compact
+
+
+def writer_durable_recovery(v2, request, old_event, cell, generations=2):
+    source = Path(request["evidence"][cell]["checkpoint"])
+    contract = Path(request["evidence"][cell]["contract"])
+    destination = source.parent / "receipt-recovery"
+    checkpoints = []
+    for generation in range(1, generations + 1):
+        checkpoint = destination / f"writer-state-{generation}"
+        checkpoint.mkdir(parents=True)
+        shutil.copyfile(source / "model.safetensors", checkpoint / "model.safetensors")
+        contract_value = json.loads(contract.read_text())
+        torch.save({
+            "schema_version": 1,
+            "contract": contract_value,
+            "optimizer": {"state": {"fixture": generation}},
+            "scheduler": {"fixture": generation},
+            "sampler": {"fixture": generation},
+            "rng": {"fixture": generation},
+            "state": {
+                "global_step": 90 + generation,
+                "epoch": 9,
+                "phase": "train",
+            },
+            "checkpoint_boundary": "after_complete_optimizer_update_no_partial_gradients",
+        }, checkpoint / "training-state.pt")
+        seal = json.loads((source / "p5-seal.json").read_text())
+        seal.update(
+            global_step=90 + generation,
+            epoch=9,
+            phase="train",
+            files_sha256={
+                "model.safetensors": sha(checkpoint / "model.safetensors"),
+                "training-state.pt": sha(checkpoint / "training-state.pt"),
+            },
+        )
+        write(checkpoint / "p5-seal.json", seal)
+        receipt = {"files": {
+            member.name: {"sha256": sha(member), "bytes": member.stat().st_size}
+            for member in checkpoint.iterdir() if member.is_file()
+        }}
+        write(checkpoint / "bank-receipt.json", receipt)
+        checkpoints.append(str(checkpoint))
+    request["evidence"][cell] = {
+        "kind": "p5-uuid-reregistration-writer-durable-root-v2",
+        "cell": cell,
+        "checkpoints": checkpoints,
+        "contract": str(contract),
+        "registry_event_sha256": v2.event_sha(old_event),
+        "destination_root": str(destination),
+        "selection": {"policy": "latest"},
+    }
+    chosen = Path(checkpoints[-1])
+    proof = json.loads(Path(request["proofs"][cell]).read_text())
+    proof.update(
+        source_checkpoint_seal_sha256=sha(chosen / "p5-seal.json"),
+        model_sha256=sha(chosen / "model.safetensors"),
+        training_state_sha256=sha(chosen / "training-state.pt"),
+    )
+    write(Path(request["proofs"][cell]), proof)
+    return checkpoints
+
+
+def test_prepare_reconstructs_compact_retained_writer_from_receipt_and_bindings(tmp_path):
+    v2, _, request_path, request, old_event, certificate = v2_fixture(tmp_path)
+    compact = compact_writer_owners(v2, request, old_event, certificate)
+
+    plan = v2.prepare_transition(request_path)
+
+    old_bindings = json.loads(Path(request["old_bindings"]).read_text())
+    runtime = plan["runtime_manifest"]
+    for cell, historical in compact.items():
+        lease = plan["event"]["owners"][cell]
+        assignment = old_bindings["cells"][cell]
+        assert old_event["owners"][cell] == historical
+        assert lease["kind"] == "p5-xnode-lease-v1"
+        assert lease["cell"] == cell
+        assert lease["owner_node"] == historical["owner_node"]
+        assert lease["gpu"] == historical["gpu"] == assignment["gpu"]
+        assert lease["microbatch"] == assignment["microbatch"]
+        assert lease["accumulation"] == assignment["accumulation"]
+        assert lease["contract_file_sha256"] == sha(request["evidence"][cell]["contract"])
+        assert lease["input_manifest_sha256"] == runtime["input_manifest_sha256"]
+        assert lease["control_manifest_sha256"] == plan["runtime_manifest_sha256"]
+        reconstruction = plan["cells"][cell]["writer_lease_reconstruction"]
+        assert reconstruction["historical_owner_sha256"] == v2.digest(historical)
+        assert reconstruction["writer_evidence_sha256"] == v2.digest({
+            "checkpoint": sha(Path(request["evidence"][cell]["checkpoint"]) / "p5-seal.json"),
+            "ack": sha(request["evidence"][cell]["ack"]),
+            "contract": sha(request["evidence"][cell]["contract"]),
+        })
+
+
+def test_compact_writer_without_ack_uses_nonhistorical_receipt_recovery_latest(tmp_path):
+    v2, _, request_path, request, old_event, certificate = v2_fixture(tmp_path)
+    compact = compact_writer_owners(v2, request, old_event, certificate)
+    checkpoints = {}
+    for cell in compact:
+        checkpoints[cell] = writer_durable_recovery(v2, request, old_event, cell)
+    write(request_path, request)
+
+    plan = v2.prepare_transition(request_path)
+
+    for cell in compact:
+        metadata = plan["cells"][cell]
+        assert metadata["evidence_kind"] == "writer-durable-recovery"
+        assert metadata["recovery_kind"] == "p5-writer-durable-recovery-v1"
+        assert metadata["historically_accepted"] is False
+        assert metadata["selection_policy"] == "latest"
+        assert metadata["chosen_checkpoint"] == checkpoints[cell][-1]
+        assert metadata["abandoned_verified_checkpoints"] == []
+        assert plan["event"]["durable_recovery"][cell] == metadata
+
+
+def test_writer_durable_recovery_requires_explicit_rollback_and_records_newer_root(tmp_path):
+    v2, _, request_path, request, old_event, certificate = v2_fixture(tmp_path)
+    compact = compact_writer_owners(v2, request, old_event, certificate)
+    cell = sorted(compact)[0]
+    checkpoints = writer_durable_recovery(v2, request, old_event, cell)
+    for other in compact:
+        if other != cell:
+            writer_durable_recovery(v2, request, old_event, other)
+    request["evidence"][cell]["selection"] = {"policy": "latest", "generation": 1}
+    write(request_path, request)
+    with pytest.raises(ValueError, match="rollback|latest"):
+        v2.prepare_transition(request_path)
+    request["evidence"][cell]["selection"] = {
+        "policy": "intentional_rollback",
+        "generation": 1,
+        "reason": "operator-selected durable writer rollback",
+    }
+    chosen = Path(checkpoints[0])
+    proof = json.loads(Path(request["proofs"][cell]).read_text())
+    proof.update(
+        source_checkpoint_seal_sha256=sha(chosen / "p5-seal.json"),
+        model_sha256=sha(chosen / "model.safetensors"),
+        training_state_sha256=sha(chosen / "training-state.pt"),
+    )
+    write(Path(request["proofs"][cell]), proof)
+    write(request_path, request)
+
+    plan = v2.prepare_transition(request_path)
+
+    assert plan["cells"][cell]["selection_policy"] == "intentional_rollback"
+    assert [
+        item["path"] for item in plan["cells"][cell]["abandoned_verified_checkpoints"]
+    ] == [checkpoints[1]]
+
+
+@pytest.mark.parametrize("damage", [
+    "missing-receipt", "partial-state", "embedded-contract", "event", "destination",
+])
+def test_writer_durable_recovery_fails_closed_on_unbound_or_partial_root(tmp_path, damage):
+    v2, _, request_path, request, old_event, certificate = v2_fixture(tmp_path)
+    compact = compact_writer_owners(v2, request, old_event, certificate)
+    cell = sorted(compact)[0]
+    checkpoints = writer_durable_recovery(v2, request, old_event, cell)
+    for other in compact:
+        if other != cell:
+            writer_durable_recovery(v2, request, old_event, other)
+    checkpoint = Path(checkpoints[-1])
+    if damage == "missing-receipt":
+        (checkpoint / "bank-receipt.json").unlink()
+    elif damage == "partial-state":
+        (checkpoint / "training-state.pt").unlink()
+    elif damage == "embedded-contract":
+        payload = torch.load(checkpoint / "training-state.pt", map_location="cpu", weights_only=False)
+        payload["contract"] = {"foreign": True}
+        torch.save(payload, checkpoint / "training-state.pt")
+        seal = json.loads((checkpoint / "p5-seal.json").read_text())
+        seal["files_sha256"]["training-state.pt"] = sha(checkpoint / "training-state.pt")
+        write(checkpoint / "p5-seal.json", seal)
+        receipt = {"files": {
+            member.name: {"sha256": sha(member), "bytes": member.stat().st_size}
+            for member in checkpoint.iterdir() if member.name != "bank-receipt.json"
+        }}
+        write(checkpoint / "bank-receipt.json", receipt)
+    elif damage == "event":
+        request["evidence"][cell]["registry_event_sha256"] = "0" * 64
+    else:
+        request["evidence"][cell]["destination_root"] = str(checkpoint.parent.parent)
+    write(request_path, request)
+
+    with pytest.raises(ValueError, match="writer|receipt|contract|event|destination|state"):
+        v2.prepare_transition(request_path)
+
+
+@pytest.mark.parametrize("damage", [
+    "owner-gpu", "owner-epoch", "new-binding-epoch", "ack-writer",
+])
+def test_compact_writer_reconstruction_fails_closed_on_ambiguous_identity(tmp_path, damage):
+    v2, _, request_path, request, old_event, certificate = v2_fixture(tmp_path)
+    compact = compact_writer_owners(v2, request, old_event, certificate)
+    cell = sorted(compact)[0]
+    if damage == "owner-gpu":
+        old_event["owners"][cell]["gpu"] += 1
+    elif damage == "owner-epoch":
+        old_event["owners"][cell]["ownership_epoch"] += 1
+    elif damage == "new-binding-epoch":
+        bindings = json.loads(Path(request["new_bindings"]).read_text())
+        bindings["cells"][cell]["ownership_epoch"] += 1
+        write(Path(request["new_bindings"]), bindings)
+    else:
+        ack = json.loads(Path(request["evidence"][cell]["ack"]).read_text())
+        ack["writer_host"] = "foreign-writer"
+        write(Path(request["evidence"][cell]["ack"]), ack)
+    if damage != "ack-writer":
+        event_sha = v2.event_sha(old_event)
+        receipt = {"files": {"ownership.json": {"sha256": event_sha, "bytes": 1}}}
+        certificate.update(
+            event=old_event, event_sha256=event_sha, bank_receipt=receipt,
+            bank_receipt_sha256=v2.digest(receipt),
+        )
+        write(Path(request["registry"]) / "committed" / "0001.json", certificate)
+
+    with pytest.raises(ValueError, match="writer|binding|identity|acknowledgement"):
+        v2.prepare_transition(request_path)
 
 
 def test_commit_publishes_canonical_state_and_activation_last(tmp_path, monkeypatch):

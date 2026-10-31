@@ -15,6 +15,14 @@ import p5_xnode_reregister as v1
 
 
 VERSION = "p5-xnode-uuid-reregistration-v2"
+COMPACT_WRITER_OWNER_FIELDS = {
+    "cell", "gpu", "lease_id", "owner_node", "ownership_epoch",
+}
+FULL_WRITER_OWNER_FIELDS = COMPACT_WRITER_OWNER_FIELDS | {
+    "kind", "gpu_uuid", "root", "contract_file_sha256",
+    "input_manifest_sha256", "control_manifest_sha256",
+    "microbatch", "accumulation",
+}
 REGISTRATION_FIELDS = {
     "kind", "writer_host", "lease_sha256", "event_sha256",
     "input_manifest_sha256",
@@ -71,9 +79,22 @@ def _runtime_manifest(request, bindings):
     return manifest
 
 
-def _writer_root(evidence, old_lease):
+def _writer_owner_shape(owner):
+    if set(owner) == COMPACT_WRITER_OWNER_FIELDS:
+        return "compact"
+    if (owner.get("kind") == "p5-xnode-lease-v1"
+            and FULL_WRITER_OWNER_FIELDS <= set(owner)
+            and isinstance(owner.get("root"), dict)):
+        return "full"
+    raise ValueError("Historical writer owner shape is ambiguous")
+
+
+def _writer_root(evidence, old_owner, writer_host):
+    shape = _writer_owner_shape(old_owner)
+    if evidence.get("kind") == "p5-uuid-reregistration-writer-durable-root-v2":
+        raise AssertionError("Durable writer recovery requires event and destination binding")
     if (evidence.get("kind") != "p5-uuid-reregistration-writer-root-v2"
-            or evidence.get("cell") != old_lease["cell"]):
+            or evidence.get("cell") != old_owner["cell"]):
         raise ValueError("Writer cells require ordinary receipt-verified bank evidence")
     checkpoint = Path(evidence["checkpoint"])
     header = v1._checkpoint_header(checkpoint)
@@ -86,20 +107,210 @@ def _writer_root(evidence, old_lease):
             or ack.get("contract_sha256") != header["contract_sha256"]
             or Path(ack.get("destination", "")).resolve() != checkpoint.resolve()
             or ack.get("bank_receipt_sha256") != digest(receipt)
+            or ack.get("writer_host") != writer_host
             or receipt != {"files": actual}):
         raise ValueError("Writer full-state bank acknowledgement or receipt differs")
     contract = Path(evidence["contract"])
-    if (sha(contract) != old_lease["contract_file_sha256"]
-            or digest(read(contract)) != header["contract_sha256"]):
+    contract_file_sha256 = sha(contract)
+    if digest(read(contract)) != header["contract_sha256"]:
         raise ValueError("Writer scientific contract changed")
-    if header["contract_sha256"] != old_lease["root"]["contract_sha256"]:
-        raise ValueError("Writer banked full state changed scientific contract")
-    v1._progress(old_lease["root"], header)
+    if shape == "full":
+        if (contract_file_sha256 != old_owner.get("contract_file_sha256")
+                or header["contract_sha256"] != old_owner["root"]["contract_sha256"]):
+            raise ValueError("Writer banked full state changed scientific contract")
+        v1._progress(old_owner["root"], header)
+    evidence_identity = {
+        "checkpoint": sha(checkpoint / "p5-seal.json"),
+        "ack": sha(evidence["ack"]),
+        "contract": contract_file_sha256,
+    }
     return header, {
         "evidence_kind": "writer-bank",
         "bank_ack_sha256": sha(evidence["ack"]),
         "bank_receipt_sha256": sha(checkpoint / "bank-receipt.json"),
+        "writer_evidence_sha256": digest(evidence_identity),
+        "contract_file_sha256": contract_file_sha256,
     }, checkpoint, contract
+
+
+def _writer_durable_root(
+    evidence, old_owner, writer_host, registry_event_sha256, durable_root,
+):
+    _writer_owner_shape(old_owner)
+    required = {
+        "kind", "cell", "checkpoints", "contract", "registry_event_sha256",
+        "destination_root", "selection",
+    }
+    if (set(evidence) != required
+            or evidence["kind"] != "p5-uuid-reregistration-writer-durable-root-v2"
+            or evidence["cell"] != old_owner["cell"]
+            or evidence["registry_event_sha256"] != registry_event_sha256
+            or not isinstance(evidence["checkpoints"], list)
+            or not evidence["checkpoints"]):
+        raise ValueError("Durable writer recovery evidence is incomplete or event-stale")
+    destination = Path(evidence["destination_root"]).resolve()
+    durable_root = Path(durable_root).resolve()
+    checkpoints = [Path(path).resolve() for path in evidence["checkpoints"]]
+    if (not destination.is_absolute() or destination == durable_root
+            or not destination.is_relative_to(durable_root)
+            or len(checkpoints) != len(set(checkpoints))
+            or any(path.parent != destination for path in checkpoints)):
+        raise ValueError("Durable writer recovery destination binding differs")
+    entries = list(destination.iterdir())
+    if (sorted(path.resolve() for path in entries) != sorted(checkpoints)
+            or any(path.is_symlink() or not path.is_dir() for path in entries)):
+        raise ValueError("Durable writer recovery inventory is incomplete or unlisted")
+    contract = Path(evidence["contract"])
+    contract_value = read(contract)
+    contract_file_sha256 = sha(contract)
+    contract_sha256 = digest(contract_value)
+    verified = []
+    previous = old_owner.get("root")
+    for checkpoint in checkpoints:
+        receipt_path = checkpoint / "bank-receipt.json"
+        if not receipt_path.is_file():
+            raise ValueError("Durable writer checkpoint has no bank receipt")
+        receipt = read(receipt_path)
+        actual = v1._file_manifest(checkpoint, {"bank-receipt.json"})
+        if receipt != {"files": actual}:
+            raise ValueError("Durable writer checkpoint receipt inventory differs")
+        header = v1._checkpoint_header(checkpoint)
+        if header["contract_sha256"] != contract_sha256:
+            raise ValueError("Durable writer checkpoint contract seal differs")
+        if previous is not None:
+            v1._progress(previous, header)
+        previous = header
+        try:
+            import torch
+            payload = torch.load(
+                checkpoint / "training-state.pt", map_location="cpu", weights_only=False,
+            )
+        except Exception as error:
+            raise ValueError("Durable writer training state cannot be verified") from error
+        state = payload.get("state", {})
+        if (payload.get("contract") != contract_value
+                or payload.get("checkpoint_boundary")
+                != "after_complete_optimizer_update_no_partial_gradients"
+                or state.get("global_step") != header["step"]
+                or state.get("epoch") != header["epoch"]
+                or state.get("phase") != header["phase"]):
+            raise ValueError("Durable writer embedded contract or full state differs")
+        verified.append({
+            "path": str(checkpoint),
+            "generation": len(verified) + 1,
+            "checkpoint_seal_sha256": sha(checkpoint / "p5-seal.json"),
+            "bank_receipt_sha256": sha(receipt_path),
+            "step": header["step"],
+            "epoch": header["epoch"],
+            "phase": header["phase"],
+        })
+    selection = evidence["selection"]
+    if not isinstance(selection, dict) or selection.get("policy") not in {
+        "latest", "intentional_rollback",
+    }:
+        raise ValueError("Durable writer recovery selection policy is invalid")
+    highest = len(verified)
+    chosen_generation = selection.get("generation", highest)
+    if type(chosen_generation) is not int or not 1 <= chosen_generation <= highest:
+        raise ValueError("Durable writer recovery generation selection is invalid")
+    if selection["policy"] == "latest" and chosen_generation != highest:
+        raise ValueError("A lower durable writer root requires explicit intentional rollback")
+    if (selection["policy"] == "intentional_rollback"
+            and (chosen_generation == highest
+                 or not isinstance(selection.get("reason"), str)
+                 or not selection["reason"].strip())):
+        raise ValueError("Intentional writer rollback requires a lower generation and reason")
+    chosen_checkpoint = checkpoints[chosen_generation - 1]
+    head = v1._checkpoint_header(chosen_checkpoint)
+    evidence_identity = {
+        "destination_root": str(destination),
+        "checkpoints": [{
+            "path": item["path"],
+            "checkpoint_seal_sha256": item["checkpoint_seal_sha256"],
+            "bank_receipt_sha256": item["bank_receipt_sha256"],
+        } for item in verified],
+        "contract": contract_file_sha256,
+        "registry_event_sha256": registry_event_sha256,
+    }
+    metadata = {
+        "evidence_kind": "writer-durable-recovery",
+        "recovery_kind": "p5-writer-durable-recovery-v1",
+        "authority": "receipt-verified-durable-full-state-not-historical-acceptance",
+        "historically_accepted": False,
+        "registry_event_sha256": registry_event_sha256,
+        "writer_host": writer_host,
+        "destination_root": str(destination),
+        "selection_policy": selection["policy"],
+        "chosen_generation": chosen_generation,
+        "chosen_checkpoint": str(chosen_checkpoint),
+        "chosen_checkpoint_seal_sha256": head["seal_sha256"],
+        "verified_checkpoints": verified,
+        "abandoned_verified_checkpoints": verified[chosen_generation:],
+        "writer_evidence_sha256": digest(evidence_identity),
+        "contract_file_sha256": contract_file_sha256,
+    }
+    return head, metadata, chosen_checkpoint, contract
+
+
+def _writer_lease(
+    old_owner, old_assignment, new_assignment, writer_host, runtime, runtime_sha,
+    head, metadata, lease_id, epoch,
+):
+    if (old_owner.get("cell") is None
+            or old_owner.get("owner_node") != writer_host
+            or old_owner.get("gpu") != old_assignment["gpu"]
+            or old_owner.get("ownership_epoch") != old_assignment["ownership_epoch"]
+            or new_assignment["ownership_epoch"] != old_assignment["ownership_epoch"]):
+        raise ValueError("Historical writer identity differs from exact old/new bindings")
+    shape = _writer_owner_shape(old_owner)
+    compact, full = shape == "compact", shape == "full"
+    if full:
+        if (old_owner.get("gpu_uuid") != old_assignment["gpu_uuid"]
+                or old_owner.get("microbatch") != old_assignment["microbatch"]
+                or old_owner.get("accumulation") != old_assignment["accumulation"]
+                or old_owner.get("input_manifest_sha256") != runtime["input_manifest_sha256"]):
+            raise ValueError("Historical writer lease differs from exact bindings or inputs")
+    lease = ({
+        key: copy.deepcopy(value) for key, value in old_owner.items()
+        if key not in {
+            "kind", "cell", "owner_node", "gpu", "gpu_uuid", "lease_id",
+            "ownership_epoch", "root", "contract_file_sha256",
+            "input_manifest_sha256", "control_manifest_sha256",
+            "microbatch", "accumulation",
+        }
+    } if full else {})
+    lease.update({
+        "kind": "p5-xnode-lease-v1",
+        "cell": old_owner["cell"],
+        "owner_node": writer_host,
+        "gpu": new_assignment["gpu"],
+        "gpu_uuid": new_assignment["gpu_uuid"],
+        "lease_id": lease_id,
+        "ownership_epoch": epoch,
+        "root": {
+            key: head[key] for key in (
+                "artifact", "seal_sha256", "contract_sha256", "step", "epoch",
+                "phase", "model_sha256", "training_state_sha256",
+            )
+        },
+        "contract_file_sha256": metadata["contract_file_sha256"],
+        "input_manifest_sha256": runtime["input_manifest_sha256"],
+        "control_manifest_sha256": runtime_sha,
+        "microbatch": new_assignment["microbatch"],
+        "accumulation": new_assignment["accumulation"],
+    })
+    reconstruction = {
+        "kind": "p5-writer-lease-reconstruction-v1",
+        "historical_owner_shape": "compact" if compact else "full",
+        "historical_owner_sha256": digest(old_owner),
+        "old_assignment_sha256": digest(old_assignment),
+        "new_assignment_sha256": digest(new_assignment),
+        "writer_evidence_sha256": metadata["writer_evidence_sha256"],
+        "contract_file_sha256": metadata["contract_file_sha256"],
+        "input_manifest_sha256": runtime["input_manifest_sha256"],
+        "runtime_manifest_sha256": runtime_sha,
+    }
+    return lease, reconstruction
 
 
 def _worker_root(evidence, old_lease, registry_event_sha256, durable_root):
@@ -288,7 +499,8 @@ def prepare_transition(request_path):
     runtime = _runtime_manifest(request, new_binding)
     runtime_sha = document_sha(runtime)
     if any(
-        old_event["owners"][cell]["input_manifest_sha256"]
+        old_binding["cells"][cell]["role"] == "worker"
+        and old_event["owners"][cell].get("input_manifest_sha256")
         != runtime["input_manifest_sha256"]
         for cell in changed
     ):
@@ -305,15 +517,25 @@ def prepare_transition(request_path):
         expected_host = (old_binding["writer_host"] if old_assignment["role"] == "writer"
                          else old_binding["worker_host"])
         if (old_owner["owner_node"] != expected_host
+                or old_owner.get("cell") != cell
+                or old_owner.get("gpu") != old_assignment["gpu"]
+                or old_owner.get("ownership_epoch") != old_assignment["ownership_epoch"]
                 or assignment["role"] != old_assignment["role"]
                 or assignment["gpu"] != old_assignment["gpu"]
                 or assignment["microbatch"] != old_assignment["microbatch"]
                 or assignment["accumulation"] != old_assignment["accumulation"]):
             raise ValueError("Role, host, index or batch geometry changed")
         if assignment["role"] == "writer":
-            head, metadata, checkpoint, contract = _writer_root(
-                request["evidence"][cell], old_owner,
-            )
+            evidence = request["evidence"][cell]
+            if evidence.get("kind") == "p5-uuid-reregistration-writer-durable-root-v2":
+                head, metadata, checkpoint, contract = _writer_durable_root(
+                    evidence, old_owner, old_binding["writer_host"],
+                    certificate["event_sha256"], new_binding["durable_root"],
+                )
+            else:
+                head, metadata, checkpoint, contract = _writer_root(
+                    evidence, old_owner, old_binding["writer_host"],
+                )
         else:
             head, metadata, checkpoint, contract = _worker_root(
                 request["evidence"][cell], old_owner, certificate["event_sha256"],
@@ -329,16 +551,23 @@ def prepare_transition(request_path):
             f"{cell.lower()}-epoch-{epoch}-"
             f"{digest({'parent': certificate['event_sha256'], 'cell': cell, 'uuid': assignment['gpu_uuid'], 'proof': sha(request['proofs'][cell])})[:12]}"
         )
-        lease = {
-            **old_owner, "lease_id": lease_id, "ownership_epoch": epoch,
-            "gpu_uuid": assignment["gpu_uuid"], "root": {
-                key: head[key] for key in (
-                    "artifact", "seal_sha256", "contract_sha256", "step", "epoch",
-                    "phase", "model_sha256", "training_state_sha256",
-                )
-            },
-            "control_manifest_sha256": runtime_sha,
-        }
+        if assignment["role"] == "writer":
+            lease, reconstruction = _writer_lease(
+                old_owner, old_assignment, assignment, old_binding["writer_host"],
+                runtime, runtime_sha, head, metadata, lease_id, epoch,
+            )
+            metadata["writer_lease_reconstruction"] = reconstruction
+        else:
+            lease = {
+                **old_owner, "lease_id": lease_id, "ownership_epoch": epoch,
+                "gpu_uuid": assignment["gpu_uuid"], "root": {
+                    key: head[key] for key in (
+                        "artifact", "seal_sha256", "contract_sha256", "step", "epoch",
+                        "phase", "model_sha256", "training_state_sha256",
+                    )
+                },
+                "control_manifest_sha256": runtime_sha,
+            }
         owners[cell] = lease
         cells[cell] = {
             **metadata, "old_lease_sha256": digest(old_owner),
@@ -365,7 +594,7 @@ def prepare_transition(request_path):
         },
         "durable_recovery": {
             cell: cells[cell] for cell in sorted(changed)
-            if cells[cell]["evidence_kind"] == "worker-durable-recovery"
+            if cells[cell].get("historically_accepted") is False
         },
         "transition_kind": VERSION, "transition_cells": sorted(changed),
     }
@@ -595,7 +824,7 @@ def commit_transition(request_path, plan, fail_before_activation=False):
             }
             if plan["event"]["durable_recovery"]:
                 certificate["recovery"] = {
-                    "kind": "p5-xnode-durable-recovery-v1",
+                    "kind": "p5-ownership-durable-recovery-v1",
                     "cells": plan["event"]["durable_recovery"],
                 }
             commits = sorted((registry / "committed").glob("*.json"))
