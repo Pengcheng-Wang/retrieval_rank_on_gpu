@@ -89,6 +89,15 @@
     "publication_order": "canonical files first, activation manifest last",
     "committed_without_activation": "fenced"
   },
+  "selected_lineage_materialization": {
+    "runner": "scripts/letter/selected_lineage_materialize.py",
+    "request_kind": "p5-selected-lineage-materialization-request-v1",
+    "receipt_kind": "p5-selected-lineage-materialization-v1",
+    "deployment_kind": "p5-selected-lineage-deployment-v1",
+    "authority": "activated event plus exact transition plan and its receipt-verified durable evidence inventory",
+    "requirement": "materialize and verify both the resume root and its embedded selected_artifact before broker, guardian, or learner startup",
+    "selection_mutation": "forbidden"
+  },
   "restored_registry_ancestry": {
     "legacy_root": "the first restored receipt-valid certificate may anchor at any positive sequence only when previous_event_sha256 is null",
     "subsequent_certificates": "must increment sequence by exactly one and bind the exact previous event SHA-256",

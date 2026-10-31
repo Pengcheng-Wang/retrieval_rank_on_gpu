@@ -362,23 +362,56 @@ last-published activation manifest. It rejects committed-but-not-activated
 events, sequence mismatch, incomplete activation inventory, stale canonical
 bytes, a different runtime/proof/lease hash, or a release SHA mismatch.
 
-Before starting a worker guardian, archive its old `.xnode` and copy only the
-corresponding staged `registration.json` into a newly created `.xnode`.
-Registrations retain the unchanged control's five fields: `kind`,
-`writer_host`, `lease_sha256`, `event_sha256`, and
-`input_manifest_sha256`. Because node filesystems are separate, copy the
-activated canonical bindings, current certificate/runtime/proof and that
-worker's lease/root bundle to the same bound paths on the worker, verifying
-every hash from `activation/last-published.json`; materialize the staged root
-checkpoint, contract and pointer as the canonical local run root. Do not copy
-the writer's registry lock, intent, durable receipt authority, or another
-cell's registration. Start broker v3 first and guardians only after broker
-status reports the activated sequence.
+Before starting broker v3, inspect every activated resume root's sealed
+`selected_artifact`. The transition root is sufficient for optimizer
+continuation, but final testing still requires the exact earlier selected
+full-state checkpoint when it remains the frozen best model. Use
+`configs/letter-p5-selected-lineage-materialization-v1.example.json` and run
+the following separately on each owner host:
+
+```bash
+python -B scripts/letter/selected_lineage_materialize.py materialize \
+  --request "$PRIVATE_SELECTED_LINEAGE_REQUEST"
+
+python -B scripts/letter/selected_lineage_materialize.py verify \
+  --request "$PRIVATE_SELECTED_LINEAGE_REQUEST"
+```
+
+The request covers every transitioned cell and binds the activated event,
+broker release and exact verified v2 plan. Writer sources must be exact
+receipt-verified checkpoints listed in the plan's durable writer evidence;
+worker sources must be exact receipt- and package-sealed packages listed in
+the plan's durable worker evidence. The tool rechecks the source inventory,
+embedded contract, earliest-best validation lineage and root/selected
+full-state hashes, then atomically creates the canonical run with `latest.json`,
+`selected.json`, validation history and, for workers, only the activated
+five-field registration. It never changes `best_metric`, validation history,
+`selected_artifact`, ownership state, or durable evidence.
+
+Copy each host's `selected-lineage-receipt.json` to the writer and create the
+all-cell deployment receipt:
+
+```bash
+python -B scripts/letter/selected_lineage_materialize.py aggregate \
+  --request "$PRIVATE_SELECTED_LINEAGE_REQUEST" \
+  --receipt "$CELL_1_RECEIPT" --receipt "$CELL_2_RECEIPT" \
+  --output "$PRIVATE_SELECTED_LINEAGE_DEPLOYMENT"
+```
+
+Because node filesystems are separate, first copy the complete canonical file
+inventory named by `activation/last-published.json` to identical bound paths on
+the worker and verify every listed hash. This lets the unchanged full activation
+verifier reject a partial or mixed event even though only worker-owned run roots
+are materialized there. Do not copy the writer's registry lock, intent or
+durable receipt authority. Start broker v3 only after every owner-host
+verification and the exact all-cell aggregate pass. Start guardians only after
+broker status reports the activated sequence.
 
 Stop on any ancestry/sequence mismatch, pending foreign intent, missing or
 partial full state, stale UUID, failed continuation/memory/geometry proof,
 epoch skip, changed role/host/index/batch/input/runtime source, certificate or
-receipt mismatch, partial cell set, stale canonical file, inherited transport
-state, or broker release mismatch. Never repair a stop by editing a lease,
-inventing a writer ledger, reusing an old registration/outbox, or resuming from
-weights alone.
+receipt mismatch, partial cell set, stale canonical file, absent or divergent
+selected-model lineage, inherited transport state, or broker release mismatch.
+Never repair a stop by editing a lease, resetting selection state, inventing a
+writer ledger, reusing an old registration/outbox, or resuming from weights
+alone.
