@@ -102,7 +102,11 @@ def _writer_root(evidence, old_lease):
     }, checkpoint, contract
 
 
-def _worker_root(evidence, old_lease, registry_event_sha256):
+def _worker_root(evidence, old_lease, registry_event_sha256, durable_root):
+    if evidence.get("kind") == "p5-uuid-reregistration-worker-durable-root-v2":
+        return _worker_durable_root(
+            evidence, old_lease, registry_event_sha256, durable_root,
+        )
     if (evidence.get("kind") != "p5-uuid-reregistration-worker-root-v2"
             or evidence.get("cell") != old_lease["cell"]):
         raise ValueError("Worker cells require accepted xnode ledger/package evidence")
@@ -115,6 +119,124 @@ def _worker_root(evidence, old_lease, registry_event_sha256):
         "accepted_record_sha256": digest(record),
         "package_seal_sha256": sha(package / "package-seal.json"),
     }, package / "checkpoint", contract
+
+
+def _worker_durable_root(evidence, old_lease, registry_event_sha256, durable_root):
+    required = {
+        "kind", "cell", "packages", "contract", "registry_event_sha256",
+        "destination_root", "selection", "successor",
+    }
+    if (set(evidence) != required
+            or evidence["cell"] != old_lease["cell"]
+            or evidence["registry_event_sha256"] != registry_event_sha256
+            or not isinstance(evidence["packages"], list)
+            or not evidence["packages"]):
+        raise ValueError("Durable worker recovery evidence is incomplete or event-stale")
+    destination = Path(evidence["destination_root"]).resolve()
+    durable_root = Path(durable_root).resolve()
+    if (not destination.is_absolute() or destination == durable_root
+            or not destination.is_relative_to(durable_root)):
+        raise ValueError("Durable recovery destination must be explicit")
+    packages = [Path(path).resolve() for path in evidence["packages"]]
+    if (len(packages) != len(set(packages))
+            or any(path.parent != destination for path in packages)):
+        raise ValueError("Durable recovery package destination binding differs")
+    entries = list(destination.iterdir())
+    inventory = sorted(path.resolve() for path in entries)
+    if (inventory != sorted(packages)
+            or any(path.is_symlink() or not path.is_dir() for path in entries)):
+        raise ValueError("Durable recovery destination inventory is incomplete or unlisted")
+
+    head = {**old_lease["root"], "generation": 0, "envelope_sha256": None}
+    verified = []
+    contract = Path(evidence["contract"])
+    if (sha(contract) != old_lease["contract_file_sha256"]
+            or digest(read(contract)) != old_lease["root"]["contract_sha256"]):
+        raise ValueError("Durable recovery scientific contract changed")
+    for package in packages:
+        if not (package / "bank-receipt.json").is_file():
+            raise ValueError("Durable recovery package has no bank receipt")
+        marker = read(package / "package-seal.json")
+        package_files = v1._file_manifest(
+            package, {"package-seal.json", "bank-receipt.json"},
+        )
+        if (marker.get("kind") != "p5-xnode-package-v1"
+                or marker.get("status") != "sealed"
+                or set(package_files) != v1.PACKAGE_FILES
+                or marker.get("files") != package_files):
+            raise ValueError("Durable recovery package is incomplete or changed")
+        header = v1._checkpoint_header(package / "checkpoint")
+        envelope = read(package / "envelope.json")
+        if any(
+            envelope.get("checkpoint", {}).get(key) != value
+            for key, value in header.items() if key != "artifact"
+        ):
+            raise ValueError("Durable recovery envelope differs from full state")
+        if (digest(read(package / "scientific-contract.json"))
+                != header["contract_sha256"]
+                or sha(package / "execution-attestation.json")
+                != envelope.get("execution_attestation_sha256")):
+            raise ValueError("Durable recovery contract or attestation differs")
+        attestation = read(package / "execution-attestation.json")
+        if (attestation.get("lease_sha256") != digest(old_lease)
+                or attestation.get("host") != old_lease["owner_node"]
+                or attestation.get("gpu") != old_lease["gpu"]
+                or attestation.get("purpose") != "production"
+                or attestation.get("root_checkpoint_seal_sha256")
+                != old_lease["root"]["seal_sha256"]
+                or attestation.get("scientific_contract_rewritten") is not False):
+            raise ValueError("Durable package execution provenance differs")
+        receipt = read(package / "bank-receipt.json")
+        actual = v1._file_manifest(package, {"bank-receipt.json"})
+        if receipt != {"files": actual}:
+            raise ValueError("Durable package receipt inventory differs")
+        head = v1._validate_envelope(envelope, old_lease, head)
+        if envelope["generation"] != len(verified) + 1:
+            raise ValueError("Durable recovery chain has a generation gap")
+        verified.append({
+            "path": str(package), "generation": envelope["generation"],
+            "checkpoint_seal_sha256": envelope["checkpoint"]["seal_sha256"],
+            "package_seal_sha256": sha(package / "package-seal.json"),
+            "bank_receipt_sha256": sha(package / "bank-receipt.json"),
+        })
+
+    selection = evidence["selection"]
+    if not isinstance(selection, dict) or selection.get("policy") not in {
+        "latest", "intentional_rollback",
+    }:
+        raise ValueError("Durable recovery selection policy is invalid")
+    highest = verified[-1]["generation"]
+    chosen_generation = selection.get("generation", highest)
+    if type(chosen_generation) is not int or chosen_generation < 1 or chosen_generation > highest:
+        raise ValueError("Durable recovery generation selection is invalid")
+    if selection["policy"] == "latest" and chosen_generation != highest:
+        raise ValueError("A lower durable root requires explicit intentional rollback")
+    if (selection["policy"] == "intentional_rollback"
+            and (chosen_generation == highest
+                 or not isinstance(selection.get("reason"), str)
+                 or not selection["reason"].strip())):
+        raise ValueError("Intentional rollback requires a lower generation and reason")
+    chosen_package = packages[chosen_generation - 1]
+    chosen = read(chosen_package / "envelope.json")["checkpoint"]
+    abandoned = verified[chosen_generation:]
+    successor = evidence["successor"]
+    if successor is not None and not isinstance(successor, dict):
+        raise ValueError("Optional successor observation must be an object")
+    metadata = {
+        "evidence_kind": "worker-durable-recovery",
+        "recovery_kind": "p5-xnode-durable-recovery-v1",
+        "authority": "receipt-verified-durable-packages-not-historical-acceptance",
+        "historically_accepted": False,
+        "registry_event_sha256": registry_event_sha256,
+        "destination_root": str(destination),
+        "selection_policy": selection["policy"],
+        "chosen_generation": chosen_generation,
+        "chosen_checkpoint_seal_sha256": chosen["seal_sha256"],
+        "verified_packages": verified,
+        "abandoned_verified_packages": abandoned,
+        "successor_observation": successor,
+    }
+    return chosen, metadata, chosen_package / "checkpoint", contract
 
 
 def _aggregate_proof(request, bindings, owners, heads, runtime_sha):
@@ -195,6 +317,7 @@ def prepare_transition(request_path):
         else:
             head, metadata, checkpoint, contract = _worker_root(
                 request["evidence"][cell], old_owner, certificate["event_sha256"],
+                new_binding["durable_root"],
             )
         proof = v1._validate_proof(
             request["proofs"][cell], cell, old_owner, assignment, head,
@@ -240,6 +363,10 @@ def prepare_transition(request_path):
         "replacement_proofs_sha256": {
             cell: sha(request["proofs"][cell]) for cell in sorted(changed)
         },
+        "durable_recovery": {
+            cell: cells[cell] for cell in sorted(changed)
+            if cells[cell]["evidence_kind"] == "worker-durable-recovery"
+        },
         "transition_kind": VERSION, "transition_cells": sorted(changed),
     }
     return {
@@ -249,7 +376,7 @@ def prepare_transition(request_path):
         "runtime_manifest_sha256": runtime_sha, "aggregate_proof": proof,
         "event": event, "event_sha256": event_sha(event),
         "runtime_source_directory": str(Path(request["runtime_template"]).parent),
-        "publication_generation_policy": "reset-to-zero-at-verified-old-accepted-head",
+        "publication_generation_policy": "reset-to-zero-at-verified-selected-root",
     }
 
 
@@ -466,6 +593,11 @@ def commit_transition(request_path, plan, fail_before_activation=False):
                 "bank_receipt_sha256": digest(receipt),
                 "transition_plan_sha256": digest(plan),
             }
+            if plan["event"]["durable_recovery"]:
+                certificate["recovery"] = {
+                    "kind": "p5-xnode-durable-recovery-v1",
+                    "cells": plan["event"]["durable_recovery"],
+                }
             commits = sorted((registry / "committed").glob("*.json"))
             certificate_path = (
                 registry / "committed"

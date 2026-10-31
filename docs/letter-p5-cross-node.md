@@ -190,11 +190,83 @@ complete registry, the exact transition set, the unchanged runtime template,
 replacement-GPU receipts and role-specific root evidence. Writer cells use
 ordinary P5 full-state bank checkpoints plus their verified bank
 acknowledgments and receipts. Worker cells use the highest accepted xnode
-ledger head plus its complete package and acknowledgment. Never construct a
-synthetic writer xnode ledger.
+ledger head plus its complete package and acknowledgment, or the distinct
+`p5-uuid-reregistration-worker-durable-root-v2` recovery evidence described
+below. Never construct a synthetic writer xnode ledger.
+
+### Receipt-verified worker durable recovery
+
+An unacknowledged successor does not prove its parent was historically
+accepted: workers can publish multiple generations before receiving any
+acknowledgment. When the accepted ledger is missing or behind but complete
+Gen2 packages and their writer-created bank receipts survive, use
+`p5-uuid-reregistration-worker-durable-root-v2`. This mode is explicitly
+`p5-xnode-durable-recovery-v1`, not accepted-ledger reconstruction.
+
+The evidence binds the certified old registry event, old lease, durable
+destination root, unchanged contract, exact package inventory, selection
+policy and optional successor observation. Starting at the certified lease
+root, validation requires generation 1..N with no gaps, exact parent seals,
+legal step/epoch/phase transitions, production envelopes owned by the exact
+old lease/event, complete package seals, and exact bank-receipt inventories.
+Unlisted package directories, missing receipts, partial packages, mixed
+leases, divergent parents, changed destinations or foreign events fail
+closed. The old accepted ledger is neither read as authority nor written.
+
+The default selected root is the highest fully receipt-verified contiguous
+package. Selecting a lower generation requires
+`selection.policy=intentional_rollback`, an explicit reason, and records every
+newer verified package as abandoned. A successor observation is optional and
+is recorded only as non-authoritative evidence; it never upgrades a package
+to historical acceptance. The ownership event and certificate label the
+chosen root as receipt-verified durable recovery with
+`historically_accepted=false`. The replacement lease still starts publication
+generation zero at that chosen root and requires the same deterministic
+replacement-GPU continuation, optimizer-memory and 20-beam proofs.
+
+### Replacement-GPU proof runner
+
+Generate each private `p5-replacement-gpu-proof-v1` with
+`replacement_gpu_proof.py`. Its request binds one cell to the chosen
+complete checkpoint, unchanged contract, current host/physical index/UUID,
+preserved microbatch, and exact anchored `native`, `upstream`, `manifest`,
+`recipe`, `model`, `corpus`, and frozen `runtime` inputs. Each input entry has
+`path`, `anchor`, and `anchor_sha256`; the runtime anchor must be the exact
+`p5_run.py`. `contract_sha256` is the file SHA-256, while the checkpoint seal
+must independently bind the canonical JSON contract digest.
+Use `configs/letter-p5-replacement-gpu-proof-request-v1.example.json` as the
+field-complete template and replace every `PRIVATE_*` value.
+
+The output must be a new child below the private binding's
+`control_root/gates`; an existing attempt or any production-run path is
+rejected. The runner does not save, advance, or publish a production run. It
+constructs two independent models and full optimizer/scheduler/sampler
+contexts, cold-loads the same sealed root into each, and verifies bitwise
+model, optimizer, scheduler, sampler, all RNG, training, and validation state.
+Before each continuation it restores that copy's checkpoint RNG, then requires
+identical next sampled indices/rows, loss, optimizer update, and resulting
+state. It also requires populated finite optimizer moments and executes actual
+20-return beam generation, including completion of the longest catalog path.
+
+Run only on the privately bound replacement node/GPU:
+
+```bash
+CUDA_VISIBLE_DEVICES="$PHYSICAL_GPU_INDEX" \
+python -B scripts/letter/replacement_gpu_proof.py \
+  --request "$PRIVATE_REPLACEMENT_PROOF_REQUEST"
+```
+
+Use the emitted
+`$CONTROL_ROOT/gates/<fresh-attempt>/p5-replacement-gpu-proof.json` as that
+cell's `proofs` entry in the v2 transition request. Stop without preparing the
+transition on any changed input anchor, checkpoint/contract mismatch,
+host/index/UUID mismatch, absent optimizer memory, continuation difference,
+incomplete beam geometry, or pre-existing attempt directory. CPU unit tests
+exercise orchestration and failure behavior only; they never substitute for
+this bound CUDA receipt.
 
 Preparation verifies registry ancestry and sequence, rejects pending foreign
-intent, and selects each role's latest receipt-bound full-state head. It keeps
+intent, and selects each role's authorized receipt-bound full-state head. It keeps
 the scientific contract, input manifest, control/state source hashes,
 host/index and batch geometry unchanged. It precomputes a new runtime manifest
 at stable canonical paths, binds its SHA-256 into every transitioned lease,
