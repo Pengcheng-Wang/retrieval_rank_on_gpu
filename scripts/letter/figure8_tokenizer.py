@@ -98,9 +98,10 @@ def validate_arm_launch_spec(spec: dict, expected: dict, arm: str) -> dict:
         "embedding_receipt":
             root / "embeddings-openllama-v2-v1" / "Instruments"
             / "embedding-receipt.json",
-        "cf":
-            root / "runs" / "Instruments-cf-bce-s42"
-            / "item-embeddings.pt",
+    }
+    cf_paths = {
+        root / parent / "Instruments-cf-bce-s42" / "item-embeddings.pt"
+        for parent in ("runs", "incoming")
     }
     if (not root.is_absolute()
             or root.parent != PurePosixPath("/scratch")
@@ -109,6 +110,9 @@ def validate_arm_launch_spec(spec: dict, expected: dict, arm: str) -> dict:
             or not re.fullmatch(r"node-\d+", spec["host"])
             or type(spec["gpu"]) is not int
             or spec["gpu"] < 0
+            or not isinstance(spec["cf"], str)
+            or PurePosixPath(spec["cf"]) not in cf_paths
+            or PurePosixPath(spec["cf"]).as_posix() != spec["cf"]
             or any(
                 not isinstance(spec[name], str)
                 or PurePosixPath(spec[name]) != path

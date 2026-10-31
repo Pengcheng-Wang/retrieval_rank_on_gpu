@@ -211,6 +211,36 @@ def test_real_levels2_operational_spec_projects_to_frozen_science():
         )
 
 
+def test_real_alpha_operational_spec_accepts_pinned_incoming_teacher_path():
+    plan = module().load_plan(
+        ROOT / "configs" / "letter-figure8-tokenizer-v2.json"
+    )
+    expected = module().arm_tokenizer_spec(plan, "alpha-0p001")
+    spec = {
+        **expected,
+        "cf": "/scratch/letter_fixture/incoming/Instruments-cf-bce-s42/item-embeddings.pt",
+        "checkpoint_every": 500,
+        "control": "/scratch/letter_fixture/figure8-sweeps-v1/control",
+        "embedding_receipt":
+            "/scratch/letter_fixture/embeddings-openllama-v2-v1/Instruments/embedding-receipt.json",
+        "gpu": 0,
+        "host": "node-0",
+        "kind": "figure8-one-factor-tokenizer-v1",
+        "manifest":
+            "/scratch/letter_fixture/figure8-sweeps-v1/control/configs/letter-reproduction-v1.json",
+        "method_spec":
+            "/scratch/letter_fixture/figure8-sweeps-v1/control/configs/letter-openllama-v2-method-v1.json",
+        "output": "/scratch/letter_fixture/figure8-sweeps-v1/runs/alpha-0p001",
+        "root": "/scratch/letter_fixture",
+        "semantic":
+            "/scratch/letter_fixture/embeddings-openllama-v2-v1/Instruments/embeddings.npy",
+    }
+
+    assert module().validate_arm_launch_spec(
+        spec, expected, "alpha-0p001",
+    ) == expected
+
+
 def test_real_levels2_bundle_config_requires_normalized_provenance():
     plan = module().load_plan(
         ROOT / "configs" / "letter-figure8-tokenizer-v1.json"
