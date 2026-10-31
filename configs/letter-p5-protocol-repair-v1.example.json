@@ -1,0 +1,25 @@
+{
+  "kind": "p5-protocol-repair-request-v1",
+  "parent_event_sha256": "PRIVATE_ACTIVATED_PARENT_EVENT_SHA256",
+  "parent_plan": "PRIVATE_ABSOLUTE_VERIFIED_PARENT_V2_PLAN",
+  "active_cells": [
+    "PRIVATE_ACTIVE_CELL_A",
+    "PRIVATE_ACTIVE_CELL_B"
+  ],
+  "new_bindings": "PRIVATE_ABSOLUTE_PROTOCOL_REPAIR_BINDINGS_JSON",
+  "registry": "PRIVATE_ABSOLUTE_OWNERSHIP_REGISTRY",
+  "runtime_template": "PRIVATE_ABSOLUTE_RUNTIME_V3/runtime-template.json",
+  "broker_release": "PRIVATE_ABSOLUTE_BROKER_V4/broker-release.json",
+  "broker_validation": "PRIVATE_ABSOLUTE_BROKER_V4/broker-validation.json",
+  "selected_lineage_evidence": "PRIVATE_ABSOLUTE_RECEIPT_VERIFIED_SELECTED_LINEAGE_PACKET",
+  "selected_readmission": "PRIVATE_ABSOLUTE_LOCAL_REPAIR/selected-readmission.json",
+  "readmission_durable_root": "PRIVATE_ABSOLUTE_DURABLE_ROOT/selected-readmission-v1/PRIVATE_ATTEMPT",
+  "proofs": {
+    "PRIVATE_ACTIVE_CELL_A": "PRIVATE_ABSOLUTE_REPLACEMENT_GPU_PROOF_A",
+    "PRIVATE_ACTIVE_CELL_B": "PRIVATE_ABSOLUTE_REPLACEMENT_GPU_PROOF_B"
+  },
+  "lease_ids": {
+    "PRIVATE_ACTIVE_CELL_A": "00000000000000000000000000000000",
+    "PRIVATE_ACTIVE_CELL_B": "11111111111111111111111111111111"
+  }
+}

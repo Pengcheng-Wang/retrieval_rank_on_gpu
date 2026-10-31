@@ -441,7 +441,7 @@ def verify_selected_lineage(request_path):
     return {"status": "verified", "host": host, "cells": local_cells}
 
 
-def aggregate_selected_lineage(request_path, receipt_paths, output):
+def selected_lineage_deployment(request_path, receipt_paths):
     request_path, request, plan_path, plan, xroot = _authority(request_path)
     expected_cells = set(plan["event"]["transition_cells"])
     receipts = {}
@@ -506,6 +506,11 @@ def aggregate_selected_lineage(request_path, receipt_paths, output):
         "transition_plan_sha256": p5_source.sha256(plan_path),
         "cells": {cell: receipts[cell] for cell in sorted(receipts)},
     }
+    return deployment
+
+
+def aggregate_selected_lineage(request_path, receipt_paths, output):
+    deployment = selected_lineage_deployment(request_path, receipt_paths)
     _write(output, deployment)
     return deployment
 

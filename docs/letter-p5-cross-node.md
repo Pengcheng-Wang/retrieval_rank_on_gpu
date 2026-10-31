@@ -407,6 +407,64 @@ durable receipt authority. Start broker v3 only after every owner-host
 verification and the exact all-cell aggregate pass. Start guardians only after
 broker status reports the activated sequence.
 
+### Protocol repair after an incompatible activated release
+
+An activated event is not deployable merely because its hashes are internally
+consistent. Before process startup, execute the actual broker and worker
+transport APIs against the staged lease shape. If the activated broker expects
+dynamic bindings while the staged worker protocol has static owner/root
+constants, or if the worker protocol rejects the recovered epoch/root, keep all
+processes stopped. Do not insert a runtime monkeypatch or edit activated bytes.
+
+Use `configs/letter-p5-protocol-repair-v1.example.json` with
+`scripts/letter/p5_protocol_repair.py` to create a new ownership epoch under a
+reviewed runtime and broker release while retaining the exact scientific
+checkpoint roots, host/index/UUID assignments, contracts and inputs:
+
+```bash
+python -B scripts/letter/p5_protocol_repair.py draft \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST" --output "$PRIVATE_REPAIR_DRAFT"
+
+python -B scripts/letter/p5_protocol_repair.py build-readmission \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST"
+
+python -B scripts/letter/p5_protocol_repair.py prepare \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST" --output "$PRIVATE_REPAIR_PLAN"
+
+python -B scripts/letter/p5_protocol_repair.py verify \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST" --plan "$PRIVATE_REPAIR_PLAN"
+
+python -B scripts/letter/p5_protocol_repair.py commit \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST" --plan "$PRIVATE_REPAIR_PLAN"
+```
+
+The repair must cover exactly the parent event's active transition cells.
+Every active lease gets epoch `parent+1`, a fresh lease ID and the new runtime
+manifest hash; GPU UUID, host, index, batch geometry, root and scientific
+contract remain exact. Inactive owners remain byte-identical and are excluded
+from broker service through the event's exact `active_cells` fence. The repaired
+runtime manifest also binds the restored ownership-registry path explicitly;
+broker v4 must not silently fall back to an empty `XROOT/ownership` directory.
+
+When a recovered root still names an older validation-selected checkpoint, the
+tool creates a separate receipt-verified selected-only package under the new
+lease. Its attestation says `historically_accepted=false`, uses the lease root
+only as context, carries no normal generation or parent-seal claim, and is
+never placed in the outbox, accepted ledger, head pointer or ordinary ack
+directory. Broker v4 may issue the distinct
+`p5-xnode-selected-readmission-ack-v1` only for that exact event-bound
+selection. Normal checkpoints still require ordinary accepted-chain evidence.
+
+Protocol-repair activation v2 binds the new certificate/runtime/proof/bindings,
+all active leases and unchanged roots, clean worker registrations and the
+selected-readmission authority. It preserves the prior activation as immutable
+evidence and publishes the new activation last. An interrupted commit remains
+fenced. Re-running `commit` with the identical plan idempotently recovers the
+prepared-intent, durable-event and committed-certificate crash windows and
+restages canonical files; after a complete stage, `activate` requires the exact
+plan digest and certificate hash. Stale, foreign or partial staging cannot be
+blessed.
+
 Stop on any ancestry/sequence mismatch, pending foreign intent, missing or
 partial full state, stale UUID, failed continuation/memory/geometry proof,
 epoch skip, changed role/host/index/batch/input/runtime source, certificate or

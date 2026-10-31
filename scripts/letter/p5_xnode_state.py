@@ -175,7 +175,7 @@ def validate_runtime_paths(value):
         if field in value and _absolute_path(value[field]) != expected:
             raise ValueError("Runtime paths differ from explicit private bindings")
     for field in ("base", "input_manifest", "maintenance_manifest", "maintenance_proof",
-                  "crossnode_proof", "ownership_certificate"):
+                  "crossnode_proof", "ownership_certificate", "ownership_registry"):
         if field in value:
             require_path(value[field])
 
@@ -580,8 +580,58 @@ def make_ack(package, lease, receipt, destination, registry_event_sha256):
     }
 
 
+def validate_selected_readmission_ack(ack, lease, checkpoint):
+    configuration()
+    readmission = ack.get("readmission")
+    if (ack.get("kind") != "p5-xnode-selected-readmission-ack-v1"
+            or ack.get("status") != "verified"
+            or ack.get("writer_host") != _BINDINGS["WRITER_HOST"]
+            or ack.get("cell") != lease["cell"]
+            or ack.get("lease_id") != lease["lease_id"]
+            or ack.get("lease_sha256") != digest(lease)
+            or ack.get("ownership_epoch") != lease["ownership_epoch"]
+            or ack.get("checkpoint") != checkpoint
+            or not isinstance(ack.get("destination"), str)
+            or not ack["destination"]
+            or digest(ack.get("bank_receipt")) != ack.get("bank_receipt_sha256")
+            or not isinstance(readmission, dict)
+            or set(readmission) != {
+                "kind", "historically_accepted", "wire_generation",
+                "root_seal_sha256", "source_event_sha256",
+                "selected_lineage_deployment_sha256", "package_seal_sha256",
+            }
+            or readmission.get("kind") != "p5-selected-lineage-readmission-v1"
+            or readmission.get("historically_accepted") is not False
+            or readmission.get("wire_generation") != 0
+            or readmission.get("root_seal_sha256") != lease["root"]["seal_sha256"]
+            or any(
+                not isinstance(readmission.get(name), str)
+                or not re.fullmatch(r"[0-9a-f]{64}", readmission[name])
+                for name in (
+                    "source_event_sha256", "selected_lineage_deployment_sha256",
+                    "package_seal_sha256",
+                )
+            )):
+        raise ValueError("Selected checkpoint readmission is not exact or explicitly nonhistorical")
+    receipt = ack["bank_receipt"]
+    files = receipt.get("files", {})
+    if set(files) != PACKAGE_FILES | {"package-seal.json"}:
+        raise ValueError("Selected checkpoint readmission omits native state files")
+    expected = {
+        "checkpoint/model.safetensors": checkpoint["model_sha256"],
+        "checkpoint/training-state.pt": checkpoint["training_state_sha256"],
+        "checkpoint/p5-seal.json": checkpoint["seal_sha256"],
+        "package-seal.json": readmission["package_seal_sha256"],
+    }
+    if any(files[name]["sha256"] != value for name, value in expected.items()):
+        raise ValueError("Selected checkpoint readmission contains different state")
+    return True
+
+
 def validate_ack(ack, lease, checkpoint):
     configuration()
+    if ack.get("kind") == "p5-xnode-selected-readmission-ack-v1":
+        return validate_selected_readmission_ack(ack, lease, checkpoint)
     if (ack.get("kind") != "p5-xnode-bank-ack-v1" or ack.get("status") != "verified"
             or ack.get("writer_host") != _BINDINGS["WRITER_HOST"] or ack.get("cell") != lease["cell"]
             or ack.get("lease_id") != lease["lease_id"] or ack.get("lease_sha256") != digest(lease)

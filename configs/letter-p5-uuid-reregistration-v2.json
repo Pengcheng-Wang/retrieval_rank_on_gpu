@@ -98,6 +98,15 @@
     "requirement": "materialize and verify both the resume root and its embedded selected_artifact before broker, guardian, or learner startup",
     "selection_mutation": "forbidden"
   },
+  "protocol_repair": {
+    "runner": "scripts/letter/p5_protocol_repair.py",
+    "request_kind": "p5-protocol-repair-request-v1",
+    "transition_kind": "p5-protocol-repair-v1",
+    "broker_release": "p5-xnode-broker-v4",
+    "activation_kind": "p5-xnode-activation-v2",
+    "purpose": "replace an incompatible frozen transport/runtime while preserving exact scientific roots and physical GPU bindings",
+    "selected_readmission": "explicit nonhistorical selected-only evidence; never an accepted-ledger generation"
+  },
   "restored_registry_ancestry": {
     "legacy_root": "the first restored receipt-valid certificate may anchor at any positive sequence only when previous_event_sha256 is null",
     "subsequent_certificates": "must increment sequence by exactly one and bind the exact previous event SHA-256",

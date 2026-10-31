@@ -105,6 +105,19 @@ def validate_broker_v3_release(release):
     return release
 
 
+def validate_broker_v4_release(release):
+    if (not isinstance(release, dict)
+            or set(release) != {"kind", "files_sha256", "runtime_manifest_sha256"}
+            or release.get("kind") != "p5-xnode-broker-v4"
+            or set(release.get("files_sha256", {})) != {
+                "p5_xnode_broker.py", "p5_xnode_state.py", "p5_xnode_adopt.py",
+            }):
+        raise ValueError(
+            "Broker v4 release must avoid authority hash cycles and bind only source/runtime"
+        )
+    return release
+
+
 def load_registry(directory):
     state.configuration()
     state.require_path(directory)
@@ -113,16 +126,22 @@ def load_registry(directory):
     if not commits:
         raise ValueError("No committed ownership; pending handoff is fenced, never defaulted to the writer")
     previous, latest = None, None
-    previous_sequence, sequenced = 0, False
-    for path in commits:
+    previous_sequence, sequenced = None, False
+    for index, path in enumerate(commits):
         certificate = state.read(path)
         event = certificate["event"]
         receipt = certificate["bank_receipt"]
         sequence = event.get("sequence")
-        valid_sequence = (
-            sequence is None and not sequenced
-            or type(sequence) is int and sequence == previous_sequence + 1
-        )
+        if sequence is None:
+            valid_sequence = not sequenced
+        elif type(sequence) is int and sequence > 0:
+            valid_sequence = (
+                index == 0 and previous is None and event.get("previous_event_sha256") is None
+                or not sequenced and sequence == 1
+                or sequenced and sequence == previous_sequence + 1
+            )
+        else:
+            valid_sequence = False
         if (event.get("kind") != "p5-xnode-ownership-v1" or event.get("status") != "committed"
                 or set(event.get("owners", {})) != state.ALL_CELLS
                 or event.get("previous_event_sha256") != previous
@@ -142,20 +161,41 @@ def load_registry(directory):
     return latest
 
 
-def activated_current(directory, broker_release_sha256):
+def active_owners(certificate):
+    event = certificate["event"]
+    active = event.get("active_cells")
+    if (not isinstance(active, list)
+            or not active
+            or active != sorted(active)
+            or len(active) != len(set(active))
+            or active != event.get("transition_cells")
+            or active != event.get("selected_lineage_deployment", {}).get("cells")
+            or not set(active).issubset(event.get("owners", {}))):
+        raise ValueError("Broker v4 event does not define exact active recovery cells")
+    return [(cell, event["owners"][cell]) for cell in active]
+
+
+def activated_current(directory, broker_release_sha256, registry=None):
     state.configuration()
     directory = Path(directory)
-    certificate = load_registry(directory / "ownership")
+    certificate = load_registry(
+        directory / "ownership" if registry is None else registry
+    )
     activation_path = directory / "activation" / "last-published.json"
     if not activation_path.is_file():
         raise ValueError("Committed ownership is not activated")
     activation = state.read(activation_path)
     event = certificate["event"]
+    repair = event.get("transition_kind") == "p5-protocol-repair-v1"
+    if repair:
+        active_owners(certificate)
     expected = {
         "current/ownership-certificate.json", "current/runtime-manifest.json",
         "current/crossnode-proof.json", "current/bindings.json",
         "current/p5_xnode_control.py", "current/p5_xnode_state.py",
     }
+    if repair:
+        expected.add("current/selected-lineage-readmission.json")
     for cell in event.get("transition_cells", []):
         expected.update({
             "/".join(("leases", cell + ".json")),
@@ -167,11 +207,15 @@ def activated_current(directory, broker_release_sha256):
         })
         if event["owners"][cell]["owner_node"] != state.WRITER_HOST:
             expected.add("/".join(("worker-bootstrap", cell, ".xnode", "registration.json")))
-    if (activation.get("kind") != "p5-xnode-activation-v1"
+    if (activation.get("kind") != (
+            "p5-xnode-activation-v2" if repair else "p5-xnode-activation-v1"
+    )
             or activation.get("status") != "activated"
             or activation.get("sequence") != event.get("sequence")
             or activation.get("event_sha256") != certificate["event_sha256"]
             or activation.get("broker_release_sha256") != broker_release_sha256
+            or repair and activation.get("parent_activation_sha256")
+            != event.get("parent_activation_sha256")
             or event.get("broker_release_sha256") != broker_release_sha256
             or set(activation.get("files_sha256", {})) != expected):
         raise ValueError("activation does not authorize the current committed certificate")
@@ -196,6 +240,10 @@ def activated_current(directory, broker_release_sha256):
                     directory / "current" / "runtime-manifest.json"
                 )):
             raise ValueError("Activated lease differs from the current certificate")
+    if repair and state.sha(
+        directory / "current" / "selected-lineage-readmission.json"
+    ) != event.get("selected_lineage_readmission_sha256"):
+        raise ValueError("Selected-lineage readmission authority differs")
     return certificate
 
 
@@ -250,6 +298,128 @@ def find_accepted_ack(directory, lease, seal_sha256):
         if record["envelope"]["checkpoint"]["seal_sha256"] == seal_sha256:
             return record["ack"]
     raise ValueError("Requested checkpoint has not been durably accepted in this owner lineage")
+
+
+def selected_readmission_ack(directory, certificate, lease, checkpoint):
+    state.configuration()
+    authority_path = Path(directory) / "current" / "selected-lineage-readmission.json"
+    state.require_path(authority_path)
+    authority = state.read(authority_path)
+    event = certificate["event"]
+    cells = authority.get("cells", {})
+    entry = cells.get(lease["cell"])
+    active_workers = {
+        cell for cell, owner in active_owners(certificate)
+        if owner["owner_node"] == state.WORKER_HOST
+    }
+    if (authority.get("kind") != "p5-selected-lineage-readmission-v1"
+            or authority.get("status") != "verified"
+            or authority.get("parent_event_sha256") != event["previous_event_sha256"]
+            or authority.get("selected_lineage_deployment_sha256")
+            != event["selected_lineage_deployment"]["sha256"]
+            or set(cells) != active_workers
+            or not isinstance(entry, dict)
+            or entry.get("historically_accepted") is not False
+            or entry.get("lease_sha256") != state.digest(lease)
+            or entry.get("root_seal_sha256") != lease["root"]["seal_sha256"]
+            or entry.get("selected") != checkpoint):
+        raise ValueError("Selected-lineage readmission authority differs")
+    package = Path(entry["package"]).resolve()
+    destination = Path(entry["destination"]).resolve()
+    state.require_path(package)
+    state.require_path(destination, durable=True)
+    if (package.is_symlink() or destination.is_symlink()
+            or state.sha(package / "package-seal.json")
+            != entry.get("package_seal_sha256")
+            or state.sha(destination / "bank-receipt.json")
+            != entry.get("bank_receipt_sha256")):
+        raise ValueError("Selected-lineage readmission package identity differs")
+    envelope = state.verify_package(package)
+    receipt = state.read(destination / "bank-receipt.json")
+    source_files = state.file_manifest(package)
+    durable_files = state.file_manifest(destination, {"bank-receipt.json"})
+    if receipt != {"files": durable_files} or source_files != durable_files:
+        raise ValueError("Selected-lineage readmission durable receipt differs")
+    if (envelope.get("kind") != "p5-xnode-selected-readmission-v1"
+            or envelope.get("purpose") != "production"
+            or envelope.get("wire_generation") != 0
+            or "generation" in envelope
+            or "parent_seal_sha256" in envelope
+            or envelope.get("cell") != lease["cell"]
+            or envelope.get("lease_sha256") != state.digest(lease)
+            or envelope.get("lease_id") != lease["lease_id"]
+            or envelope.get("ownership_epoch") != lease["ownership_epoch"]
+            or envelope.get("owner_node") != state.WORKER_HOST
+            or envelope.get("gpu") != lease["gpu"]
+            or envelope.get("root_seal_sha256") != lease["root"]["seal_sha256"]
+            or envelope.get("checkpoint") != checkpoint
+            or envelope.get("selected") != checkpoint):
+        raise ValueError("Selected-lineage readmission envelope differs")
+    attestation = state.read(package / "execution-attestation.json")
+    if (attestation.get("kind") != "p5-selected-lineage-readmission-attestation-v1"
+            or attestation.get("historically_accepted") is not False
+            or attestation.get("source_event_sha256") != event["previous_event_sha256"]
+            or attestation.get("selected_lineage_deployment_sha256")
+            != event["selected_lineage_deployment"]["sha256"]
+            or attestation.get("lease_sha256") != state.digest(lease)
+            or attestation.get("root_checkpoint_seal_sha256")
+            != lease["root"]["seal_sha256"]
+            or attestation.get("selected_checkpoint_seal_sha256")
+            != checkpoint["seal_sha256"]
+            or attestation.get("scientific_contract_rewritten") is not False):
+        raise ValueError("Selected-lineage readmission attestation differs")
+    return {
+        "kind": "p5-xnode-selected-readmission-ack-v1",
+        "status": "verified",
+        "writer_host": state.WRITER_HOST,
+        "cell": lease["cell"],
+        "lease_id": lease["lease_id"],
+        "lease_sha256": state.digest(lease),
+        "ownership_epoch": lease["ownership_epoch"],
+        "registry_event_sha256": certificate["event_sha256"],
+        "checkpoint": checkpoint,
+        "destination": str(destination),
+        "bank_receipt": receipt,
+        "bank_receipt_sha256": state.digest(receipt),
+        "readmission": {
+            "kind": "p5-selected-lineage-readmission-v1",
+            "historically_accepted": False,
+            "wire_generation": 0,
+            "root_seal_sha256": lease["root"]["seal_sha256"],
+            "source_event_sha256": event["previous_event_sha256"],
+            "selected_lineage_deployment_sha256":
+                event["selected_lineage_deployment"]["sha256"],
+            "package_seal_sha256": entry["package_seal_sha256"],
+        },
+    }
+
+
+def selection_ack(directory, certificate, ledger, lease, selected):
+    try:
+        ack = find_accepted_ack(ledger, lease, selected["seal_sha256"])
+    except ValueError:
+        ack = selected_readmission_ack(directory, certificate, lease, selected)
+    if ack["checkpoint"] != selected:
+        raise ValueError("Selected checkpoint differs from accepted/readmitted authority")
+    return ack
+
+
+def final_test_ack(directory, certificate, ledger, lease, request, frozen_envelope):
+    try:
+        ack = find_accepted_ack(
+            ledger, lease, request["checkpoint_seal_sha256"],
+        )
+    except ValueError:
+        selected = frozen_envelope.get("selected")
+        if (not selected
+                or selected["seal_sha256"] != request["checkpoint_seal_sha256"]):
+            return None
+        ack = selected_readmission_ack(directory, certificate, lease, selected)
+    if ack["checkpoint"] not in (
+        frozen_envelope["checkpoint"], frozen_envelope["selected"],
+    ):
+        raise ValueError("Final-test request differs from the frozen selection")
+    return ack
 
 
 def remote_inventory(lease_path):
@@ -353,14 +523,18 @@ class Broker:
         if Path(directory).resolve() != state.XROOT:
             raise ValueError("Broker directory differs from private control-root bindings")
         self.directory = Path(directory)
-        self.registry = self.directory / "ownership"
         self.runtime_manifest = Path(runtime_manifest)
         self.config = state.read(runtime_manifest)
         state.validate_runtime_paths(self.config)
+        self.registry = Path(
+            self.config.get("ownership_registry", self.directory / "ownership")
+        )
+        state.require_path(self.registry, writable=True)
         release_path = Path(__file__).parent / "broker-release.json"
         release = state.read(release_path)
         if (release.get("kind") not in {
                 "p5-xnode-broker-v1", "p5-xnode-broker-v2", "p5-xnode-broker-v3",
+                "p5-xnode-broker-v4",
         }
                 or set(release["files_sha256"]) != {
                     "p5_xnode_broker.py", "p5_xnode_state.py", "p5_xnode_adopt.py"}):
@@ -383,6 +557,10 @@ class Broker:
             validate_broker_v3_release(release)
             if release["files_sha256"]["p5_xnode_state.py"] != self.config["files_sha256"]["p5_xnode_state.py"]:
                 raise ValueError("Broker and worker must share the exact protocol")
+        elif release["kind"] == "p5-xnode-broker-v4":
+            validate_broker_v4_release(release)
+            if release["files_sha256"]["p5_xnode_state.py"] != self.config["files_sha256"]["p5_xnode_state.py"]:
+                raise ValueError("Broker and worker must share the exact protocol")
         elif release["files_sha256"]["p5_xnode_state.py"] != self.config["files_sha256"]["p5_xnode_state.py"]:
             raise ValueError("Broker and worker must share the exact protocol")
         self.release_sha256 = state.sha(release_path)
@@ -398,10 +576,19 @@ class Broker:
     def current(self):
         release = state.read(Path(__file__).parent / "broker-release.json")
         certificate = (
-            activated_current(self.directory, self.release_sha256)
-            if release["kind"] == "p5-xnode-broker-v3"
+            activated_current(
+                self.directory, self.release_sha256, self.registry,
+            )
+            if release["kind"] in {"p5-xnode-broker-v3", "p5-xnode-broker-v4"}
             else load_registry(self.registry)
         )
+        if (release["kind"] == "p5-xnode-broker-v4"
+                and any(
+                    owner.get("input_manifest_sha256")
+                    != self.config.get("input_manifest_sha256")
+                    for _, owner in active_owners(certificate)
+                )):
+            raise ValueError("Active repaired lease input manifest differs from runtime")
         if certificate["event"]["broker_release_sha256"] != self.release_sha256:
             raise ValueError("The authoritative owner event names a different broker")
         return certificate
@@ -506,8 +693,9 @@ class Broker:
             state.validate_envelope(envelope, lease, head)
             selected = envelope["selected"]
             if selected and selected["seal_sha256"] != envelope["checkpoint"]["seal_sha256"]:
-                if find_accepted_ack(ledger, lease, selected["seal_sha256"])["checkpoint"] != selected:
-                    raise ValueError("Selected checkpoint metadata differs from its accepted ancestor")
+                selection_ack(
+                    self.directory, certificate, ledger, lease, selected,
+                )
             elif selected and selected != envelope["checkpoint"]:
                 raise ValueError("Self-selected checkpoint metadata differs")
             destination = state.DURABLE / "xnode" / lease["cell"] / lease["lease_id"] / package.name
@@ -651,12 +839,12 @@ class Broker:
                 if frozen_head["phase"] != "frozen" or frozen_head["epoch"] != 20:
                     continue
                 frozen_envelope = frozen_records[frozen_head["generation"]]["envelope"]
-                try:
-                    ack = find_accepted_ack(ledger, lease, request["checkpoint_seal_sha256"])
-                except ValueError:
+                ack = final_test_ack(
+                    self.directory, current, ledger, lease, request,
+                    frozen_envelope,
+                )
+                if ack is None:
                     continue
-                if ack["checkpoint"] not in (frozen_envelope["checkpoint"], frozen_envelope["selected"]):
-                    raise ValueError("Final-test request differs from the accepted frozen selected/latest state")
                 self.send(lease, {
                     "kind": "p5-xnode-checkpoint-response-v1", "nonce": request["nonce"],
                     "lease_sha256": state.digest(lease), "ack": ack,
@@ -675,7 +863,13 @@ class Broker:
         with state.locked(self.directory / "broker.lock", nonblocking=True):
             while True:
                 certificate = self.current()
-                for cell, owner in sorted(certificate["event"]["owners"].items()):
+                event = certificate["event"]
+                owners = (
+                    active_owners(certificate)
+                    if event.get("transition_kind") == "p5-protocol-repair-v1"
+                    else sorted(event["owners"].items())
+                )
+                for cell, owner in owners:
                     try:
                         if owner["owner_node"] == state.WRITER_HOST:
                             self.local(cell, owner)

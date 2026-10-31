@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from test_letter_p5_xnode import package_fixture, protocol, workspace
+from test_letter_p5_xnode import lease, package_fixture, protocol, workspace
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -73,6 +73,52 @@ def test_pending_owner_handoff_never_falls_back_to_writer(workspace):
     module, xs = broker(workspace), protocol(workspace)
     xs.write(workspace / "transition-intent.json", {"status": "fencing", "destination": xs.WORKER_HOST})
     with pytest.raises(ValueError, match="committed|pending|fenced"):
+        module.load_registry(workspace)
+
+
+def test_broker_accepts_receipt_valid_sequence_two_registry_root(workspace):
+    module, xs = broker(workspace), protocol(workspace)
+    current = lease()
+    event2 = {
+        "kind": "p5-xnode-ownership-v1",
+        "status": "committed",
+        "sequence": 2,
+        "previous_event_sha256": None,
+        "owners": {
+            cell: ({**current, "cell": cell} if cell != current["cell"] else current)
+            for cell in xs.ALL_CELLS
+        },
+    }
+
+    def cert(event):
+        event_sha256 = module.event_sha(event)
+        receipt = {
+            "files": {
+                "ownership.json": {"sha256": event_sha256, "bytes": 1},
+            },
+        }
+        return {
+            "event": event,
+            "event_sha256": event_sha256,
+            "writer_host": xs.WRITER_HOST,
+            "bank_receipt": receipt,
+            "bank_receipt_sha256": xs.digest(receipt),
+        }
+
+    certificate2 = cert(event2)
+    event3 = {
+        **event2,
+        "sequence": 3,
+        "previous_event_sha256": certificate2["event_sha256"],
+    }
+    certificate3 = cert(event3)
+    xs.write(workspace / "committed" / "00000002.json", certificate2)
+    xs.write(workspace / "committed" / "00000003.json", certificate3)
+    assert module.load_registry(workspace)["event_sha256"] == certificate3["event_sha256"]
+
+    event3["sequence"] = 4
+    xs.write(workspace / "committed" / "00000003.json", cert(event3))
+    with pytest.raises(ValueError, match="ancestry|receipt"):
         module.load_registry(workspace)
 
 
