@@ -699,6 +699,16 @@ claimed past that crash. Exact lineage and durable evidence are in
 [the beta0.001 final receipt](../results/2026-10-31-letter/figure8-beta0p001-final-v2.json)
 and `verified-results/figure8-beta0p001-final-v2`.
 
+The repaired `K=20` arm completed20,000 epochs and selected the final
+checkpoint. Its bank has25 excess collision items, largest group3 and
+utilization147/256/256/256. The admission-bound audit replayed360,200
+initialization tasks:360,199 native-defined tasks matched bitwise, one exact
+undefined CDF endpoint at epoch11,431 level1 used the guard, and all40 export
+tasks were native-defined. Native bitwise execution is not claimed past the
+crash. Exact evidence is in
+[the K20 final receipt](../results/2026-10-31-letter/figure8-clusters20-final-v2.json)
+and `verified-results/figure8-clusters20-final-v2`.
+
 Downstream evaluation for the 15 nonbaseline tokenizer arms is split across
 immutable `fresh-t5-figure8-tokenizer-v2` and `v3` namespaces; v4 is reserved
 for arms whose tokenizer completion requires the audited k-means endpoint
