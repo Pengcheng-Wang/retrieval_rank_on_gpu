@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "kind": "letter_p5_uuid_reregistration_v1",
+  "deployment_status": "nondeployable-historical-evidence-superseded-by-v2",
   "cause": "job-wide container replacement changed every physical GPU UUID",
   "transition_cells": [
     "Beauty-CID-s42",

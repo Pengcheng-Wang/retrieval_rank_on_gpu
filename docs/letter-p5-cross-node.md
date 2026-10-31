@@ -175,74 +175,88 @@ restart a fit, change a lease, alter control events or deploy new code.
 
 ## 🔁 Job-wide GPU UUID re-registration
 
+> **Historical v1 warning:** `p5_xnode_reregister.py` and
+> `letter-p5-uuid-reregistration-v1.json` are retained as review evidence only.
+> Their commit path fails closed and is not deployable. Use v2 exclusively.
+
 Container replacement invalidates every lease whose physical GPU UUID changed.
-It is not a live-process adoption: `p5_xnode_adopt.py` requires the original
-PID lifetime and boot identity and must reject a replaced container. The
-versioned offline tool `p5_xnode_reregister.py` creates a new ownership epoch
-without launching a learner or touching a GPU. Its public recovery scope is
-recorded in `configs/letter-p5-uuid-reregistration-v1.json`; all paths, current
-UUIDs, receipts and proofs remain private inputs.
+It is not live-process adoption: `p5_xnode_adopt.py` requires the original PID
+lifetime and boot identity. The deployable offline implementation is
+`p5_xnode_reregister_v2.py`; its public scope and invariants are recorded in
+`configs/letter-p5-uuid-reregistration-v2.json`.
 
-The request is `p5-uuid-reregistration-request-v1` and contains:
+The private `p5-uuid-reregistration-request-v2` names old/new bindings, the
+complete registry, the exact transition set, the unchanged runtime template,
+replacement-GPU receipts and role-specific root evidence. Writer cells use
+ordinary P5 full-state bank checkpoints plus their verified bank
+acknowledgments and receipts. Worker cells use the highest accepted xnode
+ledger head plus its complete package and acknowledgment. Never construct a
+synthetic writer xnode ledger.
 
-- old and proposed private bindings, the complete ownership registry, and the
-  exact transition cell list;
-- one root-evidence record per transitioned cell naming its accepted ledger,
-  accepted package and unchanged scientific contract;
-- one replacement-GPU proof per cell, bound to the current host, physical
-  index and UUID; and
-- the SHA-256 of the new private broker release that will consume the event.
+Preparation verifies registry ancestry and sequence, rejects pending foreign
+intent, and selects each role's latest receipt-bound full-state head. It keeps
+the scientific contract, input manifest, control/state source hashes,
+host/index and batch geometry unchanged. It precomputes a new runtime manifest
+at stable canonical paths, binds its SHA-256 into every transitioned lease,
+mints lease IDs and epoch `old+1`, and emits the exact aggregate
+`p5-xnode-crossnode-proof-v1` consumed by the unchanged worker control. The
+event contains that proof's file SHA-256, the broker-v3 release SHA-256,
+`sequence=parent+1`, and one all-cell owner map.
 
-Preparation replays the complete committed registry ancestry and rejects an
-unrecovered transition intent. For every transitioned cell it verifies the
-highest accepted generation, acknowledgment, complete package, model and
-training-state hashes, contract bytes and replacement-GPU proof. The new lease
-preserves host, physical index, microbatch and accumulation, increments the
-ownership epoch exactly once, receives a new lease ID and uses that accepted
-head as generation zero. Cells outside the exact transition set remain
-byte-identical in the all-cell owner event.
-
-Run the control phases with the exact restored interpreter and release:
+Run:
 
 ```bash
-python -B scripts/letter/p5_xnode_reregister.py prepare \
-  --request "$PRIVATE_REQUEST" --output "$PRIVATE_PLAN"
+python -B scripts/letter/p5_xnode_reregister_v2.py prepare \
+  --request "$PRIVATE_REQUEST_V2" --output "$PRIVATE_PLAN_V2"
 
-python -B scripts/letter/p5_xnode_reregister.py verify \
-  --request "$PRIVATE_REQUEST" --plan "$PRIVATE_PLAN"
+python -B scripts/letter/p5_xnode_reregister_v2.py verify \
+  --request "$PRIVATE_REQUEST_V2" --plan "$PRIVATE_PLAN_V2"
 
-python -B scripts/letter/p5_xnode_reregister.py commit \
-  --request "$PRIVATE_REQUEST" --plan "$PRIVATE_PLAN" \
-  --output "$PRIVATE_TRANSITION_OUTPUT"
+python -B scripts/letter/p5_xnode_reregister_v2.py commit \
+  --request "$PRIVATE_REQUEST_V2" --plan "$PRIVATE_PLAN_V2"
 ```
 
-`commit` is writer-host only. It acquires the ownership-registry lock before
-the common durable-writer lock, rechecks the previous event, banks one immutable
-`ownership.json`, writes its receipt and certificate, emits the effective
-private bindings plus a registration anchor, and creates registrations only
-for worker-role cells. A failed commit leaves a transition intent that fences
-the broker until the same transition is recovered; it never defaults ownership
-back to the writer.
-
-Before starting any worker guardian, preserve the old `.xnode` directory under
-an immutable historical name and create a clean `.xnode` directory containing
-only the newly emitted `registration.json`. Then verify it:
+The writer-only commit takes the registry lock before the common bank lock,
+banks one ownership event/certificate, and stages canonical files below
+`XROOT`: `leases/`, `current/ownership-certificate.json`,
+`current/runtime-manifest.json`, `current/crossnode-proof.json`,
+`current/bindings.json`, unchanged runtime source, restored root
+checkpoint/contract/pointer trees, and worker bootstrap directories whose
+`.xnode` contains only the five-field registration. It publishes
+`activation/last-published.json` last. If interruption occurs after commit but
+before activation, broker v3 fences the transition; after checking that the
+canonical stage is complete and unchanged, finish only the activation step:
 
 ```bash
-python -B scripts/letter/p5_xnode_reregister.py verify-worker \
-  --plan "$PRIVATE_PLAN" --cell "$CELL" --transport "$RUN/.xnode"
+python -B scripts/letter/p5_xnode_reregister_v2.py activate \
+  --request "$PRIVATE_REQUEST_V2" --plan "$PRIVATE_PLAN_V2"
 ```
 
-The check rejects an old registration, publication head, outbox generation,
-acknowledgment, request or response. The new private broker release must have
-the SHA-256 named by the committed event and use the emitted registration
-anchor; the legacy result-only registration-anchor path cannot authorize a
-changed owner. Start that writer broker first. Start guardians only after the
-broker reports the new committed event and the clean registration verifies.
+Broker release `p5-xnode-broker-v3` contains only its source hashes and runtime
+manifest SHA-256. It must not contain a certificate, registration-anchor or
+activation hash, which would create a release/event/certificate hash cycle.
+Its owner authority is the current committed certificate plus the
+last-published activation manifest. It rejects committed-but-not-activated
+events, sequence mismatch, incomplete activation inventory, stale canonical
+bytes, a different runtime/proof/lease hash, or a release SHA mismatch.
 
-Stop on any parent-event mismatch, pending foreign intent, missing or partial
-full state, stale UUID, failed proof, epoch skip, changed host/index/batch,
-certificate or receipt mismatch, partial cell set, inherited transport state,
-or broker release mismatch. Never repair those failures by editing a lease,
-copying an old registration, reusing an old outbox, or restarting from weights
-alone.
+Before starting a worker guardian, archive its old `.xnode` and copy only the
+corresponding staged `registration.json` into a newly created `.xnode`.
+Registrations retain the unchanged control's five fields: `kind`,
+`writer_host`, `lease_sha256`, `event_sha256`, and
+`input_manifest_sha256`. Because node filesystems are separate, copy the
+activated canonical bindings, current certificate/runtime/proof and that
+worker's lease/root bundle to the same bound paths on the worker, verifying
+every hash from `activation/last-published.json`; materialize the staged root
+checkpoint, contract and pointer as the canonical local run root. Do not copy
+the writer's registry lock, intent, durable receipt authority, or another
+cell's registration. Start broker v3 first and guardians only after broker
+status reports the activated sequence.
+
+Stop on any ancestry/sequence mismatch, pending foreign intent, missing or
+partial full state, stale UUID, failed continuation/memory/geometry proof,
+epoch skip, changed role/host/index/batch/input/runtime source, certificate or
+receipt mismatch, partial cell set, stale canonical file, inherited transport
+state, or broker release mismatch. Never repair a stop by editing a lease,
+inventing a writer ledger, reusing an old registration/outbox, or resuming from
+weights alone.

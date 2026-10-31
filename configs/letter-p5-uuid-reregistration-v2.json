@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "kind": "letter_p5_uuid_reregistration_v2",
+  "cause": "job-wide container replacement changed every physical GPU UUID",
+  "transition_cells": [
+    "Beauty-CID-s42",
+    "Instruments-TID-s42",
+    "Beauty-TID-s42",
+    "Yelp-TID-s42"
+  ],
+  "role_specific_roots": {
+    "writer": "ordinary receipt-verified full-state bank checkpoint and acknowledgement",
+    "worker": "accepted xnode ledger head, complete package and acknowledgement"
+  },
+  "preserve_exactly": [
+    "scientific contract",
+    "cell identity",
+    "owner host",
+    "physical GPU index",
+    "microbatch",
+    "gradient accumulation",
+    "input manifest",
+    "p5_xnode_control.py source hash",
+    "p5_xnode_state.py source hash",
+    "accepted full-state checkpoint bytes"
+  ],
+  "replace": [
+    "GPU UUID",
+    "lease ID",
+    "ownership epoch",
+    "ownership certificate",
+    "runtime manifest path bindings",
+    "aggregate crossnode proof",
+    "worker registration",
+    "publication transport namespace"
+  ],
+  "activation": {
+    "sequence": "parent+1",
+    "authority": "current committed certificate plus last-published activation manifest",
+    "publication_order": "canonical files first, activation manifest last",
+    "committed_without_activation": "fenced"
+  },
+  "broker_release": "p5-xnode-broker-v3 without certificate, registration-anchor or activation hashes",
+  "publication_generation_policy": "reset-to-zero-at-verified-old-accepted-head",
+  "single_writer": true,
+  "execution": "offline-control-only-no-learner-or-gpu-launch"
+}

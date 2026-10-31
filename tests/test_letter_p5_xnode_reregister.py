@@ -76,7 +76,7 @@ def checkpoint_header(cell):
     }
 
 
-def old_owner(cell, assignment, header):
+def old_owner(cell, assignment, header, input_manifest_sha256="b" * 64):
     return {
         "kind": "p5-xnode-lease-v1", "cell": cell,
         "owner_node": socket.gethostname() if assignment["role"] == "writer" else "worker.invalid",
@@ -84,13 +84,14 @@ def old_owner(cell, assignment, header):
         "lease_id": cell.lower() + "-lease-old", "ownership_epoch": 2,
         "root": copy.deepcopy(header),
         "contract_file_sha256": hashlib.sha256((cell + "-contract-file").encode()).hexdigest(),
-        "input_manifest_sha256": "b" * 64, "control_manifest_sha256": "c" * 64,
+        "input_manifest_sha256": input_manifest_sha256,
+        "control_manifest_sha256": "c" * 64,
         "native_gate": "/private/native-gate",
         "microbatch": assignment["microbatch"], "accumulation": assignment["accumulation"],
     }
 
 
-def fixture(tmp_path):
+def fixture(tmp_path, input_manifest_sha256="b" * 64):
     reregister = module()
     cells = [
         "writer-cid", "writer-tid", "worker-tid-small", "worker-tid-large",
@@ -104,7 +105,7 @@ def fixture(tmp_path):
     owners, evidence, proofs = {}, {}, {}
     for cell, assignment in old_binding["cells"].items():
         header = checkpoint_header(cell)
-        owner = old_owner(cell, assignment, header)
+        owner = old_owner(cell, assignment, header, input_manifest_sha256)
         owners[cell] = owner
         if cell not in cells:
             continue
@@ -324,20 +325,12 @@ def test_prepare_rejects_ack_from_different_registry_event(tmp_path):
         reregister.prepare_transition(request_path)
 
 
-def test_commit_banks_one_event_and_emits_new_worker_registrations(tmp_path, monkeypatch):
-    reregister, request_path, request, _, _, plan = prepare(tmp_path)
-    monkeypatch.setattr(reregister.socket, "gethostname",
-                        lambda: json.loads(Path(request["new_bindings"]).read_text())["writer_host"])
+def test_v1_commit_is_historical_and_fails_closed(tmp_path):
+    reregister, request_path, _, _, _, plan = prepare(tmp_path)
     output = tmp_path / "transition-output"
-    result = reregister.commit_transition(request_path, plan, output)
-    certificate = json.loads(Path(result["certificate"]).read_text())
-    assert certificate["event"] == plan["event"]
-    assert certificate["event_sha256"] == reregister.event_sha(plan["event"])
-    assert Path(result["durable_ownership"]).joinpath("bank-receipt.json").is_file()
-    registrations = [json.loads(Path(path).read_text()) for path in result["registrations"]]
-    assert {row["cell"] for row in registrations} == {"worker-tid-small", "worker-tid-large"}
-    assert all(row["kind"] == "p5-xnode-registration-v1" for row in registrations)
-    assert all(row["event_sha256"] == certificate["event_sha256"] for row in registrations)
+    with pytest.raises(RuntimeError, match="nondeployable|v2"):
+        reregister.commit_transition(request_path, plan, output)
+    assert not output.exists()
 
 
 def test_old_registration_cannot_be_reused_for_new_lease(tmp_path):

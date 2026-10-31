@@ -92,6 +92,19 @@ def registration_message(config, certificate, lease, anchor_sha256):
     }
 
 
+def validate_broker_v3_release(release):
+    if (not isinstance(release, dict)
+            or set(release) != {"kind", "files_sha256", "runtime_manifest_sha256"}
+            or release.get("kind") != "p5-xnode-broker-v3"
+            or set(release.get("files_sha256", {})) != {
+                "p5_xnode_broker.py", "p5_xnode_state.py", "p5_xnode_adopt.py",
+            }):
+        raise ValueError(
+            "Broker v3 release must avoid certificate, registration-anchor and activation hash cycles"
+        )
+    return release
+
+
 def load_registry(directory):
     state.configuration()
     state.require_path(directory)
@@ -100,23 +113,90 @@ def load_registry(directory):
     if not commits:
         raise ValueError("No committed ownership; pending handoff is fenced, never defaulted to the writer")
     previous, latest = None, None
+    previous_sequence, sequenced = 0, False
     for path in commits:
         certificate = state.read(path)
         event = certificate["event"]
         receipt = certificate["bank_receipt"]
+        sequence = event.get("sequence")
+        valid_sequence = (
+            sequence is None and not sequenced
+            or type(sequence) is int and sequence == previous_sequence + 1
+        )
         if (event.get("kind") != "p5-xnode-ownership-v1" or event.get("status") != "committed"
                 or set(event.get("owners", {})) != state.ALL_CELLS
                 or event.get("previous_event_sha256") != previous
                 or event_sha(event) != certificate["event_sha256"]
                 or state.digest(receipt) != certificate["bank_receipt_sha256"]
                 or receipt["files"]["ownership.json"]["sha256"] != certificate["event_sha256"]
-                or certificate.get("writer_host") != state.WRITER_HOST):
+                or certificate.get("writer_host") != state.WRITER_HOST
+                or not valid_sequence):
             raise ValueError("Invalid committed ownership ancestry/receipt")
+        if sequence is not None:
+            sequenced = True
+            previous_sequence = sequence
         previous, latest = certificate["event_sha256"], certificate
     intent = directory / "transition-intent.json"
     if intent.exists() and state.read(intent)["event_sha256"] != latest["event_sha256"]:
         raise ValueError("A newer pending ownership transition is fenced until recovered")
     return latest
+
+
+def activated_current(directory, broker_release_sha256):
+    state.configuration()
+    directory = Path(directory)
+    certificate = load_registry(directory / "ownership")
+    activation_path = directory / "activation" / "last-published.json"
+    if not activation_path.is_file():
+        raise ValueError("Committed ownership is not activated")
+    activation = state.read(activation_path)
+    event = certificate["event"]
+    expected = {
+        "current/ownership-certificate.json", "current/runtime-manifest.json",
+        "current/crossnode-proof.json", "current/bindings.json",
+        "current/p5_xnode_control.py", "current/p5_xnode_state.py",
+    }
+    for cell in event.get("transition_cells", []):
+        expected.update({
+            "/".join(("leases", cell + ".json")),
+            "/".join(("roots", cell, "checkpoint", "model.safetensors")),
+            "/".join(("roots", cell, "checkpoint", "training-state.pt")),
+            "/".join(("roots", cell, "checkpoint", "p5-seal.json")),
+            "/".join(("roots", cell, "p5-run-config.json")),
+            "/".join(("roots", cell, "latest.json")),
+        })
+        if event["owners"][cell]["owner_node"] != state.WRITER_HOST:
+            expected.add("/".join(("worker-bootstrap", cell, ".xnode", "registration.json")))
+    if (activation.get("kind") != "p5-xnode-activation-v1"
+            or activation.get("status") != "activated"
+            or activation.get("sequence") != event.get("sequence")
+            or activation.get("event_sha256") != certificate["event_sha256"]
+            or activation.get("broker_release_sha256") != broker_release_sha256
+            or event.get("broker_release_sha256") != broker_release_sha256
+            or set(activation.get("files_sha256", {})) != expected):
+        raise ValueError("activation does not authorize the current committed certificate")
+    for relative, expected in activation.get("files_sha256", {}).items():
+        path = directory / relative
+        if not path.is_file() or state.sha(path) != expected:
+            raise ValueError("Activated canonical file hash differs")
+    canonical = state.read(directory / "current" / "ownership-certificate.json")
+    if canonical != certificate:
+        raise ValueError("Activated current certificate differs from the registry")
+    runtime = state.read(directory / "current" / "runtime-manifest.json")
+    proof_path = directory / "current" / "crossnode-proof.json"
+    proof = state.read(proof_path)
+    if (state.sha(directory / "current" / "runtime-manifest.json")
+            != proof.get("runtime_manifest_sha256")
+            or state.sha(proof_path) != event.get("crossnode_proof_sha256")):
+        raise ValueError("Activated runtime/proof binding differs")
+    for cell in event.get("transition_cells", []):
+        lease = state.read(directory / "leases" / f"{cell}.json")
+        if (lease != event["owners"][cell]
+                or lease["control_manifest_sha256"] != state.sha(
+                    directory / "current" / "runtime-manifest.json"
+                )):
+            raise ValueError("Activated lease differs from the current certificate")
+    return certificate
 
 
 def accepted_chain(directory, lease):
@@ -279,7 +359,9 @@ class Broker:
         state.validate_runtime_paths(self.config)
         release_path = Path(__file__).parent / "broker-release.json"
         release = state.read(release_path)
-        if (release.get("kind") not in {"p5-xnode-broker-v1", "p5-xnode-broker-v2"}
+        if (release.get("kind") not in {
+                "p5-xnode-broker-v1", "p5-xnode-broker-v2", "p5-xnode-broker-v3",
+        }
                 or set(release["files_sha256"]) != {
                     "p5_xnode_broker.py", "p5_xnode_state.py", "p5_xnode_adopt.py"}):
             raise ValueError("Unapproved broker release")
@@ -297,6 +379,10 @@ class Broker:
             self.registration_anchor_sha256 = release["registration_anchor_sha256"]
             if state.sha(self.config["ownership_certificate"]) != self.registration_anchor_sha256:
                 raise ValueError("Original worker registration anchor changed")
+        elif release["kind"] == "p5-xnode-broker-v3":
+            validate_broker_v3_release(release)
+            if release["files_sha256"]["p5_xnode_state.py"] != self.config["files_sha256"]["p5_xnode_state.py"]:
+                raise ValueError("Broker and worker must share the exact protocol")
         elif release["files_sha256"]["p5_xnode_state.py"] != self.config["files_sha256"]["p5_xnode_state.py"]:
             raise ValueError("Broker and worker must share the exact protocol")
         self.release_sha256 = state.sha(release_path)
@@ -310,7 +396,12 @@ class Broker:
         self.last_local_result_ack = {}
 
     def current(self):
-        certificate = load_registry(self.registry)
+        release = state.read(Path(__file__).parent / "broker-release.json")
+        certificate = (
+            activated_current(self.directory, self.release_sha256)
+            if release["kind"] == "p5-xnode-broker-v3"
+            else load_registry(self.registry)
+        )
         if certificate["event"]["broker_release_sha256"] != self.release_sha256:
             raise ValueError("The authoritative owner event names a different broker")
         return certificate

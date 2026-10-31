@@ -7,7 +7,6 @@ import hashlib
 import json
 import os
 import re
-import socket
 import uuid
 from contextlib import contextmanager
 from pathlib import Path
@@ -123,19 +122,30 @@ def _load_registry(directory, expected_cells, pending_event_sha=None):
     if not commits:
         raise ValueError("No committed ownership ancestry")
     previous = None
+    previous_sequence = 0
+    sequenced = False
     latest = None
     for path in commits:
         certificate = read(path)
         event, receipt = certificate["event"], certificate["bank_receipt"]
         encoded = event_sha(event)
+        sequence = event.get("sequence")
+        valid_sequence = (
+            sequence is None and not sequenced
+            or type(sequence) is int and sequence == previous_sequence + 1
+        )
         if (event.get("kind") != "p5-xnode-ownership-v1"
                 or event.get("status") != "committed"
                 or set(event.get("owners", {})) != set(expected_cells)
                 or event.get("previous_event_sha256") != previous
                 or certificate.get("event_sha256") != encoded
                 or certificate.get("bank_receipt_sha256") != digest(receipt)
-                or receipt.get("files", {}).get("ownership.json", {}).get("sha256") != encoded):
+                or receipt.get("files", {}).get("ownership.json", {}).get("sha256") != encoded
+                or not valid_sequence):
             raise ValueError("Invalid committed ownership ancestry or certificate receipt")
+        if sequence is not None:
+            sequenced = True
+            previous_sequence = sequence
         previous, latest = encoded, certificate
     intent = directory / "transition-intent.json"
     if intent.exists():
@@ -494,76 +504,9 @@ def _lock(path):
 
 
 def commit_transition(request_path, plan, output):
-    plan = verify_transition(request_path, plan)
-    request = _request(request_path)
-    bindings = plan["bindings"]
-    if socket.gethostname() != bindings["writer_host"]:
-        raise RuntimeError("Only the configured node0 writer may commit ownership")
-    output = Path(output)
-    if output.exists():
-        raise FileExistsError("Transition output is immutable")
-    registry = Path(request["registry"])
-    intent = {
-        "kind": "p5-xnode-transition-intent-v1", "status": "prepared",
-        "event_sha256": plan["event_sha256"],
-        "previous_event_sha256": plan["event"]["previous_event_sha256"],
-        "plan_sha256": digest(plan),
-    }
-    with _lock(registry / "registry.lock"):
-        current = _load_registry(registry, bindings["cells"])
-        if current["event_sha256"] != plan["event"]["previous_event_sha256"]:
-            raise ValueError("Ownership changed after transition preparation")
-        _atomic_write(registry / "transition-intent.json", intent)
-        with _lock(Path(bindings["root"]) / "bank.lock"):
-            output.mkdir(parents=True)
-            _atomic_write(output / "plan.json", plan)
-            _atomic_write(output / "bindings.json", bindings)
-            durable = (Path(bindings["durable_root"]) / "ownership-reregistration"
-                       / plan["event_sha256"])
-            if durable.exists():
-                raise FileExistsError("Durable ownership event already exists")
-            durable.mkdir(parents=True)
-            _atomic_write(durable / "ownership.json", plan["event"])
-            receipt = {"files": {"ownership.json": {
-                "sha256": sha(durable / "ownership.json"),
-                "bytes": (durable / "ownership.json").stat().st_size,
-            }}}
-            _atomic_write(durable / "bank-receipt.json", receipt)
-            certificate = {
-                "event": plan["event"], "event_sha256": plan["event_sha256"],
-                "writer_host": bindings["writer_host"], "bank_receipt": receipt,
-                "bank_receipt_sha256": digest(receipt),
-                "transition_plan_sha256": digest(plan),
-            }
-            commits = sorted((registry / "committed").glob("*.json"))
-            name = f"{len(commits) + 1:04d}-{plan['event_sha256'][:16]}.json"
-            certificate_path = registry / "committed" / name
-            _atomic_write(certificate_path, certificate)
-            _atomic_write(output / "certificate.json", certificate)
-            anchor = {
-                "kind": "p5-xnode-registration-anchor-v1",
-                "event_sha256": plan["event_sha256"],
-                "certificate_sha256": sha(certificate_path),
-                "bindings_sha256": sha(output / "bindings.json"),
-                "broker_release_sha256": plan["event"]["broker_release_sha256"],
-            }
-            _atomic_write(output / "registration-anchor.json", anchor)
-            registrations = []
-            for cell in plan["event"]["transition_cells"]:
-                if bindings["cells"][cell]["role"] == "worker":
-                    path = output / "registrations" / f"{cell}.json"
-                    _atomic_write(path, worker_registration(plan, cell))
-                    registrations.append(str(path))
-            _atomic_write(registry / "transition-intent.json", {
-                **intent, "status": "committed", "certificate_sha256": sha(certificate_path),
-            })
-    return {
-        "status": "committed", "event_sha256": plan["event_sha256"],
-        "certificate": str(certificate_path), "durable_ownership": str(durable),
-        "bindings": str(output / "bindings.json"),
-        "registration_anchor": str(output / "registration-anchor.json"),
-        "registrations": registrations,
-    }
+    raise RuntimeError(
+        "p5 UUID re-registration v1 is historical nondeployable evidence; use the v2 protocol"
+    )
 
 
 def main():
