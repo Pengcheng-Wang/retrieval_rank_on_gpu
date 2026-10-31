@@ -172,3 +172,77 @@ Before recovering an existing run, consult its private handoff and banked
 control chain. Verify the exact deployed bytes and use the recorded environment
 and commands. Publication-only canonicalization is never itself a reason to
 restart a fit, change a lease, alter control events or deploy new code.
+
+## 🔁 Job-wide GPU UUID re-registration
+
+Container replacement invalidates every lease whose physical GPU UUID changed.
+It is not a live-process adoption: `p5_xnode_adopt.py` requires the original
+PID lifetime and boot identity and must reject a replaced container. The
+versioned offline tool `p5_xnode_reregister.py` creates a new ownership epoch
+without launching a learner or touching a GPU. Its public recovery scope is
+recorded in `configs/letter-p5-uuid-reregistration-v1.json`; all paths, current
+UUIDs, receipts and proofs remain private inputs.
+
+The request is `p5-uuid-reregistration-request-v1` and contains:
+
+- old and proposed private bindings, the complete ownership registry, and the
+  exact transition cell list;
+- one root-evidence record per transitioned cell naming its accepted ledger,
+  accepted package and unchanged scientific contract;
+- one replacement-GPU proof per cell, bound to the current host, physical
+  index and UUID; and
+- the SHA-256 of the new private broker release that will consume the event.
+
+Preparation replays the complete committed registry ancestry and rejects an
+unrecovered transition intent. For every transitioned cell it verifies the
+highest accepted generation, acknowledgment, complete package, model and
+training-state hashes, contract bytes and replacement-GPU proof. The new lease
+preserves host, physical index, microbatch and accumulation, increments the
+ownership epoch exactly once, receives a new lease ID and uses that accepted
+head as generation zero. Cells outside the exact transition set remain
+byte-identical in the all-cell owner event.
+
+Run the control phases with the exact restored interpreter and release:
+
+```bash
+python -B scripts/letter/p5_xnode_reregister.py prepare \
+  --request "$PRIVATE_REQUEST" --output "$PRIVATE_PLAN"
+
+python -B scripts/letter/p5_xnode_reregister.py verify \
+  --request "$PRIVATE_REQUEST" --plan "$PRIVATE_PLAN"
+
+python -B scripts/letter/p5_xnode_reregister.py commit \
+  --request "$PRIVATE_REQUEST" --plan "$PRIVATE_PLAN" \
+  --output "$PRIVATE_TRANSITION_OUTPUT"
+```
+
+`commit` is writer-host only. It acquires the ownership-registry lock before
+the common durable-writer lock, rechecks the previous event, banks one immutable
+`ownership.json`, writes its receipt and certificate, emits the effective
+private bindings plus a registration anchor, and creates registrations only
+for worker-role cells. A failed commit leaves a transition intent that fences
+the broker until the same transition is recovered; it never defaults ownership
+back to the writer.
+
+Before starting any worker guardian, preserve the old `.xnode` directory under
+an immutable historical name and create a clean `.xnode` directory containing
+only the newly emitted `registration.json`. Then verify it:
+
+```bash
+python -B scripts/letter/p5_xnode_reregister.py verify-worker \
+  --plan "$PRIVATE_PLAN" --cell "$CELL" --transport "$RUN/.xnode"
+```
+
+The check rejects an old registration, publication head, outbox generation,
+acknowledgment, request or response. The new private broker release must have
+the SHA-256 named by the committed event and use the emitted registration
+anchor; the legacy result-only registration-anchor path cannot authorize a
+changed owner. Start that writer broker first. Start guardians only after the
+broker reports the new committed event and the clean registration verifies.
+
+Stop on any parent-event mismatch, pending foreign intent, missing or partial
+full state, stale UUID, failed proof, epoch skip, changed host/index/batch,
+certificate or receipt mismatch, partial cell set, inherited transport state,
+or broker release mismatch. Never repair those failures by editing a lease,
+copying an old registration, reusing an old outbox, or restarting from weights
+alone.
