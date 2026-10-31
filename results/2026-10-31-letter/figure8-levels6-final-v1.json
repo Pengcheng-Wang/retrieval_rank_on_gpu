@@ -1,0 +1,27 @@
+{
+  "status": "pass",
+  "arm": "levels-6",
+  "bundle": "levels-6-completed-699fc8c7f2f0f198",
+  "selected_epoch": 16000,
+  "final_epoch": 20000,
+  "index_sha256": "838ddb3c800ec4ebad3e16fab705be67293504711c77309054eeb604d5b6b01d",
+  "codes_sha256": "b590a49cbcb68eeaee17c7953ec87aa41e948ede26a8f19b012e0b49676025d5",
+  "collisions": {
+    "before": 28,
+    "after": 25,
+    "largest_group": 3
+  },
+  "utilization_by_level": [
+    172,
+    256,
+    256,
+    256,
+    256,
+    256
+  ],
+  "bundle_completed_sha256": "d7243b7576edf588c5ce2659b8b4af253eecc0abde3419c2b74942062f19df0f",
+  "run_completed_sha256": "c1d4cbea5702a234dceb97854125ae1709a9fa1a6ae6171047bfed1d153e528b",
+  "durable_bank_receipt_sha256": "6004f54c3bdbec4652680e5f7a9756c267b2a4a402af756acc0a03bcebc2000f",
+  "files": 11,
+  "audit_source_sha256": "22baf5a32c11fb0307a932924f83e7aa98dd13b1f1a8da19910f107b4797fbe2"
+}

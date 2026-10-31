@@ -636,6 +636,14 @@ was reassigned to the predeclared eight-level arm. Evidence is in
 [the final L2 receipt](../results/2026-10-30-letter/figure8-levels2-final-v1.json)
 and `verified-results/figure8-levels2-final-v1`.
 
+The six-level tokenizer arm completed20,000 epochs and selected epoch16,000.
+Its exported six-token bank has25 excess collision items, largest group3 and
+utilization172/256/256/256/256/256; deterministic repair reduced only three
+additional excess items. This is tokenizer evidence only until its dedicated
+downstream cell runs. Exact evidence is in
+[the final L6 receipt](../results/2026-10-31-letter/figure8-levels6-final-v1.json)
+and `verified-results/figure8-levels6-final-v1`.
+
 The `K=5` diversity-cluster arm also completed20,000 epochs and selected the
 final scheduled checkpoint. Its exported four-token bank has25 excess
 collision items, largest group3 and first-level utilization134/256. This is
