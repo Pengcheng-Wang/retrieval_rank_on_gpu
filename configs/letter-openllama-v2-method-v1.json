@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "track_id": "letter-openllama7b-v2-method-replication",
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "original_track_status": "blocked_pending_actual_original_model_access",
+  "status": "preflight_pending",
+  "decision_basis": "Use a separately named, architecture-compatible Apache-2.0 checkpoint while original-LLaMA1 access is unconfirmed. Choice was based on license/architecture/tokenizer behavior, not recommendation test performance.",
+  "official_letter_commit": "8d0154e28de37dbb6e24871c508ad8ddb1921cda",
+  "input_protocol": "letter-reproduction-v1.json",
+  "model": {
+    "id": "openlm-research/open_llama_7b_v2",
+    "revision": "e5961def23172a2384543940e773ab676033c963",
+    "license": "Apache-2.0",
+    "card": "https://huggingface.co/openlm-research/open_llama_7b_v2/blob/e5961def23172a2384543940e773ab676033c963/README.md",
+    "publisher_license": "https://raw.githubusercontent.com/openlm-research/open_llama/6e7f73eab7e799e2464f38ed977e537bae02873e/LICENSE",
+    "model_type": "llama",
+    "hidden_size": 4096,
+    "intermediate_size": 11008,
+    "layers": 32,
+    "attention_heads": 32,
+    "kv_heads": 32,
+    "vocab_size": 32000,
+    "context": 2048,
+    "rms_norm_eps": 0.000001,
+    "semantic_encoder_and_generator_share_this_identity": true
+  },
+  "tokenizer": {
+    "use_fast": false,
+    "legacy": true,
+    "model_sha256": "91b289e85fa20fd375d8b33dc12f77616f18abc6359804471d1fafcb425fecb8",
+    "bos": 1,
+    "eos": 2,
+    "padding": 0,
+    "automatic_eos": false,
+    "apply_chat_template": false,
+    "reason": "The publisher warns against automatically converted fast tokenizers; retain the author's explicit instruction strings."
+  },
+  "semantic_encoding": {
+    "dtype": "float32",
+    "fields": ["title", "description"],
+    "pooling": "Mask-mean each field separately, then equally average field embeddings.",
+    "max_tokens_per_field": 2048,
+    "normalization": "none",
+    "text_cleaning": "Preserve the pinned author clean_text transform, including dropping fields at 2000 characters."
+  },
+  "tokenizer_training": {
+    "levels": 4,
+    "codes_per_level": 256,
+    "code_dimension": 32,
+    "clusters": 10,
+    "epochs": 20000,
+    "batch_size": 1024,
+    "learning_rate": 0.001,
+    "alpha": 0.02,
+    "beta": 0.0001,
+    "semantic_only_control": {"alpha": 0.0, "beta": 0.0},
+    "teacher": "The completed training-only 32D BCE SASRec reconstruction, not an unreleased original teacher."
+  },
+  "isolation": {
+    "artifact_prefix": "openllama-v2",
+    "reject_cross_track_checkpoint_or_embedding_reuse": true,
+    "released_id_decoder_bringup_if_used": "A separately labeled hybrid, not the end-to-end method comparison.",
+    "paper_targets": "Context only; do not label alternative-backbone scores as original-LLaMA1 reproduced results."
+  },
+  "required_gates": [
+    "Verify immutable model/tokenizer bytes and the complete architecture.",
+    "Use the correct slow tokenizer and verify atomic added tokens and response-prefix matching.",
+    "Audit every formatted input/target and semantic field before fitting.",
+    "Verify real int8 forward/backward, active embedding/head gradients and save/reload.",
+    "Verify complete optimizer/RNG continuation and full-user fixed-beam evaluation."
+  ]
+}

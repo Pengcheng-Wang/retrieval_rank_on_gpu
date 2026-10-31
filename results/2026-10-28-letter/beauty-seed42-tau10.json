@@ -1,0 +1,80 @@
+{
+  "status": "verified_single_cell",
+  "study_status": "partial",
+  "dataset": "Beauty",
+  "method": "LETTER-TIGER with author-released semantic IDs",
+  "scope": "Released-ID replay; not an end-to-end tokenizer reconstruction",
+  "seed": 42,
+  "temperature": 1.0,
+  "learning_rate": 0.0005,
+  "world_size": 2,
+  "per_device_batch_size": 512,
+  "gradient_accumulation_steps": 1,
+  "selected_epoch": 84.0,
+  "stopped_epoch": 104.0,
+  "global_step": 13416,
+  "checkpoint_selection": "minimum validation loss; patience20",
+  "test_users": 22363,
+  "target_users_in_semantic_id_collision_groups": 46,
+  "num_beams": 20,
+  "all_users_once": true,
+  "seen_item_exclusion": false,
+  "code_metrics": {
+    "recall@1": 0.013280865715691098,
+    "ndcg@1": 0.013280865715691098,
+    "recall@5": 0.04328578455484506,
+    "ndcg@5": 0.028373489001243236,
+    "recall@10": 0.06774583016589902,
+    "ndcg@10": 0.036245996947128684
+  },
+  "original_item_diagnostic": {
+    "tie_rule": "Preserve code rank; expand ascending original item IDs; deduplicate; truncate K.",
+    "recall@1": 0.01310199883736529,
+    "ndcg@1": 0.01310199883736529,
+    "recall@5": 0.04274918391986764,
+    "ndcg@5": 0.028041398185794018,
+    "recall@10": 0.06738809640924742,
+    "ndcg@10": 0.03597139415221788
+  },
+  "paper_reference_not_measured_here": {
+    "recall@10": 0.0672,
+    "ndcg@10": 0.0357,
+    "source": "https://arxiv.org/html/2405.07314v3#S4.T2",
+    "row": "all regularizers, ordinary loss / Beauty"
+  },
+  "timing_scope": {
+    "trainer_invocation_seconds": 3686.392967688007,
+    "evaluation_loop_seconds": 1480.3148910829914,
+    "excludes_environment_setup_and_input_audit": true,
+    "resumed_invocation_is_not_total_training_time": true,
+    "hardware": "NVIDIA A100 80GB",
+    "training_gpus": 2,
+    "evaluation_gpus": 1
+  },
+  "provenance": {
+    "author_commit": "8d0154e28de37dbb6e24871c508ad8ddb1921cda",
+    "training_harness_sha256": {
+      "run.py": "8e42dcefacf678df886edf5428e6ccd8fbb98f0047a5dffb322efa1a9a7458a9",
+      "author.py": "722da1a9b023339ca211f67aade0ea85df56f32ff0b539c03c564294fad7432c",
+      "protocol.py": "b035963ab39926c0a992443021b46ebb5e3bc2236346ad6780394aa2ac410b22",
+      "prepare.py": "997e5c7dd572c8bc8084809fd442b0f3f3010b7c28a430892e665dc3d1b40f1e",
+      "runtime_patch.py": "75e392bf58e6fb91d8610bb85c4da84718d9bfc30770e58a739cce0b1c8db4b3"
+    },
+    "model_sha256": "a376842c6971e949807e50aedade506f01970de1730e25277861225bdbe86aa8",
+    "predictions_sha256": "545ebc1721e3f66c86607e3c4d90f5e6fa38b4b6a10eb0ebd27f2991f9659c66",
+    "input_sha256": {
+      "inter": "8809584b8b78fa6561771c88911ed65bd716fc9926fca1e581e6a1ab578ccfd5",
+      "item": "74aeddf911548aadfcd1dab326c16678ed4ac74457e874da300d63a94bdb2330",
+      "index": "be3fb890e59b5443824cdebc560ef349191b97f20d3aecad4727de2d6b212c82"
+    },
+    "audit_implementation_sha256": "3580f8d79f648172ce8d71f364c363b139fa78fdf26b91b05c1647932d301eef",
+    "independent_metric_audit": "Every original target, code/item rank, beam, score and user audited.",
+    "durability": "Selected model and complete predictions independently checksum-verified"
+  },
+  "limitations": [
+    "Single training seed; no cross-seed robustness or statistical-equivalence claim.",
+    "Released-ID upstream tokenizer fitting provenance is incomplete.",
+    "Original-item diagnostics use a declared arbitrary tie rule, not a learned reranker.",
+    "Missing baseline/fresh-tokenizer/LC-Rec measurements are not implied by this replay."
+  ]
+}

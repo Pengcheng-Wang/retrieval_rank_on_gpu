@@ -16,8 +16,18 @@ model rules, or client-side serving load generator. The paper's 23.7x QPS and
 
 ## 📚 Study guide
 
+The separate **LETTER semantic-ID recommendation track is in execution**.
+Its paper targets are not measured results. The
+[execution harness](docs/letter-execution.md) records input/runtime gates,
+resume corrections and remaining model-access requirements.
+
 | Document | Purpose |
 | --- | --- |
+| [LETTER paper study](docs/letter-study.md) | Method, official-code audit, recovered author recipes, dataset integrity and reproduction boundaries |
+| [LETTER reproduction plan](docs/superpowers/plans/2026-10-27-letter-reproduction.md) | Gated released-ID replay, controlled retraining, ablations, AML execution and result criteria |
+| [LETTER source and protocol manifest](configs/letter-reproduction-v1.json) | Pinned sources, data hashes, published targets and planned settings; not experiment results |
+| [LETTER execution harness](docs/letter-execution.md) | Verified author-code adapters, isolated legacy environment, full input audits and preemption-safe continuation |
+| [LETTER initial measured result](docs/letter-results.md) | First completed Instruments released-ID replay, paper comparison, original-item diagnostic and remaining coverage |
 | [SilverTorch explained](docs/silvertorch-study.md) | Architecture, algorithms, model choices, and what the published gains mean |
 | [Benchmark protocol](docs/benchmark-protocol.md) | Fairness, metrics, datasets, numerical contracts, and experiment matrix |
 | [Upstream audit](docs/upstream-audit.md) | Public-code boundaries and independently reproduced correctness hazards |

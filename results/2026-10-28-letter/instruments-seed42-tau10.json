@@ -1,0 +1,63 @@
+{
+  "status": "verified_single_cell",
+  "study_status": "partial",
+  "dataset": "Instruments",
+  "method": "Ordinary-CE control on the same author-released LETTER IDs",
+  "not_a_semantic_only_tiger_baseline": true,
+  "seed": 42,
+  "temperature": 1.0,
+  "learning_rate": 0.0005,
+  "world_size": 2,
+  "per_device_batch_size": 256,
+  "gradient_accumulation_steps": 2,
+  "selected_epoch": 72,
+  "stopped_epoch": 92,
+  "global_step": 11868,
+  "checkpoint_selection": "minimum validation loss; patience20",
+  "test_users": 24772,
+  "num_beams": 20,
+  "all_users_once": true,
+  "seen_item_exclusion": false,
+  "code_metrics": {
+    "recall@1": 0.061036654287098334,
+    "ndcg@1": 0.061036654287098334,
+    "recall@5": 0.08832552882286453,
+    "ndcg@5": 0.07485723459700105,
+    "recall@10": 0.10980138866462134,
+    "ndcg@10": 0.08174633425964713
+  },
+  "original_item_diagnostic": {
+    "tie_rule": "Preserve code rank; expand each code to ascending original item IDs; deduplicate items and truncate to K.",
+    "recall@1": 0.05994671403197158,
+    "ndcg@1": 0.05994671403197158,
+    "recall@5": 0.08792184724689166,
+    "ndcg@5": 0.0742203146201165,
+    "recall@10": 0.10907476182787018,
+    "ndcg@10": 0.08100772620494019
+  },
+  "paper_reference_not_measured_here": {
+    "source": "https://arxiv.org/html/2405.07314v3#S4.T2",
+    "row": "Instruments, all tokenizer regularizers, ordinary generation loss",
+    "recall@10": 0.1092,
+    "ndcg@10": 0.0819
+  },
+  "timing_scope": {
+    "trainer_final_invocation_seconds": 3154.7437890020083,
+    "not_full_training_wall_time": true,
+    "reason": "The run resumed after operational rendezvous isolation; the completion receipt times the final invocation only.",
+    "evaluation_loop_seconds": 1633.9481033860066
+  },
+  "provenance": {
+    "author_commit": "8d0154e28de37dbb6e24871c508ad8ddb1921cda",
+    "training_and_native_evaluation_harness_commit": "405095d",
+    "model_sha256": "b7746637a33923b7dcdcdc91bf41c0682af5c10cd42292e1bb018f099e4dd918",
+    "predictions_sha256": "7bf3525ecd38f0c32b72c5625bda52fee20f117fadde71ff4758988fdcfcd0a9",
+    "durability": "Selected model and complete per-user predictions verified in the designated private durable store."
+  },
+  "limitations": [
+    "Single training seed; no cross-seed robustness or equivalence claim.",
+    "Same released full-LETTER ID bank as the temperature0.7 arm, not newly trained semantic-only IDs.",
+    "Original-item diagnostics use a declared target-independent tie rule.",
+    "The full paper reproduction remains incomplete."
+  ]
+}

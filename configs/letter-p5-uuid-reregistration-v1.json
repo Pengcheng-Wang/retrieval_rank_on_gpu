@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "kind": "letter_p5_uuid_reregistration_v1",
+  "deployment_status": "nondeployable-historical-evidence-superseded-by-v2",
+  "cause": "job-wide container replacement changed every physical GPU UUID",
+  "transition_cells": [
+    "Beauty-CID-s42",
+    "Instruments-TID-s42",
+    "Beauty-TID-s42",
+    "Yelp-TID-s42"
+  ],
+  "preserve_exactly": [
+    "scientific contract",
+    "cell identity",
+    "owner host",
+    "physical GPU index",
+    "microbatch",
+    "gradient accumulation",
+    "accepted full-state checkpoint bytes"
+  ],
+  "replace": [
+    "GPU UUID",
+    "lease ID",
+    "ownership epoch",
+    "ownership certificate",
+    "worker registration",
+    "publication transport namespace"
+  ],
+  "required_replacement_gpu_proofs": [
+    "cold_save_reload_bitwise_equal",
+    "next_sampled_rows_and_losses_equal",
+    "populated_optimizer_memory_pass",
+    "complete_20beam_geometry_pass"
+  ],
+  "publication_generation_policy": "reset-to-zero-at-verified-old-accepted-head",
+  "single_writer": true,
+  "execution": "offline-control-only-no-learner-or-gpu-launch"
+}

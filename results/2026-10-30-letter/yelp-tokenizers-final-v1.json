@@ -1,0 +1,75 @@
+{
+  "status": "pass",
+  "dataset": "Yelp",
+  "variants": {
+    "semantic": {
+      "bundle": "/scratch/letter_20261028_a77dfb13/rq-bank-incoming/node-1/openllama-v2-rq-Yelp-semantic-s42-completed-87e42c4c37c98a86",
+      "bundle_name": "openllama-v2-rq-Yelp-semantic-s42-completed-87e42c4c37c98a86",
+      "lineage": {
+        "rq_run_id": "openllama-v2-rq-Yelp-semantic-s42",
+        "run_config_sha256": "c793ac284c5e713d8f01b199b620b4c8874d5ca4748a9481a1045bb6af4899c5",
+        "run_completed_sha256": "382ca8ccdbc555f41a51167d40732b3077bf726d5f87e5065e5882bf960450ef",
+        "bundle_completed_sha256": "58e772d85658facb5b8aa964e3d26d47f395b49e9bb20ea3c16a35374341700d",
+        "final_epoch": 20000,
+        "final_state_sha256": "9df82f887203b5267919cbd4b1c7154790bd21d807a5c53af7c5639b8cd31e15",
+        "selected_epoch": 12000,
+        "selected_checkpoint": "checkpoints/epoch-12000",
+        "selected_state_sha256": "a7edbf646e081a22c971fd5559a5623a5963f9b3d73603d23d6cb7448ca9a3a6",
+        "selected_receipt_sha256": "bee55b260d5ef5702838907f4d91bba68bef7bfc318f0cf655bd35c549e4313f",
+        "index_sha256": "5bd01b6a8e96b3062e777f0fdd099bca44a5854fbc70f1079542475d5475c328",
+        "codes_sha256": "a75a1a7cfc3772162690ac7c2727405a9b0e9e2d3b031e3ffacb1b5d21d33fd1",
+        "export_sha256": "afbc67cb21b71e54230e678a3d923333d43ec30de5459c30421084133eb61ece",
+        "collisions": {
+          "items": 20033,
+          "unique_sids": 19180,
+          "excess_collision_items": 853,
+          "collision_groups": 396,
+          "items_in_collision_groups": 1249,
+          "largest_group": 65
+        }
+      },
+      "durable_proof": {
+        "bank_receipt_sha256": "c98f824417f7b0bf507ac1d6fd684ae8063419e7a56dd0a2b411fd2fc193d547",
+        "bundle_completed_sha256": "58e772d85658facb5b8aa964e3d26d47f395b49e9bb20ea3c16a35374341700d",
+        "run_completed_sha256": "382ca8ccdbc555f41a51167d40732b3077bf726d5f87e5065e5882bf960450ef",
+        "verification": "all durable bundle bytes checked under node0 shared bank lock"
+      },
+      "elapsed_seconds": 4.070497512817383
+    },
+    "full": {
+      "bundle": "/scratch/letter_20261028_a77dfb13/rq-bank-incoming/node-1/openllama-v2-rq-Yelp-full-s42-completed-4b7e876d8e28dc41",
+      "bundle_name": "openllama-v2-rq-Yelp-full-s42-completed-4b7e876d8e28dc41",
+      "lineage": {
+        "rq_run_id": "openllama-v2-rq-Yelp-full-s42",
+        "run_config_sha256": "b423a12a5fc87b9b9a0920009da22ce18ff45c63f3354c91318adac7ae43e252",
+        "run_completed_sha256": "fcd2ece747ac3935e37452666cb6a4fc7ad02253b6645125d4ac3d65bc9cdff2",
+        "bundle_completed_sha256": "0943cb45a29e83a21d14803e18785c83ecb074d9ea53ffced08305e091ecbebf",
+        "final_epoch": 20000,
+        "final_state_sha256": "3dc65163f9a894a222280c8ebd3c200edb8a518148650f88df23cab2903702b8",
+        "selected_epoch": 16000,
+        "selected_checkpoint": "checkpoints/epoch-16000",
+        "selected_state_sha256": "3512c975a073f19014f4fd77ad1041f2b1a2945a9f1d9743b952016125a6bb16",
+        "selected_receipt_sha256": "ef3ff6b0295dd46fbaa7380390ab2129ae5da534b176aa261693fc22d91ff1aa",
+        "index_sha256": "5ef3690bb69c293d1b2d188dfc81242a43dbb0e66c8995a645eb8ab13bbd813d",
+        "codes_sha256": "8ee838bb791b376b8ac2bf93196613782b29f5742d116379e14a4ac5d87ede83",
+        "export_sha256": "16420fb3e371b4e215b992cf81b1d0798f44d109e220c6de14a7d9d766d438c2",
+        "collisions": {
+          "items": 20033,
+          "unique_sids": 19201,
+          "excess_collision_items": 832,
+          "collision_groups": 415,
+          "items_in_collision_groups": 1247,
+          "largest_group": 65
+        }
+      },
+      "durable_proof": {
+        "bank_receipt_sha256": "3d9fa219f0c631613901d581383dbbbdf84c6d9ec959d397fdc1af00fcd10136",
+        "bundle_completed_sha256": "0943cb45a29e83a21d14803e18785c83ecb074d9ea53ffced08305e091ecbebf",
+        "run_completed_sha256": "fcd2ece747ac3935e37452666cb6a4fc7ad02253b6645125d4ac3d65bc9cdff2",
+        "verification": "all durable bundle bytes checked under node0 shared bank lock"
+      },
+      "elapsed_seconds": 2.9085824489593506
+    }
+  },
+  "audit_source_sha256": "4d7c04a87f2d0e178b264d6818df2a8939d8c537ead80245e88f39f40efc0934"
+}

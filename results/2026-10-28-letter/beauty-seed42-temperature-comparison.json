@@ -1,0 +1,118 @@
+{
+  "dataset": "Beauty",
+  "split": "test",
+  "training_seed": 42,
+  "left_temperature": 0.7,
+  "right_temperature": 1.0,
+  "difference_direction": "left_minus_right",
+  "paired_users": 22363,
+  "bootstrap_seed": 20261027,
+  "bootstrap_replicates": 2000,
+  "method": "paired-user percentile bootstrap; marginal unadjusted 95% intervals",
+  "user_order": "lexicographic string UID",
+  "assumptions": [
+    "One paired target per user; no missing, dropped or duplicate users.",
+    "User resampling conditional on these two trained models; no normality assumption.",
+    "Does not include training-seed uncertainty or establish population/production equivalence.",
+    "Shared-item and other cross-user dependence is not separately modeled.",
+    "No p-value or family-wise significance claim; all prespecified metrics are reported."
+  ],
+  "left_predictions_sha256": "a03ad6e30f952ebd4edff58eab88f15ff71dd4b9c00703260e0ea7c5d1f2ec62",
+  "right_predictions_sha256": "545ebc1721e3f66c86607e3c4d90f5e6fa38b4b6a10eb0ebd27f2991f9659c66",
+  "metrics": {
+    "code": {
+      "recall@5": {
+        "left_mean": 0.04073693153870232,
+        "right_mean": 0.04328578455484506,
+        "difference": -0.002548853016142736,
+        "ci_low": -0.005054107230693556,
+        "ci_high": -0.000178866878325806,
+        "difference_sd": 0.184699447346302,
+        "wins": 353,
+        "ties": 21600,
+        "losses": 410
+      },
+      "recall@10": {
+        "left_mean": 0.06421320931896436,
+        "right_mean": 0.06774583016589902,
+        "difference": -0.003532620846934669,
+        "ci_low": -0.006483924339310468,
+        "ci_high": -0.0008037830344765969,
+        "difference_sd": 0.21820393222721418,
+        "wins": 493,
+        "ties": 21298,
+        "losses": 572
+      },
+      "ndcg@5": {
+        "left_mean": 0.027076564392390264,
+        "right_mean": 0.028373489001243188,
+        "difference": -0.0012969246088529551,
+        "ci_low": -0.002990600612715436,
+        "ci_high": 0.00036549912361156925,
+        "difference_sd": 0.12374619506209995,
+        "wins": 546,
+        "ties": 21236,
+        "losses": 581
+      },
+      "ndcg@10": {
+        "left_mean": 0.03462700327030165,
+        "right_mean": 0.03624599694712864,
+        "difference": -0.0016189936768269695,
+        "ci_low": -0.0032777001285797893,
+        "ci_high": -3.993210144545492e-05,
+        "difference_sd": 0.12085822354655361,
+        "wins": 847,
+        "ties": 20565,
+        "losses": 951
+      }
+    },
+    "item": {
+      "recall@5": {
+        "left_mean": 0.040468631221213615,
+        "right_mean": 0.04274918391986764,
+        "difference": -0.002280552698654027,
+        "ci_low": -0.004830523632786299,
+        "ci_high": 4.583463757098169e-05,
+        "difference_sd": 0.18348840411989564,
+        "wins": 351,
+        "ties": 21610,
+        "losses": 402
+      },
+      "recall@10": {
+        "left_mean": 0.06394490900147565,
+        "right_mean": 0.06738809640924742,
+        "difference": -0.003443187407771766,
+        "ci_low": -0.006440325537718553,
+        "ci_high": -0.000715467513303224,
+        "difference_sd": 0.21800032683297604,
+        "wins": 493,
+        "ties": 21300,
+        "losses": 570
+      },
+      "ndcg@5": {
+        "left_mean": 0.026853591337959358,
+        "right_mean": 0.028041398185793976,
+        "difference": -0.0011878068478346421,
+        "ci_low": -0.0028574870420092413,
+        "ci_high": 0.00048365398993991174,
+        "difference_sd": 0.12307498872494257,
+        "wins": 541,
+        "ties": 21251,
+        "losses": 571
+      },
+      "ndcg@10": {
+        "left_mean": 0.03440874521863997,
+        "right_mean": 0.03597139415221784,
+        "difference": -0.0015626489335778392,
+        "ci_low": -0.003212624829446868,
+        "ci_high": 2.3549225657043986e-05,
+        "difference_sd": 0.12027872269282985,
+        "wins": 845,
+        "ties": 20574,
+        "losses": 944
+      }
+    }
+  },
+  "analysis_sha256": "cd45696d036f04412aef0702c8944502ee247ccab8ee61750974e16a562c1b94",
+  "numpy_version": "1.24.4"
+}

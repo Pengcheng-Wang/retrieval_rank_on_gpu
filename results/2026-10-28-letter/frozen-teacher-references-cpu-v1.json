@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "kind": "frozen_32d_cf_teacher_reference",
+  "status": "complete",
+  "scope": "Original frozen teacher only; prerequisite for later paired Table 3 replacement, not Table 1 SASRec-50D or completed replacement results.",
+  "seed": 42,
+  "training_epochs_completed": 201,
+  "new_training_performed": false,
+  "selection": "Original maximum full-catalog validation NDCG@10, earliest strict best; no test-based reselection.",
+  "runtime": {
+    "python": "3.10.21",
+    "torch": "1.13.1+cu117",
+    "numpy": "1.24.4",
+    "device": "cpu",
+    "precision": "float32",
+    "threads": 2,
+    "interop_threads": 1
+  },
+  "history_limit": 50,
+  "seen_item_exclusion": false,
+  "candidate_set": "All original real items; padding excluded.",
+  "tie_rule": "original_item_id_ascending",
+  "test_access": "Separate evaluation after all three validation-only admission probes passed; original fitting receipts are immutable.",
+  "future_comparison": "Keep these exact teacher identities and CPU float32 scoring semantics; reuse the frozen references, not a new selected baseline.",
+  "manifest_sha256": "024086c0610a2a9a26b89688462b5bb63084d9879f38f4f280c1ed96bb406aae",
+  "evaluation_config_sha256": "c5a085ce70b8fb064a56f46b8c45ee1f53c2f2b6bd24176a1c67a36bf2ef4802",
+  "evaluation_completed_sha256": "d63900145c9380ad7fa59edbe863afa5ecb57bac4322703d7adcd6409c96685e",
+  "evaluator_sha256": {
+    "mechanisms.py": "4e8fc56c79d0f75e48deaa69a129278321794950ecb96b6eb4e1546f0efe95a8",
+    "cf.py": "6755dce663bc317dd8c910b5dc0afcbec53e461f568847f2da9cba8b358165d9",
+    "prepare.py": "997e5c7dd572c8bc8084809fd442b0f3f3010b7c28a430892e665dc3d1b40f1e",
+    "protocol.py": "b035963ab39926c0a992443021b46ebb5e3bc2236346ad6780394aa2ac410b22"
+  },
+  "runner_sha256": "2e4256119a96e631df2e9b19b61f8210af1c4c95df01fa118799f25a994d02a4",
+  "durability": "Predictions, source, admission and access receipts verified in a serialized node-zero export.",
+  "results": {
+    "Instruments": {
+      "users": 24772,
+      "metrics": {
+        "recall@5": 0.05744388826093977,
+        "recall@10": 0.08130146940093654,
+        "ndcg@5": 0.03501328023285779,
+        "ndcg@10": 0.0426884106182929
+      },
+      "seen_item_exclusion": false,
+      "tie_rule": "original_item_id_ascending",
+      "history_limit": 50,
+      "device": "cpu",
+      "predictions_sha256": "a8c4e57817561c59345950a5ac739a27ad798e6321fbcf9a6a53683fba7ad8e1",
+      "items": 9922,
+      "selected_epoch": 80,
+      "teacher_sha256": "1f3f6a1936c2fb38f6a6d2bbb58615f8348d988adc0360751834e1e5f134f308",
+      "independently_recomputed": true,
+      "wall_seconds": 15.423847675003344
+    },
+    "Beauty": {
+      "users": 22363,
+      "metrics": {
+        "recall@5": 0.02164289227742253,
+        "recall@10": 0.041631265930331354,
+        "ndcg@5": 0.01290132023693872,
+        "ndcg@10": 0.019308868374027174
+      },
+      "seen_item_exclusion": false,
+      "tie_rule": "original_item_id_ascending",
+      "history_limit": 50,
+      "device": "cpu",
+      "predictions_sha256": "2e8e4c752aa4f3ccfc01260395ef4a7c6f1d5f524d5fd5e5b79e2d63f39cf2f2",
+      "items": 12101,
+      "selected_epoch": 180,
+      "teacher_sha256": "edaf813f236dcaf6c93b5afa351df98ed9a3f7a888f15d1825f89e46361a0454",
+      "independently_recomputed": true,
+      "wall_seconds": 16.564015398005722
+    },
+    "Yelp": {
+      "users": 30431,
+      "metrics": {
+        "recall@5": 0.018139397325096118,
+        "recall@10": 0.032992671946370476,
+        "ndcg@5": 0.01131960444068165,
+        "ndcg@10": 0.016091683985976022
+      },
+      "seen_item_exclusion": false,
+      "tie_rule": "original_item_id_ascending",
+      "history_limit": 50,
+      "device": "cpu",
+      "predictions_sha256": "70d76e3492567a90ea70706a79b716cdd581df88f7b6993a5f7d445248cf9f84",
+      "items": 20033,
+      "selected_epoch": 201,
+      "teacher_sha256": "88be959b96f7b920a8ffa37e9301f22a78576684a814564824ac7e2a4c81be89",
+      "independently_recomputed": true,
+      "wall_seconds": 35.84425364798517
+    }
+  }
+}

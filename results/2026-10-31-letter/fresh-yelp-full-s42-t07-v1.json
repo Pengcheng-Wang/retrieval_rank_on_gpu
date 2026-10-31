@@ -1,0 +1,118 @@
+{
+  "status": "pass",
+  "dataset": "Yelp",
+  "variant": "full",
+  "seed": 42,
+  "temperature": 0.7,
+  "test_users": 30431,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.007656665899904703,
+      "ndcg@1": 0.007656665899904703,
+      "recall@5": 0.025237422365351123,
+      "ndcg@5": 0.016362454147126473,
+      "recall@10": 0.04156945220334527,
+      "ndcg@10": 0.02162030270865378
+    },
+    "item": {
+      "recall@1": 0.007393776083598961,
+      "ndcg@1": 0.007393776083598961,
+      "recall@5": 0.022345634385987974,
+      "ndcg@5": 0.01485021610755256,
+      "recall@10": 0.036903157963918375,
+      "ndcg@10": 0.019546805204791736
+    }
+  },
+  "training_epochs": 116,
+  "selected_epoch": 96.0,
+  "validation_evaluations_checked": 116,
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 16000,
+  "compatibility_corrections": 0,
+  "export_corrections": 0,
+  "lineage": {
+    "kind": "fresh-id-compatible-rebuild",
+    "track_id": "letter-openllama7b-v2-method-replication",
+    "claim_type": "compatible_backbone_method_replication",
+    "synthetic_fixture": false,
+    "exact_original_llama1_reproduction": false,
+    "dataset": "Yelp",
+    "variant": "full",
+    "semantic_encoder": {
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "revision": "e5961def23172a2384543940e773ab676033c963",
+      "dimension": 4096,
+      "dtype": "float32",
+      "role": "item semantic encoder only; NOT the downstream T5 generator"
+    },
+    "downstream_generator": {
+      "backend": "native LETTER-TIGER",
+      "initialization": "author random T5 configuration",
+      "d_model": 128,
+      "d_ff": 1024,
+      "d_kv": 64,
+      "num_heads": 6,
+      "num_layers": 4,
+      "dropout_rate": 0.1,
+      "max_history_items": 20,
+      "model_max_length": 512
+    },
+    "method_model_identity_applies_to": "semantic_encoder_only_in_this_T5_track",
+    "method_spec_sha256": "f7ddc830ee5e96ac4e9a8d8395d1bb0cc66d1104cf350e98c73688002ab6fa2f",
+    "execution_sha256": "fceeeefb3c28b689d50ba25ee9810211478a1cdb3cb144ae2a11dcf0ba70990a",
+    "tokenizer_recipe_sha256": "0b85ba628c9a7f679472f9bdb1d228528cb9933df750c66a552b168ece9c7482",
+    "input_provenance": {
+      "semantic_sha256": "662eb444a07b4575a6a0cdecca38a0432477ef924b0ea3458f3790df058b3fa4",
+      "embedding_receipt_sha256": "484cc127d330cdc76b9a64d4d335c8fd1a55360f7983bd2419a4752a2aead566",
+      "semantic_config_sha256": "80de4d1ae5c4943206508d25c2325a4e30bf6245f5eeba3884d2db2eaa279ebd",
+      "semantic_completed_sha256": "f9a33026d6876314ec979f67e8527f3a95f186dfb6c874e10eb6e3c599af6360",
+      "cf_sha256": "64afe4e4ae405a35866bd0ad00c58862191900ea4368ce64e4f7ed31ce78bbcd",
+      "cf_config_sha256": "58215aa73398ed6df1fb6429966db2332cf35eb453ce5be5371ccbcf4bb9b870",
+      "cf_completed_sha256": "be093067d5fda64aff11e0d839c651042ee531db9a5b2e38c1bde0201d0ee442",
+      "teacher_sha256": "88be959b96f7b920a8ffa37e9301f22a78576684a814564824ac7e2a4c81be89"
+    },
+    "rq": {
+      "rq_run_id": "openllama-v2-rq-Yelp-full-s42",
+      "run_config_sha256": "b423a12a5fc87b9b9a0920009da22ce18ff45c63f3354c91318adac7ae43e252",
+      "run_completed_sha256": "fcd2ece747ac3935e37452666cb6a4fc7ad02253b6645125d4ac3d65bc9cdff2",
+      "bundle_completed_sha256": "0943cb45a29e83a21d14803e18785c83ecb074d9ea53ffced08305e091ecbebf",
+      "final_epoch": 20000,
+      "final_state_sha256": "3dc65163f9a894a222280c8ebd3c200edb8a518148650f88df23cab2903702b8",
+      "selected_epoch": 16000,
+      "selected_checkpoint": "checkpoints/epoch-16000",
+      "selected_state_sha256": "3512c975a073f19014f4fd77ad1041f2b1a2945a9f1d9743b952016125a6bb16",
+      "selected_receipt_sha256": "ef3ff6b0295dd46fbaa7380390ab2129ae5da534b176aa261693fc22d91ff1aa",
+      "index_sha256": "5ef3690bb69c293d1b2d188dfc81242a43dbb0e66c8995a645eb8ab13bbd813d",
+      "codes_sha256": "8ee838bb791b376b8ac2bf93196613782b29f5742d116379e14a4ac5d87ede83",
+      "export_sha256": "16420fb3e371b4e215b992cf81b1d0798f44d109e220c6de14a7d9d766d438c2",
+      "collisions": {
+        "items": 20033,
+        "unique_sids": 19201,
+        "excess_collision_items": 832,
+        "collision_groups": 415,
+        "items_in_collision_groups": 1247,
+        "largest_group": 65
+      }
+    },
+    "durable_proof": {
+      "bank_receipt_sha256": "3d9fa219f0c631613901d581383dbbbdf84c6d9ec959d397fdc1af00fcd10136",
+      "bundle_completed_sha256": "0943cb45a29e83a21d14803e18785c83ecb074d9ea53ffced08305e091ecbebf",
+      "run_completed_sha256": "fcd2ece747ac3935e37452666cb6a4fc7ad02253b6645125d4ac3d65bc9cdff2",
+      "verification": "all durable bundle bytes checked under node0 shared bank lock"
+    },
+    "index_sha256": "5ef3690bb69c293d1b2d188dfc81242a43dbb0e66c8995a645eb8ab13bbd813d",
+    "codes_sha256": "8ee838bb791b376b8ac2bf93196613782b29f5742d116379e14a4ac5d87ede83"
+  },
+  "model_sha256": "a525042a296c4c5b253e9b92aae2ade273c138d72b2fa8875d56d1cdd2c47825",
+  "predictions_sha256": "3b174169dd07468524a24ec2f8a4350e9f8f11b9dfd6fd81169db32f9b4fe4d9",
+  "result_sha256": "b240d3de5f30470cd5f8c453069235867e4e1092ce081e1c8dfb6ba39458f6eb",
+  "bank_receipt_files_sha256": {
+    "runs/openllama-v2-fresh-t5-Yelp-full-s42-t07-v1": "c8a15b21d8a27ee0b63d5640505eb9648c0a4cbd73f9fd91adb257a99fce5b9d",
+    "evaluations/openllama-v2-fresh-t5-Yelp-full-s42-t07-v1/evaluation-attempt-001": "115f05f8a47b28ac071c172ae3192d02d8570f15f0960bf10f8589734a06802f",
+    "results/openllama-v2-fresh-t5-Yelp-full-s42-t07-v1": "b27ae9584d35af7a764464feb40242273b589711c107c2e67cb91f3683832716"
+  },
+  "durable_receipts_match_immutable_local_inventories": true,
+  "model_inference_performed": false,
+  "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533"
+}

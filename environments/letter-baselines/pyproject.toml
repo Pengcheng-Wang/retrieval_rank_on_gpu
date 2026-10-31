@@ -1,0 +1,41 @@
+[project]
+name = "letter-conventional-baselines-env"
+version = "0.1.0"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    "torch==1.13.1+cu117; sys_platform == 'linux'",
+    "numpy==1.24.4",
+    "scipy==1.10.1",
+    "scikit-learn==1.2.2",
+    "recbole==1.2.0",
+    "pandas==1.5.3",
+    "PyYAML==6.0.1",
+    "colorlog==4.7.2",
+    "colorama==0.4.4",
+    "tensorboard==2.13.0",
+    "protobuf==4.24.4",
+    "grpcio==1.57.0",
+    "thop==0.1.1.post2209072238",
+    "tabulate==0.9.0",
+    "plotly==5.18.0",
+    "texttable==1.7.0",
+    "psutil==5.9.8",
+    "ray==2.6.3",
+    "pydantic==1.10.13",
+    "setuptools==68.2.2",
+    "wheel==0.41.2",
+    "tqdm==4.66.1",
+    "pytest==8.3.5",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu117"
+url = "https://download.pytorch.org/whl/cu117"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu117" }
+recbole = { git = "https://github.com/RUCAIBox/RecBole", rev = "362d31f00af801d7d99bc635c902d1df1405e79d" }
+
+[tool.uv]
+environments = ["sys_platform == 'linux'"]

@@ -1,0 +1,1116 @@
+{
+  "schema_version": 1,
+  "status": "independently_verified_metrics_with_explicit_durability_status",
+  "study_status": "in_progress",
+  "date": "2026-10-29",
+  "model_inference_performed_for_independent_audits": false,
+  "private_audit_packet": {
+    "files": 19,
+    "durability": "checksum_verified",
+    "contents": "Exact audit programs, helper dependencies, producer summaries, independent verification records and capture-time durability status"
+  },
+  "fresh_t5_instruments_diversity": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh native20k tokenizer, compatible semantic encoder, random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Instruments",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "diversity",
+    "alpha": 0.0,
+    "beta": 0.0001,
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 20000,
+    "semantic_encoder": {
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "revision": "e5961def23172a2384543940e773ab676033c963",
+      "role": "item semantic encoder only, not the downstream T5 generator"
+    },
+    "generator": {
+      "initialization": "author random T5 configuration",
+      "layers": 4,
+      "d_model": 128,
+      "d_ff": 1024,
+      "heads": 6,
+      "d_kv": 64,
+      "vocabulary": "native observed SID-token inventory plus original tokenizer vocabulary"
+    },
+    "training_epochs": 98,
+    "training_updates": 12642,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 78,
+    "selected_checkpoint": "checkpoint-10062",
+    "validation_evaluations_checked": 98,
+    "test_users": 24772,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.06087518165670919,
+      "ndcg@1": 0.06087518165670919,
+      "recall@5": 0.08784111093169708,
+      "ndcg@5": 0.07444290188413252,
+      "recall@10": 0.10798482157274342,
+      "ndcg@10": 0.08091223399975726
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.05962376877119328,
+      "ndcg@1": 0.05962376877119328,
+      "recall@5": 0.08743742935572421,
+      "ndcg@5": 0.07374345018894612,
+      "recall@10": 0.10754077183917327,
+      "ndcg@10": 0.08018779152909594
+    },
+    "index_sha256": "1ec3c957d5d1f1c2ffff1afa3b8d471c1cf7af136229b34f174775a43414102a",
+    "model_sha256": "f73530d380633c0bfec9ff8331aa12dbff19c34056878dfbf920c5c07c5a2a20",
+    "predictions_sha256": "5ff4a4dba8c90cabd7daddd28ebbb21a5f43a0a8267b60353949f0a5ef56e1da",
+    "result_sha256": "d0b3f83aa2e0c858224a947bbeab40333906e955b318b8bb27ff6a322b40e20e",
+    "independent_verification_sha256": "d5aece65963b0366688d2c58a612d6fc2bd416c3d4d406cc736995b7e74d653a",
+    "audit_source_sha256": "451ea6514717ff8d6a82f10d669665d65ac6d9c017df00c251c92a1710d07ad6",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
+  "fresh_t5_instruments_semantic": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh semantic-only tokenizer, compatible semantic encoder and random native T5 generator; guarded repaired-RQ continuation disclosed; not original-LLaMA1 reproduction or native bitwise continuation past the crash",
+    "dataset": "Instruments",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "semantic",
+    "tokenizer_objectives": {
+      "alpha": 0.0,
+      "beta": 0.0
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 18000,
+    "tokenizer_index_sha256": "66954b900105db8235951feb87f82326250ef1cac49d984ebae1f3a4740c4a57",
+    "tokenizer_compatibility": {
+      "policy": "rq-kmeans-cdf-endpoint-v1",
+      "classification": "compatibility correction at undefined native indexing",
+      "not_claimed": "bitwise identity with a native execution past its crash",
+      "base_epoch": 16400,
+      "corrections": 1,
+      "correction_phase": "training",
+      "correction_epoch": 16401,
+      "validation_corrections": 0,
+      "export_corrections": 0,
+      "failed_tasks": 0
+    },
+    "training_epochs": 99,
+    "training_updates": 12771,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 79,
+    "selected_checkpoint": "checkpoint-10191",
+    "validation_evaluations_checked": 99,
+    "test_users": 24772,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.05942192798320685,
+      "ndcg@1": 0.05942192798320685,
+      "recall@5": 0.08626675278540287,
+      "ndcg@5": 0.07295003345281159,
+      "recall@10": 0.10786371709995156,
+      "ndcg@10": 0.07989141342895875
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.058170515097690945,
+      "ndcg@1": 0.058170515097690945,
+      "recall@5": 0.08594380752462458,
+      "ndcg@5": 0.07229675828690355,
+      "recall@10": 0.10750040368157597,
+      "ndcg@10": 0.07922022366844841
+    },
+    "full_minus_semantic_same_seed_temperature": {
+      "paired_users": 24772,
+      "bootstrap_seed": 20261027,
+      "bootstrap_replicates": 2000,
+      "code_recall@10": {
+        "difference": 0.0015743581462942032,
+        "ci_low": -0.00121205393185855,
+        "ci_high": 0.0045222428548361
+      },
+      "code_ndcg@10": {
+        "difference": 0.000896553335654201,
+        "ci_low": -0.0007801053858282108,
+        "ci_high": 0.0025628963342125078
+      },
+      "item_recall@10": {
+        "difference": 0.0012917810431131924,
+        "ci_low": -0.0014936218310996287,
+        "ci_high": 0.004359761020507024
+      },
+      "item_ndcg@10": {
+        "difference": 0.0008438535408335632,
+        "ci_low": -0.0008104580505881361,
+        "ci_high": 0.0024950284792354675
+      },
+      "interpretation": "All marginal intervals include zero; this seed does not establish a recommendation gain from the full tokenizer over semantic-only.",
+      "comparison_sha256": "3d8deebe4aae030e2bee2e91b033597827253cb7d8589dca952b2afd63a3026b"
+    },
+    "model_sha256": "4bf40fdb4f9361246a6e25b0568ed266842867427eaaeece1ee6098737cc18ac",
+    "predictions_sha256": "4476a05e7ef1b029adb74f2f353e994f4e8b296b6e6daa2c655b8f44584ab46a",
+    "result_sha256": "119b544b8712f1ba56e5f661a96fc37d1fe97db4c5ea895111430d07c4cae663",
+    "independent_verification_sha256": "2bab89cc854d5b3618151201726a31be5f5fe2213a2fb910dbe133308d11ef4c",
+    "audit_source_sha256": "f1b758c9e4bafb388607b2d7df4f30515b2962e6b55c4fec2d9ab56855c07319",
+    "private_evidence_bundle": "verified-results/fresh-instruments-semantic-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
+  "fresh_t5_instruments_cf": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh semantic-plus-CF tokenizer, compatible semantic encoder and random native T5 generator; guarded repaired-RQ continuation disclosed; not original-LLaMA1 reproduction or native bitwise continuation past the crash",
+    "dataset": "Instruments",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "cf",
+    "tokenizer_objectives": {
+      "alpha": 0.02,
+      "beta": 0.0
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 18000,
+    "tokenizer_index_sha256": "cbf2aeaf8b954bdd2358ebfdad16d8cecd30a6e77de49c23b8b1c77c0806e3a2",
+    "tokenizer_compatibility": {
+      "policy": "rq-kmeans-cdf-endpoint-v1",
+      "classification": "compatibility correction at undefined native indexing",
+      "not_claimed": "bitwise identity with a native execution past its crash",
+      "base_epoch": 16400,
+      "corrections": 1,
+      "correction_phase": "training",
+      "correction_epoch": 16401,
+      "validation_corrections": 0,
+      "export_corrections": 0,
+      "failed_tasks": 0
+    },
+    "training_epochs": 87,
+    "training_updates": 11223,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 67,
+    "selected_checkpoint": "checkpoint-8643",
+    "validation_evaluations_checked": 87,
+    "test_users": 24772,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.0611577587598902,
+      "ndcg@1": 0.0611577587598902,
+      "recall@5": 0.08836589698046181,
+      "ndcg@5": 0.07471905275856133,
+      "recall@10": 0.10842887130631358,
+      "ndcg@10": 0.0811741068548887
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.06010818666236073,
+      "ndcg@1": 0.06010818666236073,
+      "recall@5": 0.08796221540448894,
+      "ndcg@5": 0.07408830270301624,
+      "recall@10": 0.10810592604553527,
+      "ndcg@10": 0.08057023265824446
+    },
+    "cf_minus_semantic_same_seed_temperature": {
+      "paired_users": 24772,
+      "bootstrap_seed": 20261027,
+      "bootstrap_replicates": 2000,
+      "code_recall@10": {
+        "difference": 0.0005651542063620217,
+        "ci_low": -0.002180889714193444,
+        "ci_high": 0.003431293395769417
+      },
+      "code_ndcg@10": {
+        "difference": 0.0012826934259300188,
+        "ci_low": -0.00032067712804345166,
+        "ci_high": 0.002985637701928272
+      },
+      "item_recall@10": {
+        "difference": 0.0006055223639593089,
+        "ci_low": -0.002179880510253512,
+        "ci_high": 0.0034726707573066312
+      },
+      "item_ndcg@10": {
+        "difference": 0.0013500089897961977,
+        "ci_low": -0.00024510220084811415,
+        "ci_high": 0.0030454262749372457
+      },
+      "code_ndcg@5": {
+        "difference": 0.0017690193057496551,
+        "ci_low": 0.0001262446190770694,
+        "ci_high": 0.003474868902503918
+      },
+      "item_ndcg@5": {
+        "difference": 0.0017915444161126475,
+        "ci_low": 0.0001343359321286709,
+        "ci_high": 0.003475587238591915
+      },
+      "interpretation": "Recall@10 and NDCG@10 intervals include zero; only the marginal NDCG@5 intervals exclude zero in this seed.",
+      "table2_result_sha256": "252ac9ab5042d2fc8edec03390738426a3a794c37e87bdeb651452b4ecb0f3e8"
+    },
+    "model_sha256": "2c6fd969e58fef1257a4175226f3183ed43142c621879194917e0c3c2aa99f99",
+    "predictions_sha256": "700961ee63433166b572aeec670801f3572cca97f77f9947e745c4af911bf7c1",
+    "result_sha256": "add8383e0aea51f20181ea525cb1ad1cda609bc0542f261ba95a214b8d493f52",
+    "independent_verification_sha256": "cbe03a7d1d76a22007f1d9d4c1ee0bef7659a92d6ffe67c2434e4fd369e3b966",
+    "audit_source_sha256": "c4d27aff0b47421b7d626401c084055ddf3017faf489a8ddbccd5d40c2e59beb",
+    "private_evidence_bundle": "verified-results/fresh-instruments-cf-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
+  "fresh_t5_instruments_full": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh full LETTER tokenizer, compatible semantic encoder, reconstructed CF teacher and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Instruments",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "full",
+    "tokenizer_objectives": {
+      "alpha": 0.02,
+      "beta": 0.0001
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 18000,
+    "tokenizer_index_sha256": "44048e87910d0367ebe1733e1fcec6d833f2d51b02241fc3edc5800194e82a74",
+    "training_epochs": 99,
+    "training_updates": 12771,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 79,
+    "selected_checkpoint": "checkpoint-10191",
+    "validation_evaluations_checked": 99,
+    "test_users": 24772,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.06010818666236073,
+      "ndcg@1": 0.06010818666236073,
+      "recall@5": 0.08699337962215405,
+      "ndcg@5": 0.07359770647661615,
+      "recall@10": 0.10943807524624576,
+      "ndcg@10": 0.08078796676461285
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.0589375100920394,
+      "ndcg@1": 0.0589375100920394,
+      "recall@5": 0.08654932988858388,
+      "ndcg@5": 0.07292811878571635,
+      "recall@10": 0.10879218472468917,
+      "ndcg@10": 0.0800640772092818
+    },
+    "full_minus_diversity_same_seed_temperature": {
+      "code_recall@10": 0.0014532536735023388,
+      "code_ndcg@10": -0.00012426723514441518,
+      "item_recall@10": 0.001251412885515904,
+      "item_ndcg@10": -0.00012371431981414438,
+      "interpretation": "Descriptive single-seed point differences only; Recall improves while NDCG is effectively flat/slightly lower."
+    },
+    "temperature_0p7_control": {
+      "status": "independently_verified_and_banked",
+      "training_epochs": 92,
+      "selected_epoch": 72,
+      "selected_checkpoint": "checkpoint-9288",
+      "code_metrics": {
+        "recall@5": 0.08667043436137575,
+        "recall@10": 0.10859034393670274,
+        "ndcg@5": 0.07321947684046091,
+        "ndcg@10": 0.08024902748606368
+      },
+      "original_item_diagnostic": {
+        "recall@5": 0.0864685935733893,
+        "recall@10": 0.108065557887938,
+        "ndcg@5": 0.07266544669916816,
+        "ndcg@10": 0.07958900375765099
+      },
+      "paired_user_tau0p7_minus_tau1": {
+        "users": 24772,
+        "bootstrap_seed": 20261027,
+        "bootstrap_replicates": 2000,
+        "code_recall@10": {
+          "difference": -0.0008477313095430325,
+          "ci_low": -0.003391934442112062,
+          "ci_high": 0.001695462619086065
+        },
+        "code_ndcg@10": {
+          "difference": -0.000538939278549221,
+          "ci_low": -0.001993056400583215,
+          "ci_high": 0.0009355005626702616
+        },
+        "item_recall@10": {
+          "difference": -0.0007266268367511707,
+          "ci_low": -0.0032708299693202,
+          "ci_high": 0.0018165670918779268
+        },
+        "item_ndcg@10": {
+          "difference": -0.0004750734516308583,
+          "ci_low": -0.0019352406425271963,
+          "ci_high": 0.000983413444923127
+        },
+        "interpretation": "All predeclared marginal intervals include zero; this seed does not establish a temperature0.7 benefit."
+      },
+      "model_sha256": "b7b157fb800c66af4ab31101ed2a83969cb58a638f187a3f84f683aff4372326",
+      "predictions_sha256": "a0e7996b8ba4a4835594ef5780c399a46bd367b0339b6d882c890114f4cfc085",
+      "result_sha256": "2c7cfc6ba34a28f00cd8f154b3de6686124e60277841dc0736886afd78ba61a8",
+      "independent_verification_sha256": "1b0d3b1fa6582eab2e066946fa695166358f9a4949f4820c9eb84b1dab104256",
+      "comparison_sha256": "c348fdc9d45ee198e650b3ce7d773a7c63d3070812983cc19c31a569b364c64e",
+      "private_evidence_bundle": "verified-results/fresh-instruments-full-t07-s42-v1"
+    },
+    "model_sha256": "4cb23c0f3f6845755c0d0c510c9bb772c5666ed73a2fefa22c4e4c00b635bd84",
+    "predictions_sha256": "e18ac894d46c8f66052f33a09a4db5a13bcdfacffae85978eadc5331b14dedcb",
+    "result_sha256": "b76344c10082fbe6bdd3a0ac11390942bee387e4edf38e4ed9e36478de1abafe",
+    "independent_verification_sha256": "18908efdc7e60b4415f49863cb8da3b56fa7bf97fe449fd0f3f4c063a5bb09f5",
+    "audit_source_sha256": "9c3c12b4a5d3ceeb91cf56b79fabefeaf5adeceee7fd45cf8c09224aec577827",
+    "private_evidence_bundle": "verified-results/fresh-instruments-full-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
+  "fresh_t5_beauty_semantic": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh semantic-only tokenizer, compatible semantic encoder and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Beauty",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "semantic",
+    "tokenizer_objectives": {
+      "alpha": 0.0,
+      "beta": 0.0
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 18000,
+    "tokenizer_index_sha256": "e0833f54468ca42497d6cb3b9a3c72f35033540443fda7eed176e309dec0ae73",
+    "training_epochs": 89,
+    "training_updates": 11481,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 69,
+    "selected_checkpoint": "checkpoint-8901",
+    "validation_evaluations_checked": 89,
+    "test_users": 22363,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.013280865715691098,
+      "ndcg@1": 0.013280865715691098,
+      "recall@5": 0.03805392836381523,
+      "ndcg@5": 0.02564639100925311,
+      "recall@10": 0.0593838036041676,
+      "ndcg@10": 0.032448214988325445
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.01310199883736529,
+      "ndcg@1": 0.01310199883736529,
+      "recall@5": 0.03787506148548942,
+      "ndcg@5": 0.02546945957124809,
+      "recall@10": 0.05893663640835308,
+      "ndcg@10": 0.03219112538687362
+    },
+    "model_sha256": "9141730f688d3057cf72068feb459a4d79ea255e059dde296e8d6383d00694a2",
+    "predictions_sha256": "2b2a834651915a75b659008d8ddce0760f1ae6c7c7a648252c251d64fcc59c0d",
+    "result_sha256": "a2716257e6b9ac743f7b7cb61066d0b7f216ab838d12311fc0f99f34c41082b2",
+    "independent_verification_sha256": "2cff8aaea2d09023db9dff84ce6e0ff762c0418061ffc43cfd909d21ff11b91f",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-beauty-semantic-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
+  "fresh_t5_beauty_cf": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh semantic-plus-CF tokenizer, compatible semantic encoder and random native T5 generator; exact full-state v5 recovery from an exporter rotation race; not original-LLaMA1 reproduction",
+    "dataset": "Beauty",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "cf",
+    "tokenizer_objectives": {
+      "alpha": 0.02,
+      "beta": 0.0
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 20000,
+    "tokenizer_index_sha256": "68ba0f5702f9bc1bddbb389adbead1ed5fdd19460ff579ed0334f352bcccfa2f",
+    "training_epochs": 93,
+    "training_updates": 11997,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 73,
+    "selected_checkpoint": "checkpoint-9417",
+    "validation_evaluations_checked": 93,
+    "test_users": 22363,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "recovery": {
+      "cause": "Trainer rotated a sealed checkpoint while the exporter copied it; Python aggregated source ENOENT failures as shutil.Error",
+      "drained_global_step": 11099,
+      "drained_checkpoint_complete_sha256": "a46616df7976da551b59b9e19b864060431703a6a968a99dda234432eec2a5e1",
+      "resume": "exact complete model, optimizer, scheduler, RNG and callback state",
+      "source_commit": "30a75e0",
+      "protected_pre_adoption_files": 3769,
+      "protected_pre_adoption_bytes": 21010229051,
+      "selection_unchanged": true,
+      "private_evidence_bundle": "openllama-v2/fresh-t5-v3/operational/fresh-rq-v5-recovery-result"
+    },
+    "code_metrics": {
+      "recall@1": 0.012386531324062066,
+      "ndcg@1": 0.012386531324062066,
+      "recall@5": 0.04100523185619103,
+      "ndcg@5": 0.02645920100635048,
+      "recall@10": 0.06322944148817243,
+      "ndcg@10": 0.033578587046570844
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.01220766444573626,
+      "ndcg@1": 0.01220766444573626,
+      "recall@5": 0.04082636497786522,
+      "ndcg@5": 0.026296733898658366,
+      "recall@10": 0.06305057460984662,
+      "ndcg@10": 0.03341820991870215
+    },
+    "cf_minus_semantic_same_seed_temperature": {
+      "paired_users": 22363,
+      "bootstrap_seed": 20261027,
+      "bootstrap_replicates": 2000,
+      "code_recall@10": {
+        "difference": 0.0038456378840048292,
+        "ci_low": 0.0008943343916290301,
+        "ci_high": 0.00684165809596208
+      },
+      "code_ndcg@10": {
+        "difference": 0.0011303720582454837,
+        "ci_low": -0.000562423442457644,
+        "ci_high": 0.002863096034215578
+      },
+      "item_recall@10": {
+        "difference": 0.004113938201493538,
+        "ci_low": 0.0011179179895362877,
+        "ci_high": 0.00710995841345079
+      },
+      "item_ndcg@10": {
+        "difference": 0.001227084531828618,
+        "ci_low": -0.00046597703993198373,
+        "ci_high": 0.002932058368687249
+      },
+      "interpretation": "Recall@5/10 intervals are positive; NDCG@5/10 intervals include zero. This is conditional single-seed evidence.",
+      "comparison_sha256": "18e9ef85556625c2519b5e70747b09177e245234eb00be3dcb9430abd5855a1f",
+      "private_evidence_bundle": "verified-results/fresh-beauty-cf-vs-semantic-v1"
+    },
+    "model_sha256": "8b5a397e59ba80d810e181f31705ed4402e958d41925b83bc5a840b1db30a865",
+    "predictions_sha256": "31e917c55a8ea837154ba3f132e0838ce2834191eaddac05ebc04d0cd9f81e2d",
+    "result_sha256": "e8af7fa553b3d86b65855f8b7001a91fea0abc428d028be8a4929a896532bfd8",
+    "independent_verification_sha256": "907dd45e81805159ff2d6a3649fc9a9fd353bafe1928dc71956d7c7ee174d267",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-beauty-cf-s42-t10-v1",
+    "durability": "Complete recovered run, all-user evaluation and final result receipts match immutable local inventories"
+  },
+  "fresh_t5_beauty_diversity": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh semantic-plus-diversity tokenizer, compatible semantic encoder and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Beauty",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "diversity",
+    "tokenizer_objectives": {
+      "alpha": 0.0,
+      "beta": 0.0001
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 12000,
+    "tokenizer_index_sha256": "d9726f61f2edb51369b131f23a565d3a94684091f30d3fcb8deba6645a873a42",
+    "training_epochs": 102,
+    "training_updates": 13158,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 82,
+    "selected_checkpoint": "checkpoint-10578",
+    "validation_evaluations_checked": 102,
+    "test_users": 22363,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.011984080847829003,
+      "ndcg@1": 0.011984080847829003,
+      "recall@5": 0.03952958011000313,
+      "ndcg@5": 0.025772818047232842,
+      "recall@10": 0.06018870455663373,
+      "ndcg@10": 0.03240163187314457
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.011805213969503197,
+      "ndcg@1": 0.011805213969503197,
+      "recall@5": 0.039350713231677326,
+      "ndcg@5": 0.025609555761755737,
+      "recall@10": 0.06005455439788937,
+      "ndcg@10": 0.032254613364463704
+    },
+    "diversity_minus_semantic_same_seed_temperature": {
+      "paired_users": 22363,
+      "bootstrap_seed": 20261027,
+      "bootstrap_replicates": 2000,
+      "code_recall@10": {
+        "difference": 0.0008049009524661271,
+        "ci_low": -0.002146402539909672,
+        "ci_high": 0.0035773375665161204
+      },
+      "code_ndcg@10": {
+        "difference": -0.00004658311518092115,
+        "ci_low": -0.0017508267653372441,
+        "ci_high": 0.0015296267083070938
+      },
+      "item_recall@10": {
+        "difference": 0.0011179179895362877,
+        "ci_low": -0.0018781022224209631,
+        "ci_high": 0.0038903546035862807
+      },
+      "item_ndcg@10": {
+        "difference": 0.00006348797759003554,
+        "ci_low": -0.0016626078012356058,
+        "ci_high": 0.0016658043776711978
+      },
+      "interpretation": "All Recall and NDCG intervals at5/10 include zero; this seed does not establish a downstream recommendation gain from diversity-only tokenization.",
+      "comparison_sha256": "f54d16a61355022ee6a305cf20725d61350853e0a7b0e5a9969ea9649421b380",
+      "private_evidence_bundle": "verified-results/fresh-beauty-diversity-vs-semantic-v1"
+    },
+    "model_sha256": "02522c5eb36180307170d3dcca2c75cef841fdaff56dd17870200efc288483cc",
+    "predictions_sha256": "848a45a36536ae6382dde49d1d239417fc18b6532aa6a3ceeedf5cd3a480b8d1",
+    "result_sha256": "4288d4086cf31d93c8612147ce788944b9eedecbce9ad8d41038df0159fbc96d",
+    "independent_verification_sha256": "17f17c364d4672c524bd3fb9b65a953c2598111e5ca4d48bf226bc590280a088",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-beauty-diversity-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
+  "fresh_t5_beauty_full": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh full LETTER tokenizer, compatible semantic encoder, reconstructed CF teacher and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Beauty",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "full",
+    "tokenizer_objectives": {
+      "alpha": 0.02,
+      "beta": 0.0001
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 20000,
+    "tokenizer_index_sha256": "fabf688126079a28ad0e02ed97b5bfb7b576426b9661c9a283e8f12c0f7b9c85",
+    "training_epochs": 97,
+    "training_updates": 12513,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 77,
+    "selected_checkpoint": "checkpoint-9933",
+    "validation_evaluations_checked": 97,
+    "test_users": 22363,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.013370299154854,
+      "ndcg@1": 0.013370299154854,
+      "recall@5": 0.040602781379957965,
+      "ndcg@5": 0.026995427815828178,
+      "recall@10": 0.06282699101193936,
+      "ndcg@10": 0.03412133652748771
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.013191432276528194,
+      "ndcg@1": 0.013191432276528194,
+      "recall@5": 0.04033448106246926,
+      "ndcg@5": 0.02677104904013593,
+      "recall@10": 0.06255869069445065,
+      "ndcg@10": 0.03389434396241447
+    },
+    "full_minus_semantic_same_seed_temperature": {
+      "paired_users": 22363,
+      "bootstrap_seed": 20261027,
+      "bootstrap_replicates": 2000,
+      "code_recall@10": {
+        "difference": 0.003443187407771766,
+        "ci_low": 0.0004918839153959665,
+        "ci_high": 0.00652864105889192
+      },
+      "code_ndcg@10": {
+        "difference": 0.001673121539162343,
+        "ci_low": -0.00006543255379119122,
+        "ci_high": 0.0034406316356826593
+      },
+      "item_recall@10": {
+        "difference": 0.003622054286097572,
+        "ci_low": 0.0006260340741403211,
+        "ci_high": 0.006707507937217726
+      },
+      "item_ndcg@10": {
+        "difference": 0.0017032185755409242,
+        "ci_low": -0.00003954491328705792,
+        "ci_high": 0.003471150825426685
+      },
+      "interpretation": "Recall@10 intervals are positive while NDCG@10 intervals include zero; this is conditional single-seed evidence.",
+      "comparison_sha256": "e4adce30f0b8923a2b2be79497da9f5d53b6b1fe41b4d6ebc0af4da2e2f8cf1f"
+    },
+    "full_minus_cf_same_seed_temperature": {
+      "code_recall@10": {
+        "difference": -0.00040245047623306356,
+        "ci_low": -0.003622054286097572,
+        "ci_high": 0.0026382864553056388
+      },
+      "code_ndcg@10": {
+        "difference": 0.0005427494809168601,
+        "ci_low": -0.0011539745073649152,
+        "ci_high": 0.0021249521337087488
+      },
+      "item_recall@10": {
+        "difference": -0.0004918839153959665,
+        "ci_low": -0.0036678889236685594,
+        "ci_high": 0.0025935697357241873
+      },
+      "item_ndcg@10": {
+        "difference": 0.0004761340437123058,
+        "ci_low": -0.0012052728440523942,
+        "ci_high": 0.002093907112479242
+      },
+      "interpretation": "All Recall@10 and NDCG@10 intervals include zero.",
+      "comparison_sha256": "3438f937a6c793bd9b703771bab639e4708bf69034b499ff63863177a3003f6b"
+    },
+    "full_minus_diversity_same_seed_temperature": {
+      "code_recall@10": {
+        "difference": 0.0026382864553056388,
+        "ci_low": -0.00040245047623306356,
+        "ci_high": 0.005723740106425792
+      },
+      "code_ndcg@10": {
+        "difference": 0.0017197046543432645,
+        "ci_low": 0.000044112172188157586,
+        "ci_high": 0.0034274501309804733
+      },
+      "item_recall@10": {
+        "difference": 0.0025041362965612843,
+        "ci_low": -0.0004918839153959665,
+        "ci_high": 0.0055448732280999865
+      },
+      "item_ndcg@10": {
+        "difference": 0.0016397305979508905,
+        "ci_low": -0.000033090659177985055,
+        "ci_high": 0.0033505272596098972
+      },
+      "interpretation": "Only the marginal code NDCG@10 interval excludes zero; Recall@10 and item NDCG@10 remain inconclusive.",
+      "comparison_sha256": "034c1976ad68c27b491260eb380456cce99d85c4fe400844bfcc698964c2c674"
+    },
+    "temperature_0p7": {
+      "training_epochs": 93,
+      "selected_epoch": 73,
+      "selected_checkpoint": "checkpoint-9417",
+      "code_metrics": {
+        "recall@1": 0.01278898180029513,
+        "ndcg@1": 0.01278898180029513,
+        "recall@5": 0.039619013549166034,
+        "ndcg@5": 0.02629876871274833,
+        "recall@10": 0.0626034074140321,
+        "ndcg@10": 0.03368783999106426
+      },
+      "original_item_diagnostic": {
+        "recall@1": 0.012744265080713678,
+        "ndcg@1": 0.012744265080713678,
+        "recall@5": 0.03957429682958458,
+        "ndcg@5": 0.02623108308989981,
+        "recall@10": 0.0623351070965434,
+        "ndcg@10": 0.03354635523429274
+      },
+      "paired_user_tau0p7_minus_tau1": {
+        "paired_users": 22363,
+        "bootstrap_seed": 20261027,
+        "bootstrap_replicates": 2000,
+        "code_recall@10": {
+          "difference": -0.00022358359790725752,
+          "ci_low": -0.0029960202119572506,
+          "ci_high": 0.002548853016142736
+        },
+        "code_ndcg@10": {
+          "difference": -0.000433496536423504,
+          "ci_low": -0.0020301178351272283,
+          "ci_high": 0.001068159266674983
+        },
+        "item_recall@10": {
+          "difference": -0.00022358359790725752,
+          "ci_low": -0.0029971381299467867,
+          "ci_high": 0.0025935697357241873
+        },
+        "item_ndcg@10": {
+          "difference": -0.0003479887281218017,
+          "ci_low": -0.0019125028137447631,
+          "ci_high": 0.0011259090724307541
+        },
+        "interpretation": "All marginal intervals include zero; this seed does not establish a temperature0.7 benefit.",
+        "table2_result_sha256": "46d0c3e733359ee7ae2f6e4c45c0fb6f03aa47fb5f236e96f1bd74c9ca79b438"
+      },
+      "model_sha256": "422367371f6dd56870436488e509db3e09a0baf30b04096ec66b5dc077c6d426",
+      "predictions_sha256": "a2265946cfeaa2938ddf18618e4feb1028b7c8994aff6242ca9337d027e8e016",
+      "result_sha256": "07a323cacb818e1b29c38fac3c6de9ad530971afa08c5e5f1c37b2ed700fbc4f",
+      "independent_verification_sha256": "58ec2bfc3097e5a3e2a28b9918044a54c7e766dd95e20ec3e619cf0743e9220f",
+      "private_evidence_bundle": "verified-results/fresh-beauty-full-s42-t07-v1"
+    },
+    "model_sha256": "fa62180bec5dccc14a709af49e11b73e814895e4a125bb2a7357a4b8d400b2e2",
+    "predictions_sha256": "41b1e1a0530b274750e164f0540b72fc0ba20b0f253e61f907e739dd547f8b71",
+    "result_sha256": "85601f9ffd6f3529a451d23df43a4d20b6f05e27712074ad1de5a782f14f9e3b",
+    "independent_verification_sha256": "d44285c871544a8fcd30f32fb560248b4501069386a60a7f08c2af93857351d6",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-beauty-full-s42-t10-v1",
+    "comparison_evidence_bundle": "verified-results/fresh-beauty-full-comparisons-v1",
+    "durability": "Complete run, all-user evaluation, final result and paired-comparison receipts are checksum verified"
+  },
+  "fresh_t5_yelp_semantic": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh semantic-only tokenizer, compatible semantic encoder and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Yelp",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "semantic",
+    "tokenizer_objectives": {
+      "alpha": 0.0,
+      "beta": 0.0
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 12000,
+    "tokenizer_index_sha256": "5bd01b6a8e96b3062e777f0fdd099bca44a5854fbc70f1079542475d5475c328",
+    "tokenizer_collisions": {
+      "unique_sids": 19180,
+      "excess_collision_items": 853,
+      "collision_groups": 396,
+      "items_in_collision_groups": 1249,
+      "largest_group": 65
+    },
+    "training_epochs": 175,
+    "training_updates": 38500,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 155,
+    "selected_checkpoint": "checkpoint-34100",
+    "validation_evaluations_checked": 175,
+    "test_users": 30431,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.007426637310637179,
+      "ndcg@1": 0.007426637310637179,
+      "recall@5": 0.023331471197134503,
+      "ndcg@5": 0.015445762202259955,
+      "recall@10": 0.040452170484045875,
+      "ndcg@10": 0.02094201424570094
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.007098025040255003,
+      "ndcg@1": 0.007098025040255003,
+      "recall@5": 0.021491242482994315,
+      "ndcg@5": 0.014353862124650394,
+      "recall@10": 0.03608162728796293,
+      "ndcg@10": 0.01903037415008851
+    },
+    "model_sha256": "98f900ec867c76f89b756121625f16693e3b9942beb371884360f45f969fb9e0",
+    "predictions_sha256": "6731a64a6810c0c41f29ba28cc72d1002b03b3396c5ec9ea87b3c20971dfd397",
+    "result_sha256": "225222ded08078f36d04460e03863cdb0171fb532dbef60373a89257d9b7c04a",
+    "independent_verification_sha256": "a3ec0d14ea046c36ba45145f8082e1344fa7a2fe984d116442eb95f21b281f4c",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-yelp-semantic-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
+  "fresh_t5_yelp_full": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh full tokenizer, compatible semantic encoder and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Yelp",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "full",
+    "tokenizer_objectives": {
+      "alpha": 0.02,
+      "beta": 0.0001
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 16000,
+    "tokenizer_index_sha256": "5ef3690bb69c293d1b2d188dfc81242a43dbb0e66c8995a645eb8ab13bbd813d",
+    "tokenizer_collisions": {
+      "unique_sids": 19201,
+      "excess_collision_items": 832,
+      "collision_groups": 415,
+      "items_in_collision_groups": 1247,
+      "largest_group": 65
+    },
+    "training_epochs": 118,
+    "training_updates": 25960,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 98,
+    "selected_checkpoint": "checkpoint-21560",
+    "validation_evaluations_checked": 118,
+    "test_users": 30431,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.00795241694324866,
+      "ndcg@1": 0.00795241694324866,
+      "recall@5": 0.026551871446879826,
+      "ndcg@5": 0.01725625914784424,
+      "recall@10": 0.04469126877197595,
+      "ndcg@10": 0.02306867804585165
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.007722388353981138,
+      "ndcg@1": 0.007722388353981138,
+      "recall@5": 0.024908810094968946,
+      "ndcg@5": 0.016378465973875454,
+      "recall@10": 0.041175117478886664,
+      "ndcg@10": 0.02160358948549691
+    },
+    "temperature_0p7": {
+      "training_epochs": 116,
+      "training_updates": 25520,
+      "selected_epoch": 96,
+      "selected_checkpoint": "checkpoint-21120",
+      "validation_evaluations_checked": 116,
+      "code_metrics": {
+        "recall@1": 0.007656665899904703,
+        "ndcg@1": 0.007656665899904703,
+        "recall@5": 0.025237422365351123,
+        "ndcg@5": 0.016362454147126473,
+        "recall@10": 0.04156945220334527,
+        "ndcg@10": 0.02162030270865378
+      },
+      "original_item_diagnostic": {
+        "recall@1": 0.007393776083598961,
+        "ndcg@1": 0.007393776083598961,
+        "recall@5": 0.022345634385987974,
+        "ndcg@5": 0.01485021610755256,
+        "recall@10": 0.036903157963918375,
+        "ndcg@10": 0.019546805204791736
+      },
+      "paired_user_tau0p7_minus_tau1": {
+        "paired_users": 30431,
+        "bootstrap_seed": 20261027,
+        "bootstrap_replicates": 2000,
+        "code_recall@10": {
+          "difference": -0.003121816568630673,
+          "ci_low": -0.005192073872038382,
+          "ci_high": -0.0010515592652229635
+        },
+        "code_ndcg@10": {
+          "difference": -0.0014483753371978695,
+          "ci_low": -0.002534051882318628,
+          "ci_high": -0.0002976087252740685
+        },
+        "item_recall@10": {
+          "difference": -0.004271959514968289,
+          "ci_low": -0.006243633137261346,
+          "ci_high": -0.0023002858926752323
+        },
+        "item_ndcg@10": {
+          "difference": -0.002056784280705163,
+          "ci_low": -0.0030986954280089432,
+          "ci_high": -0.0009641586809439422
+        },
+        "interpretation": "At this seed, all four Recall@10/NDCG@10 intervals exclude zero in favor of temperature1.0; this does not include training-seed uncertainty.",
+        "comparison_sha256": "10cf189302e899ac5abbd7d806d5d6c03fde22be2a10742a92ae4c0636e2bfa8"
+      },
+      "model_sha256": "a525042a296c4c5b253e9b92aae2ade273c138d72b2fa8875d56d1cdd2c47825",
+      "predictions_sha256": "3b174169dd07468524a24ec2f8a4350e9f8f11b9dfd6fd81169db32f9b4fe4d9",
+      "result_sha256": "b240d3de5f30470cd5f8c453069235867e4e1092ce081e1c8dfb6ba39458f6eb",
+      "independent_verification_sha256": "36b654b1f092806bd10efb29cf58011ff373e57adbddef8401c506355e255267",
+      "private_evidence_bundle": "verified-results/fresh-yelp-full-s42-t07-v1"
+    },
+    "model_sha256": "1c4c5998e0ec515e4ade53d4ac55b24945f18bebbad32010dcbfa6a0d6c34e7b",
+    "predictions_sha256": "f48750f75df42d74fdfddf5df7a672973abb6b8bbcfbab5a2b3cda96e0faeac1",
+    "result_sha256": "124f2c7d989fc3d19de9d96e4d480ec385f0c057c976ddbc10d42537814dcb56",
+    "independent_verification_sha256": "368fe72b736866f68beaf9409bd93ffe941bc5673e742c5b3f20d628fc105ff0",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-yelp-full-s42-t10-v1",
+    "comparison_evidence_bundle": "verified-results/fresh-yelp-full-comparisons-v1",
+    "durability": "Complete runs, all-user evaluations, final result and paired-comparison receipts match immutable local inventories"
+  },
+  "p5_instruments_cid": {
+    "status": "independently_verified_and_banked",
+    "claim": "Declared native-code P5 CID reference reconstruction, not recovered exact LETTER Table1 settings",
+    "dataset": "Instruments",
+    "representation": "CID",
+    "seed": 42,
+    "training_epochs": 20,
+    "training_updates": 206000,
+    "selection": "earliest maximum full-user validation Recall@10",
+    "selected_epoch": 4,
+    "selected_update": 41200,
+    "validation_epochs_independently_recomputed": 20,
+    "validation_users_per_epoch": 24772,
+    "test_users": 24772,
+    "test_evaluations": 1,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "metric_identity": "original_item_equal_to_canonical_string_for_this_collision_free_CID_catalog",
+    "metrics": {
+      "recall@5": 0.07916195704828032,
+      "recall@10": 0.09623768771193282,
+      "ndcg@5": 0.06860509301696478,
+      "ndcg@10": 0.07409068120509346
+    },
+    "predictions_sha256": "0c65bd15beccfd131afed19331ea65d296afca486e9e8ba1c7ab3e16fb3df0f3",
+    "selected_seal_sha256": "7b428f54e4e10ce2245a5da379381f54b2e72696eb42007722b0b54adbbb7468",
+    "result_seal_sha256": "1d6d2d6d47f616246e96704ea4a1b4c9e6f3d1cb6f1788bdd5c9eb6e15194a49",
+    "result_sha256": "3b4e19ab828933f2209411c57880bdd40265f3dfed1463ab0ddb0b17e325bc9e",
+    "bank_receipt_sha256": "63b9614b5974adddac6c53c0f29ff5c5b898826efca2bbda552578bfc734dd81",
+    "independent_verification_sha256": "eaa564e230d9a277a1426ab41c40e8bed18bb9c708c1da4a36606bb961ae31f2",
+    "audit_source_sha256": "d216a6df0a816e9061513cc897695131e8074e5a46a03fb308cc82880d305c05",
+    "durability": "Selected/final state and result seals checked against durable acknowledgments; result inventory matches durable receipt"
+  },
+  "p5_instruments_semid": {
+    "status": "independently_verified_and_banked",
+    "claim": "Declared native-source P5 SemID reference reconstruction, not recovered exact LETTER Table1 settings",
+    "dataset": "Instruments",
+    "representation": "SemID",
+    "seed": 42,
+    "training_epochs": 20,
+    "training_updates": 206000,
+    "admitted_root_step": 100,
+    "locally_recorded_updates_after_root": 205900,
+    "selection": "earliest maximum full-user validation Recall@10",
+    "selected_epoch": 3,
+    "selected_update": 30900,
+    "validation_epochs_independently_recomputed": 20,
+    "validation_users_per_epoch": 24772,
+    "test_users": 24772,
+    "test_evaluations": 1,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "metric_identity": "original_item_equal_to_canonical_string_for_this_collision_free_SemID_catalog",
+    "paper_reference_not_measured_here": {
+      "recall@10": 0.0964,
+      "ndcg@10": 0.073
+    },
+    "metrics": {
+      "recall@5": 0.08489423542709511,
+      "recall@10": 0.1048764734377523,
+      "ndcg@5": 0.07287864170453355,
+      "ndcg@10": 0.07931990600296898
+    },
+    "predictions_sha256": "37cb781f8d273a624fe9115a0c5eeb0154ec8b8eb09e0d3e88effd632bb1d17d",
+    "selected_seal_sha256": "7d69bd693fe5c4f4d1623be5776a28aa4a6df71f2983a08dff1f8b9b4cf5c38d",
+    "result_seal_sha256": "3b4e995f42da48e800bf3b5b75a8a28f45db305b599515300796c814adcdb27e",
+    "result_sha256": "4fc6d1b25d8b859ea0909c1d2ba3e342dfd7a08a8da0910250cadd8e2548dad7",
+    "bank_receipt_sha256": "2d340238824a65a37d73c79e4702389c764806c2315f48f4207ba9ff0532dac3",
+    "independent_verification_sha256": "367cea43f15b27f38fb379293c9d17354209063def39aeea6cc1cad789e7bcd1",
+    "source_audit_sha256": "faff7f0b64a31875d765e510299d68d0dd897788ae5a32ed80971fd0a5a4d044",
+    "durable_audit_sha256": "27e6ff7979d843e36bc73a809a3a8a9da734e7c7855442cf67b7efe66b56e832",
+    "private_evidence_bundle": "verified-results/p5-instruments-semid-v1",
+    "durability": "All validation/test rows, selected/final state packages and every durable result file rechecked across node2 and node0"
+  },
+  "bigrec_instruments": {
+    "status": "independently_verified_and_fully_banked",
+    "claim": "Compatible OpenLLaMA-7B-v2 few-shot title-generation and frozen-base grounding reference",
+    "dataset": "Instruments",
+    "seed": 42,
+    "exact_original_weights_reproduction": false,
+    "training_prefixes": 1024,
+    "training_epochs": 50,
+    "test_users": 24772,
+    "catalog_items": 9922,
+    "generation_beams": 4,
+    "maximum_new_tokens": 128,
+    "grounding_queries_per_user": 1,
+    "distance": "unnormalized_l2_float32",
+    "metric_identity": "original_LETTER_item_id",
+    "seen_item_exclusion": false,
+    "failed_or_length_filtered_users": 0,
+    "metrics": {
+      "recall@1": 0.03092200871952204,
+      "ndcg@1": 0.03092200871952204,
+      "recall@5": 0.03903600839657678,
+      "ndcg@5": 0.03485324449507263,
+      "recall@10": 0.05009688357823349,
+      "ndcg@10": 0.03858043284054198
+    },
+    "primary_finish_reasons": {
+      "eos": 24772
+    },
+    "all_beam_finish_reasons": {
+      "eos": 99085,
+      "length": 3
+    },
+    "all_saved_query_full_catalog_rankings_recomputed": true,
+    "independent_verification_sha256": "19683f45b61f42a74521c7200232d5ca11b6aa09ac73ac343f356a7dc1400f4e",
+    "audit_source_sha256": "35f991ac7efebacf1d99d513e83529f42b1c10f07757346a86119f1bea4801d3",
+    "durability": {
+      "status": "complete",
+      "pipeline_completed_sha256": "c21c82db021a50d51bfba2f615803ab47e1546e0b6e001e094ae375bbbd5ea4e",
+      "objects": 880,
+      "object_kinds": {
+        "checkpoint": 101,
+        "evaluation": 1,
+        "other": 1,
+        "generation": 388,
+        "grounding": 388,
+        "selected": 1
+      },
+      "bytes_reverified": 5459503184,
+      "pending_run_exports": 0,
+      "every_outbox_payload_reverified": true,
+      "every_durable_file_checksum_reverified": true,
+      "final_durability_verification_sha256": "580dbe652bc16db72fbdb1320cb521128b122900a7633f87ac433afd9b14dcf1",
+      "private_evidence_bundle": "verified-results/bigrec-instruments-final-durability-v1"
+    }
+  },
+  "bigrec_beauty": {
+    "status": "independently_verified_and_fully_banked",
+    "claim": "Compatible OpenLLaMA-7B-v2 few-shot title-generation and frozen-base grounding reference",
+    "dataset": "Beauty",
+    "seed": 42,
+    "exact_original_weights_reproduction": false,
+    "training_prefixes": 1024,
+    "training_epochs": 50,
+    "test_users": 22363,
+    "catalog_items": 12101,
+    "generation_beams": 4,
+    "maximum_new_tokens": 128,
+    "grounding_queries_per_user": 1,
+    "distance": "unnormalized_l2_float32",
+    "metric_identity": "original_LETTER_item_id",
+    "seen_item_exclusion": false,
+    "failed_or_length_filtered_users": 0,
+    "metrics": {
+      "recall@1": 0.005500156508518535,
+      "ndcg@1": 0.005500156508518535,
+      "recall@5": 0.017707820954254796,
+      "ndcg@5": 0.011742948098748473,
+      "recall@10": 0.025890980637660422,
+      "ndcg@10": 0.01438841200865081
+    },
+    "title_diagnostics_not_item_metrics": {
+      "recall@10": 0.025890980637660422,
+      "ndcg@10": 0.014405561099897525,
+      "literal_generated_title_match_rate": 0.0033984706881903144
+    },
+    "primary_finish_reasons": {
+      "eos": 22138,
+      "length": 225
+    },
+    "all_beam_finish_reasons": {
+      "eos": 88409,
+      "length": 1043
+    },
+    "all_saved_query_full_catalog_rankings_recomputed": true,
+    "result_sha256": "8729883d05ceb17b1555e40d7b9a22e9091c818863a41f29f1bd104f177aa90f",
+    "independent_verification_sha256": "fb831f1d79d8772e6a88f69fc9df70cfc303d509ca3147ae77d55011d537b941",
+    "audit_source_sha256": "35f991ac7efebacf1d99d513e83529f42b1c10f07757346a86119f1bea4801d3",
+    "private_evidence_bundle": "verified-results/bigrec-beauty-metrics-v1",
+    "durability": {
+      "status": "complete",
+      "pipeline_completed_sha256": "a3fe931b0a495c36861809f75bf4444eee1c600e7d6134be6be12f1b810087d3",
+      "objects": 804,
+      "object_kinds": {
+        "checkpoint": 101,
+        "evaluation": 1,
+        "other": 1,
+        "generation": 350,
+        "grounding": 350,
+        "selected": 1
+      },
+      "bytes_reverified": 5432398765,
+      "pending_run_exports": 0,
+      "every_outbox_payload_reverified": true,
+      "every_durable_file_checksum_reverified": true,
+      "final_durability_verification_sha256": "18a0bf1d47c10af1a8251321c5a8467c75af99184a5f5bd488cdcd53a87c651b",
+      "private_evidence_bundle": "verified-results/bigrec-beauty-final-durability-v1"
+    }
+  }
+}

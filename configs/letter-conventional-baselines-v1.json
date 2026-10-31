@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "status": "declared-reconstruction-not-recovered-letter-settings",
+  "sources": {
+    "recbole": {
+      "repository": "https://github.com/RUCAIBox/RecBole",
+      "commit": "362d31f00af801d7d99bc635c902d1df1405e79d",
+      "license": "MIT",
+      "sha256": {
+        "model/general_recommender/bpr.py": "b7f97b2c501e6c56c57d17bc25e829fc345380b71f2d4ff43e8aee6e1639b24e",
+        "model/general_recommender/lightgcn.py": "2e8d48381ca656cda29c759948cb58fdedf4f50573580845f33c5b1d14cfec31",
+        "model/sequential_recommender/hgn.py": "33b12b7d1fb6147406231caceb92102e86925b2ddfc285a6a5539f87ea176d70",
+        "model/sequential_recommender/bert4rec.py": "d7136bee1b5e20c10766f4f3c5d0281859ccaf06c3ff77be5ec0ecfbae2a5c82",
+        "model/abstract_recommender.py": "f7d0b66b4b2952a321aafd67f713da4ea81bbaa4c148eccbc824784ad30999d2",
+        "model/layers.py": "4d1e03f7a78f4e9df7ff35cc09a64797bb75645048e9e6380cb21944e7f02f39",
+        "model/loss.py": "83a942315a0927dd80bcf47a43ba7fe9877ddeb5352232814484d2d2c7e20ec9",
+        "model/init.py": "eafcf5a6cef245222d6e3cdbfdeae47b33635e5496c7d5945053c55b39ea53b7",
+        "data/interaction.py": "4a72fbdb14b7be157336ee0c93f1b9596feb2f4065736cde2b15cf10e35ef801",
+        "data/transform.py": "63c083a32e8ec8d98bd15627292b03faf40e61dcabe5958155ce6a98e5fcb693"
+      }
+    },
+    "sasrec": {
+      "repository": "https://github.com/pmixer/SASRec.pytorch",
+      "commit": "29b9922adfc0dd1710a5f8fad8dddace2639fc76",
+      "license": "Apache-2.0",
+      "sha256": {
+        "model.py": "9925988b4f7f8f567bb304722e0dc6f95d3836e3500a7f52fa9b3e720107e7e8",
+        "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+      }
+    },
+    "caser": {
+      "repository": "https://github.com/graytowne/caser_pytorch",
+      "commit": "c4e10e4c12f0fce8a0cba12008b3aff5d07a26d1",
+      "license": "LGPL-3.0",
+      "sha256": {
+        "caser.py": "63dd99f91021d99093d33cc1c71e182acdca4c8d3c366e00369981a297a22d31",
+        "interactions.py": "ec5ca786403e307c79b729edf16da89bc65d4c8985c26a16751417c44137dc38",
+        "utils.py": "8f63d96e9e3449a71543e382157c594104999df0ee36f484e2c4416ca2ab3ab1",
+        "LICENSE": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+      }
+    }
+  },
+  "runtime": {
+    "python": "3.10",
+    "torch": "1.13.1+cu117",
+    "numpy": "1.24.4",
+    "scipy": "1.10.1",
+    "recbole": "1.2.0"
+  },
+  "protocol": {
+    "split": "train=s[:-2];valid=s[-2];test=s[-1]",
+    "item_mapping": "released_i_to_model_i+1_padding_0",
+    "user_mapping": "numeric_original_user_key_order_1_based",
+    "candidate_catalog": "all_real_items",
+    "seen_item_exclusion": false,
+    "ties": "score_descending_then_original_item_id_ascending",
+    "test_policy": "once_after_validation_selected_checkpoint_frozen"
+  },
+  "training": {
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "adam_eps": 1e-8,
+    "max_epochs": 200,
+    "sasrec_max_epochs": 201,
+    "validate_every": 5,
+    "early_stop_checks": 10,
+    "selection_metric": "ndcg@10",
+    "evaluation_batch_size": 128,
+    "candidate_chunk_size": 1024
+  },
+  "models": {
+    "bpr": {
+      "architecture": {"embedding_size": 64},
+      "batch_size": 1024,
+      "optimizer_betas": [0.9, 0.999],
+      "weight_decay": 0.0
+    },
+    "lightgcn": {
+      "architecture": {
+        "embedding_size": 64, "n_layers": 2, "reg_weight": 0.00001, "require_pow": false
+      },
+      "batch_size": 1024,
+      "optimizer_betas": [0.9, 0.999],
+      "weight_decay": 0.0
+    },
+    "hgn": {
+      "architecture": {
+        "embedding_size": 64, "history_length": 20, "pooling_type": "average",
+        "reg_weight": [0.0, 0.0], "loss_type": "CE"
+      },
+      "batch_size": 256,
+      "optimizer_betas": [0.9, 0.999],
+      "weight_decay": 0.0
+    },
+    "bert4rec": {
+      "architecture": {
+        "history_length": 20, "n_layers": 2, "n_heads": 2, "hidden_size": 64,
+        "inner_size": 256, "hidden_dropout_prob": 0.2, "attn_dropout_prob": 0.2,
+        "hidden_act": "gelu", "layer_norm_eps": 1e-12, "initializer_range": 0.02,
+        "mask_ratio": 0.2, "ft_ratio": 0.5, "loss_type": "CE"
+      },
+      "batch_size": 256,
+      "optimizer_betas": [0.9, 0.999],
+      "weight_decay": 0.0
+    },
+    "sasrec": {
+      "architecture": {
+        "hidden_units": 50, "maxlen": 50, "num_blocks": 2, "num_heads": 1, "dropout_rate": 0.5
+      },
+      "batch_size": 128,
+      "optimizer_betas": [0.9, 0.98],
+      "weight_decay": 0.0
+    },
+    "caser": {
+      "architecture": {
+        "L": 5, "T": 3, "d": 50, "nh": 16, "nv": 4, "drop": 0.5,
+        "ac_conv": "relu", "ac_fc": "relu", "total_negatives": 3
+      },
+      "batch_size": 512,
+      "optimizer_betas": [0.9, 0.999],
+      "weight_decay": 0.000001
+    }
+  },
+  "declarations": [
+    "This is a fixed validation-only reconstruction budget, not recovered LETTER Table 1 executable settings. No paper scores are asserted.",
+    "MF means RecBole BPR-MF because LETTER cites BPR. BPR and LightGCN train on every training event with multiplicity; only LightGCN's graph is binary.",
+    "HGN uses native CE, not the native BPR branch with different positive and negative embedding tables. Twenty-item right-padded histories and zero regularization weights are declared defaults.",
+    "BERT4Rec keeps the unchanged native architecture/loss. Complete train-only prefixes include the final training target, retaining up to twenty context items plus that target in capacity 21, right-padded from position zero. The first real item is context only, never supervised at mask index zero. Training positions align with the native reconstructed inference sequence.",
+    "BERT4Rec uses an explicit batch-level terminal-mask probability 0.5; otherwise Bernoulli 0.2 masks retain at most the last four selected positions, with a terminal mask if none were selected. Only retained positions are replaced with MASK. Every row has a positive mask index. This deliberately reconstructs, rather than silently misuses, RecBole's transform.",
+    "BERT4Rec inference sends [0]+last20_history+right_padding and length=len(history)+1, preserving all twenty observed items through native first-column removal and MASK insertion.",
+    "SASRec is the author-named 50D baseline, not the separate 32D teacher. Native Xavier initialization, one-worker-equivalent user sampling, all nonpadding shifted-position BCE, Adam betas (0.9,0.98), and zero embedding regularization are retained. Epochs use floor(users/batch) batches, with at least one batch for a tiny gate.",
+    "Caser uses original caser.py (not RecBole Caser), native newest-first width-eight windows over already one-based train IDs, first five history and last three targets. Native initialization is unchanged, including the nonzero padding embedding. Three total training-only negatives per sequence; loss is separate positive and negative BCE-with-logits means.",
+    "Caser inference uses the actual last five observed items; full-catalog candidate chunks use native for_pred=False even in eval mode to avoid the original single-user broadcast branch.",
+    "All negatives exclude only each user's full training history. Test inference may append validation to sequential histories, but never fits validation events or rebuilds LightGCN's graph with them.",
+    "All-user full real-item-catalog evaluation excludes padding only, retains repeat targets, uses stable ascending-original-ID ties, and emits original-item R/N@5/10. Select earliest best validation NDCG@10 every five epochs plus final; stop after ten non-improving checks.",
+    "Each epoch is a complete resumable transaction containing model, optimizer, sampler, Python, NumPy, Torch and visible CUDA RNG states. SIGTERM drains to the next epoch boundary. Test is separately and irreversibly claimed only after validation selection is frozen.",
+    "No native source, released data, weights, or per-user predictions are vendored into Git. RecBole is MIT, SASRec Apache-2.0, and original Caser LGPL-3.0; exact source and runtime hashes accompany receipts."
+  ]
+}

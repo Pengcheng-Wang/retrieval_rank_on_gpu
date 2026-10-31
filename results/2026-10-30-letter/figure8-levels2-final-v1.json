@@ -1,0 +1,23 @@
+{
+  "status": "pass",
+  "arm": "levels-2",
+  "bundle": "levels-2-completed-b49d694462390c01",
+  "selected_epoch": 12000,
+  "final_epoch": 20000,
+  "index_sha256": "4bf60bbc76f12c529ec023633886c5bdd768dd5dcb15bb123cc40a3ec70f1b56",
+  "codes_sha256": "f51d8701c5fa101a742b8ef4e31b06f6f58c939c22fdf64a416c3df2609a2f57",
+  "collisions": {
+    "before": 2565,
+    "after": 1121,
+    "largest_group": 36
+  },
+  "utilization_by_level": [
+    188,
+    256
+  ],
+  "bundle_completed_sha256": "b1e5a3c6f6a51e963860e76db2ec7458e5ceed560b21b814f050da5b554466ea",
+  "run_completed_sha256": "b4744f3a8734333cf8168a413f92f3d50c19f9ecf86f9d5d8190286303dcbc27",
+  "durable_bank_receipt_sha256": "5301a30142dad123a3373a97a796cff529c66d66b7c0c6e06e407419616f73db",
+  "files": 11,
+  "audit_source": "bank_tokenizers.read_state + independent config/export checks"
+}

@@ -1,0 +1,25 @@
+{
+  "status": "pass",
+  "arm": "clusters-5",
+  "bundle": "clusters-5-completed-b1b64e4bb4a987d8",
+  "selected_epoch": 20000,
+  "final_epoch": 20000,
+  "index_sha256": "ab74facf53e8d7292cdb547913d9db2d532f62e1a24d752aa879e676358a5a7c",
+  "codes_sha256": "9a35ba6f3e7e1fb48361c7f9342fa9a0bd732dd04f2934f997f081e3a04f2b73",
+  "collisions": {
+    "before": 75,
+    "after": 25,
+    "largest_group": 3
+  },
+  "utilization_by_level": [
+    134,
+    256,
+    256,
+    256
+  ],
+  "bundle_completed_sha256": "3ebe5c97b7b025e5ac756cfeda3d17d16f1720db3c000cd85995fc0098e125dd",
+  "run_completed_sha256": "d8fcf536267480db9c80f3977fc9c46b50f858b0ae4b267be8af195ce9736a7e",
+  "durable_bank_receipt_sha256": "c6fa690c201046ede209424aeec5ae6a8f6e10f9f5cb39a077c04da84beef53e",
+  "files": 9,
+  "audit_source_sha256": "22baf5a32c11fb0307a932924f83e7aa98dd13b1f1a8da19910f107b4797fbe2"
+}

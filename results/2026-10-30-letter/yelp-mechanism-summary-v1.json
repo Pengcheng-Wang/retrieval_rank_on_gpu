@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "status": "independently_audited_yelp_mechanism_comparison",
+  "claim_boundary": "Raw sequential float32 codebook sums replace only real rows in the frozen32D BCE teacher; no normalization, rescaling or refitting",
+  "dataset": "Yelp",
+  "users": 30431,
+  "teacher_reference": {
+    "recall@5": 0.018139397325096118,
+    "recall@10": 0.032992671946370476,
+    "ndcg@5": 0.01131960444068165,
+    "ndcg@10": 0.016091683985976022
+  },
+  "measured": {
+    "semantic": {
+      "selected_epoch": 12000,
+      "replacement_metrics": {
+        "recall@5": 0.00032861227038217606,
+        "recall@10": 0.0006243633137261345,
+        "ndcg@5": 0.00019109484373043648,
+        "ndcg@10": 0.00028485912713852106
+      },
+      "cosine_neighbor_overlap": {
+        "items": 20033,
+        "levels": 4,
+        "position_overlap_mean": 0.011406179803324515,
+        "jaccard_mean": 0.006764077367581585,
+        "prefix_overlap_mean": 0.006089951579893177,
+        "matching_positions_histogram": [
+          19183,
+          802,
+          37,
+          6,
+          5
+        ],
+        "token_identity": "level-qualified; equal numeric values at different levels do not match"
+      },
+      "dot_neighbor_overlap": {
+        "items": 20033,
+        "levels": 4,
+        "position_overlap_mean": 0.0094968302301203,
+        "jaccard_mean": 0.005568906542300442,
+        "prefix_overlap_mean": 0.004792093046473319,
+        "matching_positions_histogram": [
+          19309,
+          696,
+          22,
+          3,
+          3
+        ],
+        "token_identity": "level-qualified; equal numeric values at different levels do not match"
+      },
+      "index_sha256": "5bd01b6a8e96b3062e777f0fdd099bca44a5854fbc70f1079542475d5475c328",
+      "analysis_completed_sha256": "c94d5fc8c6910bdc2d6f672eda17464d26523351c626634c3ba37911f7397e99",
+      "independent_verification_sha256": "de617e659bc32aec808e6aa2351a165d3764b4beae74648c6b7c00170d270569"
+    },
+    "full": {
+      "selected_epoch": 16000,
+      "replacement_metrics": {
+        "recall@5": 0.0015444776707962276,
+        "recall@10": 0.003417567611974631,
+        "ndcg@5": 0.0008289678012470941,
+        "ndcg@10": 0.0014247007305582943
+      },
+      "cosine_neighbor_overlap": {
+        "items": 20033,
+        "levels": 4,
+        "position_overlap_mean": 0.07634902411021814,
+        "jaccard_mean": 0.044687693876532285,
+        "prefix_overlap_mean": 0.061698197973343985,
+        "matching_positions_histogram": [
+          14318,
+          5330,
+          372,
+          8,
+          5
+        ],
+        "token_identity": "level-qualified; equal numeric values at different levels do not match"
+      },
+      "dot_neighbor_overlap": {
+        "items": 20033,
+        "levels": 4,
+        "position_overlap_mean": 0.05909000149752908,
+        "jaccard_mean": 0.034235416324968564,
+        "prefix_overlap_mean": 0.04772125992113013,
+        "matching_positions_histogram": [
+          15468,
+          4407,
+          149,
+          6,
+          3
+        ],
+        "token_identity": "level-qualified; equal numeric values at different levels do not match"
+      },
+      "index_sha256": "5ef3690bb69c293d1b2d188dfc81242a43dbb0e66c8995a645eb8ab13bbd813d",
+      "analysis_completed_sha256": "a5efac7ba23c585acd27fd03e8469c375451c0a8068e3fb363a9fd9a307b7456",
+      "independent_verification_sha256": "3eae6146e64c060f7399dc52b48127df947f4a1ad32dc46d0c7f7f78c6b000c5"
+    }
+  },
+  "full_minus_semantic_paired_users": {
+    "recall@5": {
+      "difference": 0.0012158654004140515,
+      "ci_low": 0.0007229469948407874,
+      "ci_high": 0.0017087838059873155,
+      "wins": 47,
+      "ties": 30374,
+      "losses": 10
+    },
+    "recall@10": {
+      "difference": 0.0027932042982484967,
+      "ci_low": 0.0020702573034077094,
+      "ci_high": 0.003516151293089284,
+      "wins": 104,
+      "ties": 30308,
+      "losses": 19
+    },
+    "ndcg@5": {
+      "difference": 0.0006378729575166577,
+      "ci_low": 0.0003571030910730384,
+      "ci_high": 0.00094377653169138,
+      "wins": 47,
+      "ties": 30374,
+      "losses": 10
+    },
+    "ndcg@10": {
+      "difference": 0.0011398416034197735,
+      "ci_low": 0.0008063375921313827,
+      "ci_high": 0.00148064291097527,
+      "wins": 104,
+      "ties": 30308,
+      "losses": 19
+    }
+  },
+  "bootstrap": {
+    "seed": 20261027,
+    "replicates": 2000,
+    "method": "paired-user percentile95% intervals conditional on fixed models"
+  },
+  "model_inference_performed_for_comparison": false
+}
