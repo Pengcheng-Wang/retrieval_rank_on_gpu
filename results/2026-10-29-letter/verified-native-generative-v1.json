@@ -809,6 +809,62 @@
     "private_evidence_bundle": "verified-results/fresh-yelp-semantic-s42-t10-v1",
     "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
   },
+  "fresh_t5_yelp_full": {
+    "status": "independently_verified_and_banked",
+    "claim": "Fresh full tokenizer, compatible semantic encoder and random native T5 generator; not original-LLaMA1 reproduction",
+    "dataset": "Yelp",
+    "seed": 42,
+    "temperature": 1.0,
+    "tokenizer_variant": "full",
+    "tokenizer_objectives": {
+      "alpha": 0.02,
+      "beta": 0.0001
+    },
+    "tokenizer_training_epochs": 20000,
+    "tokenizer_selected_epoch": 16000,
+    "tokenizer_index_sha256": "5ef3690bb69c293d1b2d188dfc81242a43dbb0e66c8995a645eb8ab13bbd813d",
+    "tokenizer_collisions": {
+      "unique_sids": 19201,
+      "excess_collision_items": 832,
+      "collision_groups": 415,
+      "items_in_collision_groups": 1247,
+      "largest_group": 65
+    },
+    "training_epochs": 118,
+    "training_updates": 25960,
+    "maximum_epochs": 200,
+    "early_stopping_patience": 20,
+    "selection": "minimum validation loss",
+    "selected_epoch": 98,
+    "selected_checkpoint": "checkpoint-21560",
+    "validation_evaluations_checked": 118,
+    "test_users": 30431,
+    "beams": 20,
+    "seen_item_exclusion": false,
+    "code_metrics": {
+      "recall@1": 0.00795241694324866,
+      "ndcg@1": 0.00795241694324866,
+      "recall@5": 0.026551871446879826,
+      "ndcg@5": 0.01725625914784424,
+      "recall@10": 0.04469126877197595,
+      "ndcg@10": 0.02306867804585165
+    },
+    "original_item_diagnostic": {
+      "recall@1": 0.007722388353981138,
+      "ndcg@1": 0.007722388353981138,
+      "recall@5": 0.024908810094968946,
+      "ndcg@5": 0.016378465973875454,
+      "recall@10": 0.041175117478886664,
+      "ndcg@10": 0.02160358948549691
+    },
+    "model_sha256": "1c4c5998e0ec515e4ade53d4ac55b24945f18bebbad32010dcbfa6a0d6c34e7b",
+    "predictions_sha256": "f48750f75df42d74fdfddf5df7a672973abb6b8bbcfbab5a2b3cda96e0faeac1",
+    "result_sha256": "124f2c7d989fc3d19de9d96e4d480ec385f0c057c976ddbc10d42537814dcb56",
+    "independent_verification_sha256": "368fe72b736866f68beaf9409bd93ffe941bc5673e742c5b3f20d628fc105ff0",
+    "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
+    "private_evidence_bundle": "verified-results/fresh-yelp-full-s42-t10-v1",
+    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+  },
   "p5_instruments_cid": {
     "status": "independently_verified_and_banked",
     "claim": "Declared native-code P5 CID reference reconstruction, not recovered exact LETTER Table1 settings",

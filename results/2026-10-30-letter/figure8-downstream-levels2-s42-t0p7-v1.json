@@ -1,0 +1,79 @@
+{
+  "status": "verified_figure8_tokenizer_cell",
+  "arm": "levels-2",
+  "experiment_lineage": {
+    "kind": "figure8-tokenizer-downstream-v1",
+    "track_id": "letter-openllama7b-v2-method-replication",
+    "claim_type": "compatible_backbone_method_replication",
+    "synthetic_fixture": false,
+    "exact_original_llama1_reproduction": false,
+    "dataset": "Instruments",
+    "arm": "levels-2",
+    "tokenizer_spec": {
+      "dataset": "Instruments",
+      "codes": [256, 256],
+      "epsilons": [0.0, 0.003],
+      "dimension": 32,
+      "layers": [2048, 1024, 512, 256, 128, 64],
+      "clusters": 10,
+      "alpha": 0.02,
+      "beta": 0.0001,
+      "seed": 42,
+      "epochs": 20000,
+      "batch_size": 1024,
+      "eval_step": 2000
+    },
+    "bundle": "levels-2-completed-b49d694462390c01",
+    "bundle_completed_sha256": "b1e5a3c6f6a51e963860e76db2ec7458e5ceed560b21b814f050da5b554466ea",
+    "bank_receipt_sha256": "5301a30142dad123a3373a97a796cff529c66d66b7c0c6e06e407419616f73db",
+    "index_sha256": "4bf60bbc76f12c529ec023633886c5bdd768dd5dcb15bb123cc40a3ec70f1b56",
+    "codes_sha256": "f51d8701c5fa101a742b8ef4e31b06f6f58c939c22fdf64a416c3df2609a2f57",
+    "plan_sha256": "18f9bd019255a7e2dc8101259da36356a8640d480dc53e7287caf99bb21f104e",
+    "admission_sha256": "282fc6fda8ab8f3ef83f22acc107f925ae87e87c70c6090dd0249a98c2a19efa",
+    "downstream": {
+      "seed": 42,
+      "temperature": 0.7,
+      "learning_rate": 0.0005,
+      "epochs": 200,
+      "world_size": 2,
+      "effective_batch_size": 1024,
+      "beams": 20
+    }
+  },
+  "seed": 42,
+  "temperature": 0.7,
+  "all_users": 24772,
+  "beams": 20,
+  "code_metrics": {
+    "recall@1": 0.05909898272242855,
+    "ndcg@1": 0.05909898272242855,
+    "recall@5": 0.08941546907799128,
+    "ndcg@5": 0.07441265763466598,
+    "recall@10": 0.11222347812045859,
+    "ndcg@10": 0.08169921389544489
+  },
+  "original_item_diagnostic": {
+    "recall@1": 0.05542548038107541,
+    "ndcg@1": 0.05542548038107541,
+    "recall@5": 0.07811238495075085,
+    "ndcg@5": 0.06728455677346397,
+    "recall@10": 0.09486517035362506,
+    "ndcg@10": 0.07262094036387685
+  },
+  "model_sha256": "70df5f769700668ecfa092804c06c8434a6f3b6ab2e20b4a47accb00f0021119",
+  "predictions_sha256": "3fe1b85bd87e35c4924325f8b1c9f1885f89a518bac5d257079e417120e1c81c",
+  "selected_checkpoint": "checkpoint-5289",
+  "selected_epoch": 41.0,
+  "selection": "within-arm validation only; test descriptive",
+  "independent_status": "pass",
+  "result_sha256": "53cc53b9acd91574ca8eb0e3f94eb5a2a5c01a67f974d8cc43d19e6402ad48b2",
+  "ack_sha256": "e23c7e5929de8b0c49ecc692c10cfa0e0abcb6de533a2d0500136ba43e4aab47",
+  "durable_receipts": {
+    "runs/openllama-v2-figure8-tokenizer-Instruments-levels-2-s42-t0p7-v1": "3576038b41f371c5df0c41c20929eeb6f137f4ca708f4d37e0e70584de7506f0",
+    "evaluations/openllama-v2-figure8-tokenizer-Instruments-levels-2-s42-t0p7-v1/evaluation-attempt-001": "413535ec546ed18d0f28882ea22be3b4f118ef4812182e23ff66950dc86096ef",
+    "results/openllama-v2-figure8-tokenizer-Instruments-levels-2-s42-t0p7-v1": "da376cedda0dce5e22338fb1bbe532852703a5398a1785f378fcee89a95cb628"
+  },
+  "all_predictions_selection_and_durable_bytes_reverified": true,
+  "model_inference_performed": false,
+  "audit_source_sha256": "c013c8b2cf3cace544e964d53f78a06a33f9ab97183e01dcd7a0a1318d56eba0"
+}

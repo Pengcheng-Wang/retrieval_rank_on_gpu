@@ -130,6 +130,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Item diagnostic | 0.06234 | 0.03355 |
 | Fresh-ID T5, semantic-only, temperature1 | Yelp | Code | 0.04045 | 0.02094 |
 | Fresh-ID T5, semantic-only, temperature1 | Yelp | Item diagnostic | 0.03608 | 0.01903 |
+| Fresh-ID T5, full tokenizer, temperature1 | Yelp | Code | 0.04469 | 0.02307 |
+| Fresh-ID T5, full tokenizer, temperature1 | Yelp | Item diagnostic | 0.04118 | 0.02160 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
@@ -151,6 +153,15 @@ prediction, validation record, model binding and durable file was independently
 verified and banked at `verified-results/fresh-yelp-semantic-s42-t10-v1`.
 The remaining Yelp component and generation-loss arms are still required before
 interpreting the full ablation.
+
+The Yelp full-tokenizer tau1 arm exact-resumed after the AML lifecycle reset
+from sealed checkpoint23,980, completed118 epochs and selected epoch98.
+Code Recall@10/NDCG@10 is **.04469/.02307** and the original-item diagnostic is
+**.04118/.02160**, pointwise above semantic-only by about+.00424/+.00213 code
+and+.00509/+.00257 item. Paired intervals and the same-tokenizer tau0.7 row are
+still required before interpreting these differences. Every restored
+optimizer/RNG state, prediction, selection and durable byte was independently
+verified and banked at `verified-results/fresh-yelp-full-s42-t10-v1`.
 
 The first genuine fresh-ID cell completed98 epochs with the fixed200-epoch
 maximum and patience20, selecting epoch78 by validation loss. Its tokenizer
@@ -621,6 +632,18 @@ identifier-length, codebook-size, alpha, beta and cluster panels. Together with
 the separate five-arm temperature queue, Figure 8 therefore requires **20
 additional T5 fits** beyond the already completed temperature-0.7 and
 temperature-1.0 baseline fits.
+
+The first downstream sweep cell, `L=2` at fixed tau0.7, completed61 epochs and
+selected epoch41 solely from validation loss. Its all24,772-user code
+Recall@10/NDCG@10 is **.11222/.08170**, while the deterministic original-item
+diagnostic is **.09487/.07262**. The code score is descriptively above the
+shared four-level tau0.7 baseline, but the item diagnostic is substantially
+lower, consistent with the two-level bank's1,121 excess collision items. This
+single-seed point is not a selected winner or a significance claim. Every
+prediction, model-selection decision and durable byte was independently
+reverified in
+[the levels2 downstream receipt](../results/2026-10-30-letter/figure8-downstream-levels2-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-levels2-s42-t0p7-v1`.
 
 ## 📊 Instruments released-ID replay
 
