@@ -422,6 +422,17 @@ def final_test_ack(directory, certificate, ledger, lease, request, frozen_envelo
     return ack
 
 
+def remote_contract(directory, lease):
+    state.configuration()
+    path = Path(directory) / "roots" / lease["cell"] / "p5-run-config.json"
+    state.require_path(path)
+    contract = state.read(path)
+    if (state.digest(contract) != lease["root"]["contract_sha256"]
+            or state.sha(path) != lease["contract_file_sha256"]):
+        raise ValueError("Canonical remote scientific contract changed")
+    return contract
+
+
 def remote_inventory(lease_path):
     state.configuration()
     state.require_path(lease_path)
@@ -654,9 +665,7 @@ class Broker:
         import torch
         state.configuration()
         state.require_path(package)
-        original_contract = state.read(state.P5 / "runs" / lease["cell"] / "p5-run-config.json")
-        if state.digest(original_contract) != lease["root"]["contract_sha256"]:
-            raise ValueError("Source scientific contract changed")
+        original_contract = remote_contract(self.directory, lease)
         self.context.checkpoint.verify_checkpoint(package / "checkpoint", original_contract)
         payload = torch.load(package / "checkpoint/training-state.pt", map_location="cpu", weights_only=False)
         native = payload["state"]

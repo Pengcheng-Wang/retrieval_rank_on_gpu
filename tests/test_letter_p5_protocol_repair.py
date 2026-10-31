@@ -71,6 +71,26 @@ def test_broker_v4_serves_only_event_active_cells(workspace):
         module.active_owners(certificate)
 
 
+def test_remote_payload_contract_comes_from_activated_canonical_root(workspace):
+    module, xs = broker(workspace), protocol(workspace)
+    from test_letter_p5_xnode import lease
+
+    current = lease()
+    contract = {"scientific": "canonical"}
+    path = xs.XROOT / "roots" / current["cell"] / "p5-run-config.json"
+    xs.write(path, contract)
+    current["root"]["contract_sha256"] = xs.digest(contract)
+    current["contract_file_sha256"] = xs.sha(path)
+    assert not (xs.P5 / "runs" / current["cell"] / "p5-run-config.json").exists()
+
+    assert module.remote_contract(xs.XROOT, current) == contract
+
+    xs.write(xs.P5 / "runs" / current["cell"] / "p5-run-config.json", {
+        "scientific": "foreign-cache",
+    })
+    assert module.remote_contract(xs.XROOT, current) == contract
+
+
 def selected_readmission_fixture(workspace):
     module, xs = broker(workspace), protocol(workspace)
     run, current, selected_path = package_fixture(xs, workspace)
