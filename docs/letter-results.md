@@ -116,6 +116,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, semantic-only, temperature1 | Instruments | Item diagnostic | 0.10750 | 0.07922 |
 | Fresh-ID T5, semantic-only, temperature1, seed17 | Instruments | Code | 0.10403 | 0.07860 |
 | Fresh-ID T5, semantic-only, temperature1, seed17 | Instruments | Item diagnostic | 0.10363 | 0.07792 |
+| Fresh-ID T5, semantic+CF, temperature1, seed17 | Instruments | Code | 0.10665 | 0.07988 |
+| Fresh-ID T5, semantic+CF, temperature1, seed17 | Instruments | Item diagnostic | 0.10609 | 0.07920 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Code | 0.10843 | 0.08117 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Item diagnostic | 0.10811 | 0.08057 |
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Code | 0.10944 | 0.08079 |
@@ -217,6 +219,16 @@ significance test. Every model-selection record, all24,772 users,20 beams and
 durable run/evaluation/result byte were independently reverified in
 [the seed17 receipt](../results/2026-10-31-letter/fresh-instruments-semantic-s17-t10-v1.json)
 and `verified-results/fresh-instruments-semantic-s17-t10-v1`.
+
+The matching seed17 semantic+CF replication completed87 epochs and selected
+epoch67. Its code Recall@10/NDCG@10 is **.10665/.07988** and item diagnostic is
+**.10609/.07920**. Relative to seed17 semantic-only, the descriptive point
+differences are +.00262/+.00128 for code and +.00246/+.00128 for item.
+These paired configurations provide a second training seed but still do not
+support a population-level or training-seed significance claim. Exact evidence
+is in
+[the seed17 CF receipt](../results/2026-10-31-letter/fresh-instruments-cf-s17-t10-v1.json)
+and `verified-results/fresh-instruments-cf-s17-t10-v1`.
 
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
@@ -725,6 +737,15 @@ Every prediction, selection record and durable byte was independently
 reverified in
 [the alpha0.1 downstream receipt](../results/2026-10-31-letter/figure8-downstream-alpha0p1-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-alpha0p1-s42-t0p7-v1`.
+
+The `beta=0.00001` downstream cell completed at epoch87 and selected
+checkpoint8,643 /epoch67. Code Recall@10/NDCG@10 is **.11053/.08185** and
+the original-item diagnostic is **.10984/.08119**. The point is close to the
+full-tokenizer tau0.7 baseline and alpha0.01 arm, but this single seed does not
+establish an optimum or a monotonic beta trend. Every prediction, selection
+record and durable byte was independently reverified in
+[the beta0.00001 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p00001-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-beta0p00001-s42-t0p7-v1`.
 
 ## 📊 Instruments released-ID replay
 
