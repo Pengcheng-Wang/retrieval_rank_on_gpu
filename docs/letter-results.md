@@ -132,6 +132,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, semantic-only, temperature1 | Yelp | Item diagnostic | 0.03608 | 0.01903 |
 | Fresh-ID T5, full tokenizer, temperature1 | Yelp | Code | 0.04469 | 0.02307 |
 | Fresh-ID T5, full tokenizer, temperature1 | Yelp | Item diagnostic | 0.04118 | 0.02160 |
+| Fresh-ID T5, full tokenizer, temperature0.7 | Yelp | Code | 0.04157 | 0.02162 |
+| Fresh-ID T5, full tokenizer, temperature0.7 | Yelp | Item diagnostic | 0.03690 | 0.01955 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
@@ -158,10 +160,22 @@ The Yelp full-tokenizer tau1 arm exact-resumed after the AML lifecycle reset
 from sealed checkpoint23,980, completed118 epochs and selected epoch98.
 Code Recall@10/NDCG@10 is **.04469/.02307** and the original-item diagnostic is
 **.04118/.02160**, pointwise above semantic-only by about+.00424/+.00213 code
-and+.00509/+.00257 item. Paired intervals and the same-tokenizer tau0.7 row are
-still required before interpreting these differences. Every restored
+and+.00509/+.00257 item. Every restored
 optimizer/RNG state, prediction, selection and durable byte was independently
 verified and banked at `verified-results/fresh-yelp-full-s42-t10-v1`.
+
+The same Yelp tokenizer at tau0.7 completed116 epochs and selected epoch96.
+Code Recall@10/NDCG@10 is **.04157/.02162** and the item diagnostic is
+**.03690/.01955**. In the predeclared paired-user tau0.7-minus-tau1 contrast,
+code Recall@10 is **-.00312** with marginal95% interval
+**[-.00519,-.00105]** and code NDCG@10 is **-.00145**
+**[-.00253,-.00030]**. Item Recall@10 is **-.00427**
+**[-.00624,-.00230]** and item NDCG@10 is **-.00206**
+**[-.00310,-.00096]**. Thus all four R10/N10 intervals exclude zero in favor
+of tau1 for this seed; the result remains conditional on two trained models
+and does not include training-seed uncertainty. Exact evidence is banked at
+`verified-results/fresh-yelp-full-s42-t07-v1` and
+`verified-results/fresh-yelp-full-comparisons-v1`.
 
 The first genuine fresh-ID cell completed98 epochs with the fixed200-epoch
 maximum and patience20, selecting epoch78 by validation loss. Its tokenizer

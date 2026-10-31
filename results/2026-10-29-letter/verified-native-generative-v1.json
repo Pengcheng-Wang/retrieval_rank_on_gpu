@@ -857,13 +857,69 @@
       "recall@10": 0.041175117478886664,
       "ndcg@10": 0.02160358948549691
     },
+    "temperature_0p7": {
+      "training_epochs": 116,
+      "training_updates": 25520,
+      "selected_epoch": 96,
+      "selected_checkpoint": "checkpoint-21120",
+      "validation_evaluations_checked": 116,
+      "code_metrics": {
+        "recall@1": 0.007656665899904703,
+        "ndcg@1": 0.007656665899904703,
+        "recall@5": 0.025237422365351123,
+        "ndcg@5": 0.016362454147126473,
+        "recall@10": 0.04156945220334527,
+        "ndcg@10": 0.02162030270865378
+      },
+      "original_item_diagnostic": {
+        "recall@1": 0.007393776083598961,
+        "ndcg@1": 0.007393776083598961,
+        "recall@5": 0.022345634385987974,
+        "ndcg@5": 0.01485021610755256,
+        "recall@10": 0.036903157963918375,
+        "ndcg@10": 0.019546805204791736
+      },
+      "paired_user_tau0p7_minus_tau1": {
+        "paired_users": 30431,
+        "bootstrap_seed": 20261027,
+        "bootstrap_replicates": 2000,
+        "code_recall@10": {
+          "difference": -0.003121816568630673,
+          "ci_low": -0.005192073872038382,
+          "ci_high": -0.0010515592652229635
+        },
+        "code_ndcg@10": {
+          "difference": -0.0014483753371978695,
+          "ci_low": -0.002534051882318628,
+          "ci_high": -0.0002976087252740685
+        },
+        "item_recall@10": {
+          "difference": -0.004271959514968289,
+          "ci_low": -0.006243633137261346,
+          "ci_high": -0.0023002858926752323
+        },
+        "item_ndcg@10": {
+          "difference": -0.002056784280705163,
+          "ci_low": -0.0030986954280089432,
+          "ci_high": -0.0009641586809439422
+        },
+        "interpretation": "At this seed, all four Recall@10/NDCG@10 intervals exclude zero in favor of temperature1.0; this does not include training-seed uncertainty.",
+        "comparison_sha256": "10cf189302e899ac5abbd7d806d5d6c03fde22be2a10742a92ae4c0636e2bfa8"
+      },
+      "model_sha256": "a525042a296c4c5b253e9b92aae2ade273c138d72b2fa8875d56d1cdd2c47825",
+      "predictions_sha256": "3b174169dd07468524a24ec2f8a4350e9f8f11b9dfd6fd81169db32f9b4fe4d9",
+      "result_sha256": "b240d3de5f30470cd5f8c453069235867e4e1092ce081e1c8dfb6ba39458f6eb",
+      "independent_verification_sha256": "36b654b1f092806bd10efb29cf58011ff373e57adbddef8401c506355e255267",
+      "private_evidence_bundle": "verified-results/fresh-yelp-full-s42-t07-v1"
+    },
     "model_sha256": "1c4c5998e0ec515e4ade53d4ac55b24945f18bebbad32010dcbfa6a0d6c34e7b",
     "predictions_sha256": "f48750f75df42d74fdfddf5df7a672973abb6b8bbcfbab5a2b3cda96e0faeac1",
     "result_sha256": "124f2c7d989fc3d19de9d96e4d480ec385f0c057c976ddbc10d42537814dcb56",
     "independent_verification_sha256": "368fe72b736866f68beaf9409bd93ffe941bc5673e742c5b3f20d628fc105ff0",
     "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533",
     "private_evidence_bundle": "verified-results/fresh-yelp-full-s42-t10-v1",
-    "durability": "Complete run, all-user evaluation and final result receipts match immutable local inventories"
+    "comparison_evidence_bundle": "verified-results/fresh-yelp-full-comparisons-v1",
+    "durability": "Complete runs, all-user evaluations, final result and paired-comparison receipts match immutable local inventories"
   },
   "p5_instruments_cid": {
     "status": "independently_verified_and_banked",
