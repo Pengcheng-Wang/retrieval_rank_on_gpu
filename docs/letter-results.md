@@ -682,6 +682,16 @@ independently reverified in
 [the alpha0.001 downstream receipt](../results/2026-10-30-letter/figure8-downstream-alpha0p001-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-alpha0p001-s42-t0p7-v1`.
 
+The `alpha=0.01` downstream cell completed at epoch92 after selecting
+checkpoint9,288 /epoch72. Its all-user code Recall@10/NDCG@10 is
+**.11194/.08231** and the original-item diagnostic is **.11162/.08170**.
+The two identities are again close because the four-level tokenizer has only25
+excess collision items. This single seed is descriptively above the shared
+full-tokenizer tau0.7 baseline, but no cross-arm winner or significance claim
+is made. Exact independently reverified evidence is in
+[the alpha0.01 downstream receipt](../results/2026-10-31-letter/figure8-downstream-alpha0p01-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-alpha0p01-s42-t0p7-v1`.
+
 ## 📊 Instruments released-ID replay
 
 The first LETTER-TIGER run produces Recall@10 **0.10976** and NDCG@10
