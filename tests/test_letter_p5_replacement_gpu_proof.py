@@ -33,6 +33,32 @@ def test_loads_learner_from_private_frozen_runtime_root(tmp_path):
     assert Path(loaded.__file__).resolve() == (runtime / "p5_run.py").resolve()
 
 
+def test_restore_full_state_uses_public_frozen_api_and_captures_restored_rng():
+    calls = []
+    restored_rng = {"torch": [11, 12], "cuda": [[13, 14]]}
+
+    class PublicCheckpoint:
+        @staticmethod
+        def restore_checkpoint(path, model, optimizer, scheduler, sampler, contract):
+            calls.append(("restore", path, model, optimizer, scheduler, sampler, contract))
+            return {"global_step": 37}
+
+        @staticmethod
+        def rng_state():
+            calls.append(("rng",))
+            return copy.deepcopy(restored_rng)
+
+    arguments = (
+        Path("checkpoint"), object(), object(), object(), object(), {"contract": "frozen"},
+    )
+
+    state, captured = proof._restore_full_state(PublicCheckpoint, *arguments)
+
+    assert state == {"global_step": 37}
+    assert captured == restored_rng
+    assert [call[0] for call in calls] == ["restore", "rng"]
+
+
 def write_json(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, sort_keys=True), encoding="utf-8")

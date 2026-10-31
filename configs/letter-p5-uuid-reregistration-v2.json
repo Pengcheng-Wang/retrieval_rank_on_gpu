@@ -89,6 +89,11 @@
     "publication_order": "canonical files first, activation manifest last",
     "committed_without_activation": "fenced"
   },
+  "restored_registry_ancestry": {
+    "legacy_root": "the first restored receipt-valid certificate may anchor at any positive sequence only when previous_event_sha256 is null",
+    "subsequent_certificates": "must increment sequence by exactly one and bind the exact previous event SHA-256",
+    "certificate_mutation_or_renumbering": "forbidden"
+  },
   "broker_release": "p5-xnode-broker-v3 without certificate, registration-anchor or activation hashes",
   "publication_generation_policy": "reset-to-zero-at-verified-selected-root",
   "single_writer": true,

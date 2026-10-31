@@ -77,6 +77,22 @@ def _load_frozen_learner(runtime_root):
     return module
 
 
+def _restore_full_state(checkpoint, path, model, optimizer, scheduler, sampler, contract):
+    private = getattr(checkpoint, "_restore_checkpoint_locked", None)
+    if private is not None:
+        state, captured_rng = private(
+            path, model, optimizer, scheduler, sampler, contract,
+        )
+        checkpoint.restore_rng(captured_rng)
+        return state, captured_rng
+    public = getattr(checkpoint, "restore_checkpoint", None)
+    if public is None or not hasattr(checkpoint, "rng_state"):
+        raise ValueError("Frozen checkpoint runtime has no supported full-state restore API")
+    state = public(path, model, optimizer, scheduler, sampler, contract)
+    captured_rng = checkpoint.rng_state()
+    return state, captured_rng
+
+
 def _checkpoint_header(checkpoint, contract):
     checkpoint = Path(checkpoint)
     seal_path = checkpoint / "p5-seal.json"
@@ -364,7 +380,8 @@ class NativeBackend:
         contract = read(request["contract"])
         if context.contract != contract:
             raise ValueError("Cold-loaded runtime reconstructed a different scientific contract")
-        state, captured_rng = self._checkpoint._restore_checkpoint_locked(
+        state, captured_rng = _restore_full_state(
+            self._checkpoint,
             Path(request["checkpoint"]),
             context.model,
             context.optimizer,
@@ -372,7 +389,6 @@ class NativeBackend:
             context.sampler,
             contract,
         )
-        self._checkpoint.restore_rng(captured_rng)
         snapshot = {
             "model": _fingerprint(context.model.state_dict()),
             "optimizer": _fingerprint(context.optimizer.state_dict()),

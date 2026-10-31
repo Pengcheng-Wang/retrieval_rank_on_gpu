@@ -89,6 +89,51 @@ def _writer_owner_shape(owner):
     raise ValueError("Historical writer owner shape is ambiguous")
 
 
+def _load_registry(directory, expected_cells, pending_event_sha=None):
+    directory = Path(directory)
+    commits = sorted((directory / "committed").glob("*.json"))
+    if not commits:
+        raise ValueError("No committed ownership ancestry")
+    previous = None
+    previous_sequence = None
+    sequenced = False
+    latest = None
+    for index, path in enumerate(commits):
+        certificate = read(path)
+        event, receipt = certificate["event"], certificate["bank_receipt"]
+        encoded = event_sha(event)
+        sequence = event.get("sequence")
+        if sequence is None:
+            valid_sequence = not sequenced
+        elif type(sequence) is int and sequence > 0:
+            valid_sequence = (
+                index == 0 and previous is None and event.get("previous_event_sha256") is None
+                or not sequenced and sequence == 1
+                or sequenced and sequence == previous_sequence + 1
+            )
+        else:
+            valid_sequence = False
+        if (event.get("kind") != "p5-xnode-ownership-v1"
+                or event.get("status") != "committed"
+                or set(event.get("owners", {})) != set(expected_cells)
+                or event.get("previous_event_sha256") != previous
+                or certificate.get("event_sha256") != encoded
+                or certificate.get("bank_receipt_sha256") != digest(receipt)
+                or receipt.get("files", {}).get("ownership.json", {}).get("sha256") != encoded
+                or not valid_sequence):
+            raise ValueError("Invalid committed ownership ancestry or certificate receipt")
+        if sequence is not None:
+            sequenced = True
+            previous_sequence = sequence
+        previous, latest = encoded, certificate
+    intent = directory / "transition-intent.json"
+    if intent.exists():
+        pending = read(intent).get("event_sha256")
+        if pending != latest["event_sha256"] and pending != pending_event_sha:
+            raise ValueError("A pending ownership transition must be recovered first")
+    return latest
+
+
 def _writer_root(evidence, old_owner, writer_host):
     shape = _writer_owner_shape(old_owner)
     if evidence.get("kind") == "p5-uuid-reregistration-writer-durable-root-v2":
@@ -481,7 +526,7 @@ def prepare_transition(request_path):
     request = _request(request_path)
     old_binding = v1._validate_bindings(read(request["old_bindings"]))
     new_binding = v1._validate_bindings(read(request["new_bindings"]))
-    certificate = v1._load_registry(request["registry"], old_binding["cells"])
+    certificate = _load_registry(request["registry"], old_binding["cells"])
     old_event = certificate["event"]
     if set(old_binding["cells"]) != set(new_binding["cells"]):
         raise ValueError("New bindings must preserve the complete cell set")
@@ -759,7 +804,7 @@ def activate_transition(request_path, plan):
     registry = Path(_request(request_path)["registry"])
     xroot = Path(bindings["control_root"])
     with _lock(registry / "registry.lock"), _lock(Path(bindings["root"]) / "bank.lock"):
-        current = v1._load_registry(
+        current = _load_registry(
             registry, bindings["cells"], plan["event_sha256"],
         )
         if current["event_sha256"] != plan["event_sha256"]:
@@ -800,7 +845,7 @@ def commit_transition(request_path, plan, fail_before_activation=False):
         "sequence": plan["event"]["sequence"], "plan_sha256": digest(plan),
     }
     with _lock(registry / "registry.lock"):
-        current = v1._load_registry(registry, bindings["cells"])
+        current = _load_registry(registry, bindings["cells"])
         if current["event_sha256"] != plan["event"]["previous_event_sha256"]:
             raise ValueError("Ownership changed after v2 preparation")
         _atomic_write(registry / "transition-intent.json", intent)

@@ -165,6 +165,94 @@ def test_prepare_uses_writer_bank_receipts_and_worker_xnode_ledgers(tmp_path):
     assert "accepted_record_sha256" in plan["cells"]["worker-tid-small"]
 
 
+def test_prepare_accepts_receipt_valid_restored_sequence_two_root_then_three(tmp_path):
+    v2, _, request_path, request, old_event, certificate = v2_fixture(tmp_path)
+    registry = Path(request["registry"])
+    event2 = copy.deepcopy(old_event)
+    event2["sequence"] = 2
+    event2["previous_event_sha256"] = None
+    event2_sha = v2.event_sha(event2)
+    receipt2 = {"files": {"ownership.json": {"sha256": event2_sha, "bytes": 1}}}
+    certificate2 = {
+        "event": event2,
+        "event_sha256": event2_sha,
+        "writer_host": certificate["writer_host"],
+        "bank_receipt": receipt2,
+        "bank_receipt_sha256": v2.digest(receipt2),
+    }
+    event3 = copy.deepcopy(old_event)
+    event3["sequence"] = 3
+    event3["previous_event_sha256"] = event2_sha
+    event3_sha = v2.event_sha(event3)
+    receipt3 = {"files": {"ownership.json": {"sha256": event3_sha, "bytes": 1}}}
+    certificate3 = {
+        "event": event3,
+        "event_sha256": event3_sha,
+        "writer_host": certificate["writer_host"],
+        "bank_receipt": receipt3,
+        "bank_receipt_sha256": v2.digest(receipt3),
+    }
+    committed = registry / "committed"
+    for path in committed.glob("*.json"):
+        path.unlink()
+    write(committed / "0002.json", certificate2)
+    write(committed / "0003.json", certificate3)
+    for cell in request["cells"]:
+        bindings = json.loads(Path(request["old_bindings"]).read_text())
+        if bindings["cells"][cell]["role"] == "worker":
+            owner = event3["owners"][cell]
+            record_path = (
+                registry.parent / "ledger" / cell / owner["lease_id"]
+                / "accepted" / "g00000001.json"
+            )
+            record = json.loads(record_path.read_text())
+            record["ack"]["registry_event_sha256"] = event3_sha
+            write(record_path, record)
+
+    plan = v2.prepare_transition(request_path)
+
+    assert plan["event"]["previous_event_sha256"] == event3_sha
+    assert plan["event"]["sequence"] == 4
+
+
+@pytest.mark.parametrize("damage", ["first-previous", "sequence-gap", "wrong-receipt"])
+def test_restored_positive_sequence_root_remains_strictly_bound(tmp_path, damage):
+    v2, _, request_path, request, old_event, certificate = v2_fixture(tmp_path)
+    registry = Path(request["registry"])
+    event2 = copy.deepcopy(old_event)
+    event2["sequence"] = 2
+    event2["previous_event_sha256"] = "0" * 64 if damage == "first-previous" else None
+    event2_sha = v2.event_sha(event2)
+    receipt2 = {"files": {"ownership.json": {"sha256": event2_sha, "bytes": 1}}}
+    certificate2 = {
+        "event": event2, "event_sha256": event2_sha,
+        "writer_host": certificate["writer_host"],
+        "bank_receipt": receipt2,
+        "bank_receipt_sha256": v2.digest(receipt2),
+    }
+    event3 = copy.deepcopy(old_event)
+    event3["sequence"] = 4 if damage == "sequence-gap" else 3
+    event3["previous_event_sha256"] = event2_sha
+    event3_sha = v2.event_sha(event3)
+    receipt3 = {"files": {"ownership.json": {"sha256": event3_sha, "bytes": 1}}}
+    certificate3 = {
+        "event": event3, "event_sha256": event3_sha,
+        "writer_host": certificate["writer_host"],
+        "bank_receipt": receipt3,
+        "bank_receipt_sha256": (
+            "0" * 64 if damage == "wrong-receipt" else v2.digest(receipt3)
+        ),
+    }
+    committed = registry / "committed"
+    for path in committed.glob("*.json"):
+        path.unlink()
+    write(committed / "0002.json", certificate2)
+    write(committed / "0003.json", certificate3)
+
+    with pytest.raises(ValueError, match="ancestry|certificate|sequence|receipt"):
+        v2.prepare_transition(request_path)
+
+
 def compact_writer_owners(v2, request, old_event, certificate):
     bindings = json.loads(Path(request["old_bindings"]).read_text())
     compact = {}

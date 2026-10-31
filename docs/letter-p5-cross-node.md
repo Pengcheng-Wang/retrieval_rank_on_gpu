@@ -281,6 +281,10 @@ rejected. The runner does not save, advance, or publish a production run. It
 constructs two independent models and full optimizer/scheduler/sampler
 contexts, cold-loads the same sealed root into each, and verifies bitwise
 model, optimizer, scheduler, sampler, all RNG, training, and validation state.
+Frozen runtimes exposing the newer private locked restore helper use it;
+deployed legacy runtimes exposing only public `restore_checkpoint(...)` use
+that exact public API and capture `rng_state()` immediately after it returns.
+The frozen runtime itself is never modified.
 Before each continuation it restores that copy's checkpoint RNG, then requires
 identical next sampled indices/rows, loss, optimizer update, and resulting
 state. It also requires populated finite optimizer moments and executes actual
@@ -312,6 +316,14 @@ mints lease IDs and epoch `old+1`, and emits the exact aggregate
 `p5-xnode-crossnode-proof-v1` consumed by the unchanged worker control. The
 event contains that proof's file SHA-256, the broker-v3 release SHA-256,
 `sequence=parent+1`, and one all-cell owner map.
+
+When durable registry restoration begins at a retained sequenced certificate
+rather than the original sequence one, v2 permits that first certificate to
+anchor at its recorded positive sequence only when
+`previous_event_sha256=null` and its event hash and bank receipt validate
+exactly. Every later certificate must increment by exactly one and bind the
+exact preceding event SHA-256. Certificates are never renumbered or mutated;
+gaps, a non-null first parent, or any receipt mismatch fail closed.
 
 Run:
 
