@@ -10,9 +10,12 @@ from pathlib import Path, PurePosixPath
 import random
 import re
 import shutil
+import signal
 import socket
+import subprocess
 import sys
 import time
+import zipfile
 
 import numpy as np
 
@@ -36,12 +39,17 @@ RECOVERY_ARMS = {
 }
 ENDPOINT_ERROR = "IndexError: index 256 is out of bounds for axis 0 with size 256"
 CONTROL_FILES = (
+    "bank.py",
+    "bank_tokenizers.py",
+    "figure8_tokenizer.py",
     "figure8_tokenizer_recovery.py",
     "figure8_tokenizer_recovery_runtime.py",
+    "protocol.py",
     "rq_recovery_compat.py",
     "rq_recovery_runtime.py",
     "rq_recovery_lineage.py",
     "rq_recovery_control.py",
+    "tokenizer_run.py",
 )
 
 
@@ -216,6 +224,85 @@ def probe_admission(
     return validate_probe_admission(value)
 
 
+def validate_production_admission(value: dict) -> dict:
+    required = {
+        "status", "kind", "policy", "probe_admission", "probe",
+        "probe_bank_receipt_sha256", "probe_result_sha256",
+        "production_control_sha256",
+    }
+    if (
+        set(value) != required
+        or value.get("status") != "admitted"
+        or value.get("kind") != "figure8_tokenizer_kmeans_production_admission_v1"
+        or value.get("policy") != POLICY
+    ):
+        raise ValueError("Figure 8 tokenizer production admission schema differs")
+    base = validate_probe_admission(value["probe_admission"])
+    probe = value["probe"]
+    required_probe = {
+        "admission_sha256", "checkpoint_state_sha256", "attestation_sha256",
+        "native_defined", "native_faults", "corrections",
+        "corrections_by_epoch_level_phase",
+    }
+    if set(probe) != required_probe:
+        raise ValueError("Figure 8 tokenizer production probe summary differs")
+    if not value["production_control_sha256"] or not all(_digest(value[name]) for name in (
+        "probe_bank_receipt_sha256", "probe_result_sha256",
+    )) or not all(_digest(digest) for digest in value["production_control_sha256"].values()
+    ) or not all(_digest(probe[name]) for name in (
+        "admission_sha256", "checkpoint_state_sha256", "attestation_sha256",
+    )):
+        raise ValueError("Figure 8 tokenizer production admission contains an invalid digest")
+    corrections = probe["corrections_by_epoch_level_phase"]
+    failure_epoch = str(base["identity"]["first_failed_epoch"])
+    if (
+        probe["native_faults"] < 1
+        or probe["native_defined"] < 1
+        or probe["corrections"] < probe["native_faults"]
+        or failure_epoch not in corrections
+    ):
+        raise ValueError("Figure 8 tokenizer production admission lacks the exact native fault gate")
+    return value
+
+
+def production_admission(
+    probe_contract: dict,
+    probe_result: dict,
+    *,
+    probe_bank_receipt_sha256: str,
+    probe_result_sha256: str,
+    production_control_sha256: dict,
+) -> dict:
+    base = validate_probe_admission(probe_contract)
+    runtime = probe_result.get("runtime_summary", {})
+    if (
+        probe_result.get("status") != "pass"
+        or probe_result.get("kind") != "figure8_tokenizer_kmeans_probe_result_v1"
+        or probe_result.get("arm") != base["identity"]["arm"]
+    ):
+        raise ValueError("Figure 8 tokenizer probe result identity differs")
+    value = {
+        "status": "admitted",
+        "kind": "figure8_tokenizer_kmeans_production_admission_v1",
+        "policy": POLICY,
+        "probe_admission": base,
+        "probe": {
+            "admission_sha256": probe_result["admission_sha256"],
+            "checkpoint_state_sha256": probe_result["checkpoint_state_sha256"],
+            "attestation_sha256": probe_result["attestation_sha256"],
+            "native_defined": runtime.get("native_defined"),
+            "native_faults": runtime.get("native_faults"),
+            "corrections": runtime.get("corrections"),
+            "corrections_by_epoch_level_phase":
+                probe_result["corrections_by_epoch_level_phase"],
+        },
+        "probe_bank_receipt_sha256": probe_bank_receipt_sha256,
+        "probe_result_sha256": probe_result_sha256,
+        "production_control_sha256": production_control_sha256,
+    }
+    return validate_production_admission(value)
+
+
 def sha(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -366,6 +453,17 @@ def archive_events(events: Path, destination: Path, invocation: str) -> dict:
     return audit_event_archive(destination, invocation)
 
 
+def reset_event_segment(events: Path) -> None:
+    for path in list(events.iterdir()):
+        if path.is_symlink():
+            raise ValueError("Compatibility runtime evidence is redirected")
+        if path.is_dir():
+            shutil.rmtree(path)
+        else:
+            path.unlink()
+    (events / "contexts").mkdir()
+
+
 def seal_attestation(
     directory: Path,
     *,
@@ -374,26 +472,71 @@ def seal_attestation(
     events: Path,
     admission_path: Path,
     artifact_fields: dict,
+    parent: Path | None = None,
 ) -> dict:
     target = directory / "compatibility"
     if target.exists():
-        return verify_attestation(target, common["admission_sha256"], artifact)
+        return verify_attestation(
+            target, common["admission_sha256"], artifact, common,
+        )
     target.mkdir()
     shutil.copyfile(admission_path, target / "admission.json")
+    parent_result = None
+    if parent is not None:
+        parent_result = verify_attestation(
+            parent, common["admission_sha256"], "checkpoint", common,
+        )
+        shutil.copytree(parent, target / "parent")
+    validate_parent_binding(common, parent_result)
     audited = archive_events(events, target / "events.zip", common["invocation"])
+    restoration = events / "restored.json"
     result = {
         **common,
         **artifact_fields,
         "artifact": artifact,
         "runtime_summary": audited["summary"],
         "corrections_by_epoch_level_phase": audited["corrections_by_epoch_level_phase"],
+        "parent_attestation_sha256":
+            sha(parent / "attestation.json") if parent is not None else None,
+        "restoration_sha256": sha(restoration) if restoration.is_file() else None,
         "files": file_manifest(target),
     }
     atomic_json(target / "attestation.json", result)
     return result
 
 
-def verify_attestation(path: Path, admission_sha256: str, artifact: str) -> dict:
+def validate_parent_binding(common: dict, parent: dict | None) -> str:
+    if parent is None:
+        if (
+            common.get("parent_epoch") != common.get("base_epoch")
+            or common.get("parent_state_sha256") != common.get("base_state_sha256")
+        ):
+            raise ValueError("Compatibility continuation lacks its exact native base")
+        return "native-base"
+    if (
+        parent.get("artifact") != "checkpoint"
+        or parent.get("epoch") != common.get("parent_epoch")
+        or parent.get("state_sha256") != common.get("parent_state_sha256")
+    ):
+        raise ValueError("Compatibility parent differs from the exact resume state")
+    return "compatible-parent"
+
+
+def validate_attestation_identity(result: dict, expected: dict) -> None:
+    keys = (
+        "kind", "policy", "purpose", "arm", "run_id", "run_config_sha256",
+        "native_harness_sha256", "admission_sha256", "base_epoch", "base_state_sha256",
+    )
+    if any(result.get(key) != expected.get(key) for key in keys):
+        raise ValueError("Figure 8 tokenizer compatibility identity differs")
+
+
+def verify_attestation(
+    path: Path,
+    admission_sha256: str,
+    artifact: str,
+    expected: dict | None = None,
+) -> dict:
     from figure8_tokenizer_recovery_runtime import audit_event_archive
 
     result = read_json(path / "attestation.json")
@@ -407,6 +550,8 @@ def verify_attestation(path: Path, admission_sha256: str, artifact: str) -> dict
         or actual != result.get("files")
     ):
         raise ValueError("Figure 8 tokenizer compatibility attestation differs")
+    if expected is not None:
+        validate_attestation_identity(result, expected)
     require_hash(path / "admission.json", admission_sha256)
     audited = audit_event_archive(path / "events.zip", result["invocation"])
     if (
@@ -415,7 +560,85 @@ def verify_attestation(path: Path, admission_sha256: str, artifact: str) -> dict
         != result.get("corrections_by_epoch_level_phase")
     ):
         raise ValueError("Figure 8 tokenizer compatibility event audit differs")
+    restoration_sha256 = result.get("restoration_sha256")
+    with zipfile.ZipFile(path / "events.zip") as archive:
+        if (
+            "restoration_sha256" not in result
+            and result.get("purpose") == "probe"
+            and "restored.json" in archive.namelist()
+        ):
+            restoration_sha256 = hashlib.sha256(
+                archive.read("restored.json"),
+            ).hexdigest()
+        if restoration_sha256 is None:
+            if "restored.json" in archive.namelist():
+                raise ValueError("Unclaimed tokenizer restoration receipt")
+        else:
+            try:
+                restored_bytes = archive.read("restored.json")
+            except KeyError as error:
+                raise ValueError("Tokenizer restoration receipt is missing") from error
+            if hashlib.sha256(restored_bytes).hexdigest() != restoration_sha256:
+                raise ValueError("Tokenizer restoration receipt checksum differs")
+            restored = json.loads(restored_bytes)
+            if restored != {
+                "status": "exact",
+                "epoch": result["resumed_from_epoch"],
+                "state_sha256": result["resumed_from_state_sha256"],
+                "model_optimizer_python_numpy_torch_cuda_rng": "all_exact",
+            }:
+                raise ValueError("Tokenizer restoration was not exact full-state recovery")
+    parent_path = path / "parent"
+    if parent_path.is_dir():
+        parent = verify_attestation(
+            parent_path, admission_sha256, "checkpoint", expected,
+        )
+        if sha(parent_path / "attestation.json") != result.get("parent_attestation_sha256"):
+            raise ValueError("Figure 8 tokenizer compatibility parent checksum differs")
+    else:
+        parent = None
+        if result.get("parent_attestation_sha256") is not None:
+            raise ValueError("Figure 8 tokenizer compatibility parent is missing")
+    validate_parent_binding(result, parent)
     return result
+
+
+def attestation_chain(
+    path: Path, admission_sha256: str, artifact: str, expected: dict,
+) -> list[dict]:
+    result = []
+    current = path
+    current_artifact = artifact
+    while True:
+        result.append(
+            verify_attestation(current, admission_sha256, current_artifact, expected),
+        )
+        parent = current / "parent"
+        if not parent.is_dir():
+            return result
+        current = parent
+        current_artifact = "checkpoint"
+
+
+def validate_invocation_restorations(chain: list[dict]) -> None:
+    invocations = {}
+    for attestation in chain:
+        identity = attestation["invocation"]
+        group = invocations.setdefault(identity, {
+            "resume": (
+                attestation["resumed_from_epoch"],
+                attestation["resumed_from_state_sha256"],
+            ),
+            "restorations": 0,
+        })
+        if group["resume"] != (
+            attestation["resumed_from_epoch"],
+            attestation["resumed_from_state_sha256"],
+        ):
+            raise ValueError("Tokenizer invocation changed its exact resume identity")
+        group["restorations"] += attestation.get("restoration_sha256") is not None
+    if not invocations or any(group["restorations"] != 1 for group in invocations.values()):
+        raise ValueError("Every tokenizer invocation requires one exact restoration receipt")
 
 
 def validate_probe_files(args, admission: dict, spec: dict) -> None:
@@ -444,23 +667,134 @@ def validate_probe_files(args, admission: dict, spec: dict) -> None:
         raise ValueError("Figure 8 tokenizer failure summary differs from admission")
 
 
-def run_probe(args) -> dict:
+def prepare_production(args) -> dict:
+    from figure8_tokenizer import verify_durable_tree
+
+    probe_contract = validate_probe_admission(read_json(args.probe_admission))
+    if sha(args.probe_admission) != read_json(
+        args.probe_bank / "probe-result.json",
+    ).get("admission_sha256"):
+        raise ValueError("Durable probe result names another probe admission")
+    durable = verify_durable_tree(args.probe_bank)
+    probe_result_path = args.probe_bank / "probe-result.json"
+    probe_result = read_json(probe_result_path)
+    identity = probe_contract["identity"]
+    checkpoint = (
+        args.probe_bank / "run" / "checkpoints"
+        / f"epoch-{identity['first_failed_epoch']:05d}"
+    )
+    require_hash(checkpoint / "state.pt", probe_result["checkpoint_state_sha256"])
+    require_hash(
+        checkpoint / "compatibility" / "attestation.json",
+        probe_result["attestation_sha256"],
+    )
+    attestation = verify_attestation(
+        checkpoint / "compatibility",
+        probe_result["admission_sha256"],
+        "checkpoint",
+    )
+    if (
+        attestation["epoch"] != identity["first_failed_epoch"]
+        or attestation["runtime_summary"] != probe_result["runtime_summary"]
+        or attestation["corrections_by_epoch_level_phase"]
+        != probe_result["corrections_by_epoch_level_phase"]
+    ):
+        raise ValueError("Durable probe attestation differs from its result")
+    admission = production_admission(
+        probe_contract,
+        probe_result,
+        probe_bank_receipt_sha256=durable["bank_receipt_sha256"],
+        probe_result_sha256=sha(probe_result_path),
+        production_control_sha256=control_hashes(args.recovery_control),
+    )
+    if args.output.exists():
+        raise FileExistsError("Figure 8 tokenizer production admissions are immutable")
+    args.output.mkdir(parents=True)
+    atomic_json(args.output / "admission.json", admission)
+    for name in (
+        "arm-spec.json", "native-failures.log", "overlay.json", "failure-summary.json",
+    ):
+        shutil.copyfile(args.probe_admission.parent / name, args.output / name)
+    shutil.copyfile(args.probe_admission, args.output / "probe-admission.json")
+    shutil.copyfile(probe_result_path, args.output / "probe-result.json")
+    shutil.copyfile(args.probe_bank / "bank-receipt.json", args.output / "probe-bank-receipt.json")
+    return admission
+
+
+def validate_production_files(args, admission: dict, spec: dict) -> None:
+    from figure8_tokenizer import verify_durable_tree
+
+    base = admission["probe_admission"]
+    identity = validate_recovery_identity(
+        spec, args.arm, socket.gethostname(), args.gpu,
+    )
+    if identity != base["identity"]:
+        raise ValueError("Figure 8 tokenizer production identity differs from admission")
+    require_hash(args.spec, base["spec_sha256"])
+    require_hash(Path(spec["output"]) / "run-config.json", base["run_config_sha256"])
+    require_hash(args.overlay / "overlay.json", base["overlay_receipt_sha256"])
+    validate_overlay(args.overlay.resolve(), args.native_package.resolve())
+    require_hash(
+        args.native_package / "sklearn_import" / "cluster" / "k_means_.py",
+        base["native_module_sha256"],
+    )
+    for name, digest in admission["production_control_sha256"].items():
+        require_hash(args.recovery_control / name, digest)
+    if args.admission.is_symlink():
+        raise ValueError("Figure 8 tokenizer production admission is redirected")
+    durable = verify_durable_tree(args.admission.parent)
+    if durable["bank_receipt_sha256"] != sha(args.admission.parent / "bank-receipt.json"):
+        raise ValueError("Figure 8 tokenizer production admission bank differs")
+    evidence = args.admission.parent
+    require_hash(
+        evidence / "probe-admission.json",
+        admission["probe"]["admission_sha256"],
+    )
+    require_hash(
+        evidence / "probe-result.json",
+        admission["probe_result_sha256"],
+    )
+    require_hash(
+        evidence / "probe-bank-receipt.json",
+        admission["probe_bank_receipt_sha256"],
+    )
+    require_hash(evidence / "native-failures.log", base["failure_log_sha256"])
+    if read_json(evidence / "failure-summary.json") != base["failure"]:
+        raise ValueError("Figure 8 tokenizer production failure evidence differs")
+
+
+def run_compatibility(args, purpose: str) -> dict:
     import torch
 
-    admission = validate_probe_admission(read_json(args.admission))
     spec = read_json(args.spec)
-    validate_probe_files(args, admission, spec)
-    identity = admission["identity"]
-    if (
-        args.output.resolve() == Path(spec["output"]).resolve()
-        or not args.output.resolve().is_relative_to(
-            Path(spec["root"]).resolve() / "figure8-tokenizer-recovery-v1" / "probes",
-        )
-        or args.stop_after_epoch != identity["first_failed_epoch"]
-    ):
-        raise ValueError("Probe output or endpoint escapes the isolated recovery namespace")
-    if args.output.exists():
-        raise FileExistsError("Figure 8 tokenizer recovery probes are immutable")
+    if purpose == "probe":
+        admission = validate_probe_admission(read_json(args.admission))
+        base = admission
+        validate_probe_files(args, admission, spec)
+        identity = admission["identity"]
+        if (
+            args.output.resolve() == Path(spec["output"]).resolve()
+            or not args.output.resolve().is_relative_to(
+                Path(spec["root"]).resolve() / "figure8-tokenizer-recovery-v1" / "probes",
+            )
+            or args.stop_after_epoch != identity["first_failed_epoch"]
+        ):
+            raise ValueError("Probe output or endpoint escapes the isolated recovery namespace")
+        if args.output.exists():
+            raise FileExistsError("Figure 8 tokenizer recovery probes are immutable")
+    elif purpose == "production":
+        admission = validate_production_admission(read_json(args.admission))
+        base = admission["probe_admission"]
+        validate_production_files(args, admission, spec)
+        identity = base["identity"]
+        if (
+            args.output.resolve() != Path(spec["output"]).resolve()
+            or args.stop_after_epoch is not None
+            or (args.output / "completed.json").exists()
+        ):
+            raise ValueError("Production recovery must continue the exact incomplete arm")
+    else:
+        raise ValueError("Unknown Figure 8 tokenizer recovery purpose")
     scripts = Path(spec["control"]) / "scripts" / "letter"
     sys.path.insert(0, str(scripts))
     import bank_tokenizers
@@ -479,6 +813,21 @@ def run_probe(args) -> dict:
     config = read_json(Path(spec["output"]) / "run-config.json")
     expected_state = bank_tokenizers.read_state(args.resume, config)
     first_epoch = expected_state["epoch"] + 1
+    parent = None
+    if first_epoch == identity["base_epoch"]:
+        require_hash(args.resume / "completed.json", base["resume"]["completed_sha256"])
+        require_hash(args.resume / "state.pt", base["resume"]["state_sha256"])
+    elif purpose == "production" and first_epoch > identity["base_epoch"]:
+        parent = args.resume / "compatibility"
+    else:
+        raise ValueError("Compatibility continuation starts from an unadmitted epoch")
+    latest = read_json(args.output / "latest-state.json") if args.output.exists() else None
+    if purpose == "production" and (
+        latest is None
+        or latest.get("epoch") != first_epoch
+        or Path(latest.get("checkpoint", "")).resolve() != args.resume.resolve()
+    ):
+        raise ValueError("Production recovery resume differs from latest-state")
     invocation = f"{args.arm}-{os.getpid()}-{time.time_ns()}"
     events = args.output.parent / "runtime" / invocation
     (events / "contexts").mkdir(parents=True)
@@ -498,18 +847,33 @@ def run_probe(args) -> dict:
     common = {
         "kind": "figure8_tokenizer_kmeans_compatibility_attestation_v1",
         "policy": POLICY,
-        "purpose": "probe",
+        "purpose": purpose,
         "arm": args.arm,
         "run_id": Path(spec["output"]).name,
-        "run_config_sha256": admission["run_config_sha256"],
+        "run_config_sha256": base["run_config_sha256"],
         "native_harness_sha256": config["harness_sha256"],
         "admission_sha256": sha(args.admission),
         "base_epoch": identity["base_epoch"],
-        "base_state_sha256": admission["resume"]["state_sha256"],
+        "base_state_sha256": base["resume"]["state_sha256"],
         "invocation": invocation,
         "resumed_from_epoch": first_epoch,
-        "resumed_from_state_sha256": admission["resume"]["state_sha256"],
+        "resumed_from_state_sha256": sha(args.resume / "state.pt"),
     }
+    segment_parent = [parent]
+    segment_epoch = [first_epoch]
+    segment_state = [sha(args.resume / "state.pt")]
+
+    def current_common():
+        return {
+            **common,
+            "parent_epoch": segment_epoch[0],
+            "parent_state_sha256": segment_state[0],
+        }
+
+    if parent is not None:
+        verify_attestation(
+            parent, common["admission_sha256"], "checkpoint", current_common(),
+        )
 
     def load(path, trainer, run_spec):
         loaded = original_load(path, trainer, run_spec)
@@ -561,7 +925,7 @@ def run_probe(args) -> dict:
         seal_attestation(
             directory,
             artifact="checkpoint",
-            common=common,
+            common=current_common(),
             events=events,
             admission_path=args.admission,
             artifact_fields={
@@ -569,7 +933,12 @@ def run_probe(args) -> dict:
                 "state_sha256": receipt["state_sha256"],
                 "selected_checkpoint": selected,
             },
+            parent=segment_parent[0],
         )
+        segment_parent[0] = directory / "compatibility"
+        segment_epoch[0] = epoch + 1
+        segment_state[0] = receipt["state_sha256"]
+        reset_event_segment(events)
 
     def append(path, value):
         original_append(path, value)
@@ -581,7 +950,7 @@ def run_probe(args) -> dict:
         seal_attestation(
             directory,
             artifact="export",
-            common=common,
+            common=current_common(),
             events=events,
             admission_path=args.admission,
             artifact_fields={
@@ -589,10 +958,67 @@ def run_probe(args) -> dict:
                 "selected_checkpoint":
                     read_json(args.output / "latest-state.json")["checkpoint"],
             },
+            parent=segment_parent[0],
         )
         return result
 
     def write(path, value):
+        if purpose == "production" and path == args.output / "completed.json":
+            latest = read_json(args.output / "latest-state.json")
+            final_checkpoint = Path(latest["checkpoint"])
+            final_path = final_checkpoint / "compatibility"
+            export_path = args.output / "export" / "compatibility"
+            final_chain = attestation_chain(
+                final_path, common["admission_sha256"], "checkpoint", common,
+            )
+            validate_invocation_restorations(final_chain)
+            exported = verify_attestation(
+                export_path, common["admission_sha256"], "export", common,
+            )
+            correction_epochs = []
+            for attestation in final_chain:
+                for epoch, phases in attestation["corrections_by_epoch_level_phase"].items():
+                    if any(
+                        count
+                        for phase, levels_by_id in phases.items()
+                        if phase != "export"
+                        for count in levels_by_id.values()
+                    ):
+                        correction_epochs.append(int(epoch))
+            selected = Path(value["selected_checkpoint"])
+            selected_epoch = int(selected.name.split("-")[1])
+            if selected_epoch > identity["base_epoch"]:
+                selected_path = args.output / selected / "compatibility"
+                verify_attestation(
+                    selected_path, common["admission_sha256"], "checkpoint", common,
+                )
+            first_correction = min(correction_epochs) if correction_epochs else None
+            selected_dependent = (
+                first_correction is not None and selected_epoch >= first_correction
+            )
+            export_corrections = exported["runtime_summary"]["phases"].get("export", 0)
+            value = {
+                **value,
+                "kmeans_compatibility": {
+                    "policy": POLICY,
+                    "classification":
+                        "compatibility correction at undefined native CDF endpoint indexing",
+                    "not_claimed": "bitwise native execution past the deterministic crash",
+                    "admission_sha256": common["admission_sha256"],
+                    "base_epoch": identity["base_epoch"],
+                    "base_state_sha256": base["resume"]["state_sha256"],
+                    "final_attestation_sha256": sha(final_path / "attestation.json"),
+                    "export_attestation_sha256": sha(export_path / "attestation.json"),
+                    "completion_used_compatibility": True,
+                    "native_artifact_identity_claimed": False,
+                    "selected_model_repair_dependent": selected_dependent,
+                    "first_training_correction_epoch": first_correction,
+                    "export_corrections": export_corrections,
+                    "downstream_ids_repair_dependent":
+                        selected_dependent or export_corrections > 0,
+                    "original_scientific_recipe_and_selection_unchanged": True,
+                },
+            }
         return original_write(path, value)
 
     native.load_state = load
@@ -605,6 +1031,21 @@ def run_probe(args) -> dict:
         spec, args.output, args.resume, args.stop_after_epoch,
     )]
     native.main()
+    if purpose == "production":
+        completed = read_json(args.output / "completed.json")
+        compatibility = completed.get("kmeans_compatibility")
+        if (
+            completed.get("status") != "complete"
+            or compatibility is None
+            or compatibility.get("admission_sha256") != common["admission_sha256"]
+        ):
+            raise ValueError("Production tokenizer completion lost compatibility provenance")
+        return {
+            "status": "complete",
+            "arm": args.arm,
+            "completed_sha256": sha(args.output / "completed.json"),
+            "kmeans_compatibility": compatibility,
+        }
     latest = read_json(args.output / "latest-state.json")
     checkpoint = Path(latest["checkpoint"])
     attestation = verify_attestation(
@@ -631,6 +1072,261 @@ def run_probe(args) -> dict:
     return result
 
 
+def run_probe(args) -> dict:
+    return run_compatibility(args, "probe")
+
+
+def run_production(args) -> dict:
+    return run_compatibility(args, "production")
+
+
+def production_resume(args, admission: dict, spec: dict) -> Path:
+    from bank_tokenizers import read_state
+
+    output = Path(spec["output"])
+    latest = read_json(output / "latest-state.json")
+    resume = Path(latest["checkpoint"]).resolve()
+    if (
+        resume.parent != output.resolve() / "checkpoints"
+        or resume.name != f"epoch-{latest['epoch']:05d}"
+    ):
+        raise ValueError("Production compatibility resume escapes its tokenizer run")
+    config = read_json(output / "run-config.json")
+    state = read_state(resume, config)
+    if state["epoch"] + 1 != latest["epoch"]:
+        raise ValueError("Production compatibility latest checkpoint epoch differs")
+    base = admission["probe_admission"]
+    if latest["epoch"] == base["identity"]["base_epoch"]:
+        require_hash(resume / "completed.json", base["resume"]["completed_sha256"])
+        require_hash(resume / "state.pt", base["resume"]["state_sha256"])
+    elif latest["epoch"] > base["identity"]["base_epoch"]:
+        expected = {
+            "kind": "figure8_tokenizer_kmeans_compatibility_attestation_v1",
+            "policy": POLICY,
+            "purpose": "production",
+            "arm": args.arm,
+            "run_id": output.name,
+            "run_config_sha256": base["run_config_sha256"],
+            "native_harness_sha256": config["harness_sha256"],
+            "admission_sha256": sha(args.admission),
+            "base_epoch": base["identity"]["base_epoch"],
+            "base_state_sha256": base["resume"]["state_sha256"],
+        }
+        verify_attestation(
+            resume / "compatibility", sha(args.admission), "checkpoint", expected,
+        )
+    else:
+        raise ValueError("Production compatibility latest checkpoint predates its base")
+    return resume
+
+
+def gpu_is_free(index: int) -> bool:
+    result = subprocess.run(
+        [
+            "nvidia-smi", f"--id={index}", "--query-gpu=memory.used",
+            "--format=csv,noheader,nounits",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    return int(result.stdout.strip()) == 0
+
+
+def supervise_production(args) -> dict:
+    import fcntl
+
+    admission = validate_production_admission(read_json(args.admission))
+    spec = read_json(args.spec)
+    validate_production_files(args, admission, spec)
+    output = Path(spec["output"])
+    lock_path = output.parent / f"{output.name}.runner.lock"
+    status_path = output.parent / f"{output.name}.compat-runner-status.json"
+    child = [None]
+    stopping = [False]
+
+    def stop(*_):
+        stopping[0] = True
+        if child[0] is not None and child[0].poll() is None:
+            os.killpg(child[0].pid, signal.SIGTERM)
+
+    signal.signal(signal.SIGTERM, stop)
+    signal.signal(signal.SIGINT, stop)
+    with lock_path.open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        failures = 0
+        while not (output / "completed.json").is_file():
+            resume = production_resume(args, admission, spec)
+            if not gpu_is_free(spec["gpu"]):
+                raise RuntimeError("Assigned Figure 8 tokenizer GPU is occupied; no process was signaled")
+            command = [
+                sys.executable,
+                "-B",
+                str(Path(__file__).resolve()),
+                "run-production",
+                "--arm", args.arm,
+                "--spec", str(args.spec),
+                "--resume", str(resume),
+                "--overlay", str(args.overlay),
+                "--native-package", str(args.native_package),
+                "--recovery-control", str(args.recovery_control),
+                "--gpu", str(args.gpu),
+                "--admission", str(args.admission),
+                "--output", str(output),
+            ]
+            log = output.parent / f"{output.name}.compat.log"
+            with log.open("a", encoding="utf-8") as stream:
+                child[0] = subprocess.Popen(
+                    command,
+                    cwd=spec["root"],
+                    stdout=stream,
+                    stderr=subprocess.STDOUT,
+                    start_new_session=True,
+                )
+                atomic_json(status_path, {
+                    "status": "training",
+                    "runner_pid": os.getpid(),
+                    "child_pid": child[0].pid,
+                    "host": spec["host"],
+                    "gpu": spec["gpu"],
+                    "resume": str(resume),
+                    "started_unix": time.time(),
+                })
+                returncode = child[0].wait()
+            child[0] = None
+            if stopping[0]:
+                atomic_json(status_path, {
+                    "status": "drained",
+                    "runner_pid": os.getpid(),
+                    "unix": time.time(),
+                })
+                return {"status": "drained", "arm": args.arm}
+            if returncode == 0:
+                failures = 0
+            else:
+                failures += 1
+                atomic_json(status_path, {
+                    "status": "retry_pending",
+                    "returncode": returncode,
+                    "consecutive_failures": failures,
+                    "unix": time.time(),
+                })
+                if failures >= 5:
+                    raise RuntimeError(
+                        "Figure 8 compatibility continuation failed five consecutive invocations",
+                    )
+                time.sleep(30)
+        atomic_json(status_path, {
+            "status": "complete",
+            "runner_pid": os.getpid(),
+            "completed_sha256": sha(output / "completed.json"),
+            "unix": time.time(),
+        })
+    return {
+        "status": "complete",
+        "arm": args.arm,
+        "completed_sha256": sha(output / "completed.json"),
+    }
+
+
+def verify_completed_compatibility(
+    payload: Path,
+    arm: str,
+    expected_admission_sha256: str | None,
+) -> dict | None:
+    if arm not in RECOVERY_ARMS:
+        return None
+    if not _digest(expected_admission_sha256):
+        raise ValueError("A trusted Figure 8 tokenizer compatibility admission is required")
+    completed = read_json(payload / "completed.json")
+    compatibility = completed.get("kmeans_compatibility")
+    if not isinstance(compatibility, dict):
+        raise ValueError("Repaired Figure 8 tokenizer lacks compatibility provenance")
+    identity = RECOVERY_ARMS[arm]
+    admission_path = payload / "checkpoints" / "epoch-20000" / "compatibility" / "admission.json"
+    require_hash(admission_path, expected_admission_sha256)
+    admission = validate_production_admission(read_json(admission_path))
+    base = admission["probe_admission"]
+    if base["identity"] != {"arm": arm, **identity}:
+        raise ValueError("Figure 8 tokenizer compatibility admission identity differs")
+    config = read_json(payload / "run-config.json")
+    expected = {
+        "kind": "figure8_tokenizer_kmeans_compatibility_attestation_v1",
+        "policy": POLICY,
+        "purpose": "production",
+        "arm": arm,
+        "run_id": f"{arm}",
+        "run_config_sha256": sha(payload / "run-config.json"),
+        "native_harness_sha256": config["harness_sha256"],
+        "admission_sha256": expected_admission_sha256,
+        "base_epoch": identity["base_epoch"],
+        "base_state_sha256": base["resume"]["state_sha256"],
+    }
+    final_path = payload / "checkpoints" / "epoch-20000" / "compatibility"
+    raw_final = read_json(final_path / "attestation.json")
+    if raw_final.get("arm") != arm or raw_final.get("run_id") != arm:
+        raise ValueError("Figure 8 tokenizer compatibility arm differs")
+    final_chain = attestation_chain(
+        final_path, expected_admission_sha256, "checkpoint", expected,
+    )
+    validate_invocation_restorations(final_chain)
+    export_path = payload / "export" / "compatibility"
+    exported = verify_attestation(
+        export_path, expected_admission_sha256, "export", expected,
+    )
+    selected = Path(completed["selected_checkpoint"])
+    selected_epoch = int(selected.name.split("-")[1])
+    if selected_epoch > identity["base_epoch"]:
+        verify_attestation(
+            payload / selected / "compatibility",
+            expected_admission_sha256,
+            "checkpoint",
+            expected,
+        )
+    correction_epochs = []
+    for attestation in final_chain:
+        for epoch, phases in attestation["corrections_by_epoch_level_phase"].items():
+            if any(
+                count
+                for phase, levels_by_id in phases.items()
+                if phase != "export"
+                for count in levels_by_id.values()
+            ):
+                correction_epochs.append(int(epoch))
+    first_correction = min(correction_epochs) if correction_epochs else None
+    selected_dependent = (
+        first_correction is not None and selected_epoch >= first_correction
+    )
+    export_corrections = exported["runtime_summary"]["phases"].get("export", 0)
+    required = {
+        "policy": POLICY,
+        "classification":
+            "compatibility correction at undefined native CDF endpoint indexing",
+        "not_claimed": "bitwise native execution past the deterministic crash",
+        "admission_sha256": expected_admission_sha256,
+        "base_epoch": identity["base_epoch"],
+        "base_state_sha256": final_chain[-1]["base_state_sha256"],
+        "final_attestation_sha256": sha(final_path / "attestation.json"),
+        "export_attestation_sha256": sha(export_path / "attestation.json"),
+        "completion_used_compatibility": True,
+        "native_artifact_identity_claimed": False,
+        "selected_model_repair_dependent": selected_dependent,
+        "first_training_correction_epoch": first_correction,
+        "export_corrections": export_corrections,
+        "downstream_ids_repair_dependent":
+            selected_dependent or export_corrections > 0,
+        "original_scientific_recipe_and_selection_unchanged": True,
+    }
+    if compatibility != required:
+        raise ValueError("Figure 8 tokenizer final compatibility summary differs")
+    return {
+        **required,
+        "final_runtime_summary": final_chain[0]["runtime_summary"],
+        "export_runtime_summary": exported["runtime_summary"],
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     commands = parser.add_subparsers(dest="command", required=True)
@@ -638,8 +1334,11 @@ def main() -> None:
     overlay.add_argument("--native-package", type=Path, required=True)
     overlay.add_argument("--output", type=Path, required=True)
     prepare = commands.add_parser("prepare-probe")
+    production = commands.add_parser("prepare-production")
     run = commands.add_parser("run-probe")
-    for command in (prepare, run):
+    run_production_parser = commands.add_parser("run-production")
+    supervisor = commands.add_parser("supervise-production")
+    for command in (prepare, run, run_production_parser):
         command.add_argument("--arm", choices=tuple(RECOVERY_ARMS), required=True)
         command.add_argument("--spec", type=Path, required=True)
         command.add_argument("--resume", type=Path, required=True)
@@ -649,15 +1348,40 @@ def main() -> None:
         command.add_argument("--gpu", type=int, required=True)
     prepare.add_argument("--failure-log", type=Path, required=True)
     prepare.add_argument("--output", type=Path, required=True)
+    production.add_argument("--probe-admission", type=Path, required=True)
+    production.add_argument("--probe-bank", type=Path, required=True)
+    production.add_argument("--recovery-control", type=Path, required=True)
+    production.add_argument("--output", type=Path, required=True)
     run.add_argument("--admission", type=Path, required=True)
     run.add_argument("--output", type=Path, required=True)
     run.add_argument("--stop-after-epoch", type=int, required=True)
+    run_production_parser.add_argument("--admission", type=Path, required=True)
+    run_production_parser.add_argument("--output", type=Path, required=True)
+    run_production_parser.set_defaults(stop_after_epoch=None)
+    for name in (
+        "arm", "spec", "overlay", "native-package", "recovery-control",
+        "gpu", "admission", "output",
+    ):
+        option = f"--{name}"
+        if name == "arm":
+            supervisor.add_argument(option, choices=tuple(RECOVERY_ARMS), required=True)
+        elif name == "gpu":
+            supervisor.add_argument(option, type=int, required=True)
+        else:
+            supervisor.add_argument(option, type=Path, required=True)
+    supervisor.set_defaults(stop_after_epoch=None)
     args = parser.parse_args()
     if args.command == "make-overlay":
         from figure8_tokenizer_recovery_runtime import make_overlay
         result = make_overlay(args.native_package.resolve(), args.output.resolve())
     elif args.command == "prepare-probe":
         result = prepare_probe(args)
+    elif args.command == "prepare-production":
+        result = prepare_production(args)
+    elif args.command == "run-production":
+        result = run_production(args)
+    elif args.command == "supervise-production":
+        result = supervise_production(args)
     else:
         result = run_probe(args)
     print(json.dumps(result, sort_keys=True), flush=True)

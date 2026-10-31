@@ -198,6 +198,57 @@ def test_probe_admission_binds_the_exact_native_state_and_control_hashes():
         recovery().validate_probe_admission(broken)
 
 
+def test_production_admission_requires_a_fault_crossing_probe_and_durable_receipt():
+    probe = {
+        "status": "pass",
+        "kind": "figure8_tokenizer_kmeans_probe_result_v1",
+        "arm": "beta-0p001",
+        "admission_sha256": "a" * 64,
+        "checkpoint": "/scratch/probe/checkpoints/epoch-16401",
+        "checkpoint_state_sha256": "b" * 64,
+        "attestation_sha256": "c" * 64,
+        "runtime_summary": {
+            "tasks": 16040,
+            "failed_tasks": 0,
+            "corrections": 1,
+            "phases": {"training": 1},
+            "worker_pids": [1, 2],
+            "native_defined": 16039,
+            "native_faults": 1,
+        },
+        "corrections_by_epoch_level_phase": {"16401": {"training": {"0": 1}}},
+    }
+    admission = recovery().production_admission(
+        recovery().probe_admission(
+            identity={
+                "arm": "beta-0p001", "host": "node-1", "gpu": 2,
+                "base_epoch": 16000, "first_failed_epoch": 16401,
+            },
+            spec_sha256="d" * 64,
+            run_config_sha256="e" * 64,
+            resume_completed_sha256="f" * 64,
+            resume_state_sha256="1" * 64,
+            overlay_receipt_sha256="2" * 64,
+            native_module_sha256="3" * 64,
+            failure_log_sha256="4" * 64,
+            failure={"attempts": 5, "completed_epoch_before_fault": 16400,
+                     "first_failed_epoch": 16401, "candidate_index": 256, "sample_count": 256},
+            control_sha256={"figure8_tokenizer_recovery.py": "5" * 64},
+        ),
+        probe,
+        probe_bank_receipt_sha256="6" * 64,
+        probe_result_sha256="7" * 64,
+        production_control_sha256={"figure8_tokenizer_recovery.py": "8" * 64},
+    )
+    assert admission["kind"] == "figure8_tokenizer_kmeans_production_admission_v1"
+    assert admission["probe"]["native_faults"] == 1
+    assert admission["probe"]["native_defined"] == 16039
+    broken = json.loads(json.dumps(admission))
+    broken["probe"]["native_faults"] = 0
+    with pytest.raises(ValueError, match="fault"):
+        recovery().validate_production_admission(broken)
+
+
 def rng_state(seed: int):
     return np.random.RandomState(seed).get_state()
 
@@ -411,6 +462,67 @@ def test_event_audit_rejects_cross_invocation_or_unaudited_native_tasks(tmp_path
     write_defined_event_archive(broken, include_differential=False)
     with pytest.raises(ValueError, match="differential"):
         runtime().audit_event_archive(broken, "run-1")
+
+
+def test_compatibility_attestation_parent_must_match_the_exact_resume_state():
+    common = {
+        "base_epoch": 16000,
+        "base_state_sha256": "a" * 64,
+        "parent_epoch": 16500,
+        "parent_state_sha256": "b" * 64,
+    }
+    parent = {
+        "artifact": "checkpoint",
+        "epoch": 16500,
+        "state_sha256": "b" * 64,
+    }
+    assert recovery().validate_parent_binding(common, parent) == "compatible-parent"
+    with pytest.raises(ValueError, match="parent"):
+        recovery().validate_parent_binding(
+            common, {**parent, "state_sha256": "c" * 64},
+        )
+    base = {
+        **common,
+        "parent_epoch": 16000,
+        "parent_state_sha256": "a" * 64,
+    }
+    assert recovery().validate_parent_binding(base, None) == "native-base"
+    with pytest.raises(ValueError, match="base"):
+        recovery().validate_parent_binding(common, None)
+
+
+def test_repaired_arms_cannot_be_admitted_without_semantic_compatibility_evidence(tmp_path):
+    payload = tmp_path / "payload"
+    payload.mkdir()
+    (payload / "completed.json").write_text(
+        json.dumps({"status": "complete"}) + "\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="compatibility"):
+        recovery().verify_completed_compatibility(
+            payload, "beta-0p001", "a" * 64,
+        )
+    assert recovery().verify_completed_compatibility(
+        payload, "alpha-0p001", None,
+    ) is None
+
+
+def test_figure8_arm_admission_requires_the_trusted_repair_digest(tmp_path):
+    import figure8_tokenizer
+
+    payload = tmp_path / "payload"
+    payload.mkdir()
+    (payload / "completed.json").write_text(
+        json.dumps({"status": "complete"}) + "\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="trusted"):
+        figure8_tokenizer.verify_arm_compatibility(
+            "beta-0p001", {}, payload,
+        )
+    assert figure8_tokenizer.verify_arm_compatibility(
+        "alpha-0p001", {}, payload,
+    ) is None
 
 
 def test_overlay_builder_refuses_any_unpinned_native_module(tmp_path):

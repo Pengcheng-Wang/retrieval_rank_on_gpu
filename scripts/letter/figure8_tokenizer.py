@@ -36,6 +36,7 @@ LAUNCH_SPEC_FIELDS = set(SCIENTIFIC_SPEC_FIELDS) | {
 FIGURE8_TOKENIZER_HARNESS_SHA256 = (
     "21e3909b8ea84793779820db8442e83b12a8597e3caf9d294d9f18bcb95a4532"
 )
+KMEANS_COMPATIBILITY_ARMS = {"beta-0p001", "clusters-20"}
 
 
 def baseline_tokenizer_spec() -> dict:
@@ -413,6 +414,18 @@ def require_durable_admission_path(
     return path.resolve()
 
 
+def verify_arm_compatibility(arm: str, audit: dict, payload: Path) -> dict | None:
+    if arm not in KMEANS_COMPATIBILITY_ARMS:
+        return None
+    admission_sha256 = audit.get("kmeans_compatibility_admission_sha256")
+    if not isinstance(admission_sha256, str) or not re.fullmatch(
+        r"[a-f0-9]{64}", admission_sha256,
+    ):
+        raise ValueError("A trusted tokenizer compatibility admission digest is required")
+    from figure8_tokenizer_recovery import verify_completed_compatibility
+    return verify_completed_compatibility(payload, arm, admission_sha256)
+
+
 def verify_arm_admission(
     arm: str, audit: dict, spec_path: Path, durable_root: Path,
     expected_spec: dict, execution: dict,
@@ -429,6 +442,7 @@ def verify_arm_admission(
     bundle = durable_root / bundle_name
     durable = verify_durable_tree(bundle)
     payload = bundle / "payload"
+    compatibility = verify_arm_compatibility(arm, audit, payload)
     config = json.loads((payload / "run-config.json").read_text(encoding="utf-8"))
     codes = np.load(payload / "export" / "codes.npy", allow_pickle=False)
     indices = json.loads((payload / "export" / "index.json").read_text(encoding="utf-8"))
@@ -448,7 +462,7 @@ def verify_arm_admission(
             or durable["bank_receipt_sha256"] != audit.get("durable_bank_receipt_sha256")
             or any(file_sha256(path) != audit.get(field) for field, path in required.items())):
         raise ValueError("Figure8 arm final or durable checksum identity differs")
-    return {
+    result = {
         "arm": arm,
         "bundle": bundle_name,
         "selected_epoch": audit["selected_epoch"],
@@ -458,6 +472,9 @@ def verify_arm_admission(
         "bank": bank,
         **{field: audit[field] for field in required},
     }
+    if compatibility is not None:
+        result["kmeans_compatibility"] = compatibility
+    return result
 
 
 def derive_arm_manifest(
