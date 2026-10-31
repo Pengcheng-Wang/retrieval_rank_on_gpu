@@ -98,16 +98,23 @@ def test_frozen_tokenizer_plan_has_no_selection_output():
     assert not module().contains_winner_field(plan)
 
 
-def test_operational_v2_plan_preserves_the_frozen_scientific_grid():
+@pytest.mark.parametrize(
+    "version,kind,work",
+    [
+        (2, "letter_figure8_tokenizer_downstream_v2", "fresh-t5-figure8-tokenizer-v2"),
+        (3, "letter_figure8_tokenizer_downstream_v3", "fresh-t5-figure8-tokenizer-v3"),
+    ],
+)
+def test_operational_plan_preserves_the_frozen_scientific_grid(version, kind, work):
     original = module().load_plan(
         ROOT / "configs" / "letter-figure8-tokenizer-v1.json"
     )
     replacement = module().load_plan(
-        ROOT / "configs" / "letter-figure8-tokenizer-v2.json"
+        ROOT / "configs" / f"letter-figure8-tokenizer-v{version}.json"
     )
 
-    assert replacement["kind"] == "letter_figure8_tokenizer_downstream_v2"
-    assert replacement["work_basename"] == "fresh-t5-figure8-tokenizer-v2"
+    assert replacement["kind"] == kind
+    assert replacement["work_basename"] == work
     for key in (
         "dataset", "seed", "temperature", "learning_rate", "epochs",
         "world_size", "effective_batch_size", "beams", "seen_item_exclusion",

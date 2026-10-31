@@ -1,0 +1,58 @@
+{
+  "schema_version": 3,
+  "kind": "letter_figure8_tokenizer_downstream_v3",
+  "dataset": "Instruments",
+  "seed": 42,
+  "temperature": 0.7,
+  "temperature_provenance": "author-confirmed best Instruments setting; original per-panel Figure 8 config unreleased",
+  "learning_rate": 0.0005,
+  "epochs": 200,
+  "world_size": 2,
+  "effective_batch_size": 1024,
+  "beams": 20,
+  "seen_item_exclusion": false,
+  "max_new_tokens": 10,
+  "selection": "within-arm earliest minimum validation loss with patience20",
+  "test_selection": "descriptive only; no winner or recipe selection",
+  "arms": [
+    "alpha-0p001",
+    "alpha-0p01",
+    "alpha-0p1",
+    "beta-0p00001",
+    "beta-0p001",
+    "beta-0p01",
+    "clusters-5",
+    "clusters-15",
+    "clusters-20",
+    "levels-2",
+    "levels-6",
+    "levels-8",
+    "codes-64",
+    "codes-128",
+    "codes-512"
+  ],
+  "baseline": {
+    "run_id": "openllama-v2-fresh-t5-Instruments-full-s42-t07-v1",
+    "temperature": 0.7,
+    "result_sha256": "2c7cfc6ba34a28f00cd8f154b3de6686124e60277841dc0736886afd78ba61a8"
+  },
+  "panels": {
+    "alpha": [0.001, 0.01, 0.02, 0.1],
+    "beta": [0.00001, 0.0001, 0.001, 0.01],
+    "clusters": [5, 10, 15, 20],
+    "levels": [2, 4, 6, 8],
+    "codes": [64, 128, 256, 512]
+  },
+  "metric_identities": ["code", "item"],
+  "comparison_metrics": ["recall@5", "recall@10", "ndcg@5", "ndcg@10"],
+  "bootstrap_seed": 20261027,
+  "bootstrap_replicates": 2000,
+  "work_basename": "fresh-t5-figure8-tokenizer-v3",
+  "durability": "new operational namespace after accepting the verified incoming teacher path used by alpha sweep specs",
+  "immutable_queues": [
+    "fresh-t5-v3",
+    "fresh-t5-figure8-temperature-v1",
+    "fresh-t5-figure8-tokenizer-v1",
+    "fresh-t5-figure8-tokenizer-v2"
+  ]
+}
