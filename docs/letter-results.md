@@ -665,8 +665,8 @@ initialization tasks:160,079 were native-defined and bitwise matched, while
 one exact undefined CDF endpoint at epoch16,401 level0 required the admitted
 index guard; export required no correction. Native bitwise execution is not
 claimed past that crash. Exact lineage and durable evidence are in
-[the beta0.001 final receipt](../results/2026-10-31-letter/figure8-beta0p001-final-v1.json)
-and `verified-results/figure8-beta0p001-final-v1`.
+[the beta0.001 final receipt](../results/2026-10-31-letter/figure8-beta0p001-final-v2.json)
+and `verified-results/figure8-beta0p001-final-v2`.
 
 Downstream evaluation for the 15 nonbaseline tokenizer arms is split across
 immutable `fresh-t5-figure8-tokenizer-v2` and `v3` namespaces; v4 is reserved

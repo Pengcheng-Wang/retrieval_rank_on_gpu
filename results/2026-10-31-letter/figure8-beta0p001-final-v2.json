@@ -21,6 +21,7 @@
   "run_completed_sha256": "c675b5068a73c11cb665bd2fea39ae00f1bc5759ad4395606276e4fdb0431075",
   "durable_bank_receipt_sha256": "caf79bf3c7455d52838713e8e7eaecde81f92aeaecdc39a1cda7b17578a00e7f",
   "files": 50,
+  "kmeans_compatibility_admission_sha256": "e7aabb9f7e239db361f9a68415b366bd56df8162d61d47b2901c289bab487609",
   "kmeans_compatibility": {
     "policy": "rq-kmeans-cdf-endpoint-v1",
     "classification": "compatibility correction at undefined native CDF endpoint indexing",
@@ -113,5 +114,5 @@
       "native_faults": 0
     }
   },
-  "audit_source_sha256": "6c0acfce1350655efda4f890a2e15fe639a617c48a2f18d9f80b1d87bc22735f"
+  "audit_source_sha256": "e530569cd2350ecac23a3cc908ab03375205aaf1095c6f7786f624866927dee3"
 }
