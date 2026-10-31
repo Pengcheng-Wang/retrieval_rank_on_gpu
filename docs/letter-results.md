@@ -786,6 +786,14 @@ verified evidence is in
 [the beta0.001 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p001-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-beta0p001-s42-t0p7-v1`.
 
+The `beta=0.01` downstream cell completed at epoch86 and selected
+checkpoint8,514 /epoch66. Code Recall@10/NDCG@10 is **.10996/.08150** and the
+original-item diagnostic is **.10964/.08081**. It is descriptively between
+beta0.00001 and beta0.001, so the three measured points do not establish a
+monotonic beta trend. Exact independently verified evidence is in
+[the beta0.01 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p01-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-beta0p01-s42-t0p7-v1`.
+
 ## 📊 Instruments released-ID replay
 
 The first LETTER-TIGER run produces Recall@10 **0.10976** and NDCG@10
