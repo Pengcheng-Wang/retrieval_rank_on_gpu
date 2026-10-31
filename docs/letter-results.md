@@ -621,6 +621,15 @@ postprocessing. These remain tokenizer-only findings. Exact receipts:
 [beta0.01](../results/2026-10-30-letter/figure8-beta0p01-final-v1.json), and
 [K15](../results/2026-10-30-letter/figure8-clusters15-final-v1.json).
 
+The restored pre-reset `alpha=0.01` and `beta=0.00001` final bundles have now
+also passed the same independent all-byte audit. Both selected epoch18,000 and
+finish with25 excess collision items /largest group3. Their first-level
+utilization is118/256 and187/256 respectively; deterministic collision repair
+reduced206 and70 pre-repair excess items. These are still tokenizer-only
+findings. Exact receipts:
+[alpha0.01](../results/2026-10-30-letter/figure8-alpha0p01-final-v1.json) and
+[beta0.00001](../results/2026-10-30-letter/figure8-beta0p00001-final-v1.json).
+
 Downstream evaluation for the 15 nonbaseline tokenizer arms is split across
 immutable `fresh-t5-figure8-tokenizer-v2` and `v3` namespaces; v4 is reserved
 for arms whose tokenizer completion requires the audited k-means endpoint
