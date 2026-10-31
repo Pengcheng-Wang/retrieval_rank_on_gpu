@@ -755,6 +755,16 @@ record and durable byte was independently reverified in
 [the beta0.00001 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p00001-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-beta0p00001-s42-t0p7-v1`.
 
+The repaired `beta=0.001` downstream cell completed at epoch78 and selected
+checkpoint7,482 /epoch58. Code Recall@10/NDCG@10 is **.10786/.08020** and the
+original-item diagnostic is **.10746/.07953**. It is descriptively below both
+beta0.00001 and the full-tokenizer tau0.7 baseline; no monotonic beta or winner
+claim is made. The admitted tokenizer lineage includes the single disclosed
+undefined-endpoint correction and no export correction. Exact independently
+verified evidence is in
+[the beta0.001 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p001-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-beta0p001-s42-t0p7-v1`.
+
 ## 📊 Instruments released-ID replay
 
 The first LETTER-TIGER run produces Recall@10 **0.10976** and NDCG@10
