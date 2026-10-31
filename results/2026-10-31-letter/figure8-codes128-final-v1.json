@@ -1,0 +1,25 @@
+{
+  "status": "pass",
+  "arm": "codes-128",
+  "selected_epoch": 20000,
+  "final_epoch": 20000,
+  "index_sha256": "455193b98e270d9c4d337a7ed024e544c787e5a29070baf2a2a9d785ad67f169",
+  "codes_sha256": "7326ed41e22479b4b3ab65d42b63315836b3651ccf9cb46943074949518531b4",
+  "collisions": {
+    "before": 93,
+    "after": 25,
+    "largest_group": 3
+  },
+  "utilization_by_level": [
+    103,
+    128,
+    128,
+    128
+  ],
+  "bundle": "codes-128-completed-64f7eb24e9fdb6e5",
+  "bundle_completed_sha256": "42fb4b0016b913c488c11a11a47bc087f2d6015e55e931c335f680c581653a1d",
+  "run_completed_sha256": "83612ef59f39117fa50e46d5645e604222b952975de1f7a7fcec75eb1f12b8f9",
+  "durable_bank_receipt_sha256": "4e553086146c606150796655f42846e42e06a6af014d4ed28acc1283524270d4",
+  "audit_source_sha256": "22baf5a32c11fb0307a932924f83e7aa98dd13b1f1a8da19910f107b4797fbe2",
+  "private_evidence_bundle": "verified-results/figure8-codes128-final-v1"
+}

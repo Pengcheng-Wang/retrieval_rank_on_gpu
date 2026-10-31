@@ -731,6 +731,15 @@ crash. Exact evidence is in
 [the K20 final receipt](../results/2026-10-31-letter/figure8-clusters20-final-v2.json)
 and `verified-results/figure8-clusters20-final-v2`.
 
+Two codebook-size arms are now independently final. The 128-code arm selected
+epoch20,000 and has utilization103/128/128/128; the 512-code arm selected
+epoch18,000 and has utilization204/512/512/512. Both finish with25 excess
+collision items and largest group3 after deterministic collision repair, down
+from93 and46 respectively. These are tokenizer-only findings until their
+dedicated downstream T5 cells complete. Exact evidence:
+[codes128](../results/2026-10-31-letter/figure8-codes128-final-v1.json) and
+[codes512](../results/2026-10-31-letter/figure8-codes512-final-v1.json).
+
 Downstream evaluation for the 15 nonbaseline tokenizer arms is split across
 immutable `fresh-t5-figure8-tokenizer-v2` and `v3` namespaces; v4 is reserved
 for arms whose tokenizer completion requires the audited k-means endpoint
