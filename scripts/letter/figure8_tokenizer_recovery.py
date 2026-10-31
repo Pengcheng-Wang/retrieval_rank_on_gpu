@@ -473,6 +473,7 @@ def seal_attestation(
     admission_path: Path,
     artifact_fields: dict,
     parent: Path | None = None,
+    run_root: Path | None = None,
 ) -> dict:
     target = directory / "compatibility"
     if target.exists():
@@ -482,11 +483,14 @@ def seal_attestation(
     target.mkdir()
     shutil.copyfile(admission_path, target / "admission.json")
     parent_result = None
+    parent_checkpoint = None
     if parent is not None:
         parent_result = verify_attestation(
-            parent, common["admission_sha256"], "checkpoint", common,
+            parent, common["admission_sha256"], "checkpoint", common, run_root,
         )
-        shutil.copytree(parent, target / "parent")
+        if run_root is None:
+            raise ValueError("Compatibility parent requires its tokenizer run root")
+        parent_checkpoint = parent.parent.resolve().relative_to(run_root.resolve()).as_posix()
     validate_parent_binding(common, parent_result)
     audited = archive_events(events, target / "events.zip", common["invocation"])
     restoration = events / "restored.json"
@@ -498,6 +502,7 @@ def seal_attestation(
         "corrections_by_epoch_level_phase": audited["corrections_by_epoch_level_phase"],
         "parent_attestation_sha256":
             sha(parent / "attestation.json") if parent is not None else None,
+        "parent_checkpoint": parent_checkpoint,
         "restoration_sha256": sha(restoration) if restoration.is_file() else None,
         "files": file_manifest(target),
     }
@@ -506,20 +511,84 @@ def seal_attestation(
 
 
 def validate_parent_binding(common: dict, parent: dict | None) -> str:
+    parent_epoch = common.get("parent_epoch")
+    parent_state = common.get("parent_state_sha256")
+    if parent_epoch is None and common.get("purpose") == "probe":
+        parent_epoch = common.get("resumed_from_epoch")
+        parent_state = common.get("resumed_from_state_sha256")
     if parent is None:
         if (
-            common.get("parent_epoch") != common.get("base_epoch")
-            or common.get("parent_state_sha256") != common.get("base_state_sha256")
+            parent_epoch != common.get("base_epoch")
+            or parent_state != common.get("base_state_sha256")
         ):
             raise ValueError("Compatibility continuation lacks its exact native base")
         return "native-base"
     if (
         parent.get("artifact") != "checkpoint"
-        or parent.get("epoch") != common.get("parent_epoch")
-        or parent.get("state_sha256") != common.get("parent_state_sha256")
+        or parent.get("epoch") != parent_epoch
+        or parent.get("state_sha256") != parent_state
     ):
         raise ValueError("Compatibility parent differs from the exact resume state")
     return "compatible-parent"
+
+
+def publish_latest_state(output: Path, checkpoint: Path, epoch: int) -> None:
+    expected = output.resolve() / "checkpoints" / f"epoch-{epoch:05d}"
+    if checkpoint.resolve() != expected:
+        raise ValueError("Tokenizer latest-state checkpoint path differs")
+    marker = output / "latest-state.json"
+    if marker.is_file():
+        current = read_json(marker)
+        if current.get("epoch", -1) > epoch:
+            raise ValueError("Tokenizer latest-state cannot move backward")
+        if (
+            current.get("epoch") == epoch
+            and Path(current.get("checkpoint", "")).resolve() != checkpoint.resolve()
+        ):
+            raise ValueError("Tokenizer latest-state epoch names another checkpoint")
+    atomic_json(marker, {"epoch": epoch, "checkpoint": str(checkpoint)})
+
+
+def verify_artifact_binding(path: Path, result: dict, artifact: str) -> None:
+    directory = path.parent
+    if artifact == "checkpoint":
+        match = re.fullmatch(r"epoch-(\d{5})", directory.name)
+        receipt = read_json(directory / "completed.json")
+        if (
+            match is None
+            or receipt.get("status") != "complete"
+            or receipt.get("kind") != "tokenizer_epoch_checkpoint"
+            or receipt.get("epoch") + 1 != int(match.group(1))
+            or result.get("epoch") != int(match.group(1))
+            or result.get("state_sha256") != receipt.get("state_sha256")
+        ):
+            raise ValueError("Tokenizer compatibility checkpoint binding differs")
+        require_hash(directory / "state.pt", receipt["state_sha256"])
+    elif artifact == "export":
+        receipt = read_json(directory / "export.json")
+        if result.get("index_sha256") != receipt.get("index_sha256"):
+            raise ValueError("Tokenizer compatibility export binding differs")
+        require_hash(directory / "index.json", receipt["index_sha256"])
+        selected_fields = {
+            "selected_checkpoint", "selected_state_sha256", "selected_attestation_sha256",
+        }
+        if selected_fields & set(result):
+            if not selected_fields <= set(result):
+                raise ValueError("Tokenizer compatibility export selected binding is incomplete")
+            selected = Path(result["selected_checkpoint"])
+            selected_path = directory.parent / selected
+            selected_receipt = read_json(selected_path / "completed.json")
+            require_hash(selected_path / "state.pt", result["selected_state_sha256"])
+            if selected_receipt.get("state_sha256") != result["selected_state_sha256"]:
+                raise ValueError("Tokenizer compatibility export selected state differs")
+            selected_attestation = result["selected_attestation_sha256"]
+            if selected_attestation is not None:
+                require_hash(
+                    selected_path / "compatibility" / "attestation.json",
+                    selected_attestation,
+                )
+    else:
+        raise ValueError("Unknown tokenizer compatibility artifact")
 
 
 def validate_attestation_identity(result: dict, expected: dict) -> None:
@@ -536,6 +605,7 @@ def verify_attestation(
     admission_sha256: str,
     artifact: str,
     expected: dict | None = None,
+    run_root: Path | None = None,
 ) -> dict:
     from figure8_tokenizer_recovery_runtime import audit_event_archive
 
@@ -552,6 +622,7 @@ def verify_attestation(
         raise ValueError("Figure 8 tokenizer compatibility attestation differs")
     if expected is not None:
         validate_attestation_identity(result, expected)
+    verify_artifact_binding(path, result, artifact)
     require_hash(path / "admission.json", admission_sha256)
     audited = audit_event_archive(path / "events.zip", result["invocation"])
     if (
@@ -588,10 +659,19 @@ def verify_attestation(
                 "model_optimizer_python_numpy_torch_cuda_rng": "all_exact",
             }:
                 raise ValueError("Tokenizer restoration was not exact full-state recovery")
-    parent_path = path / "parent"
-    if parent_path.is_dir():
+    if run_root is None:
+        run_root = path.parents[2] if artifact == "checkpoint" else path.parents[1]
+    parent_name = result.get("parent_checkpoint")
+    if parent_name is not None:
+        parent_checkpoint = (run_root / parent_name).resolve()
+        if (
+            parent_checkpoint.parent != run_root.resolve() / "checkpoints"
+            or not re.fullmatch(r"epoch-\d{5}", parent_checkpoint.name)
+        ):
+            raise ValueError("Figure 8 tokenizer compatibility parent escapes its run")
+        parent_path = parent_checkpoint / "compatibility"
         parent = verify_attestation(
-            parent_path, admission_sha256, "checkpoint", expected,
+            parent_path, admission_sha256, "checkpoint", expected, run_root,
         )
         if sha(parent_path / "attestation.json") != result.get("parent_attestation_sha256"):
             raise ValueError("Figure 8 tokenizer compatibility parent checksum differs")
@@ -605,18 +685,22 @@ def verify_attestation(
 
 def attestation_chain(
     path: Path, admission_sha256: str, artifact: str, expected: dict,
+    run_root: Path | None = None,
 ) -> list[dict]:
     result = []
     current = path
     current_artifact = artifact
+    if run_root is None:
+        run_root = path.parents[2] if artifact == "checkpoint" else path.parents[1]
     while True:
-        result.append(
-            verify_attestation(current, admission_sha256, current_artifact, expected),
+        attestation = verify_attestation(
+            current, admission_sha256, current_artifact, expected, run_root,
         )
-        parent = current / "parent"
-        if not parent.is_dir():
+        result.append(attestation)
+        parent_name = attestation.get("parent_checkpoint")
+        if parent_name is None:
             return result
-        current = parent
+        current = run_root / parent_name / "compatibility"
         current_artifact = "checkpoint"
 
 
@@ -639,6 +723,56 @@ def validate_invocation_restorations(chain: list[dict]) -> None:
         group["restorations"] += attestation.get("restoration_sha256") is not None
     if not invocations or any(group["restorations"] != 1 for group in invocations.values()):
         raise ValueError("Every tokenizer invocation requires one exact restoration receipt")
+
+
+def aggregate_attestations(chain: list[dict]) -> dict:
+    summary = {
+        "tasks": 0,
+        "failed_tasks": 0,
+        "corrections": 0,
+        "phases": {},
+        "worker_pids": [],
+        "native_defined": 0,
+        "native_faults": 0,
+    }
+    pids = set()
+    corrections = {}
+    segments = set()
+    for attestation in chain:
+        segment = (attestation.get("invocation"), attestation.get("epoch"))
+        if segment in segments:
+            raise ValueError("Compatibility attestation segments overlap")
+        segments.add(segment)
+        current = attestation["runtime_summary"]
+        for name in (
+            "tasks", "failed_tasks", "corrections", "native_defined", "native_faults",
+        ):
+            summary[name] += current[name]
+        pids.update(current["worker_pids"])
+        for phase, count in current["phases"].items():
+            summary["phases"][phase] = summary["phases"].get(phase, 0) + count
+        for epoch, phases in attestation["corrections_by_epoch_level_phase"].items():
+            target_epoch = corrections.setdefault(epoch, {})
+            for phase, levels in phases.items():
+                target_phase = target_epoch.setdefault(phase, {})
+                for level, count in levels.items():
+                    if level in target_phase:
+                        raise ValueError("Compatibility correction evidence overlaps")
+                    target_phase[level] = count
+    summary["phases"] = {
+        phase: count for phase, count in summary["phases"].items() if count
+    }
+    summary["worker_pids"] = sorted(pids)
+    if (
+        not chain
+        or summary["failed_tasks"] != 0
+        or summary["tasks"] != summary["native_defined"] + summary["native_faults"]
+    ):
+        raise ValueError("Compatibility cumulative runtime summary differs")
+    return {
+        "summary": summary,
+        "corrections_by_epoch_level_phase": corrections,
+    }
 
 
 def validate_probe_files(args, admission: dict, spec: dict) -> None:
@@ -764,9 +898,9 @@ def validate_production_files(args, admission: dict, spec: dict) -> None:
 
 
 def run_compatibility(args, purpose: str) -> dict:
-    import torch
-
     spec = read_json(args.spec)
+    if os.environ.get("CUDA_VISIBLE_DEVICES") != str(spec["gpu"]):
+        raise RuntimeError("Figure 8 tokenizer recovery CUDA lease differs")
     if purpose == "probe":
         admission = validate_probe_admission(read_json(args.admission))
         base = admission
@@ -795,8 +929,15 @@ def run_compatibility(args, purpose: str) -> dict:
             raise ValueError("Production recovery must continue the exact incomplete arm")
     else:
         raise ValueError("Unknown Figure 8 tokenizer recovery purpose")
+    if any(
+        name == "k_means_constrained" or name.startswith("k_means_constrained.")
+        for name in sys.modules
+    ):
+        raise RuntimeError("k-means-constrained was imported before overlay admission")
     scripts = Path(spec["control"]) / "scripts" / "letter"
     sys.path.insert(0, str(scripts))
+    sys.path.insert(0, str(args.overlay.resolve()))
+    import torch
     import bank_tokenizers
     import tokenizer_run as native
     import k_means_constrained.sklearn_import.cluster.k_means_ as overlay_module
@@ -844,6 +985,8 @@ def run_compatibility(args, purpose: str) -> dict:
     original_append = native.append_jsonl
     original_export = native.export_indices
     original_write = native.write_json
+    load_calls = [0]
+    selected_load = {}
     common = {
         "kind": "figure8_tokenizer_kmeans_compatibility_attestation_v1",
         "policy": POLICY,
@@ -877,19 +1020,49 @@ def run_compatibility(args, purpose: str) -> dict:
 
     def load(path, trainer, run_spec):
         loaded = original_load(path, trainer, run_spec)
-        equal_state(expected_state, loaded, "loaded")
+        verified = bank_tokenizers.read_state(path, config)
+        equal_state(verified, loaded, "loaded")
+        if load_calls[0] == 0:
+            if path.resolve() != args.resume.resolve():
+                raise ValueError("Tokenizer recovery restored another resume checkpoint")
+            equal_state(expected_state, loaded, "resume")
+        elif load_calls[0] == 1 and purpose == "production":
+            if path.parent.resolve() != (args.output / "checkpoints").resolve():
+                raise ValueError("Tokenizer export selected checkpoint escapes its run")
+            relative = path.relative_to(args.output)
+            selected_epoch = loaded["epoch"] + 1
+            selected_attestation = None
+            if selected_epoch > identity["base_epoch"]:
+                selected_path = path / "compatibility"
+                verify_attestation(
+                    selected_path,
+                    common["admission_sha256"],
+                    "checkpoint",
+                    common,
+                )
+                selected_attestation = sha(selected_path / "attestation.json")
+            selected_load.update(
+                checkpoint=str(relative),
+                epoch=selected_epoch,
+                state_sha256=sha(path / "state.pt"),
+                attestation_sha256=selected_attestation,
+            )
+        else:
+            raise ValueError("Tokenizer recovery performed an unexpected checkpoint load")
         equal_state(loaded["model"], trainer.model.state_dict(), "restored.model")
         equal_state(loaded["optimizer"], trainer.optimizer.state_dict(), "restored.optimizer")
         equal_state(loaded["python_rng"], random.getstate(), "restored.python_rng")
         equal_state(loaded["numpy_rng"], np.random.get_state(), "restored.numpy_rng")
         equal_state(loaded["torch_rng"], torch.get_rng_state(), "restored.torch_rng")
         equal_state(loaded["cuda_rng"], torch.cuda.get_rng_state_all(), "restored.cuda_rng")
-        atomic_json(events / "restored.json", {
-            "status": "exact",
-            "epoch": loaded["epoch"] + 1,
-            "state_sha256": sha(path / "state.pt"),
-            "model_optimizer_python_numpy_torch_cuda_rng": "all_exact",
-        })
+        if load_calls[0] == 0:
+            atomic_json(events / "restored.json", {
+                "status": "exact",
+                "epoch": loaded["epoch"] + 1,
+                "state_sha256": sha(path / "state.pt"),
+                "model_optimizer_python_numpy_torch_cuda_rng": "all_exact",
+            })
+        load_calls[0] += 1
         return loaded
 
     def cluster(data, clusters):
@@ -934,7 +1107,9 @@ def run_compatibility(args, purpose: str) -> dict:
                 "selected_checkpoint": selected,
             },
             parent=segment_parent[0],
+            run_root=args.output,
         )
+        publish_latest_state(args.output, directory, epoch + 1)
         segment_parent[0] = directory / "compatibility"
         segment_epoch[0] = epoch + 1
         segment_state[0] = receipt["state_sha256"]
@@ -947,6 +1122,8 @@ def run_compatibility(args, purpose: str) -> dict:
     def export(model, dataset, clusters, directory, seed, recovery_root):
         context.update(phase="export", calls=0)
         result = original_export(model, dataset, clusters, directory, seed, recovery_root)
+        if not selected_load:
+            raise ValueError("Tokenizer export was not bound to its selected checkpoint")
         seal_attestation(
             directory,
             artifact="export",
@@ -955,10 +1132,12 @@ def run_compatibility(args, purpose: str) -> dict:
             admission_path=args.admission,
             artifact_fields={
                 "index_sha256": result["index_sha256"],
-                "selected_checkpoint":
-                    read_json(args.output / "latest-state.json")["checkpoint"],
+                "selected_checkpoint": selected_load["checkpoint"],
+                "selected_state_sha256": selected_load["state_sha256"],
+                "selected_attestation_sha256": selected_load["attestation_sha256"],
             },
             parent=segment_parent[0],
+            run_root=args.output,
         )
         return result
 
@@ -972,21 +1151,33 @@ def run_compatibility(args, purpose: str) -> dict:
                 final_path, common["admission_sha256"], "checkpoint", common,
             )
             validate_invocation_restorations(final_chain)
+            cumulative = aggregate_attestations(final_chain)
             exported = verify_attestation(
                 export_path, common["admission_sha256"], "export", common,
             )
-            correction_epochs = []
-            for attestation in final_chain:
-                for epoch, phases in attestation["corrections_by_epoch_level_phase"].items():
-                    if any(
-                        count
-                        for phase, levels_by_id in phases.items()
-                        if phase != "export"
-                        for count in levels_by_id.values()
-                    ):
-                        correction_epochs.append(int(epoch))
+            correction_epochs = [
+                int(epoch)
+                for epoch, phases in cumulative[
+                    "corrections_by_epoch_level_phase"
+                ].items()
+                if any(
+                    count
+                    for phase, levels_by_id in phases.items()
+                    if phase != "export"
+                    for count in levels_by_id.values()
+                )
+            ]
             selected = Path(value["selected_checkpoint"])
             selected_epoch = int(selected.name.split("-")[1])
+            if (
+                str(selected) != selected_load.get("checkpoint")
+                or selected_epoch != selected_load.get("epoch")
+                or exported.get("selected_checkpoint") != str(selected)
+                or exported.get("selected_state_sha256") != selected_load.get("state_sha256")
+                or exported.get("selected_attestation_sha256")
+                != selected_load.get("attestation_sha256")
+            ):
+                raise ValueError("Tokenizer export differs from the loaded selected checkpoint")
             if selected_epoch > identity["base_epoch"]:
                 selected_path = args.output / selected / "compatibility"
                 verify_attestation(
@@ -1012,7 +1203,12 @@ def run_compatibility(args, purpose: str) -> dict:
                     "completion_used_compatibility": True,
                     "native_artifact_identity_claimed": False,
                     "selected_model_repair_dependent": selected_dependent,
+                    "selected_state_sha256": selected_load["state_sha256"],
+                    "selected_attestation_sha256": selected_load["attestation_sha256"],
                     "first_training_correction_epoch": first_correction,
+                    "cumulative_runtime_summary": cumulative["summary"],
+                    "corrections_by_epoch_level_phase":
+                        cumulative["corrections_by_epoch_level_phase"],
                     "export_corrections": export_corrections,
                     "downstream_ids_repair_dependent":
                         selected_dependent or export_corrections > 0,
@@ -1096,27 +1292,56 @@ def production_resume(args, admission: dict, spec: dict) -> Path:
     if state["epoch"] + 1 != latest["epoch"]:
         raise ValueError("Production compatibility latest checkpoint epoch differs")
     base = admission["probe_admission"]
+    expected = {
+        "kind": "figure8_tokenizer_kmeans_compatibility_attestation_v1",
+        "policy": POLICY,
+        "purpose": "production",
+        "arm": args.arm,
+        "run_id": output.name,
+        "run_config_sha256": base["run_config_sha256"],
+        "native_harness_sha256": config["harness_sha256"],
+        "admission_sha256": sha(args.admission),
+        "base_epoch": base["identity"]["base_epoch"],
+        "base_state_sha256": base["resume"]["state_sha256"],
+    }
     if latest["epoch"] == base["identity"]["base_epoch"]:
         require_hash(resume / "completed.json", base["resume"]["completed_sha256"])
         require_hash(resume / "state.pt", base["resume"]["state_sha256"])
     elif latest["epoch"] > base["identity"]["base_epoch"]:
-        expected = {
-            "kind": "figure8_tokenizer_kmeans_compatibility_attestation_v1",
-            "policy": POLICY,
-            "purpose": "production",
-            "arm": args.arm,
-            "run_id": output.name,
-            "run_config_sha256": base["run_config_sha256"],
-            "native_harness_sha256": config["harness_sha256"],
-            "admission_sha256": sha(args.admission),
-            "base_epoch": base["identity"]["base_epoch"],
-            "base_state_sha256": base["resume"]["state_sha256"],
-        }
         verify_attestation(
             resume / "compatibility", sha(args.admission), "checkpoint", expected,
         )
     else:
         raise ValueError("Production compatibility latest checkpoint predates its base")
+    current_epoch = latest["epoch"]
+    current_state_sha256 = sha(resume / "state.pt")
+    candidates = []
+    for path in (output / "checkpoints").glob("epoch-*"):
+        match = re.fullmatch(r"epoch-(\d{5})", path.name)
+        if match is not None and int(match.group(1)) > current_epoch:
+            candidates.append((int(match.group(1)), path))
+    for epoch, path in sorted(candidates):
+        if not (path / "completed.json").is_file():
+            continue
+        if not (path / "compatibility" / "attestation.json").is_file():
+            raise RuntimeError(
+                f"Complete tokenizer checkpoint lacks compatibility attestation: {path}",
+            )
+        attestation = verify_attestation(
+            path / "compatibility", sha(args.admission), "checkpoint", expected,
+        )
+        if (
+            attestation.get("parent_epoch") != current_epoch
+            or attestation.get("parent_state_sha256") != current_state_sha256
+        ):
+            raise ValueError("Tokenizer checkpoint ahead of latest-state has ambiguous ancestry")
+        recovered = read_state(path, config)
+        if recovered["epoch"] + 1 != epoch:
+            raise ValueError("Tokenizer checkpoint ahead of latest-state has wrong epoch")
+        publish_latest_state(output, path, epoch)
+        resume = path
+        current_epoch = epoch
+        current_state_sha256 = sha(path / "state.pt")
     return resume
 
 
@@ -1132,6 +1357,25 @@ def gpu_is_free(index: int) -> bool:
         timeout=30,
     )
     return int(result.stdout.strip()) == 0
+
+
+def production_environment(spec: dict, args) -> dict:
+    paths = [
+        args.overlay.as_posix(),
+        args.recovery_control.as_posix(),
+        (Path(spec["control"]) / "src").as_posix(),
+        (Path(spec["control"]) / "scripts" / "letter").as_posix(),
+    ]
+    existing = os.environ.get("PYTHONPATH")
+    if existing:
+        paths.extend(existing.split(os.pathsep))
+    environment = dict(os.environ)
+    environment.update(
+        CUDA_VISIBLE_DEVICES=str(spec["gpu"]),
+        PYTHONDONTWRITEBYTECODE="1",
+        PYTHONPATH=os.pathsep.join(dict.fromkeys(paths)),
+    )
+    return environment
 
 
 def supervise_production(args) -> dict:
@@ -1180,6 +1424,7 @@ def supervise_production(args) -> dict:
                 child[0] = subprocess.Popen(
                     command,
                     cwd=spec["root"],
+                    env=production_environment(spec, args),
                     stdout=stream,
                     stderr=subprocess.STDOUT,
                     start_new_session=True,
@@ -1271,29 +1516,44 @@ def verify_completed_compatibility(
         final_path, expected_admission_sha256, "checkpoint", expected,
     )
     validate_invocation_restorations(final_chain)
+    cumulative = aggregate_attestations(final_chain)
     export_path = payload / "export" / "compatibility"
     exported = verify_attestation(
         export_path, expected_admission_sha256, "export", expected,
     )
     selected = Path(completed["selected_checkpoint"])
     selected_epoch = int(selected.name.split("-")[1])
+    selected_path = payload / selected
+    selected_state_sha256 = sha(selected_path / "state.pt")
+    if (
+        exported.get("selected_checkpoint") != str(selected)
+        or exported.get("selected_state_sha256") != selected_state_sha256
+    ):
+        raise ValueError("Figure 8 tokenizer export selected-state binding differs")
+    selected_attestation_sha256 = exported.get("selected_attestation_sha256")
     if selected_epoch > identity["base_epoch"]:
         verify_attestation(
-            payload / selected / "compatibility",
+            selected_path / "compatibility",
             expected_admission_sha256,
             "checkpoint",
             expected,
         )
-    correction_epochs = []
-    for attestation in final_chain:
-        for epoch, phases in attestation["corrections_by_epoch_level_phase"].items():
-            if any(
-                count
-                for phase, levels_by_id in phases.items()
-                if phase != "export"
-                for count in levels_by_id.values()
-            ):
-                correction_epochs.append(int(epoch))
+        require_hash(
+            selected_path / "compatibility" / "attestation.json",
+            selected_attestation_sha256,
+        )
+    elif selected_attestation_sha256 is not None:
+        raise ValueError("Native selected checkpoint unexpectedly has compatibility evidence")
+    correction_epochs = [
+        int(epoch)
+        for epoch, phases in cumulative["corrections_by_epoch_level_phase"].items()
+        if any(
+            count
+            for phase, levels_by_id in phases.items()
+            if phase != "export"
+            for count in levels_by_id.values()
+        )
+    ]
     first_correction = min(correction_epochs) if correction_epochs else None
     selected_dependent = (
         first_correction is not None and selected_epoch >= first_correction
@@ -1312,7 +1572,12 @@ def verify_completed_compatibility(
         "completion_used_compatibility": True,
         "native_artifact_identity_claimed": False,
         "selected_model_repair_dependent": selected_dependent,
+        "selected_state_sha256": selected_state_sha256,
+        "selected_attestation_sha256": selected_attestation_sha256,
         "first_training_correction_epoch": first_correction,
+        "cumulative_runtime_summary": cumulative["summary"],
+        "corrections_by_epoch_level_phase":
+            cumulative["corrections_by_epoch_level_phase"],
         "export_corrections": export_corrections,
         "downstream_ids_repair_dependent":
             selected_dependent or export_corrections > 0,
@@ -1322,7 +1587,7 @@ def verify_completed_compatibility(
         raise ValueError("Figure 8 tokenizer final compatibility summary differs")
     return {
         **required,
-        "final_runtime_summary": final_chain[0]["runtime_summary"],
+        "final_runtime_summary": cumulative["summary"],
         "export_runtime_summary": exported["runtime_summary"],
     }
 

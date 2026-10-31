@@ -58,6 +58,31 @@ def verify_bundle(path: Path) -> dict:
     return receipt
 
 
+def compatibility_ancestry(run: Path, checkpoint: Path, config: dict) -> set[Path]:
+    result = set()
+    current = checkpoint
+    seen = set()
+    while (current / "compatibility/attestation.json").is_file():
+        marker = current / "compatibility/attestation.json"
+        digest = file_sha256(marker)
+        if digest in seen:
+            raise ValueError("Tokenizer compatibility ancestry contains a cycle")
+        seen.add(digest)
+        attestation = json.loads(marker.read_text(encoding="utf-8"))
+        parent_name = attestation.get("parent_checkpoint")
+        parent_digest = attestation.get("parent_attestation_sha256")
+        if parent_name is None:
+            if parent_digest is not None:
+                raise ValueError("Tokenizer compatibility base has an unexpected parent digest")
+            break
+        parent = checkpoint_path(run, parent_name)
+        read_state(parent, config)
+        require_hash(parent / "compatibility/attestation.json", parent_digest)
+        result.add(parent)
+        current = parent
+    return result
+
+
 def snapshot(run: Path, staging: Path) -> dict | None:
     marker = run / "latest-state.json"
     if not marker.is_file():
@@ -84,6 +109,11 @@ def snapshot(run: Path, staging: Path) -> dict | None:
         best = checkpoint_path(run, selected)
         read_state(best, config)
         checkpoints.add(best)
+    compatibility = set()
+    for checkpoint in tuple(checkpoints):
+        ancestry = compatibility_ancestry(run, checkpoint, config)
+        compatibility.update(ancestry)
+        checkpoints.update(ancestry)
     phase = "completed" if final else "checkpoint"
     if final:
         require_hash(run / "run-config.json", final["run_config_sha256"])
@@ -98,6 +128,12 @@ def snapshot(run: Path, staging: Path) -> dict | None:
     key = file_sha256(run / "run-config.json") + file_sha256(last / "completed.json")
     if final:
         key += file_sha256(completion)
+    if compatibility:
+        key += "".join(
+            file_sha256(path / "compatibility/attestation.json")
+            for path in sorted(checkpoints)
+            if (path / "compatibility/attestation.json").is_file()
+        )
     identity = f"{run.name}-{phase}-{hashlib.sha256(key.encode()).hexdigest()[:16]}"
     if not re.fullmatch(r"[A-Za-z0-9_.-]+", identity):
         raise ValueError("Invalid tokenizer bundle identity")

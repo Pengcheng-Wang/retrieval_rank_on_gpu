@@ -59,6 +59,44 @@ def test_quantizer_snapshot_preserves_latest_and_selected(tmp_path):
         module().verify_bundle(bundle)
 
 
+def test_quantizer_snapshot_preserves_compatibility_checkpoint_ancestry(tmp_path):
+    import torch
+    from protocol import file_sha256, write_json
+
+    run = tmp_path / "rq"
+    config = make_run(run)
+    parent = run / "checkpoints" / "epoch-00003"
+    parent.mkdir()
+    torch.save({
+        "epoch": 2, "spec": config, "model": {"weight": torch.tensor([3])},
+        "optimizer": {}, "initted": [True] * 4,
+        "selected_checkpoint": "checkpoints/epoch-00002",
+        "python_rng": (), "numpy_rng": (), "torch_rng": torch.get_rng_state(), "cuda_rng": [],
+        "best_loss": 1.0, "best_collision_rate": 0.01,
+    }, parent / "state.pt")
+    write_json(parent / "completed.json", {
+        "status": "complete", "kind": "tokenizer_epoch_checkpoint", "epoch": 2,
+        "state_sha256": file_sha256(parent / "state.pt"),
+    })
+    parent_compatibility = parent / "compatibility"
+    parent_compatibility.mkdir()
+    write_json(parent_compatibility / "attestation.json", {
+        "parent_checkpoint": None,
+        "parent_attestation_sha256": None,
+    })
+    latest_compatibility = run / "checkpoints/epoch-00004/compatibility"
+    latest_compatibility.mkdir()
+    write_json(latest_compatibility / "attestation.json", {
+        "parent_checkpoint": "checkpoints/epoch-00003",
+        "parent_attestation_sha256":
+            file_sha256(parent_compatibility / "attestation.json"),
+    })
+    packet = module().snapshot(run, tmp_path / "staging")
+    payload = Path(packet["path"]) / "payload/checkpoints"
+    assert (payload / "epoch-00003/state.pt").is_file()
+    assert (payload / "epoch-00004/compatibility/attestation.json").is_file()
+
+
 def test_quantizer_snapshot_never_admits_unsealed_or_redirected_state(tmp_path):
     assert module().snapshot(tmp_path / "missing", tmp_path / "staging") is None
     run = tmp_path / "rq"

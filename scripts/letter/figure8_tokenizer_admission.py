@@ -24,6 +24,8 @@ CONTROL_FILES = (
     "figure8_tokenizer_admission.py",
     "figure8_tokenizer_audit.py",
     "figure8_tokenizer_queue.py",
+    "figure8_tokenizer_recovery.py",
+    "figure8_tokenizer_recovery_runtime.py",
     "fresh_ids.py",
     "fresh_pipeline.py",
     "fresh_rq_admission.py",

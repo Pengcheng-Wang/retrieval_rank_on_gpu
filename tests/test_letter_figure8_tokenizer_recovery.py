@@ -6,6 +6,8 @@ import importlib
 import importlib.util
 import hashlib
 import json
+import os
+from types import SimpleNamespace
 from pathlib import Path
 import sys
 import zipfile
@@ -164,6 +166,21 @@ def test_sidecar_replays_the_exact_frozen_native_command_without_recipe_changes(
     assert value("--stop-after-epoch") == "16401"
     assert argv[argv.index("--codes") + 1:argv.index("--epsilons")] == [
         "256", "256", "256", "256",
+    ]
+
+
+def test_production_environment_pins_the_physical_gpu_and_overlay_first(monkeypatch):
+    spec = operational_spec()
+    args = SimpleNamespace(
+        overlay=Path("/scratch/recovery/overlay"),
+        recovery_control=Path("/scratch/recovery/control/scripts/letter"),
+    )
+    monkeypatch.setenv("PYTHONPATH", "/untrusted/original")
+    environment = recovery().production_environment(spec, args)
+    assert environment["CUDA_VISIBLE_DEVICES"] == "2"
+    assert environment["PYTHONPATH"].split(os.pathsep)[:2] == [
+        "/scratch/recovery/overlay",
+        "/scratch/recovery/control/scripts/letter",
     ]
 
 
@@ -464,6 +481,106 @@ def test_event_audit_rejects_cross_invocation_or_unaudited_native_tasks(tmp_path
         runtime().audit_event_archive(broken, "run-1")
 
 
+def test_segment_summaries_are_aggregated_without_overlapping_corrections():
+    chain = [
+        {
+            "invocation": "second",
+            "epoch": 17000,
+            "runtime_summary": {
+                "tasks": 20, "failed_tasks": 0, "corrections": 0,
+                "phases": {"training": 0}, "worker_pids": [3],
+                "native_defined": 20, "native_faults": 0,
+            },
+            "corrections_by_epoch_level_phase": {},
+        },
+        {
+            "invocation": "first",
+            "epoch": 16500,
+            "runtime_summary": {
+                "tasks": 30, "failed_tasks": 0, "corrections": 1,
+                "phases": {"training": 1}, "worker_pids": [1, 2],
+                "native_defined": 29, "native_faults": 1,
+            },
+            "corrections_by_epoch_level_phase": {
+                "16401": {"training": {"0": 1}},
+            },
+        },
+    ]
+    aggregate = recovery().aggregate_attestations(chain)
+    assert aggregate["summary"] == {
+        "tasks": 50, "failed_tasks": 0, "corrections": 1,
+        "phases": {"training": 1}, "worker_pids": [1, 2, 3],
+        "native_defined": 49, "native_faults": 1,
+    }
+    assert aggregate["corrections_by_epoch_level_phase"] == {
+        "16401": {"training": {"0": 1}},
+    }
+    with pytest.raises(ValueError, match="overlap"):
+        recovery().aggregate_attestations(chain + [chain[1]])
+
+
+def test_checkpoint_publication_advances_atomically_and_never_moves_backward(tmp_path):
+    output = tmp_path / "run"
+    checkpoint = output / "checkpoints" / "epoch-16500"
+    checkpoint.mkdir(parents=True)
+    recovery().publish_latest_state(output, checkpoint, 16500)
+    assert json.loads((output / "latest-state.json").read_text()) == {
+        "epoch": 16500,
+        "checkpoint": str(checkpoint),
+    }
+    older = output / "checkpoints" / "epoch-16000"
+    older.mkdir()
+    with pytest.raises(ValueError, match="backward"):
+        recovery().publish_latest_state(output, older, 16000)
+
+
+def test_attestation_artifact_binding_rejects_transplanted_state_or_export(tmp_path):
+    checkpoint = tmp_path / "checkpoints" / "epoch-16500"
+    checkpoint.mkdir(parents=True)
+    (checkpoint / "state.pt").write_bytes(b"state-a")
+    checkpoint_receipt = {
+        "status": "complete",
+        "kind": "tokenizer_epoch_checkpoint",
+        "epoch": 16499,
+        "state_sha256": hashlib.sha256(b"state-a").hexdigest(),
+    }
+    (checkpoint / "completed.json").write_text(
+        json.dumps(checkpoint_receipt) + "\n", encoding="utf-8",
+    )
+    recovery().verify_artifact_binding(
+        checkpoint / "compatibility",
+        {"epoch": 16500, "state_sha256": checkpoint_receipt["state_sha256"]},
+        "checkpoint",
+    )
+    (checkpoint / "state.pt").write_bytes(b"state-b")
+    with pytest.raises(ValueError, match="checkpoint"):
+        recovery().verify_artifact_binding(
+            checkpoint / "compatibility",
+            {"epoch": 16500, "state_sha256": checkpoint_receipt["state_sha256"]},
+            "checkpoint",
+        )
+
+    export = tmp_path / "export"
+    export.mkdir()
+    (export / "index.json").write_bytes(b'{"0":["<a_0>"]}\n')
+    index_sha = hashlib.sha256((export / "index.json").read_bytes()).hexdigest()
+    (export / "export.json").write_text(
+        json.dumps({"index_sha256": index_sha}) + "\n", encoding="utf-8",
+    )
+    recovery().verify_artifact_binding(
+        export / "compatibility",
+        {"index_sha256": index_sha},
+        "export",
+    )
+    (export / "index.json").write_bytes(b"changed")
+    with pytest.raises(ValueError, match="export"):
+        recovery().verify_artifact_binding(
+            export / "compatibility",
+            {"index_sha256": index_sha},
+            "export",
+        )
+
+
 def test_compatibility_attestation_parent_must_match_the_exact_resume_state():
     common = {
         "base_epoch": 16000,
@@ -523,6 +640,69 @@ def test_figure8_arm_admission_requires_the_trusted_repair_digest(tmp_path):
     assert figure8_tokenizer.verify_arm_compatibility(
         "alpha-0p001", {}, payload,
     ) is None
+
+
+def test_repaired_arm_digest_survives_durable_admission_reload(tmp_path, monkeypatch):
+    import figure8_tokenizer_queue
+
+    arm = "beta-0p001"
+    path = tmp_path / "admissions" / arm / "admission.json"
+    path.parent.mkdir(parents=True)
+    compatibility = {"admission_sha256": "a" * 64}
+    identity = {
+        "arm": arm,
+        "bundle": f"{arm}-completed-fixture",
+        "selected_epoch": 12000,
+        "final_epoch": 20000,
+        "spec_sha256": "b" * 64,
+        "bank_receipt_sha256": "c" * 64,
+        "bank": {},
+        "bundle_completed_sha256": "d" * 64,
+        "run_completed_sha256": "e" * 64,
+        "index_sha256": "f" * 64,
+        "codes_sha256": "1" * 64,
+        "kmeans_compatibility": compatibility,
+    }
+    plan = {
+        "_sha256": "2" * 64,
+        "work_basename": "fresh-t5-figure8-tokenizer-v4",
+        "arms": [arm],
+    }
+    receipt = {
+        "status": "pass",
+        "kind": "figure8_tokenizer_arm_admission_v1",
+        "arm": arm,
+        "tokenizer_spec": {"arm": arm},
+        "plan_sha256": plan["_sha256"],
+        "source_sha256": {},
+        "arm_identity": identity,
+    }
+    path.write_text(json.dumps(receipt) + "\n", encoding="utf-8")
+    (path.parent / "arm-spec.json").write_text("{}\n", encoding="utf-8")
+    monkeypatch.setattr(
+        figure8_tokenizer_queue,
+        "require_durable_admission_path",
+        lambda *_args: path,
+    )
+    monkeypatch.setattr(figure8_tokenizer_queue, "verify_durable_tree", lambda *_: {})
+    monkeypatch.setattr(figure8_tokenizer_queue, "source_hashes", lambda *_: {})
+    monkeypatch.setattr(
+        figure8_tokenizer_queue,
+        "arm_tokenizer_spec",
+        lambda *_: {"arm": arm},
+    )
+    captured = {}
+
+    def verify(_arm, audit, *_args):
+        captured.update(audit)
+        return identity
+
+    monkeypatch.setattr(figure8_tokenizer_queue, "verify_arm_admission", verify)
+    loaded = figure8_tokenizer_queue.load_admissions(
+        [f"{arm}={path}"], plan, tmp_path / "durable", {},
+    )
+    assert loaded[arm]["arm_identity"] == identity
+    assert captured["kmeans_compatibility_admission_sha256"] == "a" * 64
 
 
 def test_overlay_builder_refuses_any_unpinned_native_module(tmp_path):

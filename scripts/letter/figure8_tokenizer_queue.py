@@ -647,6 +647,12 @@ def load_admissions(
             "durable_bank_receipt_sha256":
                 receipt["arm_identity"]["bank_receipt_sha256"],
         }
+        compatibility = receipt["arm_identity"].get("kmeans_compatibility")
+        if compatibility is not None:
+            digest = compatibility.get("admission_sha256")
+            if not isinstance(digest, str):
+                raise ValueError(f"Figure8 arm compatibility admission differs: {arm}")
+            audit["kmeans_compatibility_admission_sha256"] = digest
         # Re-check the live durable bytes instead of trusting the admission alone.
         spec_path = path.parent / "arm-spec.json"
         if not spec_path.is_file():
@@ -657,6 +663,11 @@ def load_admissions(
             receipt["tokenizer_spec"],
             execution,
         )
+        if compatibility is not None and (
+            verified.get("kmeans_compatibility", {}).get("admission_sha256")
+            != audit["kmeans_compatibility_admission_sha256"]
+        ):
+            raise ValueError(f"Figure8 compatibility admission identity differs: {arm}")
         if verified != receipt["arm_identity"]:
             raise ValueError(f"Figure8 durable admission identity differs: {arm}")
         receipt["_path"] = path
