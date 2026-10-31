@@ -1,0 +1,52 @@
+{
+  "status": "pass",
+  "arm": "clusters-5",
+  "dataset": "Instruments",
+  "seed": 42,
+  "temperature": 0.7,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.061682544808654934,
+      "ndcg@1": 0.061682544808654934,
+      "recall@5": 0.08901178750201841,
+      "ndcg@5": 0.07545443135551995,
+      "recall@10": 0.11198126917487486,
+      "ndcg@10": 0.08282484395852908
+    },
+    "item": {
+      "recall@1": 0.06079444534151461,
+      "ndcg@1": 0.06079444534151461,
+      "recall@5": 0.08844663329565638,
+      "ndcg@5": 0.07479008320246738,
+      "recall@10": 0.11133537865331826,
+      "ndcg@10": 0.08214273427471555
+    }
+  },
+  "training_epochs": 86,
+  "training_updates": 11094,
+  "selected_epoch": 66,
+  "selected_checkpoint": "checkpoint-8514",
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 20000,
+  "tokenizer_utilization": [
+    134,
+    256,
+    256,
+    256
+  ],
+  "tokenizer_excess_collision_items": 25,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "admission_sha256": "ffbc63d126506284af40740497185d596b0d245caa63327d44c5fb191bdcfe28",
+  "model_sha256": "07dca14d200177783292cc6fd46d37fbb3b5c1d2307dd60497cfb6b79c318078",
+  "predictions_sha256": "5543f40d1ddfb46f9076fc733b7b448801dd28855ed624183580c272a7634395",
+  "result_sha256": "fff4d6351d0b1afa6c7be0d6925e5a4a1ff90407c3d9d2dedb6d8b06a034b654",
+  "bank_receipt_sha256": "a6fcd6508d0d7389e17753aa496871a2b76b338f2416999240dfa3a8371dc092",
+  "private_evidence_bundle": "openllama-v2/fresh-t5-figure8-tokenizer-v4/results/openllama-v2-figure8-tokenizer-Instruments-clusters-5-s42-t0p7-v1",
+  "selection": "within-arm validation only; test descriptive",
+  "all_predictions_selection_and_durable_bytes_reverified": true,
+  "model_inference_performed": false
+}

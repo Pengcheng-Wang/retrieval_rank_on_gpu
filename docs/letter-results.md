@@ -254,6 +254,15 @@ significance analysis. Exact evidence is in
 [the seed17 full receipt](../results/2026-10-31-letter/fresh-instruments-full-s17-t10-v1.json)
 and `verified-results/fresh-instruments-full-s17-t10-v1`.
 
+The matched seed17 full-tokenizer tau0.7 cell completed89 epochs and selected
+epoch69. Code Recall@10/NDCG@10 is **.11049/.08192** and the original-item
+diagnostic is **.10992/.08120**. Relative to the same seed's tau1 cell, tau0.7
+is lower by.00016 code Recall@10 and.00028 item Recall@10, while NDCG@10 is
+higher by.00042/.00033. These small crossed point differences establish no
+temperature winner or equivalence claim. All24,772 users,20 beams, selection
+state and durable bytes were reverified in
+[the seed17 tau0.7 receipt](../results/2026-10-31-letter/fresh-instruments-full-s17-t07-v1.json).
+
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
 Recall@10 and NDCG@10 intervals all include zero. Only NDCG@5 excludes zero:
@@ -806,6 +815,14 @@ beta0.00001 and beta0.001, so the three measured points do not establish a
 monotonic beta trend. Exact independently verified evidence is in
 [the beta0.01 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p01-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-beta0p01-s42-t0p7-v1`.
+
+The `K=5` downstream cell completed86 epochs and selected checkpoint8,514 /
+epoch66. Code Recall@10/NDCG@10 is **.11198/.08282** and the original-item
+diagnostic is **.11134/.08214**. The four-level tokenizer retains only25
+excess collision items, so code and item metrics remain close. This single
+seed is descriptive and is not a selected cluster-count winner. Exact durable
+evidence is in
+[the K5 downstream receipt](../results/2026-10-31-letter/figure8-downstream-clusters5-s42-t0p7-v1.json).
 
 ## 📊 Instruments released-ID replay
 
