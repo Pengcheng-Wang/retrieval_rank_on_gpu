@@ -621,9 +621,11 @@ postprocessing. These remain tokenizer-only findings. Exact receipts:
 [beta0.01](../results/2026-10-30-letter/figure8-beta0p01-final-v1.json), and
 [K15](../results/2026-10-30-letter/figure8-clusters15-final-v1.json).
 
-Downstream evaluation for the 15 nonbaseline tokenizer arms is isolated in
-`fresh-t5-figure8-tokenizer-v2`; the preserved v1 attempt failed closed before
-any T5 update when its monitor sampled the wrong physical GPU pair. Each
+Downstream evaluation for the 15 nonbaseline tokenizer arms is split across
+immutable `fresh-t5-figure8-tokenizer-v2` and `v3` namespaces; v4 is reserved
+for arms whose tokenizer completion requires the audited k-means endpoint
+compatibility lineage. The preserved v1 attempt failed closed before any T5
+update when its monitor sampled the wrong physical GPU pair. Each
 completed tokenizer bank requires a fresh random seed-42 T5 fit at fixed
 temperature 0.7 and an all-user 20-beam evaluation; no model or checkpoint is
 shared across arms. The existing
@@ -644,6 +646,18 @@ prediction, model-selection decision and durable byte was independently
 reverified in
 [the levels2 downstream receipt](../results/2026-10-30-letter/figure8-downstream-levels2-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-levels2-s42-t0p7-v1`.
+
+The `alpha=0.001` downstream cell completed at epoch93 after selecting
+checkpoint9,417 /epoch73 solely by validation loss. Its all-user code
+Recall@10/NDCG@10 is **.10722/.08035** and the deterministic original-item
+diagnostic is **.10665/.07972**. Unlike the two-level arm, the code and item
+views are nearly identical because this four-level bank has only25 excess
+collision items. Relative to the shared full-tokenizer tau0.7 baseline this
+single-seed point is descriptively lower, but it is not a winner selection or
+significance claim. Every prediction, selection record and durable receipt was
+independently reverified in
+[the alpha0.001 downstream receipt](../results/2026-10-30-letter/figure8-downstream-alpha0p001-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-alpha0p001-s42-t0p7-v1`.
 
 ## 📊 Instruments released-ID replay
 
