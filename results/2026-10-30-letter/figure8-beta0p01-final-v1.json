@@ -1,0 +1,25 @@
+{
+  "status": "pass",
+  "arm": "beta-0p01",
+  "bundle": "beta-0p01-completed-5fbf33ff23989394",
+  "selected_epoch": 18000,
+  "final_epoch": 20000,
+  "index_sha256": "2a5d5db5d1aa42f415bad21c07be42e11ac58ace0f46c86337a2775eb6700760",
+  "codes_sha256": "a156aa68996592235237ef5a0b4826e997611a0e59fcbd160e38593b98403d7c",
+  "collisions": {
+    "before": 113,
+    "after": 25,
+    "largest_group": 3
+  },
+  "utilization_by_level": [
+    168,
+    57,
+    134,
+    256
+  ],
+  "bundle_completed_sha256": "ec1c188c092901e9a8e3841200fccbc1004af15d5287d40b497a4d8953f1ac9c",
+  "run_completed_sha256": "bb07b99cb80069d07a4b5078d2026d01c273d43f9944d701110701f508e00318",
+  "durable_bank_receipt_sha256": "88df8e6c90ada8f53f66958d2c14d771551393de29a03b857c4754c44f178c4c",
+  "files": 11,
+  "audit_source_sha256": "22baf5a32c11fb0307a932924f83e7aa98dd13b1f1a8da19910f107b4797fbe2"
+}

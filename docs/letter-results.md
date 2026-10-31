@@ -600,6 +600,16 @@ curve until the fixed downstream T5 cell finishes. Exact evidence is in
 [the final alpha0.1 receipt](../results/2026-10-30-letter/figure8-alpha0p1-final-v1.json)
 and `verified-results/figure8-alpha0p1-final-v1`.
 
+Three more recovered arms have complete, independently rehashed final banks:
+`alpha=0.001` selected epoch12,000 with first-level utilization56/256;
+`beta=0.01` selected epoch18,000 with utilization168/57/134/256; and `K=15`
+selected epoch12,000 with first-level utilization156/256. All three have25
+excess collision items and largest group3 after deterministic collision
+postprocessing. These remain tokenizer-only findings. Exact receipts:
+[alpha0.001](../results/2026-10-30-letter/figure8-alpha0p001-final-v1.json),
+[beta0.01](../results/2026-10-30-letter/figure8-beta0p01-final-v1.json), and
+[K15](../results/2026-10-30-letter/figure8-clusters15-final-v1.json).
+
 Downstream evaluation for the 15 nonbaseline tokenizer arms is isolated in
 `fresh-t5-figure8-tokenizer-v2`; the preserved v1 attempt failed closed before
 any T5 update when its monitor sampled the wrong physical GPU pair. Each
