@@ -216,6 +216,8 @@ def load_plan(path: Path) -> dict:
             (2, "fresh-t5-figure8-tokenizer-v2"),
         "letter_figure8_tokenizer_downstream_v3":
             (3, "fresh-t5-figure8-tokenizer-v3"),
+        "letter_figure8_tokenizer_downstream_v4":
+            (4, "fresh-t5-figure8-tokenizer-v4"),
     }
     version = versions.get(plan.get("kind"))
     if (version is None or plan.get("schema_version") != version[0]

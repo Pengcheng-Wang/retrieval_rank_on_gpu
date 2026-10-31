@@ -103,6 +103,7 @@ def test_frozen_tokenizer_plan_has_no_selection_output():
     [
         (2, "letter_figure8_tokenizer_downstream_v2", "fresh-t5-figure8-tokenizer-v2"),
         (3, "letter_figure8_tokenizer_downstream_v3", "fresh-t5-figure8-tokenizer-v3"),
+        (4, "letter_figure8_tokenizer_downstream_v4", "fresh-t5-figure8-tokenizer-v4"),
     ],
 )
 def test_operational_plan_preserves_the_frozen_scientific_grid(version, kind, work):
