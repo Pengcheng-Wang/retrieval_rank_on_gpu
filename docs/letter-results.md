@@ -986,6 +986,16 @@ comparison. Every prediction, selection and durable byte was independently
 reverified in
 [the N512 downstream receipt](../results/2026-10-31-letter/figure8-downstream-codes512-s42-t0p7-v1.json).
 
+The repaired `N=64` cell completed87 epochs and selected checkpoint8,643 /
+epoch67. Code Recall@10/NDCG@10 is **.11093/.08049** and the original-item
+diagnostic is **.11045/.07983**. It has the highest Recall@10 point estimate
+among the four measured codebook sizes, while N512 has the highest NDCG@10;
+the sweep is therefore non-monotonic and does not establish an optimum. The
+admitted tokenizer lineage includes one disclosed undefined-endpoint
+correction and zero export corrections. Every prediction, selection and
+durable byte was independently reverified in
+[the N64 downstream receipt](../results/2026-10-31-letter/figure8-downstream-codes64-s42-t0p7-v1.json).
+
 ## 📊 Instruments released-ID replay
 
 The first LETTER-TIGER run produces Recall@10 **0.10976** and NDCG@10
