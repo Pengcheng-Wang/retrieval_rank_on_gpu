@@ -842,6 +842,15 @@ reverified in
 [the levels2 downstream receipt](../results/2026-10-30-letter/figure8-downstream-levels2-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-levels2-s42-t0p7-v1`.
 
+The `L=6` downstream cell completed120 epochs and selected checkpoint12,900 /
+epoch100. Code Recall@10/NDCG@10 is **.10798/.08161** and the original-item
+diagnostic is **.10758/.08095**. Its six-level tokenizer uses
+172/256/256/256/256/256 codes and retains25 excess collision items. The result
+is descriptively below the shared full-tokenizer baseline on Recall@10; no
+identifier-length winner or monotonicity claim is made. Exact independently
+verified evidence is in
+[the L6 downstream receipt](../results/2026-10-31-letter/figure8-downstream-levels6-s42-t0p7-v1.json).
+
 The `alpha=0.001` downstream cell completed at epoch93 after selecting
 checkpoint9,417 /epoch73 solely by validation loss. Its all-user code
 Recall@10/NDCG@10 is **.10722/.08035** and the deterministic original-item
