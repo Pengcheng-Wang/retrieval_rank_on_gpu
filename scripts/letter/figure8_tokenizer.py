@@ -36,7 +36,9 @@ LAUNCH_SPEC_FIELDS = set(SCIENTIFIC_SPEC_FIELDS) | {
 FIGURE8_TOKENIZER_HARNESS_SHA256 = (
     "21e3909b8ea84793779820db8442e83b12a8597e3caf9d294d9f18bcb95a4532"
 )
-KMEANS_COMPATIBILITY_ARMS = {"beta-0p001", "clusters-20"}
+KMEANS_COMPATIBILITY_ARMS = {
+    "beta-0p001", "clusters-20", "levels-8", "codes-64",
+}
 
 
 def baseline_tokenizer_spec() -> dict:

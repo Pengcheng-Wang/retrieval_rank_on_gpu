@@ -27,11 +27,21 @@ def recovery():
     return importlib.import_module("figure8_tokenizer_recovery")
 
 
+def tokenizer():
+    return importlib.import_module("figure8_tokenizer")
+
+
 def runtime():
     assert importlib.util.find_spec("figure8_tokenizer_recovery_runtime") is not None, (
         "Figure 8 tokenizer recovery must use an independently audited runtime overlay"
     )
     return importlib.import_module("figure8_tokenizer_recovery_runtime")
+
+
+def test_all_observed_endpoint_fault_arms_require_compatibility_at_admission():
+    assert tokenizer().KMEANS_COMPATIBILITY_ARMS == {
+        "beta-0p001", "clusters-20", "levels-8", "codes-64",
+    }
 
 
 @pytest.mark.parametrize(
