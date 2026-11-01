@@ -120,6 +120,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, semantic-only, temperature1, seed23 | Instruments | Item diagnostic | 0.10843 | 0.08011 |
 | Fresh-ID T5, semantic+CF, temperature1, seed17 | Instruments | Code | 0.10665 | 0.07988 |
 | Fresh-ID T5, semantic+CF, temperature1, seed17 | Instruments | Item diagnostic | 0.10609 | 0.07920 |
+| Fresh-ID T5, semantic+CF, temperature1, seed23 | Instruments | Code | 0.10778 | 0.07995 |
+| Fresh-ID T5, semantic+CF, temperature1, seed23 | Instruments | Item diagnostic | 0.10726 | 0.07924 |
 | Fresh-ID T5, diversity-only, temperature1, seed17 | Instruments | Code | 0.10633 | 0.07957 |
 | Fresh-ID T5, diversity-only, temperature1, seed17 | Instruments | Item diagnostic | 0.10556 | 0.07880 |
 | Fresh-ID T5, full tokenizer, temperature1, seed17 | Instruments | Code | 0.11065 | 0.08150 |
@@ -275,6 +277,15 @@ support a population-level or training-seed significance claim. Exact evidence
 is in
 [the seed17 CF receipt](../results/2026-10-31-letter/fresh-instruments-cf-s17-t10-v1.json)
 and `verified-results/fresh-instruments-cf-s17-t10-v1`.
+
+The seed23 semantic+CF replication completed87 epochs /11,223 updates and
+selected checkpoint8,643 /epoch67. Code Recall@10/NDCG@10 is
+**.10778/.07995** and the original-item diagnostic is **.10726/.07924**.
+Relative to seed23 semantic-only, the descriptive differences are
+-.00113/-.00088 for code and -.00117/-.00087 for item, so this seed does not
+show a pointwise CF gain. This is training-seed variation, not a significance
+test. Exact independently verified evidence is in
+[the Instruments CF seed23 receipt](../results/2026-10-31-letter/fresh-instruments-cf-s23-t10-v1.json).
 
 The seed17 diversity-only replication completed86 epochs and selected epoch66.
 Its code Recall@10/NDCG@10 is **.10633/.07957** and item diagnostic is
