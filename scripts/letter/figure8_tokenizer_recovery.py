@@ -1,4 +1,4 @@
-"""Sidecar recovery contract for two deterministic Figure 8 tokenizer faults."""
+"""Sidecar recovery contract for deterministic Figure 8 tokenizer faults."""
 
 from __future__ import annotations
 
@@ -36,8 +36,25 @@ RECOVERY_ARMS = {
         "base_epoch": 11000,
         "first_failed_epoch": 11431,
     },
+    "levels-8": {
+        "host": "node-1",
+        "gpu": 1,
+        "base_epoch": 8000,
+        "first_failed_epoch": 8200,
+    },
+    "codes-64": {
+        "host": "node-1",
+        "gpu": 4,
+        "base_epoch": 16000,
+        "first_failed_epoch": 16401,
+    },
 }
-ENDPOINT_ERROR = "IndexError: index 256 is out of bounds for axis 0 with size 256"
+ENDPOINT_SAMPLES = {
+    "beta-0p001": 256,
+    "clusters-20": 256,
+    "levels-8": 256,
+    "codes-64": 64,
+}
 CONTROL_FILES = (
     "bank.py",
     "bank_tokenizers.py",
@@ -56,7 +73,7 @@ CONTROL_FILES = (
 def validate_recovery_identity(spec: dict, arm: str, hostname: str, gpu: int) -> dict:
     fixed = RECOVERY_ARMS.get(arm)
     if fixed is None:
-        raise ValueError("Figure 8 tokenizer recovery is restricted to two observed faults")
+        raise ValueError("Figure 8 tokenizer recovery is restricted to observed faults")
     output = PurePosixPath(spec.get("output", ""))
     if (
         spec.get("host") != fixed["host"]
@@ -76,13 +93,18 @@ def parse_native_failures(content: str, arm: str) -> dict:
     fixed = RECOVERY_ARMS.get(arm)
     if fixed is None:
         raise ValueError("Unknown Figure 8 tokenizer recovery arm")
+    samples = ENDPOINT_SAMPLES[arm]
+    endpoint_error = (
+        f"IndexError: index {samples} is out of bounds for axis 0 "
+        f"with size {samples}"
+    )
     traceback_positions = [
         match.start()
         for match in re.finditer(
             r"joblib\.externals\.loky\.process_executor\._RemoteTraceback:", content,
         )
     ]
-    if len(traceback_positions) != 5 or content.count(ENDPOINT_ERROR) != 10:
+    if len(traceback_positions) != 5 or content.count(endpoint_error) != 10:
         raise ValueError("Native failure evidence must contain five exact repeated endpoint faults")
     epochs = []
     for position in traceback_positions:
@@ -97,8 +119,8 @@ def parse_native_failures(content: str, arm: str) -> dict:
         "attempts": 5,
         "completed_epoch_before_fault": expected,
         "first_failed_epoch": fixed["first_failed_epoch"],
-        "candidate_index": 256,
-        "sample_count": 256,
+        "candidate_index": samples,
+        "sample_count": samples,
     }
 
 
@@ -182,8 +204,8 @@ def validate_probe_admission(value: dict) -> dict:
         "attempts": 5,
         "completed_epoch_before_fault": fixed["first_failed_epoch"] - 1,
         "first_failed_epoch": fixed["first_failed_epoch"],
-        "candidate_index": 256,
-        "sample_count": 256,
+        "candidate_index": ENDPOINT_SAMPLES[identity["arm"]],
+        "sample_count": ENDPOINT_SAMPLES[identity["arm"]],
     }
     if failure != expected_failure:
         raise ValueError("Figure 8 tokenizer native failure evidence differs")

@@ -1,4 +1,4 @@
-"""Fail-closed recovery gates for the two Figure 8 tokenizer endpoint faults."""
+"""Fail-closed recovery gates for observed Figure 8 tokenizer endpoint faults."""
 
 from __future__ import annotations
 
@@ -39,9 +39,11 @@ def runtime():
     [
         ("beta-0p001", 2, 16000, 16401),
         ("clusters-20", 7, 11000, 11431),
+        ("levels-8", 1, 8000, 8200),
+        ("codes-64", 4, 16000, 16401),
     ],
 )
-def test_recovery_scope_is_limited_to_the_two_observed_node1_faults(
+def test_recovery_scope_is_limited_to_the_observed_node1_faults(
     arm, gpu, base_epoch, failure_epoch,
 ):
     spec = {
@@ -68,45 +70,55 @@ def test_recovery_scope_is_limited_to_the_two_observed_node1_faults(
         recovery().validate_recovery_identity(spec, "alpha-0p001", "node-1", gpu)
 
 
-def native_failure_log(arm: str, completed_epoch: int) -> str:
+def native_failure_log(
+    arm: str, completed_epoch: int, sample_count: int = 256,
+) -> str:
     block = (
         f'{{"epoch": {completed_epoch}, "training_seconds": 4.0}}\n'
         'joblib.externals.loky.process_executor._RemoteTraceback:\n'
-        'IndexError: index 256 is out of bounds for axis 0 with size 256\n'
+        f'IndexError: index {sample_count} is out of bounds for axis 0 '
+        f'with size {sample_count}\n'
         'The above exception was the direct cause of the following exception:\n'
-        'IndexError: index 256 is out of bounds for axis 0 with size 256\n'
+        f'IndexError: index {sample_count} is out of bounds for axis 0 '
+        f'with size {sample_count}\n'
     )
     return f"arm={arm}\n" + block * 5
 
 
 @pytest.mark.parametrize(
-    "arm,completed_epoch,failed_epoch",
+    "arm,completed_epoch,failed_epoch,sample_count",
     [
-        ("beta-0p001", 16400, 16401),
-        ("clusters-20", 11430, 11431),
+        ("beta-0p001", 16400, 16401, 256),
+        ("clusters-20", 11430, 11431, 256),
+        ("levels-8", 8199, 8200, 256),
+        ("codes-64", 16400, 16401, 64),
     ],
 )
 def test_native_failure_admission_requires_five_identical_exact_endpoint_faults(
-    arm, completed_epoch, failed_epoch,
+    arm, completed_epoch, failed_epoch, sample_count,
 ):
-    result = recovery().parse_native_failures(native_failure_log(arm, completed_epoch), arm)
+    result = recovery().parse_native_failures(
+        native_failure_log(arm, completed_epoch, sample_count), arm,
+    )
     assert result == {
         "attempts": 5,
         "completed_epoch_before_fault": completed_epoch,
         "first_failed_epoch": failed_epoch,
-        "candidate_index": 256,
-        "sample_count": 256,
+        "candidate_index": sample_count,
+        "sample_count": sample_count,
     }
     with pytest.raises(ValueError):
         recovery().parse_native_failures(
-            native_failure_log(arm, completed_epoch).replace(
+            native_failure_log(arm, completed_epoch, sample_count).replace(
                 "joblib.externals.loky.process_executor._RemoteTraceback:\n", "", 1,
             ),
             arm,
         )
     with pytest.raises(ValueError):
         recovery().parse_native_failures(
-            native_failure_log(arm, completed_epoch).replace("index 256", "index 257"),
+            native_failure_log(arm, completed_epoch, sample_count).replace(
+                f"index {sample_count}", f"index {sample_count + 1}",
+            ),
             arm,
         )
 
