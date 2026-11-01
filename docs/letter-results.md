@@ -892,6 +892,15 @@ monotonic beta trend. Exact independently verified evidence is in
 [the beta0.01 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p01-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-beta0p01-s42-t0p7-v1`.
 
+The `alpha=0.001` downstream cell completed93 epochs and selected
+checkpoint9,417 /epoch73. Code Recall@10/NDCG@10 is **.10722/.08035** and the
+original-item diagnostic is **.10665/.07972**. It is descriptively below the
+alpha0.01 and alpha0.1 points, but the measured alpha sweep remains
+single-seed and no winner or monotonicity claim is made. An earlier compact
+evidence packet is superseded by the full independent run/evaluation/result
+inventory audit in
+[the alpha0.001 downstream receipt](../results/2026-10-31-letter/figure8-downstream-alpha0p001-s42-t0p7-v1.json).
+
 The `K=5` downstream cell completed86 epochs and selected checkpoint8,514 /
 epoch66. Code Recall@10/NDCG@10 is **.11198/.08282** and the original-item
 diagnostic is **.11134/.08214**. The four-level tokenizer retains only25
