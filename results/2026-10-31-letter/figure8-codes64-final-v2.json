@@ -1,0 +1,37 @@
+{
+  "status": "pass",
+  "arm": "codes-64",
+  "selected_epoch": 20000,
+  "final_epoch": 20000,
+  "index_sha256": "b467eb10be50493cf6343f50ab5dbd440745e701ba484e278a49a61d3698f6c1",
+  "codes_sha256": "fdddf05a1b7cc15edce8e43d4810f7505c334d7c7fffe9b092caf2129622bbc8",
+  "collisions": {
+    "before": 178,
+    "after": 28,
+    "largest_group": 3
+  },
+  "utilization_by_level": [
+    64,
+    64,
+    64,
+    64
+  ],
+  "bundle": "codes-64-completed-eea022dc69da4722",
+  "bundle_completed_sha256": "78da11f399bd08cc8be504ba534eeaa71fa3dec8aa3566fdc25e3bc7029d755b",
+  "run_completed_sha256": "0d584afaee03735b03f39b6c1701da541c592efc2953128032c8229d13cc991e",
+  "durable_bank_receipt_sha256": "69f2f95ca2c14674cf8a702014fcf2ad7b5170467546ade86b40e78aa5a8340f",
+  "compatibility": {
+    "policy": "rq-kmeans-cdf-endpoint-v1",
+    "base_epoch": 16000,
+    "first_training_correction_epoch": 16401,
+    "corrections": 1,
+    "native_defined": 160079,
+    "native_faults": 1,
+    "failed_tasks": 0,
+    "export_corrections": 0,
+    "native_artifact_identity_claimed": false,
+    "original_scientific_recipe_and_selection_unchanged": true
+  },
+  "superseded_incomplete_bundle": "codes-64-completed-b58ab23dd0228ca6",
+  "private_evidence_bundle": "verified-results/figure8-codes64-final-v2"
+}

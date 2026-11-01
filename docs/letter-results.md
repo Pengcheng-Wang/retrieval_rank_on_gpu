@@ -787,6 +787,15 @@ dedicated downstream T5 cells complete. Exact evidence:
 [codes128](../results/2026-10-31-letter/figure8-codes128-final-v1.json) and
 [codes512](../results/2026-10-31-letter/figure8-codes512-final-v1.json).
 
+The 64-code arm is now also independently final. It selected epoch20,000,
+uses all64 codes at every level, and reduces excess collision items from178 to
+28 with largest group3. Its native run repeated the same undefined CDF endpoint
+fault at epoch16,401/level0; the admitted compatibility continuation records
+160,079 native-defined tasks, one correction, zero failures and zero export
+corrections. An older final bundle omitted attestation ancestors and is
+explicitly superseded by the ancestry-complete bundle. Exact evidence is in
+[the codes64 final receipt](../results/2026-10-31-letter/figure8-codes64-final-v2.json).
+
 Downstream evaluation for the 15 nonbaseline tokenizer arms is split across
 immutable `fresh-t5-figure8-tokenizer-v2` and `v3` namespaces; v4 is reserved
 for arms whose tokenizer completion requires the audited k-means endpoint
