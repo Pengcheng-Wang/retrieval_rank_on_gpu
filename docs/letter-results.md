@@ -271,6 +271,16 @@ This is a compatible-backbone second-seed point, not an original-LLaMA1 or
 training-seed significance claim. Exact evidence is in
 [the Beauty semantic seed17 receipt](../results/2026-10-31-letter/fresh-beauty-semantic-s17-t10-v1.json).
 
+The Beauty CF tokenizer at seed17 completed the full20,000 tokenizer epochs,
+and its downstream T5 completed98 epochs /12,642 updates, selecting
+checkpoint10,062 /epoch78. Code Recall@10/NDCG@10 is **.06403/.03448** and the
+original-item diagnostic is **.06386/.03432** across all22,363 users and20
+beams. The tokenizer has8 excess collision items /largest group3. Relative to
+the seed17 semantic point, the CF arm is descriptively higher by about
+0.00188 Recall@10 and0.00167 NDCG@10; this two-point comparison is not a
+significance claim. Exact independently verified evidence is in
+[the Beauty CF seed17 receipt](../results/2026-10-31-letter/fresh-beauty-cf-s17-t10-v1.json).
+
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
 Recall@10 and NDCG@10 intervals all include zero. Only NDCG@5 excludes zero:
