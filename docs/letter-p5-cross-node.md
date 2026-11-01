@@ -473,3 +473,46 @@ selected-model lineage, inherited transport state, or broker release mismatch.
 Never repair a stop by editing a lease, resetting selection state, inventing a
 writer ledger, reusing an old registration/outbox, or resuming from weights
 alone.
+
+### Exact validation-history replay recovery
+
+`validation_history_recovery.py` is a separate maintenance overlay for a
+completed P5 run whose sealed `validation-history.json` survives but one or
+more canonical `validation/epoch-NN.jsonl` files do not. It does not change the
+frozen P5 driver, selected model, metrics, test result, checkpoint state, or
+ownership protocol.
+
+Each replay is bound to the current ownership certificate and lease, the
+hash/receipt-authenticated parent ownership event, the exact frozen checkpoint
+and its bank acknowledgement, the frozen checkpoint's embedded 20-entry
+history, the runtime/input identity, and the physical host/GPU UUID. Historical
+checkpoints must appear in the parent event's complete contiguous
+`verified_checkpoints` inventory. A checkpoint produced after the recovered
+root instead requires its own current-run bank acknowledgement and must be the
+legal immediate ancestor of the final frozen checkpoint. Replay is accepted
+only when metrics, all-user 20-beam prediction bytes, and the checkpoint's
+exact prior history prefix match.
+
+Recovery receipts are immutable. Canonical publication requires all 20 epochs,
+the broker stopped, no live broker process, and simultaneous ownership of the
+native run pointer lock and common bank lock. Before the first canonical link,
+the tool banks a self-contained evidence packet containing the request, tool,
+authority files, all replay receipts, all stage receipts, and all historical
+entries. Publication then uses rehashed no-overwrite links and leaves a
+`published-and-result-bound` marker. Evidence and binding destinations
+must be beneath the activation-hashed durable root, and interrupted copies move
+to immutable retry destinations rather than reusing partial directories.
+Throughout publication, the broker remains stopped while `publish` runs on the
+activation-bound writer.
+It first builds the complete result from an isolated staged view, uses the
+unchanged P5 snapshot and selection validators, checks every recovered
+prediction hash and protected metadata hash, and banks the result and binding
+packet. Only after the durable complete gate exists does it link canonical
+validation files and publish `results-banked.json`; canonical `broker.lock`,
+the native pointer lock and the common bank lock cover the operation. The
+ordinary result
+acknowledgement is insufficient for a recovered run: downstream
+audit/publication must require `verify-complete` and the durable
+`validation-history-recovery-complete.json` binding gate. Stop on any
+replay, ancestry, receipt, GPU, history-prefix, publication-fence, result, or
+durable-binding mismatch.
