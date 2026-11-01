@@ -146,6 +146,7 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature0.7 | Yelp | Item diagnostic | 0.03690 | 0.01955 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
+| P5 CID, declared reference | Beauty | Original item = canonical string | 0.06184 | 0.03746 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
 | LC, either policy | Instruments | Item diagnostic | 0.11590 | 0.08902 |
@@ -436,6 +437,16 @@ selected/latest state file. R10/N10 is0.10488/0.07932, above the paper's
 declared P5-SemID0.0964/0.0730 point. This collision-free catalog again makes
 canonical and original-item metrics equal. Exact cross-node evidence is banked
 at `verified-results/p5-instruments-semid-v1`.
+
+Beauty P5 CID completed all20 epochs /205,340 updates and selected the earliest
+validation Recall@10 maximum at epoch4. After the lifecycle reset removed
+epochs1-19 prediction files, each was replayed from its exact receipt-backed
+validation checkpoint in a clean frozen-runtime process; all metrics and
+prediction hashes matched the frozen history. Recovery evidence and the final
+result were durably bound before canonical publication. The all22,363-user
+test reports Recall@10/NDCG@10 **.06184/.03746**, identical under code and
+original-item identities for this collision-free CID catalog. Exact evidence
+is in [the Beauty P5 CID receipt](../results/2026-10-31-letter/p5-beauty-cid-s42-v1.json).
 
 LC completed all four epochs / 8,240 updates and selected checkpoint6,180
 solely from validation loss. Both fixed20-beam evaluations covered all24,772

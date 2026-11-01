@@ -1,0 +1,38 @@
+{
+  "status": "pass",
+  "cell": "Beauty-CID-s42",
+  "dataset": "Beauty",
+  "identifier": "CID",
+  "seed": 42,
+  "test_users": 22363,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@5": 0.04400125206814828,
+      "recall@10": 0.06184322318114743,
+      "ndcg@5": 0.031730791992737276,
+      "ndcg@10": 0.03745866618445789
+    },
+    "item": {
+      "recall@5": 0.04400125206814828,
+      "recall@10": 0.06184322318114743,
+      "ndcg@5": 0.031730791992737276,
+      "ndcg@10": 0.03745866618445789
+    }
+  },
+  "training_epochs": 20,
+  "selected_checkpoint": "p5-state-000041068-004-3a1c975c0c97",
+  "selected_epoch": 4,
+  "selected_seal_sha256": "041c3c99c46dacf016b7b0cd52b2024ccb1fd5b685e235ed2d58a93c74150bc1",
+  "test_predictions_sha256": "a0305ecf2f4ae85e842aa3b3c6ead228bab6d3637156674703145358da1b7fad",
+  "result_seal_sha256": "f4a14ecc50b6aa79863da93a2f20611630774ed6b882b4375eb41e34f2689bc5",
+  "result_bank_receipt_sha256": "7495a348348205adc37b9b5255a24e74aadef0e6535e6de12db58fcb6f569091",
+  "recovery_event_sha256": "cba19947bca54150ca69ad972c8af79536890135cf49f745074997856db7e662",
+  "recovery_manifest_sha256": "5f2fefa8cb599b059af099684f710dce53083e7bd0bfe9803c54156f56232bef",
+  "recovery_binding_bank_receipt_sha256": "1f62d8d9f6edbe2c1b13df846a3c755d7d3a296234ba71d29d717cbb9db1375b",
+  "claim_type": "declared_P5_reference_reconstruction",
+  "exact_original_letter_recipe_claim": false,
+  "private_evidence_bundle": "verified-results/p5-beauty-cid-s42-v1",
+  "all_20_validation_predictions_and_result_bytes_reverified": true,
+  "model_inference_performed": false
+}
