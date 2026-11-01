@@ -176,6 +176,15 @@ persists with853 excess collision items and largest group65. Exact independently
 verified evidence is in
 [the Yelp semantic seed17 receipt](../results/2026-10-31-letter/fresh-yelp-semantic-s17-t10-v1.json).
 
+The Yelp full-tokenizer seed17 tau1 arm completed116 epochs /25,520 updates and
+selected checkpoint21,120 /epoch96. Code Recall@10/NDCG@10 is
+**.04397/.02287** and the original-item diagnostic is **.04137/.02162**. It is
+descriptively above the seed17 semantic arm, but this two-point comparison
+does not include training-seed uncertainty. The tokenizer retains832 excess
+collision items /largest group65, so code and item identities remain
+materially different. Exact independently verified evidence is in
+[the Yelp full seed17 receipt](../results/2026-10-31-letter/fresh-yelp-full-s17-t10-v1.json).
+
 The Yelp full-tokenizer tau1 arm exact-resumed after the AML lifecycle reset
 from sealed checkpoint23,980, completed118 epochs and selected epoch98.
 Code Recall@10/NDCG@10 is **.04469/.02307** and the original-item diagnostic is
