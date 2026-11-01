@@ -849,6 +849,15 @@ support a monotonic trend or selected winner. Every prediction, selection and
 durable byte was independently reverified in
 [the K15 downstream receipt](../results/2026-10-31-letter/figure8-downstream-clusters15-s42-t0p7-v1.json).
 
+The repaired `K=20` downstream cell completed87 epochs and selected
+checkpoint8,643 /epoch67. Code Recall@10/NDCG@10 is **.11029/.08123** and the
+original-item diagnostic is **.10972/.08056**. It lies above K15 but below K5
+on Recall@10, so the measured cluster-count points remain non-monotonic and do
+not establish a winner. The admitted tokenizer lineage includes one disclosed
+native endpoint correction and zero export corrections. Every prediction,
+selection and durable byte was independently reverified in
+[the K20 downstream receipt](../results/2026-10-31-letter/figure8-downstream-clusters20-s42-t0p7-v1.json).
+
 ## 📊 Instruments released-ID replay
 
 The first LETTER-TIGER run produces Recall@10 **0.10976** and NDCG@10
