@@ -290,6 +290,15 @@ single-seed differences are small and descriptive, not evidence of a
 significant winner. Exact independently verified evidence is in
 [the Beauty diversity seed17 receipt](../results/2026-10-31-letter/fresh-beauty-diversity-s17-t10-v1.json).
 
+The Beauty full tokenizer at seed17 completed20,000 epochs; its temperature-1
+downstream T5 completed93 epochs /11,997 updates and selected checkpoint9,417 /
+epoch73. Code Recall@10/NDCG@10 is **.06207/.03329** and the original-item
+diagnostic is **.06184/.03307**. The tokenizer has10 excess collision items /
+largest group3. The point is close to the semantic/diversity seed17 cells and
+below CF on Recall@10; it remains a descriptive compatible-backbone result.
+Exact independently verified evidence is in
+[the Beauty full seed17 receipt](../results/2026-10-31-letter/fresh-beauty-full-s17-t10-v1.json).
+
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
 Recall@10 and NDCG@10 intervals all include zero. Only NDCG@5 excludes zero:
