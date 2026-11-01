@@ -963,6 +963,16 @@ trend. Every prediction, selection and durable byte was independently
 reverified in
 [the N128 downstream receipt](../results/2026-10-31-letter/figure8-downstream-codes128-s42-t0p7-v1.json).
 
+The `N=512` cell also completed86 epochs and selected checkpoint8,514 /
+epoch66. Code Recall@10/NDCG@10 is **.10903/.08117** and the original-item
+diagnostic is **.10871/.08054**. Together, the measured N128, shared N256
+baseline and N512 points are close and do not establish a monotonic
+codebook-size trend or a selected optimum. N512 has the highest code NDCG@10
+of those three point estimates, but this remains a single-seed descriptive
+comparison. Every prediction, selection and durable byte was independently
+reverified in
+[the N512 downstream receipt](../results/2026-10-31-letter/figure8-downstream-codes512-s42-t0p7-v1.json).
+
 ## 📊 Instruments released-ID replay
 
 The first LETTER-TIGER run produces Recall@10 **0.10976** and NDCG@10
