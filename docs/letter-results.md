@@ -1,6 +1,6 @@
 # LETTER reproduction: measured results
 
-_Updated 2026-10-30. Completed components are reported separately below; the full multi-seed reproduction remains unfinished._
+_Updated 2026-10-31. Completed components are reported separately below; the full multi-seed reproduction remains unfinished._
 
 ---
 
@@ -952,6 +952,16 @@ not establish a winner. The admitted tokenizer lineage includes one disclosed
 native endpoint correction and zero export corrections. Every prediction,
 selection and durable byte was independently reverified in
 [the K20 downstream receipt](../results/2026-10-31-letter/figure8-downstream-clusters20-s42-t0p7-v1.json).
+
+The `N=128` codebook-size downstream cell completed86 epochs and selected
+checkpoint8,514 /epoch66. Code Recall@10/NDCG@10 is **.10899/.08048** and the
+original-item diagnostic is **.10859/.07983**. The two identities remain close
+because the tokenizer has only25 excess collision items, despite using just
+103/128 first-level codes. This single seed is descriptively near the shared
+`N=256` baseline and does not establish a codebook-size optimum or monotonic
+trend. Every prediction, selection and durable byte was independently
+reverified in
+[the N128 downstream receipt](../results/2026-10-31-letter/figure8-downstream-codes128-s42-t0p7-v1.json).
 
 ## 📊 Instruments released-ID replay
 
