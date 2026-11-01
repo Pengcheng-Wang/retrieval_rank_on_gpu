@@ -116,6 +116,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, semantic-only, temperature1 | Instruments | Item diagnostic | 0.10750 | 0.07922 |
 | Fresh-ID T5, semantic-only, temperature1, seed17 | Instruments | Code | 0.10403 | 0.07860 |
 | Fresh-ID T5, semantic-only, temperature1, seed17 | Instruments | Item diagnostic | 0.10363 | 0.07792 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Instruments | Code | 0.10891 | 0.08082 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Instruments | Item diagnostic | 0.10843 | 0.08011 |
 | Fresh-ID T5, semantic+CF, temperature1, seed17 | Instruments | Code | 0.10665 | 0.07988 |
 | Fresh-ID T5, semantic+CF, temperature1, seed17 | Instruments | Item diagnostic | 0.10609 | 0.07920 |
 | Fresh-ID T5, diversity-only, temperature1, seed17 | Instruments | Code | 0.10633 | 0.07957 |
@@ -255,6 +257,14 @@ significance test. Every model-selection record, all24,772 users,20 beams and
 durable run/evaluation/result byte were independently reverified in
 [the seed17 receipt](../results/2026-10-31-letter/fresh-instruments-semantic-s17-t10-v1.json)
 and `verified-results/fresh-instruments-semantic-s17-t10-v1`.
+
+The corresponding seed23 semantic-only replication completed98 epochs /
+12,642 updates and selected checkpoint10,062 /epoch78. Code
+Recall@10/NDCG@10 is **.10891/.08082** and the original-item diagnostic is
+**.10843/.08011**. It is descriptively above seed17 and close to the seed42
+point, illustrating training-seed variation rather than a recipe or tokenizer
+change. Exact independently verified evidence is in
+[the Instruments semantic seed23 receipt](../results/2026-10-31-letter/fresh-instruments-semantic-s23-t10-v1.json).
 
 The matching seed17 semantic+CF replication completed87 epochs and selected
 epoch67. Its code Recall@10/NDCG@10 is **.10665/.07988** and item diagnostic is
