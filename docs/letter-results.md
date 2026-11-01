@@ -167,6 +167,15 @@ verified and banked at `verified-results/fresh-yelp-semantic-s42-t10-v1`.
 The remaining Yelp component and generation-loss arms are still required before
 interpreting the full ablation.
 
+The matched Yelp semantic-only seed17 arm completed181 epochs /39,820 updates
+and selected checkpoint35,420 /epoch161. Code Recall@10/NDCG@10 is
+**.03766/.01912** and the original-item diagnostic is **.03375/.01732** across
+all30,431 users. Both are descriptively below seed42, illustrating training
+variation rather than a tokenizer or recipe change. The large code/item gap
+persists with853 excess collision items and largest group65. Exact independently
+verified evidence is in
+[the Yelp semantic seed17 receipt](../results/2026-10-31-letter/fresh-yelp-semantic-s17-t10-v1.json).
+
 The Yelp full-tokenizer tau1 arm exact-resumed after the AML lifecycle reset
 from sealed checkpoint23,980, completed118 epochs and selected epoch98.
 Code Recall@10/NDCG@10 is **.04469/.02307** and the original-item diagnostic is
