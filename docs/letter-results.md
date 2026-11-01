@@ -299,6 +299,17 @@ below CF on Recall@10; it remains a descriptive compatible-backbone result.
 Exact independently verified evidence is in
 [the Beauty full seed17 receipt](../results/2026-10-31-letter/fresh-beauty-full-s17-t10-v1.json).
 
+The matched Beauty full seed17 temperature-0.7 arm completed91 epochs /11,739
+updates and selected checkpoint9,159 /epoch71. Code Recall@10/NDCG@10 is
+**.06055/.03310** and the original-item diagnostic is **.06041/.03302**.
+Relative to temperature1, its code Recall@10 difference is -0.00152 with
+paired95% interval [-0.00416,+0.00107], while code NDCG@10 is -0.00018
+[-0.00160,+0.00126]. All four code/item Recall@10/NDCG@10 intervals include
+zero, so this seed establishes neither a lower-temperature benefit nor
+equivalence. Exact evidence is in
+[the tau0.7 receipt](../results/2026-10-31-letter/fresh-beauty-full-s17-t07-v1.json)
+and [paired comparison](../results/2026-10-31-letter/fresh-beauty-full-s17-t07-minus-t10-v1.json).
+
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
 Recall@10 and NDCG@10 intervals all include zero. Only NDCG@5 excludes zero:
