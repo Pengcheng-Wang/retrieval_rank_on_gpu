@@ -263,6 +263,14 @@ temperature winner or equivalence claim. All24,772 users,20 beams, selection
 state and durable bytes were reverified in
 [the seed17 tau0.7 receipt](../results/2026-10-31-letter/fresh-instruments-full-s17-t07-v1.json).
 
+Beauty semantic-only seed17 is also complete. It trained91 epochs and selected
+epoch71. Code Recall@10/NDCG@10 is **.06216/.03282** and the deterministic
+original-item diagnostic is **.06135/.03233** across all22,363 users and20
+beams. Its semantic tokenizer has11 excess collision items /largest group3.
+This is a compatible-backbone second-seed point, not an original-LLaMA1 or
+training-seed significance claim. Exact evidence is in
+[the Beauty semantic seed17 receipt](../results/2026-10-31-letter/fresh-beauty-semantic-s17-t10-v1.json).
+
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
 Recall@10 and NDCG@10 intervals all include zero. Only NDCG@5 excludes zero:
