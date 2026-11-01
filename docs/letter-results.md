@@ -833,6 +833,14 @@ seed is descriptive and is not a selected cluster-count winner. Exact durable
 evidence is in
 [the K5 downstream receipt](../results/2026-10-31-letter/figure8-downstream-clusters5-s42-t0p7-v1.json).
 
+The `K=15` downstream cell also completed86 epochs and selected
+checkpoint8,514 /epoch66. Code Recall@10/NDCG@10 is **.10677/.07925** and the
+original-item diagnostic is **.10625/.07856**. It is descriptively below K5
+and the shared K10/full baseline, so the measured cluster-count points do not
+support a monotonic trend or selected winner. Every prediction, selection and
+durable byte was independently reverified in
+[the K15 downstream receipt](../results/2026-10-31-letter/figure8-downstream-clusters15-s42-t0p7-v1.json).
+
 ## 📊 Instruments released-ID replay
 
 The first LETTER-TIGER run produces Recall@10 **0.10976** and NDCG@10
