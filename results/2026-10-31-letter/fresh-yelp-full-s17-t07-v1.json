@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "dataset": "Yelp",
+  "variant": "full",
+  "seed": 17,
+  "temperature": 0.7,
+  "test_users": 30431,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.007492359764713614,
+      "ndcg@1": 0.007492359764713614,
+      "recall@5": 0.025763201997962604,
+      "ndcg@5": 0.01672760857972169,
+      "recall@10": 0.042489566560415366,
+      "ndcg@10": 0.022098474570360835
+    },
+    "item": {
+      "recall@1": 0.007098025040255003,
+      "ndcg@1": 0.007098025040255003,
+      "recall@5": 0.023134303834905195,
+      "ndcg@5": 0.015257090364086743,
+      "recall@10": 0.03772468863987381,
+      "ndcg@10": 0.019931119993895737
+    }
+  },
+  "training_epochs": 126,
+  "training_updates": 27720,
+  "selected_epoch": 106,
+  "selected_checkpoint": "checkpoint-23320",
+  "validation_evaluations_checked": 126,
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 16000,
+  "tokenizer_excess_collision_items": 832,
+  "tokenizer_largest_collision_group": 65,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "model_sha256": "96f5f1e6c64121a82fa8faa1bd68fc1dd770a166d54aa0c83686637179aa9843",
+  "predictions_sha256": "c9112b30ca3b8960dc94a4f8f12e029206cffb27d40a275ebb70b01f0790110e",
+  "result_sha256": "fab96739eb1b726e52bd88d539ad1246fe8a5bba38a61dbd150c6260f412093a",
+  "ack_sha256": "2328ac1c51b04d7c773af1b036f19c8e783e38726a34c622f3d470eb450e4320",
+  "durable_receipts": {
+    "run": "9a96bf3dac63ad12325bb359ff1560df30604dcf7f024548c54d98fde2dc928e",
+    "evaluation": "a8d8b7758d20308269904d8dbd46b37d48a665aebf31b10e2944c06edcc6b798",
+    "result": "e387a68ea188126779dae64e1f62865fa6b657da447212666963c636e3219fb6"
+  },
+  "private_evidence_bundle": "verified-results/fresh-yelp-full-s17-t07-v1",
+  "durable_receipts_match_immutable_local_inventories": true,
+  "model_inference_performed": false
+}

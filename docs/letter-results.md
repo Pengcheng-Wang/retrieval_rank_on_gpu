@@ -185,6 +185,19 @@ collision items /largest group65, so code and item identities remain
 materially different. Exact independently verified evidence is in
 [the Yelp full seed17 receipt](../results/2026-10-31-letter/fresh-yelp-full-s17-t10-v1.json).
 
+The matched seed17 tau0.7 arm completed126 epochs /27,720 updates and selected
+checkpoint23,320 /epoch106. Code Recall@10/NDCG@10 is **.04249/.02210** and
+the original-item diagnostic is **.03772/.01993**. In the predeclared
+tau0.7-minus-tau1 paired-user bootstrap, code Recall@10 is **-.00148** with
+marginal95% interval **[-.00365,+.00072]** and code NDCG@10 is **-.00077**
+**[-.00193,+.00039]**; both include zero. Item Recall@10 is **-.00365**
+**[-.00575,-.00151]** and item NDCG@10 is **-.00169**
+**[-.00282,-.00057]**, favoring tau1 under the item diagnostic. These
+intervals are conditional on the two trained models and do not include
+training-seed uncertainty. Exact evidence is in
+[the Yelp seed17 tau0.7 receipt](../results/2026-10-31-letter/fresh-yelp-full-s17-t07-v1.json)
+and [paired comparison](../results/2026-10-31-letter/fresh-yelp-full-s17-t07-minus-t10-v1.json).
+
 The Yelp full-tokenizer tau1 arm exact-resumed after the AML lifecycle reset
 from sealed checkpoint23,980, completed118 epochs and selected epoch98.
 Code Recall@10/NDCG@10 is **.04469/.02307** and the original-item diagnostic is
