@@ -281,6 +281,15 @@ the seed17 semantic point, the CF arm is descriptively higher by about
 significance claim. Exact independently verified evidence is in
 [the Beauty CF seed17 receipt](../results/2026-10-31-letter/fresh-beauty-cf-s17-t10-v1.json).
 
+The Beauty diversity tokenizer at seed17 also completed20,000 epochs; its
+downstream T5 completed101 epochs /13,029 updates and selected
+checkpoint10,449 /epoch81. Code Recall@10/NDCG@10 is **.06225/.03407** and the
+original-item diagnostic is **.06202/.03393**. The tokenizer has9 excess
+collision items /largest group3. Relative to the seed17 semantic point, these
+single-seed differences are small and descriptive, not evidence of a
+significant winner. Exact independently verified evidence is in
+[the Beauty diversity seed17 receipt](../results/2026-10-31-letter/fresh-beauty-diversity-s17-t10-v1.json).
+
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
 Recall@10 and NDCG@10 intervals all include zero. Only NDCG@5 excludes zero:
