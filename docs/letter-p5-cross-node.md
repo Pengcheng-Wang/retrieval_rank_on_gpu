@@ -487,32 +487,32 @@ hash/receipt-authenticated parent ownership event, the exact frozen checkpoint
 and its bank acknowledgement, the frozen checkpoint's embedded 20-entry
 history, the runtime/input identity, and the physical host/GPU UUID. Historical
 checkpoints must appear in the parent event's complete contiguous
-`verified_checkpoints` inventory. A checkpoint produced after the recovered
-root instead requires its own current-run bank acknowledgement and must be the
-legal immediate ancestor of the final frozen checkpoint. Replay is accepted
-only when metrics, all-user 20-beam prediction bytes, and the checkpoint's
-exact prior history prefix match.
+`verified_checkpoints` inventory for writer cells or exact
+`verified_packages` inventory for worker cells. A checkpoint produced after
+the recovered root instead requires its own current-run full-state bank
+acknowledgement for a writer or `p5-xnode-bank-ack-v1` plus the exact package
+receipt for a worker. The current validation checkpoint must be the legal
+immediate ancestor of the final frozen checkpoint. Replay is accepted only
+when metrics, all-user 20-beam prediction bytes, and the checkpoint's exact
+prior history prefix match.
 
-Recovery receipts are immutable. Canonical publication requires all 20 epochs,
-the broker stopped, no live broker process, and simultaneous ownership of the
-native run pointer lock and common bank lock. Before the first canonical link,
-the tool banks a self-contained evidence packet containing the request, tool,
-authority files, all replay receipts, all stage receipts, and all historical
-entries. Publication then uses rehashed no-overwrite links and leaves a
-`published-and-result-bound` marker. Evidence and binding destinations
-must be beneath the activation-hashed durable root, and interrupted copies move
-to immutable retry destinations rather than reusing partial directories.
-Throughout publication, the broker remains stopped while `publish` runs on the
-activation-bound writer.
-It first builds the complete result from an isolated staged view, uses the
-unchanged P5 snapshot and selection validators, checks every recovered
-prediction hash and protected metadata hash, and banks the result and binding
-packet. Only after the durable complete gate exists does it link canonical
-validation files and publish `results-banked.json`; canonical `broker.lock`,
-the native pointer lock and the common bank lock cover the operation. The
-ordinary result
-acknowledgement is insufficient for a recovered run: downstream
-audit/publication must require `verify-complete` and the durable
-`validation-history-recovery-complete.json` binding gate. Stop on any
-replay, ancestry, receipt, GPU, history-prefix, publication-fence, result, or
-durable-binding mismatch.
+Recovery receipts are immutable and both roles require all 20 epochs. Writer
+publication stops the broker, owns the broker/native-pointer/common-bank locks,
+banks an isolated complete result and binding packet, and only then links the
+canonical files and publishes `results-banked.json`. Downstream writer audit
+must require `verify-complete` and the durable
+`validation-history-recovery-complete.json` gate.
+
+Worker publication is deliberately split. `publish-worker` requires the
+cell's guardian and learner stopped, but leaves the shared broker running for
+other cells. On the bound worker host it rehashes every recovery receipt,
+atomically links all canonical validation files under the native pointer lock,
+validates the complete result inventory, and emits a self-contained evidence
+packet. Node0 alone copies that packet beneath the activation-hashed durable
+root under the common bank lock. `verify-worker-evidence` checks the exact
+durable receipt before writing
+`validation-history-recovery-worker-ready.json`; only then may the unchanged
+guardian restart. The guardian builds the ordinary result snapshot and
+broker-v4 performs its normal accepted-frozen-head result export. Stop on any
+replay, ancestry, package/receipt, GPU, history-prefix, worker-fence,
+canonical-inventory, durable-evidence, result, or binding mismatch.

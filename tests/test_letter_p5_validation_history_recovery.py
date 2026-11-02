@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import json
+import shutil
 import socket
 import sys
 from pathlib import Path
@@ -505,6 +506,311 @@ def fixture(tmp_path, expected_bytes=None):
     return request_path, run, expected, expected_bytes
 
 
+def workerize_request(request_path):
+    request_path = Path(request_path)
+    request = json.loads(request_path.read_text())
+    writer_host = (
+        "node-0-writer"
+        if socket.gethostname() == "node-0"
+        else "node-0"
+    )
+    request["writer_host"] = writer_host
+    bindings = json.loads(Path(request["bindings"]).read_text())
+    bindings["writer_host"] = writer_host
+    bindings["worker_host"] = socket.gethostname()
+    bindings["cells"][request["cell"]]["role"] = "worker"
+    write(request["bindings"], bindings)
+    lease = json.loads(Path(request["lease"]).read_text())
+    request["result_destination_root"] = str(
+        Path(bindings["durable_root"])
+        / "xnode" / request["cell"] / lease["lease_id"]
+    )
+    activation = json.loads(Path(request["activation"]).read_text())
+    activation["files_sha256"]["current/bindings.json"] = sha(
+        request["bindings"]
+    )
+    write(request["activation"], activation)
+    write(request_path, request)
+    return request
+
+
+def workerize_checkpoint_inventory(request_path):
+    request = workerize_request(request_path)
+    certificate_path = Path(request["checkpoint_certificate"])
+    certificate = json.loads(certificate_path.read_text())
+    event = certificate["event"]
+    recovery = event["durable_recovery"][request["cell"]]
+    entries = recovery.pop("verified_checkpoints")
+    recovery.pop("chosen_checkpoint")
+    packages = []
+    for entry in entries:
+        packages.append({
+            "path": entry["path"],
+            "generation": entry["generation"],
+            "checkpoint_seal_sha256": entry[
+                "checkpoint_seal_sha256"
+            ],
+            "package_seal_sha256": hashlib.sha256(
+                f"package-{entry['generation']}".encode()
+            ).hexdigest(),
+            "bank_receipt_sha256": entry["bank_receipt_sha256"],
+        })
+    recovery.update({
+        "evidence_kind": "worker-durable-recovery",
+        "recovery_kind": "p5-xnode-durable-recovery-v1",
+        "authority":
+        "receipt-verified-durable-packages-not-historical-acceptance",
+        "selection_policy": "latest",
+        "chosen_generation": packages[-1]["generation"],
+        "chosen_checkpoint_seal_sha256":
+        packages[-1]["checkpoint_seal_sha256"],
+        "verified_packages": packages,
+        "abandoned_verified_packages": [],
+    })
+    checkpoint_event_sha256 = xreg.event_sha(event)
+    certificate["event_sha256"] = checkpoint_event_sha256
+    certificate["bank_receipt"]["files"]["ownership.json"][
+        "sha256"
+    ] = checkpoint_event_sha256
+    certificate["bank_receipt_sha256"] = xreg.digest(
+        certificate["bank_receipt"]
+    )
+    write(certificate_path, certificate)
+
+    ownership_path = Path(request["ownership_certificate"])
+    ownership = json.loads(ownership_path.read_text())
+    ownership["event"]["previous_event_sha256"] = checkpoint_event_sha256
+    source_event_sha256 = xreg.event_sha(ownership["event"])
+    ownership["event_sha256"] = source_event_sha256
+    ownership["bank_receipt"]["files"]["ownership.json"][
+        "sha256"
+    ] = source_event_sha256
+    ownership["bank_receipt_sha256"] = xreg.digest(
+        ownership["bank_receipt"]
+    )
+    write(ownership_path, ownership)
+    request["source_event_sha256"] = source_event_sha256
+    activation = json.loads(Path(request["activation"]).read_text())
+    activation["event_sha256"] = source_event_sha256
+    activation["files_sha256"]["current/ownership-certificate.json"] = sha(
+        ownership_path
+    )
+    write(request["activation"], activation)
+    write(request_path, request)
+    return request, packages
+
+
+def file_manifest(directory, exclude=()):
+    directory = Path(directory)
+    result = {}
+    for path in sorted(directory.rglob("*")):
+        if path.is_file():
+            name = path.relative_to(directory).as_posix()
+            if name not in exclude:
+                result[name] = {
+                    "sha256": sha(path),
+                    "bytes": path.stat().st_size,
+                }
+    return result
+
+
+def worker_package_authority(
+    request, checkpoint, destination, generation,
+):
+    checkpoint = Path(checkpoint)
+    destination = Path(destination)
+    (destination / "checkpoint").mkdir(parents=True)
+    for name in (
+        "model.safetensors", "training-state.pt", "p5-seal.json",
+    ):
+        shutil.copyfile(checkpoint / name, destination / "checkpoint" / name)
+    shutil.copyfile(
+        request["contract"], destination / "scientific-contract.json",
+    )
+    write(destination / "execution-attestation.json", {
+        "kind": "p5-crossnode-execution-v1",
+        "lease_sha256": request["lease_sha256"],
+    })
+    seal = json.loads((checkpoint / "p5-seal.json").read_text())
+    header = {
+        "artifact": checkpoint.name,
+        "seal_sha256": sha(checkpoint / "p5-seal.json"),
+        "contract_sha256": seal["contract_sha256"],
+        "step": seal["global_step"],
+        "epoch": seal["epoch"],
+        "phase": seal["phase"],
+        "model_sha256": seal["files_sha256"]["model.safetensors"],
+        "training_state_sha256":
+        seal["files_sha256"]["training-state.pt"],
+    }
+    lease = json.loads(Path(request["lease"]).read_text())
+    envelope = {
+        "kind": "p5-xnode-checkpoint-v1",
+        "purpose": "production",
+        "cell": request["cell"],
+        "owner_node": lease["owner_node"],
+        "gpu": lease["gpu"],
+        "lease_id": lease["lease_id"],
+        "ownership_epoch": lease["ownership_epoch"],
+        "lease_sha256": request["lease_sha256"],
+        "generation": generation,
+        "parent_seal_sha256": lease["root"]["seal_sha256"],
+        "root_seal_sha256": lease["root"]["seal_sha256"],
+        "checkpoint": header,
+        "selected": None,
+        "execution_attestation_sha256": sha(
+            destination / "execution-attestation.json"
+        ),
+    }
+    write(destination / "envelope.json", envelope)
+    write(destination / "package-seal.json", {
+        "kind": "p5-xnode-package-v1",
+        "status": "sealed",
+        "files": file_manifest(destination),
+    })
+    bank_receipt = {"files": file_manifest(destination)}
+    write(destination / "bank-receipt.json", bank_receipt)
+    ack = {
+        "kind": "p5-xnode-bank-ack-v1",
+        "status": "verified",
+        "writer_host": request["writer_host"],
+        "cell": request["cell"],
+        "lease_id": lease["lease_id"],
+        "lease_sha256": request["lease_sha256"],
+        "ownership_epoch": lease["ownership_epoch"],
+        "registry_event_sha256": request["source_event_sha256"],
+        "generation": generation,
+        "envelope": envelope,
+        "checkpoint": header,
+        "destination": str(destination),
+        "bank_receipt": bank_receipt,
+        "bank_receipt_sha256": digest_json(bank_receipt),
+    }
+    return ack, bank_receipt
+
+
+def workerize_current_authorities(request_path):
+    request, _ = workerize_checkpoint_inventory(request_path)
+    current = request["epochs"]["20"]
+    current_checkpoint = Path(current["checkpoint"])
+    current_stage_path = current_checkpoint.parent / "stage-receipt.json"
+    current_stage = json.loads(current_stage_path.read_text())
+    current_destination = Path(current_stage["source"])
+    if current_destination.exists():
+        shutil.rmtree(current_destination)
+    current_ack, current_receipt = worker_package_authority(
+        request, current_checkpoint, current_destination, 101,
+    )
+    write(current["bank_ack"], current_ack)
+    write(current["bank_receipt"], current_receipt)
+    lease = json.loads(Path(request["lease"]).read_text())
+    bindings = json.loads(Path(request["bindings"]).read_text())
+    current_record_path = (
+        Path(request_path).parent / "accepted-g00000101.json"
+    )
+    write(current_record_path, {
+        "lease_sha256": request["lease_sha256"],
+        "envelope": current_ack["envelope"],
+        "ack": current_ack,
+    })
+    current_stage.update({
+        "source_package_seal_sha256": sha(
+            current_destination / "package-seal.json"
+        ),
+        "source_envelope_sha256": sha(
+            current_destination / "envelope.json"
+        ),
+        "source_bank_ack_sha256": sha(current["bank_ack"]),
+        "source_bank_receipt_sha256": digest_json(current_receipt),
+        "source_bank_receipt_file_sha256": sha(
+            current["bank_receipt"]
+        ),
+        "source_accepted_record": str(current_record_path),
+        "source_accepted_record_sha256": sha(current_record_path),
+        "accepted_record_origin": str(
+            Path(bindings["control_root"])
+            / "ledger" / request["cell"] / lease["lease_id"]
+            / "accepted" / "g00000101.json"
+        ),
+    })
+    write(current_stage_path, current_stage)
+    current.update({
+        "authority": "current-run-xnode-ack",
+        "stage_receipt_sha256": sha(current_stage_path),
+    })
+
+    history_checkpoint = Path(request["history_checkpoint"])
+    history_destination = (
+        Path(request_path).parent / "durable-history-worker-package"
+    )
+    history_ack, history_receipt = worker_package_authority(
+        request, history_checkpoint, history_destination, 102,
+    )
+    write(request["history_bank_ack"], history_ack)
+    write(request["history_bank_receipt"], history_receipt)
+    history_record_path = (
+        Path(request_path).parent / "accepted-g00000102.json"
+    )
+    write(history_record_path, {
+        "lease_sha256": request["lease_sha256"],
+        "envelope": history_ack["envelope"],
+        "ack": history_ack,
+    })
+    history_files = {
+        name: {
+            "sha256": sha(history_checkpoint / name),
+            "bytes": (history_checkpoint / name).stat().st_size,
+        }
+        for name in (
+            "model.safetensors", "training-state.pt", "p5-seal.json",
+        )
+    }
+    write(request["history_stage_receipt"], {
+        "kind": "p5-validation-checkpoint-stage-v1",
+        "status": "verified",
+        "purpose": "history-authority",
+        "source": str(history_destination),
+        "source_bank_ack_sha256": sha(request["history_bank_ack"]),
+        "source_bank_receipt_sha256": digest_json(history_receipt),
+        "source_bank_receipt_file_sha256": sha(
+            request["history_bank_receipt"]
+        ),
+        "source_package_seal_sha256": sha(
+            history_destination / "package-seal.json"
+        ),
+        "source_envelope_sha256": sha(
+            history_destination / "envelope.json"
+        ),
+        "source_accepted_record": str(history_record_path),
+        "source_accepted_record_sha256": sha(history_record_path),
+        "accepted_record_origin": str(
+            Path(bindings["control_root"])
+            / "ledger" / request["cell"] / lease["lease_id"]
+            / "accepted" / "g00000102.json"
+        ),
+        "checkpoint_seal_sha256": sha(
+            history_checkpoint / "p5-seal.json"
+        ),
+        "files": history_files,
+    })
+    write(request_path, request)
+    return request
+
+
+def worker_publication_fence(request_path):
+    request = json.loads(Path(request_path).read_text())
+    write(request["publication_fence"], {
+        "kind": "p5-validation-history-worker-fence-v1",
+        "status": "active",
+        "cell": request["cell"],
+        "source_event_sha256": request["source_event_sha256"],
+        "guardian_stopped": True,
+        "guardian_pid": 2147483647,
+        "guardian_stopped_at_unix": 1,
+    })
+    return request
+
+
 class FakeBackend:
     def __init__(self, expected, output_bytes, state=None):
         self.expected = expected
@@ -527,6 +833,276 @@ class FakeBackend:
                 "gpu_name": "fixture GPU",
             },
         }
+
+
+def test_worker_deployment_authority_allows_distinct_writer_host(tmp_path):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = workerize_request(request_path)
+
+    _, validated = recovery._request(request_path)
+
+    assert validated["binding"]["host"] == socket.gethostname()
+    assert validated["writer_host"] == request["writer_host"]
+
+
+def test_worker_deployment_authority_uses_lease_scoped_result_root(
+    tmp_path,
+):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = workerize_request(request_path)
+    bindings = json.loads(Path(request["bindings"]).read_text())
+    lease = json.loads(Path(request["lease"]).read_text())
+    request["result_destination_root"] = str(
+        Path(bindings["durable_root"])
+        / "xnode" / request["cell"] / lease["lease_id"]
+    )
+    write(request_path, request)
+
+    _, validated = recovery._request(request_path)
+
+    assert validated["result_destination_root"] == request[
+        "result_destination_root"
+    ]
+
+
+def test_worker_parent_inventory_uses_receipt_verified_packages(tmp_path):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request, packages = workerize_checkpoint_inventory(request_path)
+
+    entries = recovery._checkpoint_inventory(
+        json.loads(Path(request["checkpoint_certificate"]).read_text()),
+        request["cell"],
+    )
+
+    assert entries == packages
+
+
+def test_worker_epoch_authority_binds_staged_checkpoint_to_parent_package(
+    tmp_path,
+):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request, packages = workerize_checkpoint_inventory(request_path)
+    item = request["epochs"]["1"]
+    stage_path = Path(item["checkpoint"]).parent / "stage-receipt.json"
+    stage = json.loads(stage_path.read_text())
+    package = next(
+        entry for entry in packages
+        if entry["path"] == stage["source"]
+    )
+    stage["source_package_seal_sha256"] = package[
+        "package_seal_sha256"
+    ]
+    write(stage_path, stage)
+    item["stage_receipt_sha256"] = sha(stage_path)
+    write(request_path, request)
+
+    checkpoint, receipt = recovery._stage_authority(request, 1)
+
+    assert checkpoint == Path(item["checkpoint"]).resolve()
+    assert receipt["source_package_seal_sha256"] == package[
+        "package_seal_sha256"
+    ]
+
+
+def test_worker_history_authority_accepts_current_xnode_ack(
+    tmp_path, monkeypatch,
+):
+    import torch
+
+    recovery = module()
+    request_path, _, expected, _ = fixture(tmp_path)
+    request = workerize_current_authorities(request_path)
+    monkeypatch.setattr(torch, "load", lambda *args, **kwargs: {
+        "contract": {"fixture": True},
+        "checkpoint_boundary":
+        "after_complete_optimizer_update_no_partial_gradients",
+        "state": {
+            "phase": "frozen",
+            "epoch": 20,
+            "validation_history": [expected for _ in range(20)],
+        },
+    })
+
+    history, header = recovery._history_authority(request)
+
+    assert history == [expected for _ in range(20)]
+    assert header["phase"] == "frozen"
+
+
+def test_worker_current_epoch_authority_accepts_xnode_ack(
+    tmp_path, monkeypatch,
+):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = workerize_current_authorities(request_path)
+    monkeypatch.setattr(
+        recovery, "_verify_validation_frozen_parent",
+        lambda *args: None,
+    )
+
+    checkpoint, receipt = recovery._stage_authority(request, 20)
+
+    assert checkpoint == Path(
+        request["epochs"]["20"]["checkpoint"]
+    ).resolve()
+    assert receipt["source_package_seal_sha256"] == sha(
+        Path(json.loads(
+            Path(request["epochs"]["20"]["bank_ack"]).read_text()
+        )["destination"]) / "package-seal.json"
+    )
+
+
+@pytest.mark.parametrize("damage", ["event", "package", "receipt"])
+def test_worker_current_epoch_authority_rejects_changed_package_ack(
+    tmp_path, monkeypatch, damage,
+):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = workerize_current_authorities(request_path)
+    item = request["epochs"]["20"]
+    stage_path = Path(item["checkpoint"]).parent / "stage-receipt.json"
+    stage = json.loads(stage_path.read_text())
+    if damage == "event":
+        ack = json.loads(Path(item["bank_ack"]).read_text())
+        ack["registry_event_sha256"] = "0" * 64
+        write(item["bank_ack"], ack)
+        stage["source_bank_ack_sha256"] = sha(item["bank_ack"])
+    elif damage == "package":
+        stage["source_package_seal_sha256"] = "0" * 64
+    else:
+        receipt = json.loads(Path(item["bank_receipt"]).read_text())
+        receipt["files"].pop("package-seal.json")
+        write(item["bank_receipt"], receipt)
+    write(stage_path, stage)
+    item["stage_receipt_sha256"] = sha(stage_path)
+    write(request_path, request)
+    monkeypatch.setattr(
+        recovery, "_verify_validation_frozen_parent",
+        lambda *args: None,
+    )
+
+    with pytest.raises(
+        ValueError, match="Worker package acknowledgement authority differs",
+    ):
+        recovery._stage_authority(request, 20)
+
+
+def test_worker_current_epoch_authority_requires_accepted_ledger_record(
+    tmp_path, monkeypatch,
+):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = workerize_current_authorities(request_path)
+    item = request["epochs"]["20"]
+    stage_path = Path(item["checkpoint"]).parent / "stage-receipt.json"
+    stage = json.loads(stage_path.read_text())
+    stage.pop("source_accepted_record")
+    stage.pop("source_accepted_record_sha256")
+    stage.pop("accepted_record_origin")
+    write(stage_path, stage)
+    item["stage_receipt_sha256"] = sha(stage_path)
+    write(request_path, request)
+    monkeypatch.setattr(
+        recovery, "_verify_validation_frozen_parent",
+        lambda *args: None,
+    )
+
+    with pytest.raises(
+        ValueError, match="Worker package acknowledgement authority differs",
+    ):
+        recovery._stage_authority(request, 20)
+
+
+def test_worker_publication_requires_stopped_guardian_fence(tmp_path):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    workerize_current_authorities(request_path)
+    request = worker_publication_fence(request_path)
+    fence = json.loads(Path(request["publication_fence"]).read_text())
+    fence["guardian_stopped"] = False
+    write(request["publication_fence"], fence)
+
+    with pytest.raises(ValueError, match="not fenced"):
+        recovery._worker_publication_fence(request)
+
+
+def test_worker_publication_restores_validation_without_stopping_broker(
+    tmp_path, monkeypatch,
+):
+    recovery = module()
+    request_path, run, expected, output_bytes = fixture(tmp_path)
+    workerize_current_authorities(request_path)
+    worker_publication_fence(request_path)
+    patch_authorities(
+        recovery, monkeypatch, request_path, expected,
+    )
+    recover_all(recovery, request_path, expected, output_bytes)
+
+    publication = recovery.publish_worker(request_path)
+
+    assert publication["status"] == (
+        "worker-published-awaiting-evidence-bank"
+    )
+    assert not (run / "results-banked.json").exists()
+    assert all(
+        (
+            run / "validation" / f"epoch-{epoch:02d}.jsonl"
+        ).read_bytes() == output_bytes
+        for epoch in range(1, 21)
+    )
+    manifest = json.loads(
+        (run / "validation-history-recovery.json").read_text()
+    )
+    assert manifest["cell_role"] == "worker"
+    assert manifest["status"] == (
+        "worker-published-awaiting-evidence-bank"
+    )
+    packet = Path(publication["evidence_packet"])
+    assert (packet / "publication-plan.json").is_file()
+    assert (packet / "epochs" / "epoch-01-recovery.json").is_file()
+    assert (
+        packet / "epochs" / "epoch-20-accepted-record.json"
+    ).is_file()
+
+
+def test_worker_evidence_must_be_durably_banked_before_guardian_restart(
+    tmp_path, monkeypatch,
+):
+    from bank import copy_artifact
+
+    recovery = module()
+    request_path, run, expected, output_bytes = fixture(tmp_path)
+    workerize_current_authorities(request_path)
+    request = worker_publication_fence(request_path)
+    patch_authorities(
+        recovery, monkeypatch, request_path, expected,
+    )
+    recover_all(recovery, request_path, expected, output_bytes)
+    publication = recovery.publish_worker(request_path)
+    copy_artifact(
+        Path(publication["evidence_packet"]),
+        Path(request["durable_evidence_destination"]),
+    )
+
+    ready = recovery.verify_worker_evidence(request_path)
+
+    assert ready["status"] == (
+        "worker-evidence-banked-ready-for-guardian"
+    )
+    assert (
+        run / "validation-history-recovery-worker-ready.json"
+    ).is_file()
+    manifest = json.loads(
+        (run / "validation-history-recovery.json").read_text()
+    )
+    assert manifest["status"] == (
+        "worker-published-evidence-banked-awaiting-result"
+    )
+    assert recovery.verify_worker_evidence(request_path) == ready
 
 
 def patch_authorities(recovery, monkeypatch, request_path, expected):

@@ -41,6 +41,15 @@ PROTECTED_FILES = (
     "test-result.json", "completed.json", "validation-history.json",
     "p5-run-config.json", "updates.jsonl",
 )
+WORKER_PACKAGE_RECEIPT_FILES = {
+    "checkpoint/model.safetensors",
+    "checkpoint/training-state.pt",
+    "checkpoint/p5-seal.json",
+    "scientific-contract.json",
+    "execution-attestation.json",
+    "envelope.json",
+    "package-seal.json",
+}
 
 
 def _request(path):
@@ -103,6 +112,7 @@ def _request(path):
                 }
                 or item["authority"] not in {
                     "parent-event-inventory", "current-run-bank-ack",
+                    "current-run-xnode-ack",
                 }
                 or (
                     item["authority"] == "parent-event-inventory"
@@ -112,7 +122,9 @@ def _request(path):
                     )
                 )
                 or (
-                    item["authority"] == "current-run-bank-ack"
+                    item["authority"] in {
+                        "current-run-bank-ack", "current-run-xnode-ack",
+                    }
                     and (
                         not isinstance(item["bank_ack"], str)
                         or not Path(item["bank_ack"]).is_absolute()
@@ -153,6 +165,14 @@ def _deployment_authority(request):
     durable_root = Path(bindings.get("durable_root", "")).resolve()
     root = Path(bindings.get("root", "")).resolve()
     cell = bindings.get("cells", {}).get(request["cell"], {})
+    role = cell.get("role")
+    execution_host = (
+        bindings.get("writer_host")
+        if role == "writer"
+        else bindings.get("worker_host")
+        if role == "worker"
+        else None
+    )
     if (bindings.get("kind") != "p5-xnode-bindings-v1"
             or activation.get("kind") != "p5-xnode-activation-v2"
             or activation.get("status") != "activated"
@@ -164,8 +184,12 @@ def _deployment_authority(request):
             or files.get(f"leases/{request['cell']}.json")
             != sha256(request["lease"])
             or request["writer_host"] != bindings.get("writer_host")
-            or request["writer_host"] != lease.get("owner_node")
-            or cell.get("role") != "writer"
+            or execution_host != lease.get("owner_node")
+            or request["binding"] != {
+                "host": execution_host,
+                "gpu": lease.get("gpu"),
+                "gpu_uuid": lease.get("gpu_uuid"),
+            }
             or cell.get("gpu") != lease.get("gpu")
             or cell.get("gpu_uuid") != lease.get("gpu_uuid")
             or Path(request["bank_lock"]).resolve() != root / "bank.lock"
@@ -190,9 +214,19 @@ def _deployment_authority(request):
         if (destination == durable_root
                 or not destination.is_relative_to(durable_root)):
             raise ValueError("Recovery durable destination is outside authority")
+    expected_result_root = (
+        durable_root / "runs" / request["cell"]
+        if role == "writer"
+        else durable_root / "xnode" / request["cell"] / lease["lease_id"]
+    )
     if Path(request["result_destination_root"]).resolve() != (
-            durable_root / "runs" / request["cell"]):
+            expected_result_root):
         raise ValueError("Recovery result destination root differs")
+
+
+def _cell_role(request):
+    bindings = read_json(request["bindings"])
+    return bindings.get("cells", {}).get(request["cell"], {}).get("role")
 
 
 def _protected(run):
@@ -257,6 +291,103 @@ def _verify_local_stage(checkpoint, receipt, expected_names):
             raise ValueError("Staged checkpoint file differs from its receipt")
 
 
+def _verify_worker_ack_authority(
+        request, ack_path, bank_receipt_path, stage_receipt, header):
+    ack_path = Path(ack_path)
+    bank_receipt_path = Path(bank_receipt_path)
+    ack = read_json(ack_path)
+    bank_receipt = read_json(bank_receipt_path)
+    lease = read_json(request["lease"])
+    bindings = read_json(request["bindings"])
+    envelope = ack.get("envelope", {})
+    files = bank_receipt.get("files", {})
+    checkpoint_files = stage_receipt.get("files", {})
+    accepted_record_path = Path(
+        stage_receipt.get("source_accepted_record", "")
+    ).resolve()
+    expected_origin = (
+        Path(bindings["control_root"]).resolve()
+        / "ledger" / request["cell"] / lease["lease_id"]
+        / "accepted" / f"g{ack.get('generation', 0):08d}.json"
+    )
+    accepted_record = (
+        read_json(accepted_record_path)
+        if accepted_record_path.is_file()
+        and not accepted_record_path.is_symlink()
+        else None
+    )
+    if (set(files) != WORKER_PACKAGE_RECEIPT_FILES
+            or accepted_record_path == Path(".").resolve()
+            or not accepted_record_path.is_relative_to(
+                Path(request["output"]).resolve().parent
+            )
+            or stage_receipt.get("source_accepted_record_sha256")
+            != sha256(accepted_record_path)
+            or Path(
+                stage_receipt.get("accepted_record_origin", ""),
+            ).resolve() != expected_origin
+            or accepted_record != {
+                "lease_sha256": request["lease_sha256"],
+                "envelope": envelope,
+                "ack": ack,
+            }
+            or any(
+                files.get(f"checkpoint/{name}") != metadata
+                for name, metadata in checkpoint_files.items()
+            )
+            or files.get(
+                "scientific-contract.json", {},
+            ).get("sha256") != sha256(request["contract"])
+            or (
+                lease.get("contract_file_sha256") is not None
+                and lease["contract_file_sha256"]
+                != sha256(request["contract"])
+            )
+            or files.get(
+                "package-seal.json", {},
+            ).get("sha256")
+            != stage_receipt.get("source_package_seal_sha256")
+            or files.get("envelope.json", {}).get("sha256")
+            != stage_receipt.get("source_envelope_sha256")
+            or ack.get("kind") != "p5-xnode-bank-ack-v1"
+            or ack.get("status") != "verified"
+            or ack.get("writer_host") != request["writer_host"]
+            or ack.get("cell") != request["cell"]
+            or ack.get("lease_id") != lease.get("lease_id")
+            or ack.get("lease_sha256") != request["lease_sha256"]
+            or ack.get("ownership_epoch") != lease.get("ownership_epoch")
+            or ack.get("registry_event_sha256")
+            != request["source_event_sha256"]
+            or type(ack.get("generation")) is not int
+            or ack["generation"] < 1
+            or ack.get("checkpoint") != header
+            or ack.get("destination") != stage_receipt.get("source")
+            or ack.get("bank_receipt") != bank_receipt
+            or ack.get("bank_receipt_sha256") != digest_json(bank_receipt)
+            or stage_receipt.get("source_bank_ack_sha256")
+            != sha256(ack_path)
+            or stage_receipt.get("source_bank_receipt_sha256")
+            != ack.get("bank_receipt_sha256")
+            or stage_receipt.get("source_bank_receipt_file_sha256")
+            != sha256(bank_receipt_path)
+            or envelope.get("kind") != "p5-xnode-checkpoint-v1"
+            or envelope.get("purpose") != "production"
+            or envelope.get("cell") != request["cell"]
+            or envelope.get("owner_node") != lease.get("owner_node")
+            or envelope.get("gpu") != lease.get("gpu")
+            or envelope.get("lease_id") != lease.get("lease_id")
+            or envelope.get("ownership_epoch") != lease.get(
+                "ownership_epoch"
+            )
+            or envelope.get("lease_sha256") != request["lease_sha256"]
+            or envelope.get("generation") != ack.get("generation")
+            or envelope.get("root_seal_sha256")
+            != lease.get("root", {}).get("seal_sha256")
+            or envelope.get("checkpoint") != header):
+        raise ValueError("Worker package acknowledgement authority differs")
+    return ack, bank_receipt
+
+
 def _history_authority(request):
     import torch
 
@@ -290,15 +421,27 @@ def _history_authority(request):
     bank_receipt = read_json(bank_receipt_path)
     stage_receipt_path = Path(request["history_stage_receipt"]).resolve()
     stage_receipt = read_json(stage_receipt_path)
-    if (ack.get("kind") != "p5-full-state-v1"
+    if (stage_receipt.get("kind")
+            != "p5-validation-checkpoint-stage-v1"
+            or stage_receipt.get("status") != "verified"
+            or stage_receipt.get("purpose") != "history-authority"
+            or stage_receipt.get("checkpoint_seal_sha256")
+            != header["seal_sha256"]):
+        raise ValueError("Frozen history checkpoint bank authority differs")
+    _verify_local_stage(
+        checkpoint, stage_receipt,
+        {"model.safetensors", "training-state.pt", "p5-seal.json"},
+    )
+    if ack.get("kind") == "p5-xnode-bank-ack-v1":
+        _verify_worker_ack_authority(
+            request, request["history_bank_ack"],
+            request["history_bank_receipt"], stage_receipt, header,
+        )
+    elif (ack.get("kind") != "p5-full-state-v1"
             or ack.get("status") != "verified"
             or ack.get("artifact") != checkpoint.name
             or ack.get("seal_sha256") != header["seal_sha256"]
             or ack.get("contract_sha256") != header["contract_sha256"]
-            or stage_receipt.get("kind")
-            != "p5-validation-checkpoint-stage-v1"
-            or stage_receipt.get("status") != "verified"
-            or stage_receipt.get("purpose") != "history-authority"
             or stage_receipt.get("source") != ack.get("destination")
             or stage_receipt.get("source_bank_ack_sha256")
             != sha256(request["history_bank_ack"])
@@ -308,14 +451,8 @@ def _history_authority(request):
             != digest_json(bank_receipt)
             or bank_receipt != {"files": stage_receipt.get("files")}
             or stage_receipt.get("source_bank_receipt_file_sha256")
-            != sha256(bank_receipt_path)
-            or stage_receipt.get("checkpoint_seal_sha256")
-            != header["seal_sha256"]):
+            != sha256(bank_receipt_path)):
         raise ValueError("Frozen history checkpoint bank authority differs")
-    _verify_local_stage(
-        checkpoint, stage_receipt,
-        {"model.safetensors", "training-state.pt", "p5-seal.json"},
-    )
     root = lease["root"]
     if (header["contract_sha256"] != root["contract_sha256"]
             or header["step"] < root["step"]
@@ -354,21 +491,70 @@ def _checkpoint_inventory(certificate, cell):
     event = certificate.get("event", {})
     receipt = certificate.get("bank_receipt", {})
     recovery = event.get("durable_recovery", {}).get(cell, {})
-    entries = recovery.get("verified_checkpoints", [])
     owner = event.get("owners", {}).get(cell, {})
-    if (certificate.get("event_sha256") != xreg.event_sha(event)
+    common_valid = (
+        certificate.get("event_sha256") == xreg.event_sha(event)
+        and xreg.digest(receipt) == certificate.get("bank_receipt_sha256")
+        and receipt.get("files", {}).get(
+            "ownership.json", {},
+        ).get("sha256") == certificate.get("event_sha256")
+        and event.get("status") == "committed"
+        and recovery.get("historically_accepted") is False
+        and owner.get("root") == recovery.get("root")
+        and recovery.get("chosen_checkpoint_seal_sha256")
+        == recovery.get("root", {}).get("seal_sha256")
+    )
+    if recovery.get("authority") == (
+            "receipt-verified-durable-packages-not-historical-acceptance"):
+        entries = recovery.get("verified_packages", [])
+        chosen_generation = recovery.get("chosen_generation")
+        if (not common_valid
+                or not isinstance(entries, list) or not entries
+                or type(chosen_generation) is not int
+                or not 1 <= chosen_generation <= len(entries)
+                or recovery.get("selection_policy") not in {
+                    "latest", "intentional_rollback",
+                }
+                or recovery.get("chosen_checkpoint_seal_sha256")
+                != entries[chosen_generation - 1].get(
+                    "checkpoint_seal_sha256"
+                )
+                or recovery.get("abandoned_verified_packages")
+                != entries[chosen_generation:]):
+            raise ValueError(
+                "Historical worker package inventory is not event-authoritative"
+            )
+        paths = set()
+        for generation, entry in enumerate(entries, 1):
+            if (set(entry) != {
+                    "path", "generation", "checkpoint_seal_sha256",
+                    "package_seal_sha256", "bank_receipt_sha256",
+                    }
+                    or entry["generation"] != generation
+                    or not isinstance(entry["path"], str)
+                    or not entry["path"]
+                    or entry["path"] in paths
+                    or any(
+                        not re.fullmatch(r"[0-9a-f]{64}", entry[name])
+                        for name in (
+                            "checkpoint_seal_sha256",
+                            "package_seal_sha256",
+                            "bank_receipt_sha256",
+                        )
+                    )):
+                raise ValueError(
+                    "Historical worker package inventory is malformed"
+                )
+            paths.add(entry["path"])
+        return entries[:chosen_generation]
+
+    entries = recovery.get("verified_checkpoints", [])
+    if (not common_valid
             or xreg.digest(receipt) != certificate.get("bank_receipt_sha256")
-            or receipt.get("files", {}).get(
-                "ownership.json", {},
-            ).get("sha256") != certificate.get("event_sha256")
-            or event.get("status") != "committed"
-            or recovery.get("historically_accepted") is not False
             or recovery.get("authority")
             != "receipt-verified-durable-full-state-not-historical-acceptance"
             or not isinstance(entries, list) or not entries
-            or owner.get("root") != recovery.get("root")
-            or recovery.get("chosen_checkpoint_seal_sha256")
-            != recovery.get("root", {}).get("seal_sha256")):
+            ):
         raise ValueError("Historical checkpoint inventory is not event-authoritative")
     previous = None
     paths = set()
@@ -545,16 +731,31 @@ def _stage_authority(request, epoch):
             entry for entry in entries
             if Path(entry.get("path", "")).resolve() == source
         ]
-        if (len(matching) != 1
-                or matching[0].get("checkpoint_seal_sha256")
-                != item["checkpoint_seal_sha256"]
-                or matching[0].get("bank_receipt_sha256")
-                != receipt.get("source_bank_receipt_sha256")
-                or header["seal_sha256"]
-                != matching[0]["checkpoint_seal_sha256"]
-                or header["step"] != matching[0]["step"]
-                or header["epoch"] != matching[0]["epoch"]
-                or header["phase"] != matching[0]["phase"]):
+        if len(matching) != 1:
+            raise ValueError(
+                "Staged validation checkpoint differs from parent event"
+            )
+        authority = matching[0]
+        common_matches = (
+            authority.get("checkpoint_seal_sha256")
+            == item["checkpoint_seal_sha256"]
+            and authority.get("bank_receipt_sha256")
+            == receipt.get("source_bank_receipt_sha256")
+            and header["seal_sha256"]
+            == authority["checkpoint_seal_sha256"]
+        )
+        if "package_seal_sha256" in authority:
+            authority_matches = (
+                receipt.get("source_package_seal_sha256")
+                == authority["package_seal_sha256"]
+            )
+        else:
+            authority_matches = (
+                header["step"] == authority["step"]
+                and header["epoch"] == authority["epoch"]
+                and header["phase"] == authority["phase"]
+            )
+        if not common_matches or not authority_matches:
             raise ValueError(
                 "Staged validation checkpoint differs from parent event"
             )
@@ -564,7 +765,11 @@ def _stage_authority(request, epoch):
         bank_receipt_path = Path(item["bank_receipt"])
         bank_receipt = read_json(bank_receipt_path)
         final_header = _checkpoint_header(request["history_checkpoint"])
-        if (ack.get("kind") != "p5-full-state-v1"
+        if item["authority"] == "current-run-xnode-ack":
+            _verify_worker_ack_authority(
+                request, ack_path, bank_receipt_path, receipt, header,
+            )
+        elif (ack.get("kind") != "p5-full-state-v1"
                 or ack.get("status") != "verified"
                 or ack.get("artifact") != source.name
                 or ack.get("seal_sha256") != header["seal_sha256"]
@@ -814,6 +1019,26 @@ def _publication_fence(request):
     return fence
 
 
+def _worker_publication_fence(request):
+    fence = read_json(request["publication_fence"])
+    if (fence.get("kind")
+            != "p5-validation-history-worker-fence-v1"
+            or fence.get("status") != "active"
+            or fence.get("cell") != request["cell"]
+            or fence.get("source_event_sha256")
+            != request["source_event_sha256"]
+            or fence.get("guardian_stopped") is not True
+            or type(fence.get("guardian_pid")) is not int
+            or fence["guardian_pid"] <= 0
+            or not isinstance(
+                fence.get("guardian_stopped_at_unix"), (int, float),
+            )):
+        raise ValueError("Worker validation recovery is not fenced")
+    if Path(f"/proc/{fence['guardian_pid']}").exists():
+        raise ValueError("The fenced worker guardian PID is still live")
+    return fence
+
+
 def _reject_live_broker():
     proc = Path("/proc")
     if not proc.is_dir():
@@ -828,6 +1053,25 @@ def _reject_live_broker():
         if b"p5_xnode_broker.py" in command:
             raise ValueError(
                 f"P5 broker process {entry.name} is live during publication"
+            )
+
+
+def _reject_live_worker(request):
+    proc = Path("/proc")
+    if not proc.is_dir():
+        return
+    cell = request["cell"].encode()
+    for entry in proc.iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            command = (entry / "cmdline").read_bytes().replace(b"\0", b" ")
+        except (FileNotFoundError, PermissionError, ProcessLookupError):
+            continue
+        if b"p5_xnode_control.py" in command and cell in command:
+            raise ValueError(
+                f"P5 worker or guardian process {entry.name} is live "
+                "during validation recovery"
             )
 
 
@@ -963,6 +1207,13 @@ def _publication_packet(request_path, request, history):
     }
     for name, source in authority.items():
         _copy_immutable(source, packet / "authority" / name)
+    history_stage = read_json(request["history_stage_receipt"])
+    history_record = history_stage.get("source_accepted_record")
+    if history_record is not None:
+        _copy_immutable(
+            history_record,
+            packet / "authority" / "history-accepted-record.json",
+        )
     epochs = {}
     for epoch in range(1, 21):
         receipt_path = (
@@ -983,6 +1234,13 @@ def _publication_packet(request_path, request, history):
             stage_path,
             packet / "epochs" / f"epoch-{epoch:02d}-stage.json",
         )
+        accepted_record = stage.get("source_accepted_record")
+        if accepted_record is not None:
+            _copy_immutable(
+                accepted_record,
+                packet / "epochs"
+                / f"epoch-{epoch:02d}-accepted-record.json",
+            )
         bank_ack = None
         bank_receipt = None
         if request["epochs"][str(epoch)]["bank_ack"] is not None:
@@ -1042,6 +1300,268 @@ def _publication_packet(request_path, request, history):
     }
     _write_json_immutable(packet / "publication-plan.json", plan)
     return packet, plan
+
+
+def _publish_validation_files(request, run, epochs, reject_live):
+    for epoch in epochs:
+        receipt = read_json(
+            Path(request["output"]) / f"epoch-{epoch:02d}"
+            / "recovery-receipt.json"
+        )
+        canonical = run / "validation" / f"epoch-{epoch:02d}.jsonl"
+        staged = Path(receipt["staged_output"])
+        if sha256(staged) != receipt["predictions_sha256"]:
+            raise ValueError(
+                "Staged validation bytes changed before publication"
+            )
+        if canonical.exists():
+            if (canonical.is_symlink()
+                    or sha256(canonical)
+                    != receipt["predictions_sha256"]):
+                raise ValueError("Canonical validation publication conflicts")
+            continue
+        reject_live()
+        canonical.parent.mkdir(parents=True, exist_ok=True)
+        staging = canonical.with_name(
+            canonical.name + ".recovery-" + uuid.uuid4().hex
+        )
+        with staged.open("rb") as source, staging.open("xb") as target:
+            for chunk in iter(lambda: source.read(8 << 20), b""):
+                target.write(chunk)
+            target.flush()
+            os.fsync(target.fileno())
+        if sha256(staging) != receipt["predictions_sha256"]:
+            staging.unlink(missing_ok=True)
+            raise ValueError("Copied validation bytes changed before linking")
+        try:
+            os.link(staging, canonical)
+        except FileExistsError:
+            if (canonical.is_symlink()
+                    or sha256(canonical)
+                    != receipt["predictions_sha256"]):
+                raise ValueError("Concurrent validation publication differs")
+        finally:
+            staging.unlink(missing_ok=True)
+        fsync_directory(canonical.parent)
+
+
+def publish_worker(request_path):
+    request_path, request = _request(request_path)
+    if _cell_role(request) != "worker":
+        raise ValueError("Worker publication requires a worker cell")
+    if socket.gethostname() != request["binding"]["host"]:
+        raise RuntimeError("Worker publication is on the wrong owner host")
+    _worker_publication_fence(request)
+    _reject_live_worker(request)
+    run = Path(request["run"]).resolve()
+    if (Path(request["result_bank_ack"]).exists()
+            or (run / ".xnode" / "results-ready.json").exists()):
+        raise ValueError("Worker result publication already started")
+    history, history_header = _history_authority(request)
+    epochs = sorted(map(int, request["epochs"]))
+    if epochs != list(range(1, 21)):
+        raise ValueError("Canonical publication requires all 20 validation epochs")
+    receipts = {}
+    for epoch in epochs:
+        verify_epoch(request_path, epoch)
+        receipt_path = (
+            Path(request["output"]) / f"epoch-{epoch:02d}"
+            / "recovery-receipt.json"
+        )
+        stage_path = (
+            Path(request["epochs"][str(epoch)]["checkpoint"]).parent
+            / "stage-receipt.json"
+        )
+        recovery_receipt = read_json(receipt_path)
+        receipts[str(epoch)] = {
+            "recovery_receipt_digest": digest_json(recovery_receipt),
+            "recovery_receipt_sha256": sha256(receipt_path),
+            "stage_receipt_digest": digest_json(read_json(stage_path)),
+            "stage_receipt_sha256": sha256(stage_path),
+            "predictions_sha256": history[epoch - 1][
+                "predictions_sha256"
+            ],
+        }
+    packet, plan = _publication_packet(
+        request_path, request, history,
+    )
+    protected = _protected(run)
+    prepared = {
+        "kind": "p5-validation-history-recovery-manifest-v1",
+        "status": "worker-publication-in-progress",
+        "cell_role": "worker",
+        "cell": request["cell"],
+        "source_event_sha256": request["source_event_sha256"],
+        "lease_sha256": request["lease_sha256"],
+        "root_seal_sha256": request["root_seal_sha256"],
+        "history_checkpoint_seal_sha256": history_header["seal_sha256"],
+        "binding": request["binding"],
+        "epochs": receipts,
+        "protected_files_sha256": protected,
+        "validation_history_sha256": sha256(
+            run / "validation-history.json"
+        ),
+        "publication_plan_sha256": sha256(
+            packet / "publication-plan.json"
+        ),
+        "durable_evidence_destination": request[
+            "durable_evidence_destination"
+        ],
+    }
+    manifest_path = run / "validation-history-recovery.json"
+    with pointer_lock(run):
+        _worker_publication_fence(request)
+        _reject_live_worker(request)
+        if _protected(run) != protected:
+            raise ValueError("Protected worker result state changed")
+        if manifest_path.exists():
+            existing = read_json(manifest_path)
+            if existing not in (
+                    prepared,
+                    {
+                        **prepared,
+                        "status":
+                        "worker-published-awaiting-evidence-bank",
+                    },
+            ):
+                raise ValueError("Worker validation recovery manifest differs")
+        else:
+            write_json(manifest_path, prepared)
+        _publish_validation_files(
+            request, run, epochs,
+            lambda: _reject_live_worker(request),
+        )
+        _worker_publication_fence(request)
+        _reject_live_worker(request)
+        import p5_bank
+
+        inventory = p5_bank._result_inventory(run)
+        for epoch in epochs:
+            name = f"validation/epoch-{epoch:02d}.jsonl"
+            if inventory[name] != receipts[str(epoch)][
+                    "predictions_sha256"]:
+                raise ValueError(
+                    "Canonical worker validation differs from recovery"
+                )
+        final_manifest = {
+            **prepared,
+            "status": "worker-published-awaiting-evidence-bank",
+        }
+        write_json(manifest_path, final_manifest)
+        fsync_directory(run)
+    _copy_immutable(
+        manifest_path, packet / "worker-publication-manifest.json",
+    )
+    publication = {
+        "kind": "p5-validation-history-worker-publication-v1",
+        "status": "worker-published-awaiting-evidence-bank",
+        "cell": request["cell"],
+        "source_event_sha256": request["source_event_sha256"],
+        "lease_sha256": request["lease_sha256"],
+        "manifest_sha256": sha256(manifest_path),
+        "evidence_packet": str(packet),
+        "evidence_packet_inventory_sha256": digest_json(
+            _file_manifest(packet)
+        ),
+        "result_inventory_sha256": digest_json(inventory),
+    }
+    _write_json_immutable(
+        Path(request["output"]) / "worker-publication.json",
+        publication,
+    )
+    return publication
+
+
+def verify_worker_evidence(request_path):
+    request_path, request = _request(request_path)
+    if _cell_role(request) != "worker":
+        raise ValueError("Worker evidence verification requires a worker cell")
+    if socket.gethostname() != request["binding"]["host"]:
+        raise RuntimeError("Worker evidence verification is on the wrong host")
+    _worker_publication_fence(request)
+    _reject_live_worker(request)
+    run = Path(request["run"]).resolve()
+    publication_path = (
+        Path(request["output"]) / "worker-publication.json"
+    )
+    publication = read_json(publication_path)
+    packet = Path(publication.get("evidence_packet", "")).resolve()
+    manifest_path = run / "validation-history-recovery.json"
+    manifest = read_json(manifest_path)
+    published_manifest_path = (
+        packet / "worker-publication-manifest.json"
+    )
+    published_manifest = read_json(published_manifest_path)
+    if (publication.get("kind")
+            != "p5-validation-history-worker-publication-v1"
+            or publication.get("status")
+            != "worker-published-awaiting-evidence-bank"
+            or publication.get("cell") != request["cell"]
+            or publication.get("source_event_sha256")
+            != request["source_event_sha256"]
+            or publication.get("lease_sha256")
+            != request["lease_sha256"]
+            or publication.get("manifest_sha256")
+            != sha256(published_manifest_path)
+            or publication.get("evidence_packet_inventory_sha256")
+            != digest_json(_file_manifest(packet))
+            or published_manifest.get("kind")
+            != "p5-validation-history-recovery-manifest-v1"
+            or published_manifest.get("status")
+            != "worker-published-awaiting-evidence-bank"
+            or published_manifest.get("cell_role") != "worker"
+            or manifest.get("status") not in {
+                "worker-published-awaiting-evidence-bank",
+                "worker-published-evidence-banked-awaiting-result",
+            }):
+        raise ValueError("Worker validation publication differs")
+    destination = Path(
+        request["durable_evidence_destination"]
+    ).resolve()
+    receipt_path = destination / "bank-receipt.json"
+    receipt = read_json(receipt_path)
+    if (receipt != {
+                "files": _file_manifest(
+                    destination, {"bank-receipt.json"},
+                ),
+            }
+            or receipt["files"] != _file_manifest(packet)
+            or publication["evidence_packet_inventory_sha256"]
+            != digest_json(receipt["files"])):
+        raise ValueError("Durable worker recovery evidence differs")
+    import p5_bank
+
+    inventory = p5_bank._result_inventory(run)
+    if publication["result_inventory_sha256"] != digest_json(inventory):
+        raise ValueError("Worker result inventory changed after publication")
+    ready_manifest = {
+        **published_manifest,
+        "status": "worker-published-evidence-banked-awaiting-result",
+        "durable_evidence_destination": str(destination),
+        "durable_evidence_bank_receipt_sha256": digest_json(receipt),
+        "durable_evidence_bank_receipt_file_sha256": sha256(receipt_path),
+    }
+    if manifest not in (published_manifest, ready_manifest):
+        raise ValueError("Worker validation recovery manifest changed")
+    write_json(manifest_path, ready_manifest)
+    fsync_directory(run)
+    ready = {
+        "kind": "p5-validation-history-worker-ready-v1",
+        "status": "worker-evidence-banked-ready-for-guardian",
+        "cell": request["cell"],
+        "source_event_sha256": request["source_event_sha256"],
+        "lease_sha256": request["lease_sha256"],
+        "publication_sha256": sha256(publication_path),
+        "manifest_sha256": sha256(manifest_path),
+        "evidence_destination": str(destination),
+        "evidence_bank_receipt_sha256": digest_json(receipt),
+        "result_inventory_sha256": digest_json(inventory),
+    }
+    _write_json_immutable(
+        run / "validation-history-recovery-worker-ready.json",
+        ready,
+    )
+    return ready
 
 
 def _bank_packet(packet, base):
@@ -1612,7 +2132,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "mode", choices=(
-            "recover", "verify", "publish",
+            "recover", "verify", "publish", "publish-worker",
+            "verify-worker-evidence",
             "verify-complete",
         ),
     )
@@ -1621,6 +2142,10 @@ def main():
     args = parser.parse_args()
     if args.mode == "publish":
         result = publish_all(args.request)
+    elif args.mode == "publish-worker":
+        result = publish_worker(args.request)
+    elif args.mode == "verify-worker-evidence":
+        result = verify_worker_evidence(args.request)
     elif args.mode == "verify-complete":
         result = verify_complete(args.request)
     else:
