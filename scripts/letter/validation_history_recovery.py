@@ -737,6 +737,30 @@ def _verify_worker_history_ancestry(
         )
 
 
+def _validation_checkpoint_state(
+        request, checkpoint, epoch, history):
+    import torch
+
+    checkpoint = Path(checkpoint)
+    payload = torch.load(
+        checkpoint / "training-state.pt",
+        map_location="cpu", weights_only=False,
+    )
+    state = payload.get("state", {})
+    header = _checkpoint_header(checkpoint)
+    if (payload.get("contract") != read_json(request["contract"])
+            or payload.get("checkpoint_boundary")
+            != "after_complete_optimizer_update_no_partial_gradients"
+            or state.get("phase") != "validate"
+            or state.get("epoch") != epoch - 1
+            or state.get("global_step") != header["step"]
+            or state.get("validation_history") != history[:epoch - 1]):
+        raise ValueError(
+            "Existing validation file lacks its exact checkpoint state"
+        )
+    return state
+
+
 def _stage_authority(request, epoch):
     item = request["epochs"][str(epoch)]
     checkpoint = Path(item["checkpoint"]).resolve()
@@ -949,11 +973,34 @@ def _recover_epoch_locked(
             or sha256(canonical) != expected["predictions_sha256"]
     ):
         raise ValueError("Canonical validation file conflicts with sealed history")
-    attempt = evidence / ("attempt-" + uuid.uuid4().hex + ".jsonl")
     before = _protected(run)
-    result = (NativeValidationBackend() if backend is None else backend).replay(
-        request, epoch, checkpoint, attempt,
-    )
+    if canonical.exists():
+        attempt = evidence / (
+            "existing-" + uuid.uuid4().hex + ".jsonl"
+        )
+        state = _validation_checkpoint_state(
+            request, checkpoint, epoch, history,
+        )
+        with canonical.open("rb") as source, attempt.open("xb") as target:
+            for chunk in iter(lambda: source.read(8 << 20), b""):
+                target.write(chunk)
+            target.flush()
+            os.fsync(target.fileno())
+        result = {
+            "metrics": expected,
+            "state": state,
+            "identity": request["binding"],
+        }
+    else:
+        attempt = evidence / (
+            "attempt-" + uuid.uuid4().hex + ".jsonl"
+        )
+        result = (
+            NativeValidationBackend()
+            if backend is None else backend
+        ).replay(
+            request, epoch, checkpoint, attempt,
+        )
     after = _protected(run)
     state = result.get("state", {})
     metrics = result.get("metrics")

@@ -1474,15 +1474,32 @@ def test_recovery_fails_closed_on_any_history_or_publication_difference(
 
 
 def test_existing_exact_file_is_idempotently_verified(tmp_path, monkeypatch):
+    import torch
+
     recovery = module()
     request_path, run, expected, output_bytes = fixture(tmp_path)
     patch_authorities(recovery, monkeypatch, request_path, expected)
+    monkeypatch.setattr(torch, "load", lambda *args, **kwargs: {
+        "contract": {"fixture": True},
+        "checkpoint_boundary":
+        "after_complete_optimizer_update_no_partial_gradients",
+        "state": {
+            "epoch": 0,
+            "phase": "validate",
+            "global_step": 10,
+            "validation_history": [],
+        },
+    })
     path = run / "validation" / "epoch-01.jsonl"
     path.parent.mkdir(parents=True)
     path.write_bytes(output_bytes)
 
+    class FailBackend:
+        def replay(self, *args, **kwargs):
+            raise AssertionError("Existing exact bytes must not rerun inference")
+
     result = recovery.recover_epoch(
-        request_path, 1, backend=FakeBackend(expected, output_bytes),
+        request_path, 1, backend=FailBackend(),
     )
 
     assert result["status"] == "existing_exact_verified"
