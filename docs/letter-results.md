@@ -1146,6 +1146,11 @@ admitted tokenizer lineage includes one disclosed undefined-endpoint
 correction and zero export corrections. Every prediction, selection and
 durable byte was independently reverified in
 [the N64 downstream receipt](../results/2026-10-31-letter/figure8-downstream-codes64-s42-t0p7-v1.json).
+The original downstream admission predated the compatibility-lineage field.
+A post-hoc immutable binding now proves that its staged IDs exactly equal the
+ancestry-complete repaired tokenizer bundle and binds those IDs to the unchanged
+model, predictions and result. This corrects provenance metadata without
+retraining or changing any experiment byte.
 
 ## 📊 Instruments released-ID replay
 
