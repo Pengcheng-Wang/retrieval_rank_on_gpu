@@ -1,0 +1,62 @@
+{
+  "status": "pass",
+  "arm": "levels-8",
+  "dataset": "Instruments",
+  "seed": 42,
+  "temperature": 0.7,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.0608348134991119,
+      "ndcg@1": 0.0608348134991119,
+      "recall@5": 0.08558049410624899,
+      "ndcg@5": 0.07342191460340432,
+      "recall@10": 0.10596641369287906,
+      "ndcg@10": 0.07996272963644974
+    },
+    "item": {
+      "recall@1": 0.05970450508638786,
+      "ndcg@1": 0.05970450508638786,
+      "recall@5": 0.08537865331826255,
+      "ndcg@5": 0.07282285396425076,
+      "recall@10": 0.10552236395930889,
+      "ndcg@10": 0.0792874493154846
+    }
+  },
+  "training_epochs": 200,
+  "training_updates": 25800,
+  "selected_epoch": 183,
+  "selected_checkpoint": "checkpoint-23607",
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 12000,
+  "tokenizer_utilization": [
+    194,
+    256,
+    256,
+    256,
+    256,
+    256,
+    256,
+    256
+  ],
+  "tokenizer_excess_collision_items": 25,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "admission_sha256": "37179d4d0b947d56e6c2ed46e3bf4ddae0164de99e703aac53dfee312091b5de",
+  "model_sha256": "398f40c3cd0a0a8120e1190914d6517a809e6ddbba24a917a1ffb0cffaec28d2",
+  "predictions_sha256": "e876915c52a85ef9e49e962b91b8f85b1597a9c94c6b23c56ee4ef92ed398ff2",
+  "result_sha256": "2aefe3b6550726ba1ffcb4f8ac47550b84606df059c0f6589c510bc4648ac0f4",
+  "ack_sha256": "6091e7fb899545ede6d5ae2e571324ad0d633074c62c973a570ad543b490f692",
+  "durable_receipts": {
+    "run": "77762b9de8fbe196ae6f85155087551f736775ec201f7093a883128171685e90",
+    "evaluation": "3e82bee5a868ff9b185958a1024819b31130b6bc7c432787f99d56bc76f72d8e",
+    "result": "bd7a380486b4e25579b50cb683335ba0d37d2641b81d0955ffde65ce7eb0d139"
+  },
+  "private_evidence_bundle": "verified-results/figure8-downstream-levels8-s42-t0p7-v1",
+  "private_evidence_bank_receipt_sha256": "ffe994f93c430db49ab34a3edd2ddc2003b03f6b99501eba77532dbe66bb3908",
+  "selection": "within-arm validation only; test descriptive",
+  "all_predictions_selection_and_durable_bytes_reverified": true,
+  "model_inference_performed": false
+}

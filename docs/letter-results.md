@@ -1024,6 +1024,17 @@ identifier-length winner or monotonicity claim is made. Exact independently
 verified evidence is in
 [the L6 downstream receipt](../results/2026-10-31-letter/figure8-downstream-levels6-s42-t0p7-v1.json).
 
+The `L=8` downstream cell used the ancestry-complete compatibility-repaired
+tokenizer, completed the full200-epoch cap /25,800 updates, and selected
+checkpoint23,607 /epoch183. Code Recall@10/NDCG@10 is **.10597/.07996** and
+the original-item diagnostic is **.10552/.07929**. It is descriptively below
+the L6 and shared L4 baseline Recall@10 points, so the measured
+identifier-length curve is non-monotonic and does not establish a winner.
+Every prediction, selection, compatibility admission and durable byte was
+independently reverified in
+[the L8 downstream receipt](../results/2026-11-02-letter/figure8-downstream-levels8-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-levels8-s42-t0p7-v1`.
+
 The `alpha=0.001` downstream cell completed at epoch93 after selecting
 checkpoint9,417 /epoch73 solely by validation loss. Its all-user code
 Recall@10/NDCG@10 is **.10722/.08035** and the deterministic original-item
