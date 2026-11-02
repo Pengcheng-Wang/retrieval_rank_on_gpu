@@ -475,6 +475,9 @@ def _history_authority(request):
     latest = read_json(run / "latest.json")
     frozen = read_json(run / "frozen.json")
     selected = read_json(run / "selected.json")
+    source_artifact = stage_receipt.get(
+        "source_checkpoint_artifact", checkpoint.name,
+    )
     if (payload.get("contract") != contract
             or payload.get("checkpoint_boundary")
             != "after_complete_optimizer_update_no_partial_gradients"
@@ -482,7 +485,7 @@ def _history_authority(request):
             or state.get("phase") != "frozen" or state.get("epoch") != 20
             or state.get("validation_history") != history
             or len(history) != 20
-            or latest.get("artifact") != checkpoint.name
+            or latest.get("artifact") != source_artifact
             or latest.get("seal_sha256") != header["seal_sha256"]
             or latest.get("global_step") != header["step"]
             or latest.get("phase") != "frozen"
@@ -704,6 +707,36 @@ def _verify_validation_frozen_parent(validation, frozen, history):
         raise ValueError("Frozen sampler is not the exact epoch successor")
 
 
+def _verify_worker_history_ancestry(
+        current_ack, header, frozen_ack, final_header, epoch):
+    if (current_ack.get("cell") != frozen_ack.get("cell")
+            or current_ack.get("lease_sha256")
+            != frozen_ack.get("lease_sha256")
+            or current_ack.get("registry_event_sha256")
+            != frozen_ack.get("registry_event_sha256")
+            or type(current_ack.get("generation")) is not int
+            or type(frozen_ack.get("generation")) is not int
+            or current_ack["generation"] >= frozen_ack["generation"]
+            or header["contract_sha256"]
+            != final_header["contract_sha256"]
+            or header["phase"] != "validate"
+            or header["epoch"] != epoch - 1
+            or final_header["phase"] != "frozen"
+            or final_header["epoch"] != 20
+            or header["step"] > final_header["step"]
+            or (
+                epoch == 20
+                and (
+                    header["step"] != final_header["step"]
+                    or header["model_sha256"]
+                    != final_header["model_sha256"]
+                )
+            )):
+        raise ValueError(
+            "Accepted worker validation is not an ancestor of frozen history"
+        )
+
+
 def _stage_authority(request, epoch):
     item = request["epochs"][str(epoch)]
     checkpoint = Path(item["checkpoint"]).resolve()
@@ -774,9 +807,21 @@ def _stage_authority(request, epoch):
         bank_receipt = read_json(bank_receipt_path)
         final_header = _checkpoint_header(request["history_checkpoint"])
         if item["authority"] == "current-run-xnode-ack":
-            _verify_worker_ack_authority(
+            worker_ack, _ = _verify_worker_ack_authority(
                 request, ack_path, bank_receipt_path, receipt, header,
             )
+            frozen_ack = read_json(request["history_bank_ack"])
+            _verify_worker_history_ancestry(
+                worker_ack, header, frozen_ack, final_header, epoch,
+            )
+            if epoch == 20:
+                _verify_validation_frozen_parent(
+                    checkpoint, request["history_checkpoint"],
+                    read_json(
+                        Path(request["run"])
+                        / "validation-history.json"
+                    ),
+                )
         elif (ack.get("kind") != "p5-full-state-v1"
                 or ack.get("status") != "verified"
                 or ack.get("artifact") != source.name
@@ -793,13 +838,16 @@ def _stage_authority(request, epoch):
                 or receipt.get("source_bank_ack_sha256")
                 != sha256(ack_path)):
             raise ValueError("Current-run checkpoint bank authority differs")
-        xreg._progress(header, final_header)
-        if header["model_sha256"] != final_header["model_sha256"]:
-            raise ValueError("Frozen model differs from validation parent")
-        _verify_validation_frozen_parent(
-            checkpoint, request["history_checkpoint"],
-            read_json(Path(request["run"]) / "validation-history.json"),
-        )
+        if item["authority"] == "current-run-bank-ack":
+            xreg._progress(header, final_header)
+            if header["model_sha256"] != final_header["model_sha256"]:
+                raise ValueError("Frozen model differs from validation parent")
+            _verify_validation_frozen_parent(
+                checkpoint, request["history_checkpoint"],
+                read_json(
+                    Path(request["run"]) / "validation-history.json"
+                ),
+            )
     return checkpoint, receipt
 
 

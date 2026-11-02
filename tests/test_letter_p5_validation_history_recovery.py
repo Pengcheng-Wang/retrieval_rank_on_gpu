@@ -803,6 +803,11 @@ def workerize_current_authorities(request_path):
         ),
         "files": history_files,
     })
+    latest = json.loads(
+        (Path(request["run"]) / "latest.json").read_text()
+    )
+    latest["artifact"] = history_ack["checkpoint"]["artifact"]
+    write(Path(request["run"]) / "latest.json", latest)
     write(request_path, request)
     return request
 
@@ -963,6 +968,40 @@ def test_worker_current_epoch_authority_accepts_xnode_ack(
         Path(json.loads(
             Path(request["epochs"]["20"]["bank_ack"]).read_text()
         )["destination"]) / "package-seal.json"
+    )
+
+
+def test_worker_accepted_validation_can_precede_frozen_by_multiple_epochs():
+    recovery = module()
+    current = {
+        "cell": "cell",
+        "lease_sha256": "a" * 64,
+        "registry_event_sha256": "b" * 64,
+        "generation": 4,
+    }
+    frozen = {
+        "cell": "cell",
+        "lease_sha256": "a" * 64,
+        "registry_event_sha256": "b" * 64,
+        "generation": 101,
+    }
+    header = {
+        "contract_sha256": "c" * 64,
+        "step": 210996,
+        "epoch": 11,
+        "phase": "validate",
+        "model_sha256": "d" * 64,
+    }
+    final = {
+        "contract_sha256": "c" * 64,
+        "step": 351660,
+        "epoch": 20,
+        "phase": "frozen",
+        "model_sha256": "e" * 64,
+    }
+
+    recovery._verify_worker_history_ancestry(
+        current, header, frozen, final, 12,
     )
 
 
