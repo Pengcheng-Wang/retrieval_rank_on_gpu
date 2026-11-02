@@ -128,6 +128,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, diversity-only, temperature1, seed23 | Instruments | Item diagnostic | 0.10685 | 0.08030 |
 | Fresh-ID T5, full tokenizer, temperature1, seed17 | Instruments | Code | 0.11065 | 0.08150 |
 | Fresh-ID T5, full tokenizer, temperature1, seed17 | Instruments | Item diagnostic | 0.11021 | 0.08086 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Instruments | Code | 0.10940 | 0.08063 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Instruments | Item diagnostic | 0.10916 | 0.08009 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Code | 0.10843 | 0.08117 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Item diagnostic | 0.10811 | 0.08057 |
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Code | 0.10944 | 0.08079 |
@@ -316,6 +318,15 @@ not substitute for training-seed uncertainty or a predeclared multi-seed
 significance analysis. Exact evidence is in
 [the seed17 full receipt](../results/2026-10-31-letter/fresh-instruments-full-s17-t10-v1.json)
 and `verified-results/fresh-instruments-full-s17-t10-v1`.
+
+The seed23 full-tokenizer tau1 replication completed92 epochs /11,868 updates
+and selected checkpoint9,288 /epoch72. Code Recall@10/NDCG@10 is
+**.10940/.08063** and the original-item diagnostic is **.10916/.08009**.
+The full point is above the matching seed23 semantic, CF and diversity arms
+on Recall@10, while diversity has a slightly higher code NDCG@10. This remains
+a descriptive seed-conditioned comparison rather than a selected winner or
+training-seed significance claim. Exact independently verified evidence is in
+[the Instruments full seed23 receipt](../results/2026-10-31-letter/fresh-instruments-full-s23-t10-v1.json).
 
 The matched seed17 full-tokenizer tau0.7 cell completed89 epochs and selected
 epoch69. Code Recall@10/NDCG@10 is **.11049/.08192** and the original-item
