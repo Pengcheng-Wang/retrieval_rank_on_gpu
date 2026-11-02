@@ -1,0 +1,54 @@
+{
+  "status": "pass",
+  "arm": "temperature-1p1",
+  "dataset": "Instruments",
+  "variant": "full",
+  "seed": 42,
+  "temperature": 1.1,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.05986597771677701,
+      "ndcg@1": 0.05986597771677701,
+      "recall@5": 0.08562086226384628,
+      "ndcg@5": 0.07301177554827086,
+      "recall@10": 0.10697561763281124,
+      "ndcg@10": 0.07985125779860669
+    },
+    "item": {
+      "recall@1": 0.05877603746165025,
+      "ndcg@1": 0.05877603746165025,
+      "recall@5": 0.08529791700306798,
+      "ndcg@5": 0.07240824218921638,
+      "recall@10": 0.10665267237203294,
+      "ndcg@10": 0.07924316993871804
+    }
+  },
+  "training_epochs": 99,
+  "training_updates": 12771,
+  "selected_epoch": 79,
+  "selected_checkpoint": "checkpoint-10191",
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 18000,
+  "tokenizer_excess_collision_items": 25,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "admission_sha256": "f64d632590c2b1ea88b9f0c55b8513d4cab3c72e04cb08b290186fedd8feedfa",
+  "queue_binding_sha256": "82ab06e9b433fabea816d94d83d70eb8f81943da6d980dcd38204039e893d2ce",
+  "model_sha256": "6205d701d53d9c089358759de6f165100a877d88c5cc689e6a660ff4d48cb164",
+  "predictions_sha256": "7a7512bf9efcaae4e70df526fb60caba0046dea70215d49e689363a29bd9dcd0",
+  "result_sha256": "4adc751191b106b3842699686be68f70263a63937943213e96130bfcef4d6b1c",
+  "ack_sha256": "c1a435345265a59c6eb6047ac6b23ccf348f27dd93b006391a5565102bac0beb",
+  "durable_receipts": {
+    "run": "39d8ceddc9d992b9472fe38d49ab5afacdf7263bcb94f13091824fdadce92be6",
+    "evaluation": "2c56c5f621aa1f8eae6f8f405b05b847c297423862d7728505b3b2f8a185047d",
+    "result": "dba134e21186dcfcfffe71f4937f3d9fee18d32c8d2ed24b866056ed779869bb"
+  },
+  "private_evidence_bundle": "verified-results/figure8-temperature-1p1-s42-v1",
+  "private_evidence_bank_receipt_sha256": "b647fd9da5831c89221e4c3e3707b0de51bd6a057e902a274d04ce9b16851868",
+  "selection": "within-arm validation only; test descriptive; no temperature winner field",
+  "all_predictions_selection_and_durable_bytes_reverified": true,
+  "model_inference_performed": false
+}
