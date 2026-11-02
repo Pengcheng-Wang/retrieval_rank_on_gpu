@@ -207,6 +207,16 @@ The complete source-bound aggregate is
 [published separately](../results/2026-11-02-letter/fresh-id-three-seed-scorecard-v1.json)
 and banked at `verified-results/fresh-id-three-seed-scorecard-v1`.
 
+Across these three seeds, full-tokenizer tau1 mean code Recall@10 exceeds
+semantic-only by **+.00289 Instruments**, **+.00264 Beauty**, and **+.00521
+Yelp**. This supports a repeatable full-versus-semantic point difference under
+the compatible pipeline, but does not isolate which regularizer causes it:
+Beauty CF has the highest Beauty mean at `.06354`. The tau0.7-minus-tau1 mean
+Recall@10 differences are **-.00011 Instruments**, **+.00051 Beauty**, and
+**-.00206 Yelp**, so there is no dataset-independent lower-temperature gain.
+Only three seeds are available; no formal training-seed significance claim is
+made.
+
 The Yelp semantic-only arm completed175 epochs and selected epoch155 by
 validation loss. Its all30,431-user code Recall@10/NDCG@10 is
 0.04045/0.02094; the declared original-item collision diagnostic is
