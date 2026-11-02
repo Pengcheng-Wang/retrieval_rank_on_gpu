@@ -160,6 +160,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Beauty | Item diagnostic | 0.06623 | 0.03547 |
 | Fresh-ID T5, semantic-only, temperature1 | Yelp | Code | 0.04045 | 0.02094 |
 | Fresh-ID T5, semantic-only, temperature1 | Yelp | Item diagnostic | 0.03608 | 0.01903 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Yelp | Code | 0.03828 | 0.02029 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Yelp | Item diagnostic | 0.03418 | 0.01839 |
 | Fresh-ID T5, full tokenizer, temperature1 | Yelp | Code | 0.04469 | 0.02307 |
 | Fresh-ID T5, full tokenizer, temperature1 | Yelp | Item diagnostic | 0.04118 | 0.02160 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Yelp | Code | 0.04157 | 0.02162 |
@@ -188,8 +190,9 @@ validation loss. Its all30,431-user code Recall@10/NDCG@10 is
 collision items, but does not identify collisions as the sole cause. Every
 prediction, validation record, model binding and durable file was independently
 verified and banked at `verified-results/fresh-yelp-semantic-s42-t10-v1`.
-The remaining Yelp component and generation-loss arms are still required before
-interpreting the full ablation.
+The independent seed replications below complete the fixed 39-cell fresh-ID
+queue; Yelp does not add the CF-only and diversity-only cells used for the
+Instruments and Beauty component tables.
 
 The matched Yelp semantic-only seed17 arm completed181 epochs /39,820 updates
 and selected checkpoint35,420 /epoch161. Code Recall@10/NDCG@10 is
@@ -199,6 +202,16 @@ variation rather than a tokenizer or recipe change. The large code/item gap
 persists with853 excess collision items and largest group65. Exact independently
 verified evidence is in
 [the Yelp semantic seed17 receipt](../results/2026-10-31-letter/fresh-yelp-semantic-s17-t10-v1.json).
+
+The matched Yelp semantic-only seed23 arm completed167 epochs /36,740 updates
+and selected checkpoint32,340 /epoch147. Code Recall@10/NDCG@10 is
+**.03828/.02029** and the original-item diagnostic is **.03418/.01839** across
+all30,431 users. It lies between the seed17 and seed42 semantic points on both
+identities, while retaining853 excess collision items /largest group65. This
+is training-seed variation under the compatible OpenLLaMA-v2 semantic encoder,
+not an original-LLaMA1 replication or a significance claim. Exact independently
+verified evidence is in
+[the Yelp semantic seed23 receipt](../results/2026-10-31-letter/fresh-yelp-semantic-s23-t10-v1.json).
 
 The Yelp full-tokenizer seed17 tau1 arm completed116 epochs /25,520 updates and
 selected checkpoint21,120 /epoch96. Code Recall@10/NDCG@10 is
