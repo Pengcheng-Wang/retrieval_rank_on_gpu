@@ -1,0 +1,251 @@
+{
+  "beams": 20,
+  "claim": "Single-seed descriptive one-factor sweeps; no test-based winner or monotonicity claim. Code and original-item identities remain separate.",
+  "dataset": "Instruments",
+  "exact_original_llama1_reproduction": false,
+  "kind": "figure8-nontemperature-scorecard-v1",
+  "panels": {
+    "alpha": [
+      {
+        "arm": "alpha-0p001",
+        "code_n10": 0.08035330637866478,
+        "code_r10": 0.10721782657839496,
+        "item_n10": 0.07972427124922418,
+        "item_r10": 0.10665267237203294,
+        "value": 0.001
+      },
+      {
+        "arm": "alpha-0p01",
+        "code_n10": 0.0823147472399982,
+        "code_r10": 0.11194090101727758,
+        "item_n10": 0.08169528277191515,
+        "item_r10": 0.11161795575649927,
+        "value": 0.01
+      },
+      {
+        "arm": "baseline-full",
+        "code_n10": 0.08024902748606368,
+        "code_r10": 0.10859034393670274,
+        "item_n10": 0.07958900375765099,
+        "item_r10": 0.108065557887938,
+        "value": 0.02
+      },
+      {
+        "arm": "alpha-0p1",
+        "code_n10": 0.07873165446818167,
+        "code_r10": 0.10439205554658486,
+        "item_n10": 0.07819709153110035,
+        "item_r10": 0.10398837397061197,
+        "value": 0.1
+      }
+    ],
+    "beta": [
+      {
+        "arm": "beta-0p00001",
+        "code_n10": 0.08184711297819719,
+        "code_r10": 0.11052801550137252,
+        "item_n10": 0.0811891956279233,
+        "item_r10": 0.10984175682221864,
+        "value": 1e-05
+      },
+      {
+        "arm": "baseline-full",
+        "code_n10": 0.08024902748606368,
+        "code_r10": 0.10859034393670274,
+        "item_n10": 0.07958900375765099,
+        "item_r10": 0.108065557887938,
+        "value": 0.0001
+      },
+      {
+        "arm": "beta-0p001",
+        "code_n10": 0.08019751393227359,
+        "code_r10": 0.10786371709995156,
+        "item_n10": 0.07952705409992429,
+        "item_r10": 0.10746003552397869,
+        "value": 0.001
+      },
+      {
+        "arm": "beta-0p01",
+        "code_n10": 0.08149978173938491,
+        "code_r10": 0.1099628612950105,
+        "item_n10": 0.08080851098987946,
+        "item_r10": 0.1096399160342322,
+        "value": 0.01
+      }
+    ],
+    "clusters": [
+      {
+        "arm": "clusters-5",
+        "code_n10": 0.08282484395852908,
+        "code_r10": 0.11198126917487486,
+        "item_n10": 0.08214273427471555,
+        "item_r10": 0.11133537865331826,
+        "value": 5
+      },
+      {
+        "arm": "baseline-full",
+        "code_n10": 0.08024902748606368,
+        "code_r10": 0.10859034393670274,
+        "item_n10": 0.07958900375765099,
+        "item_r10": 0.108065557887938,
+        "value": 10
+      },
+      {
+        "arm": "clusters-15",
+        "code_n10": 0.07925252296224222,
+        "code_r10": 0.10677377684482481,
+        "item_n10": 0.07855775599100438,
+        "item_r10": 0.10624899079606007,
+        "value": 15
+      },
+      {
+        "arm": "clusters-20",
+        "code_n10": 0.0812322568853045,
+        "code_r10": 0.11028580655578879,
+        "item_n10": 0.08055619388817312,
+        "item_r10": 0.10972065234942677,
+        "value": 20
+      }
+    ],
+    "codebook_size": [
+      {
+        "arm": "codes-64",
+        "code_n10": 0.08049289709810493,
+        "code_r10": 0.11093169707734539,
+        "item_n10": 0.07982763907478985,
+        "item_r10": 0.11044727918617794,
+        "value": 64
+      },
+      {
+        "arm": "codes-128",
+        "code_n10": 0.08048155540371099,
+        "code_r10": 0.1089940255126756,
+        "item_n10": 0.07982617425849094,
+        "item_r10": 0.10859034393670274,
+        "value": 128
+      },
+      {
+        "arm": "baseline-full",
+        "code_n10": 0.08024902748606368,
+        "code_r10": 0.10859034393670274,
+        "item_n10": 0.07958900375765099,
+        "item_r10": 0.108065557887938,
+        "value": 256
+      },
+      {
+        "arm": "codes-512",
+        "code_n10": 0.08117004285204027,
+        "code_r10": 0.10903439367027289,
+        "item_n10": 0.08053927653170811,
+        "item_r10": 0.1087114484094946,
+        "value": 512
+      }
+    ],
+    "identifier_length": [
+      {
+        "arm": "levels-2",
+        "code_n10": 0.08169921389544489,
+        "code_r10": 0.11222347812045859,
+        "item_n10": 0.07262094036387685,
+        "item_r10": 0.09486517035362506,
+        "value": 2
+      },
+      {
+        "arm": "baseline-full",
+        "code_n10": 0.08024902748606368,
+        "code_r10": 0.10859034393670274,
+        "item_n10": 0.07958900375765099,
+        "item_r10": 0.108065557887938,
+        "value": 4
+      },
+      {
+        "arm": "levels-6",
+        "code_n10": 0.08161081376425551,
+        "code_r10": 0.10798482157274342,
+        "item_n10": 0.08094591657149383,
+        "item_r10": 0.10758113999677055,
+        "value": 6
+      },
+      {
+        "arm": "levels-8",
+        "code_n10": 0.07996272963644974,
+        "code_r10": 0.10596641369287906,
+        "item_n10": 0.0792874493154846,
+        "item_r10": 0.10552236395930889,
+        "value": 8
+      }
+    ]
+  },
+  "seed": 42,
+  "sources": {
+    "alpha-0p001": {
+      "path": "results/2026-10-31-letter/figure8-downstream-alpha0p001-s42-t0p7-v1.json",
+      "sha256": "5eff951dc0e263f46d10ae3b8c2cb909cd04a70d27e9ea858b3905e909d334f1"
+    },
+    "alpha-0p01": {
+      "path": "results/2026-10-31-letter/figure8-downstream-alpha0p01-s42-t0p7-v1.json",
+      "sha256": "2645d07c772a2e9d2087bc7c7dee26cfcaf1d06df6560d8b364a559784a64538"
+    },
+    "alpha-0p1": {
+      "path": "results/2026-10-31-letter/figure8-downstream-alpha0p1-s42-t0p7-v1.json",
+      "sha256": "4a487ee7cb6530e49610ecfe0408180649630fcc65fb82ee6864d0e37588c2c1"
+    },
+    "baseline-full": {
+      "path": "results/2026-10-29-letter/table2-instruments-v1.json#rows.all_regularizers_ranking_guided",
+      "predictions_sha256": "a0e7996b8ba4a4835594ef5780c399a46bd367b0339b6d882c890114f4cfc085",
+      "result_sha256": "2c7cfc6ba34a28f00cd8f154b3de6686124e60277841dc0736886afd78ba61a8",
+      "sha256": "252ac9ab5042d2fc8edec03390738426a3a794c37e87bdeb651452b4ecb0f3e8"
+    },
+    "beta-0p00001": {
+      "path": "results/2026-10-31-letter/figure8-downstream-beta0p00001-s42-t0p7-v1.json",
+      "sha256": "d4a11c83c996d2757821d63a69200e08da96a02715f81203b301ab8d5b8acfb1"
+    },
+    "beta-0p001": {
+      "path": "results/2026-10-31-letter/figure8-downstream-beta0p001-s42-t0p7-v1.json",
+      "sha256": "eef4d052d1b19b431bdfbd2061aa0e782dcbe5c138a309376bf9b47f040fde0f"
+    },
+    "beta-0p01": {
+      "path": "results/2026-10-31-letter/figure8-downstream-beta0p01-s42-t0p7-v1.json",
+      "sha256": "4daf885c6b21a033873afdf835d107acf552319cc60f53e651ef40eac9ac3a26"
+    },
+    "clusters-15": {
+      "path": "results/2026-10-31-letter/figure8-downstream-clusters15-s42-t0p7-v1.json",
+      "sha256": "7e50f5c9727edec041da92db5d27bac53879c62be4b3c379a955a8a95a95b3d3"
+    },
+    "clusters-20": {
+      "path": "results/2026-10-31-letter/figure8-downstream-clusters20-s42-t0p7-v1.json",
+      "sha256": "d71d9b51db29fe67ac34c9adb7380b1d78cd3007050c53325e87d6a7e440c163"
+    },
+    "clusters-5": {
+      "path": "results/2026-10-31-letter/figure8-downstream-clusters5-s42-t0p7-v1.json",
+      "sha256": "c707c0fc29eea7c72fe5f5d99afb1db4e64f8dab65d5df6fa7af5202db235190"
+    },
+    "codes-128": {
+      "path": "results/2026-10-31-letter/figure8-downstream-codes128-s42-t0p7-v1.json",
+      "sha256": "821cddc664df6088050c44b8387a689a9698fa89a17fb513054d2879c20da183"
+    },
+    "codes-512": {
+      "path": "results/2026-10-31-letter/figure8-downstream-codes512-s42-t0p7-v1.json",
+      "sha256": "1d05fac81a579b54cfee492b91e96d2c78b2a464922b692a97a9f7d10bd7e531"
+    },
+    "codes-64": {
+      "path": "results/2026-10-31-letter/figure8-downstream-codes64-s42-t0p7-v1.json",
+      "sha256": "3402a0a03a42fc4ac9a830c0105ce5e128ba404caa05d5382548006057299ff8"
+    },
+    "levels-2": {
+      "path": "results/2026-10-30-letter/figure8-downstream-levels2-s42-t0p7-v1.json",
+      "sha256": "d70118132f90bbe7df53293e1f84b55f24ce9f928a1666bd689a071bc0f3023f"
+    },
+    "levels-6": {
+      "path": "results/2026-10-31-letter/figure8-downstream-levels6-s42-t0p7-v1.json",
+      "sha256": "affb57d6fa7ed40eede2f341f76b1a7e325e7ed6de75b43ae9fa8304b0abf284"
+    },
+    "levels-8": {
+      "path": "results/2026-11-02-letter/figure8-downstream-levels8-s42-t0p7-v1.json",
+      "sha256": "4da2e92dea02b58d190330bb4f14e8c2311049aea2e162c6e71fbe282d024cf3"
+    }
+  },
+  "status": "pass",
+  "temperature": 0.7,
+  "users": 24772
+}

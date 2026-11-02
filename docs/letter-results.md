@@ -878,6 +878,22 @@ and banked at `verified-results/figure3-beauty-tokenizer-ablation-v3`.
 
 ### Figure 8 one-factor sweep status
 
+All 15 nonbaseline tokenizer downstream cells are now complete and independently
+audited. The shared `L=4`, `N=256`, `alpha=.02`, `beta=.0001`, `K=10`
+baseline is the same full-tokenizer tau0.7 cell in every panel.
+
+| Panel values | Code Recall@10 / NDCG@10 | Item Recall@10 / NDCG@10 |
+| --- | --- | --- |
+| `L=2,4,6,8` | `.11222/.08170; .10859/.08025; .10798/.08161; .10597/.07996` | `.09487/.07262; .10807/.07959; .10758/.08095; .10552/.07929` |
+| `N=64,128,256,512` | `.11093/.08049; .10899/.08048; .10859/.08025; .10903/.08117` | `.11045/.07983; .10859/.07983; .10807/.07959; .10871/.08054` |
+| `alpha=.001,.01,.02,.1` | `.10722/.08035; .11194/.08231; .10859/.08025; .10439/.07873` | `.10665/.07972; .11162/.08170; .10807/.07959; .10399/.07820` |
+| `beta=.00001,.0001,.001,.01` | `.11053/.08185; .10859/.08025; .10786/.08020; .10996/.08150` | `.10984/.08119; .10807/.07959; .10746/.07953; .10964/.08081` |
+| `K=5,10,15,20` | `.11198/.08282; .10859/.08025; .10677/.07925; .11029/.08123` | `.11134/.08214; .10807/.07959; .10625/.07856; .10972/.08056` |
+
+The panels are non-monotonic and single-seed descriptive measurements; no
+test-based optimum is selected. The complete source-bound scorecard is
+[published separately](../results/2026-11-02-letter/figure8-nontemperature-scorecard-v1.json).
+
 The two-level tokenizer arm is the first completed Figure8 sweep result. It
 finished20,000 epochs, selected epoch12,000 and emitted two-token IDs. After20
 collision retries it still has1,121 excess collision items and largest group36,
