@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "dataset": "Instruments",
+  "variant": "diversity",
+  "seed": 23,
+  "temperature": 1.0,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.06127886323268206,
+      "ndcg@1": 0.06127886323268206,
+      "recall@5": 0.08767963830130793,
+      "ndcg@5": 0.07460377862578145,
+      "recall@10": 0.10733893105118682,
+      "ndcg@10": 0.08096532871778117
+    },
+    "item": {
+      "recall@1": 0.060310027450347165,
+      "ndcg@1": 0.060310027450347165,
+      "recall@5": 0.08735669304052963,
+      "ndcg@5": 0.0739934793748851,
+      "recall@10": 0.10685451316001937,
+      "ndcg@10": 0.08029675419258504
+    }
+  },
+  "training_epochs": 100,
+  "training_updates": 12900,
+  "selected_epoch": 80,
+  "selected_checkpoint": "checkpoint-10320",
+  "validation_evaluations_checked": 100,
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 20000,
+  "tokenizer_excess_collision_items": 26,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "model_sha256": "a6372667c32a20c6eb6fc5ca95f817bfff052c5b4ee122108b80e484a82ee158",
+  "predictions_sha256": "8b6645643c4903fc708738c96820a7aa628c5b54a4550516ecb6e84c9d7f0fce",
+  "result_sha256": "f1d647121b70254810c4baf9de80374a5e8bd30be2d359f47cdb2b7b3aa4775a",
+  "ack_sha256": "cbfbb7ff75bcdf05ac136fcb48f8fb531865228323b969376303623267fa32a9",
+  "durable_receipts": {
+    "run": "61cdfaed0f196ad4d151017f51742085fe6d2d80ab01179b6e6d017721382171",
+    "evaluation": "75b4cab014b5370942e9f13e38f0f0ab04d3d5dd0a5a5cc646c3ffe10e7b5c0d",
+    "result": "229754c94a0577d6c41fd1820527bd513a91e896c54297d821139e7dc6a8ca95"
+  },
+  "private_evidence_bundle": "verified-results/fresh-instruments-diversity-s23-t10-v1",
+  "durable_receipts_match_immutable_local_inventories": true,
+  "model_inference_performed": false
+}
