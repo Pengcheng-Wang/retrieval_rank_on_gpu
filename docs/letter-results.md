@@ -992,6 +992,17 @@ the separate five-arm temperature queue, Figure 8 therefore requires **20
 additional T5 fits** beyond the already completed temperature-0.7 and
 temperature-1.0 baseline fits.
 
+The first new temperature-panel point, `tau=0.6`, completed87 epochs /
+11,223 updates and selected checkpoint8,643 /epoch67 using only its own
+validation loss. Across all24,772 users, code Recall@10/NDCG@10 is
+**.10734/.07918** and the original-item diagnostic is **.10689/.07851**.
+This is one descriptive point in the predeclared seven-temperature grid, not
+a selected winner; the six fixed contrasts against temperature1 remain gated
+on completion of the other four new fits. Exact independently verified
+evidence is in
+[the temperature0.6 receipt](../results/2026-11-02-letter/figure8-temperature-0p6-s42-v1.json)
+and `verified-results/figure8-temperature-0p6-s42-v1`.
+
 The first downstream sweep cell, `L=2` at fixed tau0.7, completed61 epochs and
 selected epoch41 solely from validation loss. Its all24,772-user code
 Recall@10/NDCG@10 is **.11222/.08170**, while the deterministic original-item
