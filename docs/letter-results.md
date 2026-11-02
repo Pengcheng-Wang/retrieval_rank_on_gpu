@@ -883,6 +883,16 @@ downstream cell runs. Exact evidence is in
 [the final L6 receipt](../results/2026-10-31-letter/figure8-levels6-final-v1.json)
 and `verified-results/figure8-levels6-final-v1`.
 
+The repaired eight-level tokenizer arm completed20,000 epochs and selected
+epoch12,000. Its bank has25 excess collision items, largest group3 and
+utilization194/256/256/256/256/256/256/256. The compatibility chain verifies
+960,478 native-defined tasks plus exactly two corrections at epoch8,200
+level4 and epoch18,261 level2; all80 export tasks were native-defined with
+zero export corrections. The first final bundle omitted attestation ancestors
+and is superseded by the ancestry-complete bundle. Exact evidence is in
+[the final L8 receipt](../results/2026-10-31-letter/figure8-levels8-final-v2.json)
+and `verified-results/figure8-levels8-final-v2`.
+
 The `K=5` diversity-cluster arm also completed20,000 epochs and selected the
 final scheduled checkpoint. Its exported four-token bank has25 excess
 collision items, largest group3 and first-level utilization134/256. This is
