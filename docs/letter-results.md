@@ -158,6 +158,10 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature1 | Yelp | Item diagnostic | 0.04118 | 0.02160 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Yelp | Code | 0.04157 | 0.02162 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Yelp | Item diagnostic | 0.03690 | 0.01955 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Yelp | Code | 0.04338 | 0.02241 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Yelp | Item diagnostic | 0.04045 | 0.02110 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Yelp | Code | 0.04180 | 0.02194 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Yelp | Item diagnostic | 0.03749 | 0.01995 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | P5 CID, declared reference | Beauty | Original item = canonical string | 0.06184 | 0.03746 |
@@ -211,6 +215,19 @@ intervals are conditional on the two trained models and do not include
 training-seed uncertainty. Exact evidence is in
 [the Yelp seed17 tau0.7 receipt](../results/2026-10-31-letter/fresh-yelp-full-s17-t07-v1.json)
 and [paired comparison](../results/2026-10-31-letter/fresh-yelp-full-s17-t07-minus-t10-v1.json).
+
+The Yelp seed23 full-tokenizer pair was trained in parallel on isolated GPU
+pairs with serialized node0-only durable writes. Tau1 completed127 epochs /
+27,940 updates and selected checkpoint23,540 /epoch107; tau0.7 completed116
+epochs /25,520 updates and selected checkpoint21,120 /epoch96. Tau1 code
+Recall@10/NDCG@10 is **.04338/.02241** and item is **.04045/.02110**;
+tau0.7 code is **.04180/.02194** and item is **.03749/.01995**. In the
+predeclared tau0.7-minus-tau1 bootstrap, only item Recall@10 excludes zero:
+**-.00296**, marginal95% interval **[-.00486,-.00085]**. Code R10/N10 and
+item NDCG@10 include zero, so no general temperature winner is claimed. Exact
+evidence is in [tau1](../results/2026-10-31-letter/fresh-yelp-full-s23-t10-v1.json),
+[tau0.7](../results/2026-10-31-letter/fresh-yelp-full-s23-t07-v1.json), and
+the [paired comparison](../results/2026-10-31-letter/fresh-yelp-full-s23-t07-minus-t10-v1.json).
 
 The Yelp full-tokenizer tau1 arm exact-resumed after the AML lifecycle reset
 from sealed checkpoint23,980, completed118 epochs and selected epoch98.
