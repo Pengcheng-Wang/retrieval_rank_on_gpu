@@ -1089,6 +1089,29 @@ point. Exact independently verified evidence is in
 [the temperature1.2 receipt](../results/2026-11-02-letter/figure8-temperature-1p2-s42-v1.json)
 and `verified-results/figure8-temperature-1p2-s42-v1`.
 
+| Temperature | Code R@10 / N@10 | Item R@10 / N@10 |
+| ---: | ---: | ---: |
+| 0.6 | .10734 / .07918 | .10689 / .07851 |
+| 0.7 | .10859 / .08025 | .10807 / .07959 |
+| 0.8 | .11166 / .08221 | .11142 / .08157 |
+| 0.9 | .11033 / .08151 | .10976 / .08082 |
+| 1.0 | .10944 / .08079 | .10879 / .08006 |
+| 1.1 | .10698 / .07985 | .10665 / .07924 |
+| 1.2 | .10653 / .07917 | .10597 / .07849 |
+
+In the predeclared left-minus-tau1 paired-user contrasts, tau0.7 and tau0.9
+have intervals containing zero for code/item Recall@10 and NDCG@10. Tau0.8
+has positive item Recall@10 and code/item NDCG@10 intervals, while code
+Recall@10 still includes zero. Tau0.6 has negative code/item NDCG@10
+intervals but inconclusive Recall@10. Tau1.1 has a negative code Recall@10
+interval; tau1.2 has negative code/item Recall@10 and NDCG@10 intervals.
+These are marginal, unadjusted user-bootstrap intervals conditional on the
+seven trained models and do not include training-seed uncertainty. No
+temperature is promoted to a new recipe. The exact points and all six
+contrasts are in
+[the temperature sweep receipt](../results/2026-11-02-letter/figure8-temperature-sweep-v1.json)
+and `verified-results/figure8-temperature-sweep-v1`.
+
 The first downstream sweep cell, `L=2` at fixed tau0.7, completed61 epochs and
 selected epoch41 solely from validation loss. Its all24,772-user code
 Recall@10/NDCG@10 is **.11222/.08170**, while the deterministic original-item
