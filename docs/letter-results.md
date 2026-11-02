@@ -183,6 +183,30 @@ prefixes, not all training examples.
 | BIGRec, title generation + frozen-base L2 | Beauty | Original item | 0.02589 | 0.01439 |
 | BIGRec, native title generation + frozen-base L2 | Yelp | Original item | 0.01666 | 0.01289 |
 
+The fixed fresh-ID queue is also complete at seeds17,23 and42. Values below
+are mean ± sample SD across exactly three independently trained models; they
+are descriptive variability summaries, not confidence intervals.
+
+| Dataset | Condition | Code R@10 | Code N@10 | Item R@10 |
+| --- | --- | ---: | ---: | ---: |
+| Instruments | Semantic, tau1 | .10694 ± .00257 | .07977 ± .00112 | .10652 ± .00255 |
+| Instruments | +CF, tau1 | .10762 ± .00090 | .08033 ± .00073 | .10715 ± .00101 |
+| Instruments | +diversity, tau1 | .10722 ± .00083 | .08048 ± .00079 | .10665 ± .00100 |
+| Instruments | Full, tau1 | .10983 ± .00071 | .08097 ± .00046 | .10938 ± .00073 |
+| Instruments | Full, tau0.7 | .10972 ± .00100 | .08111 ± .00084 | .10918 ± .00098 |
+| Beauty | Semantic, tau1 | .06004 ± .00188 | .03221 ± .00075 | .05941 ± .00175 |
+| Beauty | +CF, tau1 | .06354 ± .00043 | .03389 ± .00051 | .06339 ± .00042 |
+| Beauty | +diversity, tau1 | .06065 ± .00142 | .03301 ± .00092 | .06050 ± .00135 |
+| Beauty | Full, tau1 | .06268 ± .00055 | .03376 ± .00043 | .06248 ± .00061 |
+| Beauty | Full, tau0.7 | .06318 ± .00297 | .03412 ± .00129 | .06299 ± .00296 |
+| Yelp | Semantic, tau1 | .03880 ± .00147 | .02012 ± .00092 | .03467 ± .00124 |
+| Yelp | Full, tau1 | .04401 ± .00066 | .02278 ± .00034 | .04100 ± .00048 |
+| Yelp | Full, tau0.7 | .04195 ± .00048 | .02189 ± .00024 | .03737 ± .00042 |
+
+The complete source-bound aggregate is
+[published separately](../results/2026-11-02-letter/fresh-id-three-seed-scorecard-v1.json)
+and banked at `verified-results/fresh-id-three-seed-scorecard-v1`.
+
 The Yelp semantic-only arm completed175 epochs and selected epoch155 by
 validation loss. Its all30,431-user code Recall@10/NDCG@10 is
 0.04045/0.02094; the declared original-item collision diagnostic is
