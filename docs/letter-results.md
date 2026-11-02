@@ -130,6 +130,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature1, seed17 | Instruments | Item diagnostic | 0.11021 | 0.08086 |
 | Fresh-ID T5, full tokenizer, temperature1, seed23 | Instruments | Code | 0.10940 | 0.08063 |
 | Fresh-ID T5, full tokenizer, temperature1, seed23 | Instruments | Item diagnostic | 0.10916 | 0.08009 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Instruments | Code | 0.11008 | 0.08117 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Instruments | Item diagnostic | 0.10956 | 0.08048 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Code | 0.10843 | 0.08117 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Item diagnostic | 0.10811 | 0.08057 |
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Code | 0.10944 | 0.08079 |
@@ -327,6 +329,16 @@ on Recall@10, while diversity has a slightly higher code NDCG@10. This remains
 a descriptive seed-conditioned comparison rather than a selected winner or
 training-seed significance claim. Exact independently verified evidence is in
 [the Instruments full seed23 receipt](../results/2026-10-31-letter/fresh-instruments-full-s23-t10-v1.json).
+
+The matched seed23 tau0.7 cell completed86 epochs /11,094 updates and selected
+checkpoint8,514 /epoch66. Code Recall@10/NDCG@10 is **.11008/.08117** and
+the original-item diagnostic is **.10956/.08048**. In the predeclared
+tau0.7-minus-tau1 paired-user bootstrap, every code/item Recall@10 and NDCG@10
+marginal95% interval includes zero. The point estimates favor tau0.7 by
+`.00069/.00053` for code and `.00040/.00039` for item, but this seed does not
+establish a temperature winner. Exact evidence is in
+[the Instruments seed23 tau0.7 receipt](../results/2026-10-31-letter/fresh-instruments-full-s23-t07-v1.json)
+and [paired comparison](../results/2026-10-31-letter/fresh-instruments-full-s23-t07-minus-t10-v1.json).
 
 The matched seed17 full-tokenizer tau0.7 cell completed89 epochs and selected
 epoch69. Code Recall@10/NDCG@10 is **.11049/.08192** and the original-item
