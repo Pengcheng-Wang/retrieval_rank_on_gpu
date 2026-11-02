@@ -140,6 +140,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature0.7 | Instruments | Item diagnostic | 0.10807 | 0.07959 |
 | Fresh-ID T5, semantic-only, temperature1 | Beauty | Code | 0.05938 | 0.03245 |
 | Fresh-ID T5, semantic-only, temperature1 | Beauty | Item diagnostic | 0.05894 | 0.03219 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Beauty | Code | 0.05858 | 0.03137 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Beauty | Item diagnostic | 0.05795 | 0.03090 |
 | Fresh-ID T5, semantic+CF, temperature1 | Beauty | Code | 0.06323 | 0.03358 |
 | Fresh-ID T5, semantic+CF, temperature1 | Beauty | Item diagnostic | 0.06305 | 0.03342 |
 | Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Code | 0.06019 | 0.03240 |
@@ -356,6 +358,13 @@ beams. Its semantic tokenizer has11 excess collision items /largest group3.
 This is a compatible-backbone second-seed point, not an original-LLaMA1 or
 training-seed significance claim. Exact evidence is in
 [the Beauty semantic seed17 receipt](../results/2026-10-31-letter/fresh-beauty-semantic-s17-t10-v1.json).
+
+Beauty semantic-only seed23 completed95 epochs /12,255 updates and selected
+checkpoint9,675 /epoch75. Code Recall@10/NDCG@10 is **.05858/.03137** and
+the original-item diagnostic is **.05795/.03090**. Both are descriptively
+below seed17 and seed42, reinforcing that the measured component points have
+material training-seed variation. Exact independently verified evidence is in
+[the Beauty semantic seed23 receipt](../results/2026-10-31-letter/fresh-beauty-semantic-s23-t10-v1.json).
 
 The Beauty CF tokenizer at seed17 completed the full20,000 tokenizer epochs,
 and its downstream T5 completed98 epochs /12,642 updates, selecting
