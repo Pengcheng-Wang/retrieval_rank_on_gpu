@@ -496,6 +496,15 @@ immediate ancestor of the final frozen checkpoint. Replay is accepted only
 when metrics, all-user 20-beam prediction bytes, and the checkpoint's exact
 prior history prefix match.
 
+If a canonical validation file still exists, `recover` does not repeat model
+inference when its exact SHA already matches the frozen history. It instead
+loads the authority-bound full checkpoint, verifies the unchanged contract,
+optimizer boundary, validation phase/epoch/global step and complete prior
+history prefix, then copies the exact canonical bytes into immutable recovery
+evidence. Missing files still require full bound-GPU replay. Both paths produce
+the same fail-closed receipt schema; `existing_exact_verified` never repairs or
+rewrites the surviving canonical file.
+
 Recovery receipts are immutable and both roles require all 20 epochs. Writer
 publication stops the broker, owns the broker/native-pointer/common-bank locks,
 banks an isolated complete result and binding packet, and only then links the
