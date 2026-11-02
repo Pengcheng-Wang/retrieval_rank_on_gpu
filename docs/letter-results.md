@@ -1062,6 +1062,15 @@ available. Exact independently verified evidence is in
 [the temperature0.8 receipt](../results/2026-11-02-letter/figure8-temperature-0p8-s42-v1.json)
 and `verified-results/figure8-temperature-0p8-s42-v1`.
 
+The `tau=0.9` arm completed98 epochs /12,642 updates and selected
+checkpoint10,062 /epoch78. Code Recall@10/NDCG@10 is **.11033/.08151** and
+the original-item diagnostic is **.10976/.08082**. Its point estimates fall
+between the measured tau0.8 and tau1 values on Recall@10; this remains
+descriptive until all seven points and the fixed paired contrasts are complete.
+Exact independently verified evidence is in
+[the temperature0.9 receipt](../results/2026-11-02-letter/figure8-temperature-0p9-s42-v1.json)
+and `verified-results/figure8-temperature-0p9-s42-v1`.
+
 The first downstream sweep cell, `L=2` at fixed tau0.7, completed61 epochs and
 selected epoch41 solely from validation loss. Its all24,772-user code
 Recall@10/NDCG@10 is **.11222/.08170**, while the deterministic original-item
