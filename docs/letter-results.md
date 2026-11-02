@@ -154,6 +154,10 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature1 | Beauty | Item diagnostic | 0.06256 | 0.03389 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Code | 0.06260 | 0.03369 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Item diagnostic | 0.06234 | 0.03355 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Beauty | Code | 0.06314 | 0.03388 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Beauty | Item diagnostic | 0.06305 | 0.03372 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Beauty | Code | 0.06640 | 0.03558 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Beauty | Item diagnostic | 0.06623 | 0.03547 |
 | Fresh-ID T5, semantic-only, temperature1 | Yelp | Code | 0.04045 | 0.02094 |
 | Fresh-ID T5, semantic-only, temperature1 | Yelp | Item diagnostic | 0.03608 | 0.01903 |
 | Fresh-ID T5, full tokenizer, temperature1 | Yelp | Code | 0.04469 | 0.02307 |
@@ -441,6 +445,19 @@ zero, so this seed establishes neither a lower-temperature benefit nor
 equivalence. Exact evidence is in
 [the tau0.7 receipt](../results/2026-10-31-letter/fresh-beauty-full-s17-t07-v1.json)
 and [paired comparison](../results/2026-10-31-letter/fresh-beauty-full-s17-t07-minus-t10-v1.json).
+
+The Beauty full seed23 pair reverses that seed17 point ordering. Tau1
+completed91 epochs /11,739 updates and selected checkpoint9,159 /epoch71;
+tau0.7 completed94 epochs /12,126 updates and selected checkpoint9,546 /
+epoch74. Tau1 code Recall@10/NDCG@10 is **.06314/.03388** and item is
+**.06305/.03372**; tau0.7 code is **.06640/.03558** and item is
+**.06623/.03547**. All four predeclared code/item Recall@10 and NDCG@10
+marginal95% intervals exclude zero in favor of tau0.7. This remains
+conditional on the two seed23 models and does not include training-seed
+uncertainty. Exact evidence is in
+[tau1](../results/2026-10-31-letter/fresh-beauty-full-s23-t10-v1.json),
+[tau0.7](../results/2026-10-31-letter/fresh-beauty-full-s23-t07-v1.json), and
+the [paired comparison](../results/2026-10-31-letter/fresh-beauty-full-s23-t07-minus-t10-v1.json).
 
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
