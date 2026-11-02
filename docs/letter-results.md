@@ -148,6 +148,8 @@ prefixes, not all training examples.
 | Fresh-ID T5, semantic+CF, temperature1, seed23 | Beauty | Item diagnostic | 0.06327 | 0.03350 |
 | Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Code | 0.06019 | 0.03240 |
 | Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Item diagnostic | 0.06005 | 0.03225 |
+| Fresh-ID T5, semantic+diversity, temperature1, seed23 | Beauty | Code | 0.05952 | 0.03255 |
+| Fresh-ID T5, semantic+diversity, temperature1, seed23 | Beauty | Item diagnostic | 0.05943 | 0.03246 |
 | Fresh-ID T5, full tokenizer, temperature1 | Beauty | Code | 0.06283 | 0.03412 |
 | Fresh-ID T5, full tokenizer, temperature1 | Beauty | Item diagnostic | 0.06256 | 0.03389 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Code | 0.06260 | 0.03369 |
@@ -411,6 +413,14 @@ collision items /largest group3. Relative to the seed17 semantic point, these
 single-seed differences are small and descriptive, not evidence of a
 significant winner. Exact independently verified evidence is in
 [the Beauty diversity seed17 receipt](../results/2026-10-31-letter/fresh-beauty-diversity-s17-t10-v1.json).
+
+The Beauty diversity seed23 cell completed93 epochs /11,997 updates and
+selected checkpoint9,417 /epoch73. Code Recall@10/NDCG@10 is
+**.05952/.03255** and the original-item diagnostic is **.05943/.03246**.
+It is slightly above matching semantic-only seed23 but well below matching CF
+on Recall@10; the component ordering continues to vary by seed and metric.
+Exact independently verified evidence is in
+[the Beauty diversity seed23 receipt](../results/2026-10-31-letter/fresh-beauty-diversity-s23-t10-v1.json).
 
 The Beauty full tokenizer at seed17 completed20,000 epochs; its temperature-1
 downstream T5 completed93 epochs /11,997 updates and selected checkpoint9,417 /
