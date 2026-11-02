@@ -643,6 +643,10 @@ def worker_package_authority(
         "training_state_sha256":
         seal["files_sha256"]["training-state.pt"],
     }
+    source_header = {
+        **header,
+        "artifact": f"source-state-{generation}",
+    }
     lease = json.loads(Path(request["lease"]).read_text())
     envelope = {
         "kind": "p5-xnode-checkpoint-v1",
@@ -656,7 +660,7 @@ def worker_package_authority(
         "generation": generation,
         "parent_seal_sha256": lease["root"]["seal_sha256"],
         "root_seal_sha256": lease["root"]["seal_sha256"],
-        "checkpoint": header,
+        "checkpoint": source_header,
         "selected": None,
         "execution_attestation_sha256": sha(
             destination / "execution-attestation.json"
@@ -681,7 +685,7 @@ def worker_package_authority(
         "registry_event_sha256": request["source_event_sha256"],
         "generation": generation,
         "envelope": envelope,
-        "checkpoint": header,
+        "checkpoint": source_header,
         "destination": str(destination),
         "bank_receipt": bank_receipt,
         "bank_receipt_sha256": digest_json(bank_receipt),
@@ -720,6 +724,9 @@ def workerize_current_authorities(request_path):
         "source_envelope_sha256": sha(
             current_destination / "envelope.json"
         ),
+        "source_checkpoint_artifact": current_ack[
+            "checkpoint"
+        ]["artifact"],
         "source_bank_ack_sha256": sha(current["bank_ack"]),
         "source_bank_receipt_sha256": digest_json(current_receipt),
         "source_bank_receipt_file_sha256": sha(
@@ -781,6 +788,9 @@ def workerize_current_authorities(request_path):
         "source_envelope_sha256": sha(
             history_destination / "envelope.json"
         ),
+        "source_checkpoint_artifact": history_ack[
+            "checkpoint"
+        ]["artifact"],
         "source_accepted_record": str(history_record_path),
         "source_accepted_record_sha256": sha(history_record_path),
         "accepted_record_origin": str(

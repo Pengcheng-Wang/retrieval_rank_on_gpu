@@ -300,6 +300,10 @@ def _verify_worker_ack_authority(
     lease = read_json(request["lease"])
     bindings = read_json(request["bindings"])
     envelope = ack.get("envelope", {})
+    source_checkpoint = {
+        **header,
+        "artifact": stage_receipt.get("source_checkpoint_artifact"),
+    }
     files = bank_receipt.get("files", {})
     checkpoint_files = stage_receipt.get("files", {})
     accepted_record_path = Path(
@@ -360,7 +364,11 @@ def _verify_worker_ack_authority(
             != request["source_event_sha256"]
             or type(ack.get("generation")) is not int
             or ack["generation"] < 1
-            or ack.get("checkpoint") != header
+            or not isinstance(
+                stage_receipt.get("source_checkpoint_artifact"), str,
+            )
+            or not stage_receipt["source_checkpoint_artifact"]
+            or ack.get("checkpoint") != source_checkpoint
             or ack.get("destination") != stage_receipt.get("source")
             or ack.get("bank_receipt") != bank_receipt
             or ack.get("bank_receipt_sha256") != digest_json(bank_receipt)
@@ -383,7 +391,7 @@ def _verify_worker_ack_authority(
             or envelope.get("generation") != ack.get("generation")
             or envelope.get("root_seal_sha256")
             != lease.get("root", {}).get("seal_sha256")
-            or envelope.get("checkpoint") != header):
+            or envelope.get("checkpoint") != source_checkpoint):
         raise ValueError("Worker package acknowledgement authority differs")
     return ack, bank_receipt
 
