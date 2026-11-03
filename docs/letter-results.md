@@ -173,6 +173,8 @@ prefixes, not all training examples.
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | P5 CID, declared reference | Beauty | Original item = canonical string | 0.06184 | 0.03746 |
+| P5 TID, declared reference | Yelp | Canonical title string | 0.05320 | 0.03059 |
+| P5 TID, declared reference | Yelp | Original-item diagnostic | 0.03332 | 0.02026 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
 | LC, either policy | Instruments | Item diagnostic | 0.11590 | 0.08902 |
@@ -642,6 +644,23 @@ result were durably bound before canonical publication. The all22,363-user
 test reports Recall@10/NDCG@10 **.06184/.03746**, identical under code and
 original-item identities for this collision-free CID catalog. Exact evidence
 is in [the Beauty P5 CID receipt](../results/2026-10-31-letter/p5-beauty-cid-s42-v1.json).
+
+Yelp P5 TID completed all20 epochs /351,660 updates and selected the earliest
+validation Recall@10 maximum at epoch3. Its missing validation files for
+epochs1-11 were recomputed on the lease-bound GPU from exact full-state
+checkpoints; surviving epochs12-20 were adopted only after exact prediction,
+checkpoint, accepted-ledger and history-prefix verification. Recovery evidence
+was banked by node0 before the unchanged guardian produced the ordinary broker
+result. Independent audit recomputed every row of all20 validation files and
+the all30,431-user test, then rehashed the durable result and selected/frozen
+full states. Canonical-title Recall@10/NDCG@10 is **.05320/.03059**, while the
+collision-expanded original-item diagnostic is **.03332/.02026**. The large
+gap is expected to be interpreted with the15,336 unique canonical titles for
+20,033 items, including1,436 collision groups and a largest group of149; it
+must not be presented as item-level accuracy. Both measured identities exceed
+the paper's printed P5-TID `.0263/.0155` R10/N10 point, but this remains a
+declared reference reconstruction because the exact original recipe is not
+available. Exact public identities are in [the Yelp P5 TID receipt](../results/2026-11-02-letter/p5-yelp-tid-s42-v1.json).
 
 LC completed all four epochs / 8,240 updates and selected checkpoint6,180
 solely from validation loss. Both fixed20-beam evaluations covered all24,772
