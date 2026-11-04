@@ -608,11 +608,28 @@ def _checkpoint_inventory(certificate, cell):
                 raise ValueError("Historical checkpoint inventory ancestry differs")
         paths.add(path)
         previous = entry
-    if (entries[-1].get("path") != recovery.get("chosen_checkpoint")
-            or entries[-1].get("checkpoint_seal_sha256")
+    selection_policy = recovery.get("selection_policy", "latest")
+    chosen_generation = recovery.get("chosen_generation", len(entries))
+    abandoned = recovery.get("abandoned_verified_checkpoints", [])
+    if (selection_policy not in {"latest", "intentional_rollback"}
+            or type(chosen_generation) is not int
+            or not 1 <= chosen_generation <= len(entries)):
+        raise ValueError(
+            "Historical checkpoint selection is not event-authoritative"
+        )
+    chosen = entries[chosen_generation - 1]
+    selection_valid = (
+        chosen_generation == len(entries) and abandoned == []
+        if selection_policy == "latest"
+        else chosen_generation < len(entries)
+        and abandoned == entries[chosen_generation:]
+    )
+    if (not selection_valid
+            or chosen.get("path") != recovery.get("chosen_checkpoint")
+            or chosen.get("checkpoint_seal_sha256")
             != recovery.get("chosen_checkpoint_seal_sha256")):
         raise ValueError("Historical checkpoint inventory omits its chosen root")
-    return entries
+    return entries[:chosen_generation]
 
 
 def _exact_state_equal(left, right):

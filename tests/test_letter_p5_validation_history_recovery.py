@@ -895,6 +895,50 @@ def test_worker_parent_inventory_uses_receipt_verified_packages(tmp_path):
     assert entries == packages
 
 
+def test_writer_parent_inventory_respects_intentional_rollback(tmp_path):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = json.loads(request_path.read_text())
+    certificate_path = Path(request["checkpoint_certificate"])
+    certificate = json.loads(certificate_path.read_text())
+    event = certificate["event"]
+    metadata = event["durable_recovery"][request["cell"]]
+    entries = metadata["verified_checkpoints"]
+    chosen_generation = len(entries) - 1
+    chosen = entries[chosen_generation - 1]
+    root = {
+        **metadata["root"],
+        "artifact": Path(chosen["path"]).name,
+        "seal_sha256": chosen["checkpoint_seal_sha256"],
+        "step": chosen["step"],
+        "epoch": chosen["epoch"],
+        "phase": chosen["phase"],
+    }
+    metadata.update({
+        "selection_policy": "intentional_rollback",
+        "chosen_generation": chosen_generation,
+        "chosen_checkpoint": chosen["path"],
+        "chosen_checkpoint_seal_sha256":
+        chosen["checkpoint_seal_sha256"],
+        "root": root,
+        "abandoned_verified_checkpoints":
+        entries[chosen_generation:],
+    })
+    event["owners"][request["cell"]]["root"] = root
+    event_sha256 = xreg.event_sha(event)
+    certificate["event_sha256"] = event_sha256
+    certificate["bank_receipt"]["files"]["ownership.json"][
+        "sha256"
+    ] = event_sha256
+    certificate["bank_receipt_sha256"] = xreg.digest(
+        certificate["bank_receipt"]
+    )
+
+    assert recovery._checkpoint_inventory(
+        certificate, request["cell"],
+    ) == entries[:chosen_generation]
+
+
 def test_worker_epoch_authority_binds_staged_checkpoint_to_parent_package(
     tmp_path,
 ):
