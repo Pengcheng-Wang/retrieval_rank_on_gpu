@@ -754,6 +754,64 @@ def _verify_worker_history_ancestry(
         )
 
 
+def _verify_writer_history_ancestry(
+        request, header, final_header, epoch):
+    lease = read_json(request["lease"])
+    root = lease.get("root", {})
+    common_valid = (
+        root.get("seal_sha256") == request["root_seal_sha256"]
+        and root.get("contract_sha256") == header["contract_sha256"]
+        and header["contract_sha256"] == final_header["contract_sha256"]
+        and root.get("phase") == "train"
+        and type(root.get("epoch")) is int
+        and type(root.get("step")) is int
+        and header["phase"] == "validate"
+        and header["epoch"] == epoch - 1
+        and final_header["phase"] == "frozen"
+        and final_header["epoch"] == 20
+        and header["step"] <= final_header["step"]
+    )
+    if not common_valid:
+        raise ValueError(
+            "Receipt-backed writer validation differs from frozen history"
+        )
+    if epoch == root["epoch"] + 1:
+        try:
+            xreg._progress(root, header)
+        except ValueError as error:
+            raise ValueError(
+                "Receipt-backed writer validation differs from its lease root"
+            ) from error
+    elif (header["epoch"] <= root["epoch"]
+            or header["step"] <= root["step"]):
+        raise ValueError(
+            "Receipt-backed writer validation regressed behind its lease root"
+        )
+    previous = request["epochs"].get(str(epoch - 1))
+    if (previous is not None
+            and previous.get("authority") == "current-run-bank-ack"):
+        previous_header = _checkpoint_header(previous["checkpoint"])
+        if (previous_header["contract_sha256"]
+                != header["contract_sha256"]
+                or previous_header["phase"] != "validate"
+                or previous_header["epoch"] != epoch - 2
+                or previous_header["step"] >= header["step"]):
+            raise ValueError(
+                "Receipt-backed writer validation order differs"
+            )
+    if epoch == 20:
+        if (header["step"] != final_header["step"]
+                or header["model_sha256"]
+                != final_header["model_sha256"]):
+            raise ValueError(
+                "Receipt-backed writer validation is not the frozen parent"
+            )
+    elif header["step"] >= final_header["step"]:
+        raise ValueError(
+            "Receipt-backed writer validation does not precede frozen history"
+        )
+
+
 def _validation_checkpoint_state(
         request, checkpoint, epoch, history):
     import torch
@@ -865,6 +923,7 @@ def _stage_authority(request, epoch):
                 )
         elif (ack.get("kind") != "p5-full-state-v1"
                 or ack.get("status") != "verified"
+                or ack.get("writer_host") != request["writer_host"]
                 or ack.get("artifact") != source.name
                 or ack.get("seal_sha256") != header["seal_sha256"]
                 or ack.get("contract_sha256") != header["contract_sha256"]
@@ -880,15 +939,17 @@ def _stage_authority(request, epoch):
                 != sha256(ack_path)):
             raise ValueError("Current-run checkpoint bank authority differs")
         if item["authority"] == "current-run-bank-ack":
-            xreg._progress(header, final_header)
-            if header["model_sha256"] != final_header["model_sha256"]:
-                raise ValueError("Frozen model differs from validation parent")
-            _verify_validation_frozen_parent(
-                checkpoint, request["history_checkpoint"],
-                read_json(
-                    Path(request["run"]) / "validation-history.json"
-                ),
+            _verify_writer_history_ancestry(
+                request, header, final_header, epoch,
             )
+            if epoch == 20:
+                _verify_validation_frozen_parent(
+                    checkpoint, request["history_checkpoint"],
+                    read_json(
+                        Path(request["run"])
+                        / "validation-history.json"
+                    ),
+                )
     return checkpoint, receipt
 
 

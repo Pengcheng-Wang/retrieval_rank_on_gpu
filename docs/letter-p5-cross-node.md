@@ -491,10 +491,13 @@ checkpoints must appear in the parent event's complete contiguous
 `verified_packages` inventory for worker cells. A checkpoint produced after
 the recovered root instead requires its own current-run full-state bank
 acknowledgement for a writer or `p5-xnode-bank-ack-v1` plus the exact package
-receipt for a worker. The current validation checkpoint must be the legal
-immediate ancestor of the final frozen checkpoint. Replay is accepted only
-when metrics, all-user 20-beam prediction bytes, and the checkpoint's exact
-prior history prefix match.
+receipt for a worker. Current writer validation checkpoints must remain within
+the certified recovery root and final frozen bounds, use the same contract,
+advance monotonically by validation epoch/step, and bind the declared writer.
+Only epoch20 must be the exact validation parent of the final frozen state,
+including the frozen model and full state/sampler transition. Replay is
+accepted only when metrics, all-user 20-beam prediction bytes, and the
+checkpoint's exact prior history prefix match.
 
 If a canonical validation file still exists, `recover` does not repeat model
 inference when its exact SHA already matches the frozen history. It instead

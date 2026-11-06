@@ -269,6 +269,7 @@ def fixture(tmp_path, expected_bytes=None):
     write(current_ack_path, {
         "kind": "p5-full-state-v1",
         "status": "verified",
+        "writer_host": socket.gethostname(),
         "artifact": Path(current_stage["source"]).name,
         "seal_sha256": sha(current_checkpoint / "p5-seal.json"),
         "contract_sha256": digest_json({"fixture": True}),
@@ -1047,6 +1048,165 @@ def test_worker_accepted_validation_can_precede_frozen_by_multiple_epochs():
     recovery._verify_worker_history_ancestry(
         current, header, frozen, final, 12,
     )
+
+
+def test_writer_history_ancestry_accepts_nonadjacent_earlier_validation(
+    tmp_path,
+):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = json.loads(request_path.read_text())
+    lease = json.loads(Path(request["lease"]).read_text())
+    root = {
+        **lease["root"],
+        "epoch": 7,
+        "phase": "train",
+        "step": 81733,
+        "contract_sha256": "a" * 64,
+        "model_sha256": "b" * 64,
+        "training_state_sha256": "c" * 64,
+    }
+    lease["root"] = root
+    write(request["lease"], lease)
+    request["root_seal_sha256"] = root["seal_sha256"]
+    header = {
+        "epoch": 7,
+        "phase": "validate",
+        "step": 82400,
+        "contract_sha256": "a" * 64,
+        "model_sha256": "d" * 64,
+        "training_state_sha256": "e" * 64,
+    }
+    final = {
+        "epoch": 20,
+        "phase": "frozen",
+        "step": 206000,
+        "contract_sha256": "a" * 64,
+        "model_sha256": "f" * 64,
+        "training_state_sha256": "0" * 64,
+    }
+
+    recovery._verify_writer_history_ancestry(
+        request, header, final, 8,
+    )
+
+
+def test_writer_history_ancestry_requires_exact_final_parent(tmp_path):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = json.loads(request_path.read_text())
+    lease = json.loads(Path(request["lease"]).read_text())
+    lease["root"]["contract_sha256"] = "a" * 64
+    write(request["lease"], lease)
+    header = {
+        "epoch": 19,
+        "phase": "validate",
+        "step": 200,
+        "contract_sha256": "a" * 64,
+        "model_sha256": "b" * 64,
+        "training_state_sha256": "c" * 64,
+    }
+    final = {
+        "epoch": 20,
+        "phase": "frozen",
+        "step": 200,
+        "contract_sha256": "a" * 64,
+        "model_sha256": "b" * 64,
+        "training_state_sha256": "d" * 64,
+    }
+
+    recovery._verify_writer_history_ancestry(
+        request, header, final, 20,
+    )
+
+    final["model_sha256"] = "e" * 64
+    with pytest.raises(ValueError, match="writer validation"):
+        recovery._verify_writer_history_ancestry(
+            request, header, final, 20,
+        )
+
+
+@pytest.mark.parametrize(
+    "damage",
+    ["contract", "phase", "epoch", "before-root", "at-final"],
+)
+def test_writer_history_ancestry_rejects_invalid_bounds(
+    tmp_path, damage,
+):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = json.loads(request_path.read_text())
+    lease = json.loads(Path(request["lease"]).read_text())
+    root = {
+        **lease["root"],
+        "epoch": 7,
+        "phase": "train",
+        "step": 81733,
+        "contract_sha256": "a" * 64,
+        "model_sha256": "b" * 64,
+        "training_state_sha256": "c" * 64,
+    }
+    lease["root"] = root
+    write(request["lease"], lease)
+    request["root_seal_sha256"] = root["seal_sha256"]
+    header = {
+        "epoch": 7,
+        "phase": "validate",
+        "step": 82400,
+        "contract_sha256": "a" * 64,
+        "model_sha256": "d" * 64,
+        "training_state_sha256": "e" * 64,
+    }
+    final = {
+        "epoch": 20,
+        "phase": "frozen",
+        "step": 206000,
+        "contract_sha256": "a" * 64,
+        "model_sha256": "f" * 64,
+        "training_state_sha256": "0" * 64,
+    }
+    if damage == "contract":
+        header["contract_sha256"] = "1" * 64
+    elif damage == "phase":
+        header["phase"] = "train"
+    elif damage == "epoch":
+        header["epoch"] = 8
+    elif damage == "before-root":
+        header["step"] = 81732
+    elif damage == "at-final":
+        header["step"] = final["step"]
+
+    with pytest.raises(ValueError, match="writer validation"):
+        recovery._verify_writer_history_ancestry(
+            request, header, final, 8,
+        )
+
+
+def test_writer_current_epoch_authority_rejects_foreign_writer(
+    tmp_path, monkeypatch,
+):
+    recovery = module()
+    request_path, _, _, _ = fixture(tmp_path)
+    request = json.loads(request_path.read_text())
+    item = request["epochs"]["20"]
+    ack = json.loads(Path(item["bank_ack"]).read_text())
+    ack["writer_host"] = "foreign-writer"
+    write(item["bank_ack"], ack)
+    stage_path = Path(item["checkpoint"]).parent / "stage-receipt.json"
+    stage = json.loads(stage_path.read_text())
+    stage["source_bank_ack_sha256"] = sha(item["bank_ack"])
+    write(stage_path, stage)
+    item["stage_receipt_sha256"] = sha(stage_path)
+    write(request_path, request)
+    monkeypatch.setattr(
+        recovery, "_verify_validation_frozen_parent",
+        lambda *args: None,
+    )
+
+    with pytest.raises(
+        ValueError, match="Current-run checkpoint bank authority differs",
+    ):
+        recovery._stage_authority(request, 20)
 
 
 @pytest.mark.parametrize("damage", ["event", "package", "receipt"])
