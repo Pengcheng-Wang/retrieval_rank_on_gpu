@@ -1,0 +1,54 @@
+{
+  "status": "pass",
+  "arm": "temperature-0p6",
+  "dataset": "Instruments",
+  "variant": "full",
+  "seed": 42,
+  "temperature": 0.6,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.0586145648312611,
+      "ndcg@1": 0.0586145648312611,
+      "recall@5": 0.08558049410624899,
+      "ndcg@5": 0.07218068162645644,
+      "recall@10": 0.10733893105118682,
+      "ndcg@10": 0.07917590227291191
+    },
+    "item": {
+      "recall@1": 0.05748425641853706,
+      "ndcg@1": 0.05748425641853706,
+      "recall@5": 0.08513644437267884,
+      "ndcg@5": 0.07151085429186697,
+      "recall@10": 0.10689488131761667,
+      "ndcg@10": 0.0785094315128305
+    }
+  },
+  "training_epochs": 87,
+  "training_updates": 11223,
+  "selected_epoch": 67,
+  "selected_checkpoint": "checkpoint-8643",
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 18000,
+  "tokenizer_excess_collision_items": 25,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "admission_sha256": "f64d632590c2b1ea88b9f0c55b8513d4cab3c72e04cb08b290186fedd8feedfa",
+  "queue_binding_sha256": "82ab06e9b433fabea816d94d83d70eb8f81943da6d980dcd38204039e893d2ce",
+  "model_sha256": "2b3c56af90247be0a24d9a3c070ced6327cbc5cf364f98ac9238985880ef4dda",
+  "predictions_sha256": "08a8ea4e1845208b8799d662459c31b41e1fecc903cdcf4f1a4fe590b17cb32e",
+  "result_sha256": "12de932af26a31d0130e8b73e28b87b76956683adec0f5b5c7d0feec8ec58ac1",
+  "ack_sha256": "1d60bd6794a90a9f2c514c5d5e17491a1d006b0647b7abd978c5089a6f0822b1",
+  "durable_receipts": {
+    "run": "a3928d38037204da9a4d3d2b1ff0acdf69e45e57274de5280c701c4fc0aead0a",
+    "evaluation": "991a300baec93b110e42fcd3fb1fe3147ceb160ff299da19f88a1ffd3f4e3dd8",
+    "result": "0136a5825a7717b60e1b60001c1f2964b70b1faeb0b24a57d83e47a859b3cc25"
+  },
+  "private_evidence_bundle": "verified-results/figure8-temperature-0p6-s42-v1",
+  "private_evidence_bank_receipt_sha256": "27c762991740212e8df65561a09ecfbbb6433729882d9250f3f5e8ee930a17a1",
+  "selection": "within-arm validation only; test descriptive; no temperature winner field",
+  "all_predictions_selection_and_durable_bytes_reverified": true,
+  "model_inference_performed": false
+}

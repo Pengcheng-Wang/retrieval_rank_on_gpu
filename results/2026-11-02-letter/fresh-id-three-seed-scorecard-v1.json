@@ -1,0 +1,165 @@
+{
+  "beams": 20,
+  "claim_type": "compatible_backbone_method_replication",
+  "conditions": [
+    {
+      "dataset": "Beauty",
+      "summary": {
+        "code_n10": {"mean": 0.033894488041003236, "sample_sd": 0.0005116222323559455},
+        "code_r10": {"mean": 0.0635424585252426, "sample_sd": 0.00043123242682077646},
+        "item_n10": {"mean": 0.03374701865937976, "sample_sd": 0.000497638172575064},
+        "item_r10": {"mean": 0.06339340279330441, "sample_sd": 0.00041548867518569044}
+      },
+      "temperature": 1.0,
+      "variant": "cf"
+    },
+    {
+      "dataset": "Beauty",
+      "summary": {
+        "code_n10": {"mean": 0.03300803661692003, "sample_sd": 0.000921286425137357},
+        "code_r10": {"mean": 0.06065077732564206, "sample_sd": 0.0014213540686838489},
+        "item_n10": {"mean": 0.03288247934860956, "sample_sd": 0.0009145668901591193},
+        "item_r10": {"mean": 0.06050172159370388, "sample_sd": 0.0013533735143246924}
+      },
+      "temperature": 1.0,
+      "variant": "diversity"
+    },
+    {
+      "dataset": "Beauty",
+      "summary": {
+        "code_n10": {"mean": 0.034123352457246646, "sample_sd": 0.001292509975337723},
+        "code_r10": {"mean": 0.06318472476859098, "sample_sd": 0.0029718961943054657},
+        "item_n10": {"mean": 0.03401356186581204, "sample_sd": 0.0012917750657220773},
+        "item_r10": {"mean": 0.06299095231707136, "sample_sd": 0.002961561477118121}
+      },
+      "temperature": 0.7,
+      "variant": "full"
+    },
+    {
+      "dataset": "Beauty",
+      "summary": {
+        "code_n10": {"mean": 0.03376292325539079, "sample_sd": 0.0004293144531027161},
+        "code_r10": {"mean": 0.06267793528000119, "sample_sd": 0.0005519089144740166},
+        "item_n10": {"mean": 0.03356075843826225, "sample_sd": 0.0004359428347709567},
+        "item_r10": {"mean": 0.06248416282848157, "sample_sd": 0.0006071162740364639}
+      },
+      "temperature": 1.0,
+      "variant": "full"
+    },
+    {
+      "dataset": "Beauty",
+      "summary": {
+        "code_n10": {"mean": 0.032212437743371826, "sample_sd": 0.0007533947265633932},
+        "code_r10": {"mean": 0.060039648824695556, "sample_sd": 0.0018766821071158775},
+        "item_n10": {"mean": 0.03180861960357694, "sample_sd": 0.0007875353132820697},
+        "item_r10": {"mean": 0.05941361475055523, "sample_sd": 0.001748722965143315}
+      },
+      "temperature": 1.0,
+      "variant": "semantic"
+    },
+    {
+      "dataset": "Instruments",
+      "summary": {
+        "code_n10": {"mean": 0.08033185174231676, "sample_sd": 0.0007302741746886162},
+        "code_r10": {"mean": 0.10762150815436783, "sample_sd": 0.000899041557053131},
+        "item_n10": {"mean": 0.07967150124573524, "sample_sd": 0.0007786493860409987},
+        "item_r10": {"mean": 0.1071505463157328, "sample_sd": 0.001013500729729832}
+      },
+      "temperature": 1.0,
+      "variant": "cf"
+    },
+    {
+      "dataset": "Instruments",
+      "summary": {
+        "code_n10": {"mean": 0.08048299152015054, "sample_sd": 0.0007898973941181525},
+        "code_r10": {"mean": 0.10721782657839496, "sample_sd": 0.0008341667333994738},
+        "item_n10": {"mean": 0.07976292988327782, "sample_sd": 0.0008320320221749881},
+        "item_r10": {"mean": 0.10665267237203295, "sample_sd": 0.0010043480788490833}
+      },
+      "temperature": 1.0,
+      "variant": "diversity"
+    },
+    {
+      "dataset": "Instruments",
+      "summary": {
+        "code_n10": {"mean": 0.08111221277670481, "sample_sd": 0.0008378370232800801},
+        "code_r10": {"mean": 0.10972065234942678, "sample_sd": 0.0009994686261214172},
+        "item_n10": {"mean": 0.08042169725980007, "sample_sd": 0.0008050541764557475},
+        "item_r10": {"mean": 0.10918241024812962, "sample_sd": 0.0009841334034784719}
+      },
+      "temperature": 0.7,
+      "variant": "full"
+    },
+    {
+      "dataset": "Instruments",
+      "summary": {
+        "code_n10": {"mean": 0.08097421673548137, "sample_sd": 0.0004622077673385046},
+        "code_r10": {"mean": 0.1098283007696862, "sample_sd": 0.0007111367814050181},
+        "item_n10": {"mean": 0.08033818753394385, "sample_sd": 0.00045327776096523145},
+        "item_r10": {"mean": 0.10938425103611604, "sample_sd": 0.0007336942720391575}
+      },
+      "temperature": 1.0,
+      "variant": "full"
+    },
+    {
+      "dataset": "Instruments",
+      "summary": {
+        "code_n10": {"mean": 0.07976989242742206, "sample_sd": 0.0011188694982621967},
+        "code_r10": {"mean": 0.10693524947521395, "sample_sd": 0.0025712329952033226},
+        "item_n10": {"mean": 0.07908567521224376, "sample_sd": 0.0011014125281810139},
+        "item_r10": {"mean": 0.10651811184670866, "sample_sd": 0.002548101720277695}
+      },
+      "temperature": 1.0,
+      "variant": "semantic"
+    },
+    {
+      "dataset": "Yelp",
+      "summary": {
+        "code_n10": {"mean": 0.021885639205131358, "sample_sd": 0.00024337082594026415},
+        "code_r10": {"mean": 0.04195283318545781, "sample_sd": 0.00047884269318336454},
+        "item_n10": {"mean": 0.01981005280154324, "sample_sd": 0.00022822338799367362},
+        "item_r10": {"mean": 0.03737416888479949, "sample_sd": 0.00042381216790231567}
+      },
+      "temperature": 0.7,
+      "variant": "full"
+    },
+    {
+      "dataset": "Yelp",
+      "summary": {
+        "code_n10": {"mean": 0.02278441523559875, "sample_sd": 0.0003357443408881767},
+        "code_r10": {"mean": 0.044012136746519444, "sample_sd": 0.0006583190037052908},
+        "item_n10": {"mean": 0.0214412929334937, "sample_sd": 0.0002990457496041862},
+        "item_r10": {"mean": 0.0409998576013495, "sample_sd": 0.0004844477536611987}
+      },
+      "temperature": 1.0,
+      "variant": "full"
+    },
+    {
+      "dataset": "Yelp",
+      "summary": {
+        "code_n10": {"mean": 0.020116186323986273, "sample_sd": 0.0009227230540326814},
+        "code_r10": {"mean": 0.038798155389788924, "sample_sd": 0.00146604291748371},
+        "item_n10": {"mean": 0.018246672008902686, "sample_sd": 0.0008627980178819536},
+        "item_r10": {"mean": 0.03466859452531957, "sample_sd": 0.0012422239276682183}
+      },
+      "temperature": 1.0,
+      "variant": "semantic"
+    }
+  ],
+  "exact_original_llama1_reproduction": false,
+  "kind": "fresh-id-three-seed-scorecard-v1",
+  "per_seed_values": "See the 39 public cell receipts and the private source-bound evidence bundle.",
+  "private_evidence_bank_receipt_sha256": "0fa4738a0f1768e2e84e4abc5c3859986ad57c748ac292b01e529882059890e6",
+  "private_evidence_bundle": "verified-results/fresh-id-three-seed-scorecard-v1",
+  "queue_binding_sha256": "08ee4829a6fdb60c6a7251d530a3084fdb7684adab9a1410b4a6d261dcb89368",
+  "queue_status_sha256": "e3430af2dd456d3bf0eba9f81ddcc8ab9d17f93f9789000a2ddcfc77d92ad18f",
+  "seeds": [17, 23, 42],
+  "status": "pass",
+  "track_id": "letter-openllama7b-v2-method-replication",
+  "uncertainty": "Descriptive across-seed sample SD over exactly three trained models; not a confidence interval or significance test.",
+  "users_by_dataset": {
+    "Beauty": 22363,
+    "Instruments": 24772,
+    "Yelp": 30431
+  }
+}

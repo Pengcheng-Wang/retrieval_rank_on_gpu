@@ -1,0 +1,55 @@
+{
+  "all_20_validation_predictions_and_result_bytes_reverified": true,
+  "audit_model_inference_performed": false,
+  "beams": 20,
+  "cell": "Beauty-TID-s42",
+  "claim_type": "declared_P5_reference_reconstruction",
+  "dataset": "Beauty",
+  "exact_original_letter_recipe_claim": false,
+  "global_step": 205340,
+  "identifier": "TID",
+  "metrics": {
+    "code": {
+      "ndcg@10": 0.04018038337699346,
+      "ndcg@5": 0.031876902959506556,
+      "recall@10": 0.07177033492822966,
+      "recall@5": 0.04605822116889505
+    },
+    "item": {
+      "ndcg@10": 0.039889646490242854,
+      "ndcg@5": 0.03163920011603717,
+      "recall@10": 0.0711890175736708,
+      "recall@5": 0.04565577069266199
+    }
+  },
+  "paper_reference": {
+    "ndcg@10": 0.0254,
+    "ndcg@5": 0.0132,
+    "recall@10": 0.0432,
+    "recall@5": 0.0182
+  },
+  "private_evidence_bundle": "verified-results/p5-beauty-tid-s42-v1",
+  "recovery_event_sha256": "cba19947bca54150ca69ad972c8af79536890135cf49f745074997856db7e662",
+  "replay_gate_sha256": "13cff287270f1daff6c725fc8d16a0fad6709386744d1a849bce39fa36376eb6",
+  "replay_statuses": {
+    "existing_exact_verified": 15,
+    "replayed_exact": 5
+  },
+  "result_bank_receipt_sha256": "10b9e4ace6f2656f19515b4e84854e50a81e0d96ba60293c1a5f44540e1c0372",
+  "result_seal_sha256": "4dc117ec7aa72ed0e18d8406c9e282020679bbb37c7fcb35915dcba5fbb6be10",
+  "seed": 42,
+  "selected_checkpoint": "p5-state-000030801-003-61ed0ce86a3e",
+  "selected_epoch": 3,
+  "selected_seal_sha256": "0d29a53f6cd0e521359dd4a99e245209d7a15e9c607dc8b0c9ed351a3ad33236",
+  "status": "pass",
+  "test_predictions_sha256": "1af45ab134cd12896ccee3dbe60cac13d6b974b32372b7e591f1068ab630b48d",
+  "test_users": 22363,
+  "title_identity": {
+    "canonical_collision_groups": 27,
+    "canonical_excess_collision_items": 28,
+    "catalog_items": 12101,
+    "largest_collision_group": 3,
+    "unique_canonical_titles": 12073
+  },
+  "training_epochs": 20
+}

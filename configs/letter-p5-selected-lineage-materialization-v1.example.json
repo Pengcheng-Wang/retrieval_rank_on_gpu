@@ -1,0 +1,14 @@
+{
+  "kind": "p5-selected-lineage-materialization-request-v1",
+  "transition_plan": "PRIVATE_ABSOLUTE_VERIFIED_V2_PLAN",
+  "event_sha256": "PRIVATE_ACTIVATED_EVENT_SHA256",
+  "broker_release_sha256": "PRIVATE_BROKER_V3_RELEASE_SHA256",
+  "cells": {
+    "PRIVATE_WRITER_CELL": {
+      "source": "PRIVATE_ABSOLUTE_RECEIPT_VERIFIED_SELECTED_CHECKPOINT"
+    },
+    "PRIVATE_WORKER_CELL": {
+      "source": "PRIVATE_ABSOLUTE_RECEIPT_VERIFIED_SELECTED_PACKAGE"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "status": "pass",
+  "arm": "codes-512",
+  "selected_epoch": 18000,
+  "final_epoch": 20000,
+  "index_sha256": "7534273d7d3e4197f3b19396f05a1fd94b81db03188d545bf17a0406cd73025d",
+  "codes_sha256": "c0e33703d2ef1aef675c3c1bdd63f93400dd1ae33346c3ae60ddcdde7a0cc8c5",
+  "collisions": {
+    "before": 46,
+    "after": 25,
+    "largest_group": 3
+  },
+  "utilization_by_level": [
+    204,
+    512,
+    512,
+    512
+  ],
+  "bundle": "codes-512-completed-e401021b0a0fe410",
+  "bundle_completed_sha256": "2105b7ca7bc9abe42662def6ad5cafcc6928e8e499bbfd63195365fd08d57ae8",
+  "run_completed_sha256": "d8b53cb62a15dba9580ca27a8668c1e980e0b0cb2c09260b28e87eb515d85ce1",
+  "durable_bank_receipt_sha256": "7bf526f3c95a9291a6765950fc0443ab2a32aeaf2fab0bfb942eb92663435f8f",
+  "audit_source_sha256": "22baf5a32c11fb0307a932924f83e7aa98dd13b1f1a8da19910f107b4797fbe2",
+  "private_evidence_bundle": "verified-results/figure8-codes512-final-v1"
+}

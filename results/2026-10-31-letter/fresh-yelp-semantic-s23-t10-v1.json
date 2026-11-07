@@ -1,0 +1,51 @@
+{
+  "status": "pass",
+  "dataset": "Yelp",
+  "variant": "semantic",
+  "seed": 23,
+  "temperature": 1.0,
+  "test_users": 30431,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.006999441359140351,
+      "ndcg@1": 0.006999441359140351,
+      "recall@5": 0.0250073937760836,
+      "ndcg@5": 0.016020004046005017,
+      "recall@10": 0.03828332949952351,
+      "ndcg@10": 0.020286302394285763
+    },
+    "item": {
+      "recall@1": 0.006670829088758174,
+      "ndcg@1": 0.006670829088758174,
+      "recall@5": 0.022739969110446585,
+      "ndcg@5": 0.01470839702702564,
+      "recall@10": 0.03417567611974631,
+      "ndcg@10": 0.01838752970967232
+    }
+  },
+  "training_epochs": 167,
+  "training_updates": 36740,
+  "selected_epoch": 147,
+  "selected_checkpoint": "checkpoint-32340",
+  "validation_evaluations_checked": 167,
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 12000,
+  "tokenizer_excess_collision_items": 853,
+  "tokenizer_largest_collision_group": 65,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "model_sha256": "e19142063206b7a64a016f6695367576141d58b5e594a8ad787c6a7c7148dec6",
+  "predictions_sha256": "cb52d6b291b1ca66c710576b0292c32b377a2067dc686ee5fc180a8d08ce9a12",
+  "result_sha256": "964f39a0ffeb9479c1f661846253f270d714f07876724b1a91827187aab113b4",
+  "ack_sha256": "96f4fff64901cc4705f73eb71b13263214163259be69ff599c2a2a0f715d04a9",
+  "durable_receipts": {
+    "run": "884674aab360b164ef805b17963f4b3ffa823087239878ca0d9be657903cafba",
+    "evaluation": "006b01ec31a374d5c90c1af9d7a84c12d6c50ee760098bc658eaf26d9d164fdf",
+    "result": "7888ae4dd9483d18657a6ea196947f4948b39577a9c7ab547f353b7afd5aea00"
+  },
+  "private_evidence_bundle": "verified-results/fresh-yelp-semantic-s23-t10-v1",
+  "private_evidence_bank_receipt_sha256": "29faf755f7c8c1532f2de2767cca5f36c077994ef60edfe996aa2979ef8fa847",
+  "durable_receipts_match_immutable_local_inventories": true,
+  "model_inference_performed": false
+}

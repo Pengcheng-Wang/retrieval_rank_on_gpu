@@ -1,6 +1,6 @@
 # LETTER reproduction: measured results
 
-_Updated 2026-10-30. Completed components are reported separately below; the full multi-seed reproduction remains unfinished._
+_Updated 2026-10-31. Completed components are reported separately below; the full multi-seed reproduction remains unfinished._
 
 ---
 
@@ -98,7 +98,9 @@ are partial coverage; these references alone do not establish a tokenizer benefi
 
 ## 📊 Newly verified generative-model results
 
-These are **seed42 measurements**, not a completed multi-seed ablation.
+These are primarily **seed42 measurements**, not a completed multi-seed
+ablation. The two explicitly labeled seed17 rows are the first independent
+training-seed replication.
 LC and BIGRec use the separately declared OpenLLaMA-7B-v2 compatible backbone,
 not original LLaMA1. LC still uses the authors' released ID bank. Fresh-ID T5
 uses newly trained IDs with OpenLLaMA only as the semantic encoder; its
@@ -112,6 +114,24 @@ prefixes, not all training examples.
 | Fresh-ID T5, diversity-only, temperature1 | Instruments | Item diagnostic | 0.10754 | 0.08019 |
 | Fresh-ID T5, semantic-only, temperature1 | Instruments | Code | 0.10786 | 0.07989 |
 | Fresh-ID T5, semantic-only, temperature1 | Instruments | Item diagnostic | 0.10750 | 0.07922 |
+| Fresh-ID T5, semantic-only, temperature1, seed17 | Instruments | Code | 0.10403 | 0.07860 |
+| Fresh-ID T5, semantic-only, temperature1, seed17 | Instruments | Item diagnostic | 0.10363 | 0.07792 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Instruments | Code | 0.10891 | 0.08082 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Instruments | Item diagnostic | 0.10843 | 0.08011 |
+| Fresh-ID T5, semantic+CF, temperature1, seed17 | Instruments | Code | 0.10665 | 0.07988 |
+| Fresh-ID T5, semantic+CF, temperature1, seed17 | Instruments | Item diagnostic | 0.10609 | 0.07920 |
+| Fresh-ID T5, semantic+CF, temperature1, seed23 | Instruments | Code | 0.10778 | 0.07995 |
+| Fresh-ID T5, semantic+CF, temperature1, seed23 | Instruments | Item diagnostic | 0.10726 | 0.07924 |
+| Fresh-ID T5, diversity-only, temperature1, seed17 | Instruments | Code | 0.10633 | 0.07957 |
+| Fresh-ID T5, diversity-only, temperature1, seed17 | Instruments | Item diagnostic | 0.10556 | 0.07880 |
+| Fresh-ID T5, diversity-only, temperature1, seed23 | Instruments | Code | 0.10734 | 0.08097 |
+| Fresh-ID T5, diversity-only, temperature1, seed23 | Instruments | Item diagnostic | 0.10685 | 0.08030 |
+| Fresh-ID T5, full tokenizer, temperature1, seed17 | Instruments | Code | 0.11065 | 0.08150 |
+| Fresh-ID T5, full tokenizer, temperature1, seed17 | Instruments | Item diagnostic | 0.11021 | 0.08086 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Instruments | Code | 0.10940 | 0.08063 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Instruments | Item diagnostic | 0.10916 | 0.08009 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Instruments | Code | 0.11008 | 0.08117 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Instruments | Item diagnostic | 0.10956 | 0.08048 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Code | 0.10843 | 0.08117 |
 | Fresh-ID T5, semantic+CF, temperature1 | Instruments | Item diagnostic | 0.10811 | 0.08057 |
 | Fresh-ID T5, full tokenizer, temperature1 | Instruments | Code | 0.10944 | 0.08079 |
@@ -120,22 +140,45 @@ prefixes, not all training examples.
 | Fresh-ID T5, full tokenizer, temperature0.7 | Instruments | Item diagnostic | 0.10807 | 0.07959 |
 | Fresh-ID T5, semantic-only, temperature1 | Beauty | Code | 0.05938 | 0.03245 |
 | Fresh-ID T5, semantic-only, temperature1 | Beauty | Item diagnostic | 0.05894 | 0.03219 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Beauty | Code | 0.05858 | 0.03137 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Beauty | Item diagnostic | 0.05795 | 0.03090 |
 | Fresh-ID T5, semantic+CF, temperature1 | Beauty | Code | 0.06323 | 0.03358 |
 | Fresh-ID T5, semantic+CF, temperature1 | Beauty | Item diagnostic | 0.06305 | 0.03342 |
+| Fresh-ID T5, semantic+CF, temperature1, seed23 | Beauty | Code | 0.06336 | 0.03362 |
+| Fresh-ID T5, semantic+CF, temperature1, seed23 | Beauty | Item diagnostic | 0.06327 | 0.03350 |
 | Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Code | 0.06019 | 0.03240 |
 | Fresh-ID T5, semantic+diversity, temperature1 | Beauty | Item diagnostic | 0.06005 | 0.03225 |
+| Fresh-ID T5, semantic+diversity, temperature1, seed23 | Beauty | Code | 0.05952 | 0.03255 |
+| Fresh-ID T5, semantic+diversity, temperature1, seed23 | Beauty | Item diagnostic | 0.05943 | 0.03246 |
 | Fresh-ID T5, full tokenizer, temperature1 | Beauty | Code | 0.06283 | 0.03412 |
 | Fresh-ID T5, full tokenizer, temperature1 | Beauty | Item diagnostic | 0.06256 | 0.03389 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Code | 0.06260 | 0.03369 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Beauty | Item diagnostic | 0.06234 | 0.03355 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Beauty | Code | 0.06314 | 0.03388 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Beauty | Item diagnostic | 0.06305 | 0.03372 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Beauty | Code | 0.06640 | 0.03558 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Beauty | Item diagnostic | 0.06623 | 0.03547 |
 | Fresh-ID T5, semantic-only, temperature1 | Yelp | Code | 0.04045 | 0.02094 |
 | Fresh-ID T5, semantic-only, temperature1 | Yelp | Item diagnostic | 0.03608 | 0.01903 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Yelp | Code | 0.03828 | 0.02029 |
+| Fresh-ID T5, semantic-only, temperature1, seed23 | Yelp | Item diagnostic | 0.03418 | 0.01839 |
 | Fresh-ID T5, full tokenizer, temperature1 | Yelp | Code | 0.04469 | 0.02307 |
 | Fresh-ID T5, full tokenizer, temperature1 | Yelp | Item diagnostic | 0.04118 | 0.02160 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Yelp | Code | 0.04157 | 0.02162 |
 | Fresh-ID T5, full tokenizer, temperature0.7 | Yelp | Item diagnostic | 0.03690 | 0.01955 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Yelp | Code | 0.04338 | 0.02241 |
+| Fresh-ID T5, full tokenizer, temperature1, seed23 | Yelp | Item diagnostic | 0.04045 | 0.02110 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Yelp | Code | 0.04180 | 0.02194 |
+| Fresh-ID T5, full tokenizer, temperature0.7, seed23 | Yelp | Item diagnostic | 0.03749 | 0.01995 |
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
+| P5 CID, declared reference | Beauty | Original item = canonical string | 0.06184 | 0.03746 |
+| P5 TID, declared reference | Instruments | Canonical title string | 0.10899 | 0.08488 |
+| P5 TID, declared reference | Instruments | Original-item diagnostic | 0.10879 | 0.08425 |
+| P5 TID, declared reference | Beauty | Canonical title string | 0.07177 | 0.04018 |
+| P5 TID, declared reference | Beauty | Original-item diagnostic | 0.07119 | 0.03989 |
+| P5 TID, declared reference | Yelp | Canonical title string | 0.05320 | 0.03059 |
+| P5 TID, declared reference | Yelp | Original-item diagnostic | 0.03332 | 0.02026 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
 | LC, full-prefix-trie correction | Instruments | Code | 0.11618 | 0.08977 |
 | LC, either policy | Instruments | Item diagnostic | 0.11590 | 0.08902 |
@@ -146,6 +189,40 @@ prefixes, not all training examples.
 | BIGRec, title generation + frozen-base L2 | Beauty | Original item | 0.02589 | 0.01439 |
 | BIGRec, native title generation + frozen-base L2 | Yelp | Original item | 0.01666 | 0.01289 |
 
+The fixed fresh-ID queue is also complete at seeds17,23 and42. Values below
+are mean ± sample SD across exactly three independently trained models; they
+are descriptive variability summaries, not confidence intervals.
+
+| Dataset | Condition | Code R@10 | Code N@10 | Item R@10 |
+| --- | --- | ---: | ---: | ---: |
+| Instruments | Semantic, tau1 | .10694 ± .00257 | .07977 ± .00112 | .10652 ± .00255 |
+| Instruments | +CF, tau1 | .10762 ± .00090 | .08033 ± .00073 | .10715 ± .00101 |
+| Instruments | +diversity, tau1 | .10722 ± .00083 | .08048 ± .00079 | .10665 ± .00100 |
+| Instruments | Full, tau1 | .10983 ± .00071 | .08097 ± .00046 | .10938 ± .00073 |
+| Instruments | Full, tau0.7 | .10972 ± .00100 | .08111 ± .00084 | .10918 ± .00098 |
+| Beauty | Semantic, tau1 | .06004 ± .00188 | .03221 ± .00075 | .05941 ± .00175 |
+| Beauty | +CF, tau1 | .06354 ± .00043 | .03389 ± .00051 | .06339 ± .00042 |
+| Beauty | +diversity, tau1 | .06065 ± .00142 | .03301 ± .00092 | .06050 ± .00135 |
+| Beauty | Full, tau1 | .06268 ± .00055 | .03376 ± .00043 | .06248 ± .00061 |
+| Beauty | Full, tau0.7 | .06318 ± .00297 | .03412 ± .00129 | .06299 ± .00296 |
+| Yelp | Semantic, tau1 | .03880 ± .00147 | .02012 ± .00092 | .03467 ± .00124 |
+| Yelp | Full, tau1 | .04401 ± .00066 | .02278 ± .00034 | .04100 ± .00048 |
+| Yelp | Full, tau0.7 | .04195 ± .00048 | .02189 ± .00024 | .03737 ± .00042 |
+
+The complete source-bound aggregate is
+[published separately](../results/2026-11-02-letter/fresh-id-three-seed-scorecard-v1.json)
+and banked at `verified-results/fresh-id-three-seed-scorecard-v1`.
+
+Across these three seeds, full-tokenizer tau1 mean code Recall@10 exceeds
+semantic-only by **+.00289 Instruments**, **+.00264 Beauty**, and **+.00521
+Yelp**. This supports a repeatable full-versus-semantic point difference under
+the compatible pipeline, but does not isolate which regularizer causes it:
+Beauty CF has the highest Beauty mean at `.06354`. The tau0.7-minus-tau1 mean
+Recall@10 differences are **-.00011 Instruments**, **+.00051 Beauty**, and
+**-.00206 Yelp**, so there is no dataset-independent lower-temperature gain.
+Only three seeds are available; no formal training-seed significance claim is
+made.
+
 The Yelp semantic-only arm completed175 epochs and selected epoch155 by
 validation loss. Its all30,431-user code Recall@10/NDCG@10 is
 0.04045/0.02094; the declared original-item collision diagnostic is
@@ -153,8 +230,63 @@ validation loss. Its all30,431-user code Recall@10/NDCG@10 is
 collision items, but does not identify collisions as the sole cause. Every
 prediction, validation record, model binding and durable file was independently
 verified and banked at `verified-results/fresh-yelp-semantic-s42-t10-v1`.
-The remaining Yelp component and generation-loss arms are still required before
-interpreting the full ablation.
+The independent seed replications below complete the fixed 39-cell fresh-ID
+queue; Yelp does not add the CF-only and diversity-only cells used for the
+Instruments and Beauty component tables.
+
+The matched Yelp semantic-only seed17 arm completed181 epochs /39,820 updates
+and selected checkpoint35,420 /epoch161. Code Recall@10/NDCG@10 is
+**.03766/.01912** and the original-item diagnostic is **.03375/.01732** across
+all30,431 users. Both are descriptively below seed42, illustrating training
+variation rather than a tokenizer or recipe change. The large code/item gap
+persists with853 excess collision items and largest group65. Exact independently
+verified evidence is in
+[the Yelp semantic seed17 receipt](../results/2026-10-31-letter/fresh-yelp-semantic-s17-t10-v1.json).
+
+The matched Yelp semantic-only seed23 arm completed167 epochs /36,740 updates
+and selected checkpoint32,340 /epoch147. Code Recall@10/NDCG@10 is
+**.03828/.02029** and the original-item diagnostic is **.03418/.01839** across
+all30,431 users. It lies between the seed17 and seed42 semantic points on both
+identities, while retaining853 excess collision items /largest group65. This
+is training-seed variation under the compatible OpenLLaMA-v2 semantic encoder,
+not an original-LLaMA1 replication or a significance claim. Exact independently
+verified evidence is in
+[the Yelp semantic seed23 receipt](../results/2026-10-31-letter/fresh-yelp-semantic-s23-t10-v1.json).
+
+The Yelp full-tokenizer seed17 tau1 arm completed116 epochs /25,520 updates and
+selected checkpoint21,120 /epoch96. Code Recall@10/NDCG@10 is
+**.04397/.02287** and the original-item diagnostic is **.04137/.02162**. It is
+descriptively above the seed17 semantic arm, but this two-point comparison
+does not include training-seed uncertainty. The tokenizer retains832 excess
+collision items /largest group65, so code and item identities remain
+materially different. Exact independently verified evidence is in
+[the Yelp full seed17 receipt](../results/2026-10-31-letter/fresh-yelp-full-s17-t10-v1.json).
+
+The matched seed17 tau0.7 arm completed126 epochs /27,720 updates and selected
+checkpoint23,320 /epoch106. Code Recall@10/NDCG@10 is **.04249/.02210** and
+the original-item diagnostic is **.03772/.01993**. In the predeclared
+tau0.7-minus-tau1 paired-user bootstrap, code Recall@10 is **-.00148** with
+marginal95% interval **[-.00365,+.00072]** and code NDCG@10 is **-.00077**
+**[-.00193,+.00039]**; both include zero. Item Recall@10 is **-.00365**
+**[-.00575,-.00151]** and item NDCG@10 is **-.00169**
+**[-.00282,-.00057]**, favoring tau1 under the item diagnostic. These
+intervals are conditional on the two trained models and do not include
+training-seed uncertainty. Exact evidence is in
+[the Yelp seed17 tau0.7 receipt](../results/2026-10-31-letter/fresh-yelp-full-s17-t07-v1.json)
+and [paired comparison](../results/2026-10-31-letter/fresh-yelp-full-s17-t07-minus-t10-v1.json).
+
+The Yelp seed23 full-tokenizer pair was trained in parallel on isolated GPU
+pairs with serialized node0-only durable writes. Tau1 completed127 epochs /
+27,940 updates and selected checkpoint23,540 /epoch107; tau0.7 completed116
+epochs /25,520 updates and selected checkpoint21,120 /epoch96. Tau1 code
+Recall@10/NDCG@10 is **.04338/.02241** and item is **.04045/.02110**;
+tau0.7 code is **.04180/.02194** and item is **.03749/.01995**. In the
+predeclared tau0.7-minus-tau1 bootstrap, only item Recall@10 excludes zero:
+**-.00296**, marginal95% interval **[-.00486,-.00085]**. Code R10/N10 and
+item NDCG@10 include zero, so no general temperature winner is claimed. Exact
+evidence is in [tau1](../results/2026-10-31-letter/fresh-yelp-full-s23-t10-v1.json),
+[tau0.7](../results/2026-10-31-letter/fresh-yelp-full-s23-t07-v1.json), and
+the [paired comparison](../results/2026-10-31-letter/fresh-yelp-full-s23-t07-minus-t10-v1.json).
 
 The Yelp full-tokenizer tau1 arm exact-resumed after the AML lifecycle reset
 from sealed checkpoint23,980, completed118 epochs and selected epoch98.
@@ -203,6 +335,182 @@ item Recall@10 is+0.00129 with paired95% interval
 [-0.00121,+0.00452], and code NDCG@10 is+0.00090
 [-0.00078,+0.00256]. All intervals include zero, so this seed does not establish
 a recommendation gain from the added objectives.
+
+The independent seed17 semantic-only replication completed91 epochs and
+selected epoch71. Its code Recall@10/NDCG@10 is **.10403/.07860** and its
+original-item diagnostic is **.10363/.07792**. Relative to seed42, the code
+points are lower by.00383 Recall@10 and.00130 NDCG@10. This two-seed spread is
+descriptive training-seed variation, not an uncertainty interval or a
+significance test. Every model-selection record, all24,772 users,20 beams and
+durable run/evaluation/result byte were independently reverified in
+[the seed17 receipt](../results/2026-10-31-letter/fresh-instruments-semantic-s17-t10-v1.json)
+and `verified-results/fresh-instruments-semantic-s17-t10-v1`.
+
+The corresponding seed23 semantic-only replication completed98 epochs /
+12,642 updates and selected checkpoint10,062 /epoch78. Code
+Recall@10/NDCG@10 is **.10891/.08082** and the original-item diagnostic is
+**.10843/.08011**. It is descriptively above seed17 and close to the seed42
+point, illustrating training-seed variation rather than a recipe or tokenizer
+change. Exact independently verified evidence is in
+[the Instruments semantic seed23 receipt](../results/2026-10-31-letter/fresh-instruments-semantic-s23-t10-v1.json).
+
+The matching seed17 semantic+CF replication completed87 epochs and selected
+epoch67. Its code Recall@10/NDCG@10 is **.10665/.07988** and item diagnostic is
+**.10609/.07920**. Relative to seed17 semantic-only, the descriptive point
+differences are +.00262/+.00128 for code and +.00246/+.00128 for item.
+These paired configurations provide a second training seed but still do not
+support a population-level or training-seed significance claim. Exact evidence
+is in
+[the seed17 CF receipt](../results/2026-10-31-letter/fresh-instruments-cf-s17-t10-v1.json)
+and `verified-results/fresh-instruments-cf-s17-t10-v1`.
+
+The seed23 semantic+CF replication completed87 epochs /11,223 updates and
+selected checkpoint8,643 /epoch67. Code Recall@10/NDCG@10 is
+**.10778/.07995** and the original-item diagnostic is **.10726/.07924**.
+Relative to seed23 semantic-only, the descriptive differences are
+-.00113/-.00088 for code and -.00117/-.00087 for item, so this seed does not
+show a pointwise CF gain. This is training-seed variation, not a significance
+test. Exact independently verified evidence is in
+[the Instruments CF seed23 receipt](../results/2026-10-31-letter/fresh-instruments-cf-s23-t10-v1.json).
+
+The seed17 diversity-only replication completed86 epochs and selected epoch66.
+Its code Recall@10/NDCG@10 is **.10633/.07957** and item diagnostic is
+**.10556/.07880**. The code Recall@10 point is lower than seed17 CF by.00032
+and higher than seed17 semantic-only by.00230; these are descriptive
+training-seed-conditioned points, not significance claims. Exact evidence is
+in
+[the seed17 diversity receipt](../results/2026-10-31-letter/fresh-instruments-diversity-s17-t10-v1.json)
+and `verified-results/fresh-instruments-diversity-s17-t10-v1`.
+
+The seed23 diversity-only replication completed100 epochs /12,900 updates and
+selected checkpoint10,320 /epoch80. Code Recall@10/NDCG@10 is
+**.10734/.08097** and the original-item diagnostic is **.10685/.08030**.
+Relative to seed23 semantic-only, Recall@10 is lower while NDCG@10 is
+slightly higher for both identities, so the component effect remains mixed
+across metrics and seeds. Exact independently verified evidence is in
+[the Instruments diversity seed23 receipt](../results/2026-10-31-letter/fresh-instruments-diversity-s23-t10-v1.json).
+
+The seed17 full-tokenizer tau1 replication also completed86 epochs and
+selected epoch66. Its code Recall@10/NDCG@10 is **.11065/.08150** and item
+diagnostic is **.11021/.08086**. Relative to seed17 semantic-only, the
+descriptive differences are +.00662/+.00291 for code and +.00658/+.00294 for
+item; full is also above the seed17 CF and diversity points. These two-seed
+patterns strengthen the descriptive consistency of the full tokenizer but do
+not substitute for training-seed uncertainty or a predeclared multi-seed
+significance analysis. Exact evidence is in
+[the seed17 full receipt](../results/2026-10-31-letter/fresh-instruments-full-s17-t10-v1.json)
+and `verified-results/fresh-instruments-full-s17-t10-v1`.
+
+The seed23 full-tokenizer tau1 replication completed92 epochs /11,868 updates
+and selected checkpoint9,288 /epoch72. Code Recall@10/NDCG@10 is
+**.10940/.08063** and the original-item diagnostic is **.10916/.08009**.
+The full point is above the matching seed23 semantic, CF and diversity arms
+on Recall@10, while diversity has a slightly higher code NDCG@10. This remains
+a descriptive seed-conditioned comparison rather than a selected winner or
+training-seed significance claim. Exact independently verified evidence is in
+[the Instruments full seed23 receipt](../results/2026-10-31-letter/fresh-instruments-full-s23-t10-v1.json).
+
+The matched seed23 tau0.7 cell completed86 epochs /11,094 updates and selected
+checkpoint8,514 /epoch66. Code Recall@10/NDCG@10 is **.11008/.08117** and
+the original-item diagnostic is **.10956/.08048**. In the predeclared
+tau0.7-minus-tau1 paired-user bootstrap, every code/item Recall@10 and NDCG@10
+marginal95% interval includes zero. The point estimates favor tau0.7 by
+`.00069/.00053` for code and `.00040/.00039` for item, but this seed does not
+establish a temperature winner. Exact evidence is in
+[the Instruments seed23 tau0.7 receipt](../results/2026-10-31-letter/fresh-instruments-full-s23-t07-v1.json)
+and [paired comparison](../results/2026-10-31-letter/fresh-instruments-full-s23-t07-minus-t10-v1.json).
+
+The matched seed17 full-tokenizer tau0.7 cell completed89 epochs and selected
+epoch69. Code Recall@10/NDCG@10 is **.11049/.08192** and the original-item
+diagnostic is **.10992/.08120**. Relative to the same seed's tau1 cell, tau0.7
+is lower by.00016 code Recall@10 and.00028 item Recall@10, while NDCG@10 is
+higher by.00042/.00033. These small crossed point differences establish no
+temperature winner or equivalence claim. All24,772 users,20 beams, selection
+state and durable bytes were reverified in
+[the seed17 tau0.7 receipt](../results/2026-10-31-letter/fresh-instruments-full-s17-t07-v1.json).
+
+Beauty semantic-only seed17 is also complete. It trained91 epochs and selected
+epoch71. Code Recall@10/NDCG@10 is **.06216/.03282** and the deterministic
+original-item diagnostic is **.06135/.03233** across all22,363 users and20
+beams. Its semantic tokenizer has11 excess collision items /largest group3.
+This is a compatible-backbone second-seed point, not an original-LLaMA1 or
+training-seed significance claim. Exact evidence is in
+[the Beauty semantic seed17 receipt](../results/2026-10-31-letter/fresh-beauty-semantic-s17-t10-v1.json).
+
+Beauty semantic-only seed23 completed95 epochs /12,255 updates and selected
+checkpoint9,675 /epoch75. Code Recall@10/NDCG@10 is **.05858/.03137** and
+the original-item diagnostic is **.05795/.03090**. Both are descriptively
+below seed17 and seed42, reinforcing that the measured component points have
+material training-seed variation. Exact independently verified evidence is in
+[the Beauty semantic seed23 receipt](../results/2026-10-31-letter/fresh-beauty-semantic-s23-t10-v1.json).
+
+The Beauty CF tokenizer at seed17 completed the full20,000 tokenizer epochs,
+and its downstream T5 completed98 epochs /12,642 updates, selecting
+checkpoint10,062 /epoch78. Code Recall@10/NDCG@10 is **.06403/.03448** and the
+original-item diagnostic is **.06386/.03432** across all22,363 users and20
+beams. The tokenizer has8 excess collision items /largest group3. Relative to
+the seed17 semantic point, the CF arm is descriptively higher by about
+0.00188 Recall@10 and0.00167 NDCG@10; this two-point comparison is not a
+significance claim. Exact independently verified evidence is in
+[the Beauty CF seed17 receipt](../results/2026-10-31-letter/fresh-beauty-cf-s17-t10-v1.json).
+
+The Beauty CF seed23 cell completed98 epochs /12,642 updates and selected
+checkpoint10,062 /epoch78. Code Recall@10/NDCG@10 is **.06336/.03362** and
+the original-item diagnostic is **.06327/.03350**. It is descriptively above
+the matching seed23 semantic-only point by `.00478/.00225` code and
+`.00532/.00260` item, while remaining close to the seed42 and seed17 CF
+points. Exact independently verified evidence is in
+[the Beauty CF seed23 receipt](../results/2026-10-31-letter/fresh-beauty-cf-s23-t10-v1.json).
+
+The Beauty diversity tokenizer at seed17 also completed20,000 epochs; its
+downstream T5 completed101 epochs /13,029 updates and selected
+checkpoint10,449 /epoch81. Code Recall@10/NDCG@10 is **.06225/.03407** and the
+original-item diagnostic is **.06202/.03393**. The tokenizer has9 excess
+collision items /largest group3. Relative to the seed17 semantic point, these
+single-seed differences are small and descriptive, not evidence of a
+significant winner. Exact independently verified evidence is in
+[the Beauty diversity seed17 receipt](../results/2026-10-31-letter/fresh-beauty-diversity-s17-t10-v1.json).
+
+The Beauty diversity seed23 cell completed93 epochs /11,997 updates and
+selected checkpoint9,417 /epoch73. Code Recall@10/NDCG@10 is
+**.05952/.03255** and the original-item diagnostic is **.05943/.03246**.
+It is slightly above matching semantic-only seed23 but well below matching CF
+on Recall@10; the component ordering continues to vary by seed and metric.
+Exact independently verified evidence is in
+[the Beauty diversity seed23 receipt](../results/2026-10-31-letter/fresh-beauty-diversity-s23-t10-v1.json).
+
+The Beauty full tokenizer at seed17 completed20,000 epochs; its temperature-1
+downstream T5 completed93 epochs /11,997 updates and selected checkpoint9,417 /
+epoch73. Code Recall@10/NDCG@10 is **.06207/.03329** and the original-item
+diagnostic is **.06184/.03307**. The tokenizer has10 excess collision items /
+largest group3. The point is close to the semantic/diversity seed17 cells and
+below CF on Recall@10; it remains a descriptive compatible-backbone result.
+Exact independently verified evidence is in
+[the Beauty full seed17 receipt](../results/2026-10-31-letter/fresh-beauty-full-s17-t10-v1.json).
+
+The matched Beauty full seed17 temperature-0.7 arm completed91 epochs /11,739
+updates and selected checkpoint9,159 /epoch71. Code Recall@10/NDCG@10 is
+**.06055/.03310** and the original-item diagnostic is **.06041/.03302**.
+Relative to temperature1, its code Recall@10 difference is -0.00152 with
+paired95% interval [-0.00416,+0.00107], while code NDCG@10 is -0.00018
+[-0.00160,+0.00126]. All four code/item Recall@10/NDCG@10 intervals include
+zero, so this seed establishes neither a lower-temperature benefit nor
+equivalence. Exact evidence is in
+[the tau0.7 receipt](../results/2026-10-31-letter/fresh-beauty-full-s17-t07-v1.json)
+and [paired comparison](../results/2026-10-31-letter/fresh-beauty-full-s17-t07-minus-t10-v1.json).
+
+The Beauty full seed23 pair reverses that seed17 point ordering. Tau1
+completed91 epochs /11,739 updates and selected checkpoint9,159 /epoch71;
+tau0.7 completed94 epochs /12,126 updates and selected checkpoint9,546 /
+epoch74. Tau1 code Recall@10/NDCG@10 is **.06314/.03388** and item is
+**.06305/.03372**; tau0.7 code is **.06640/.03558** and item is
+**.06623/.03547**. All four predeclared code/item Recall@10 and NDCG@10
+marginal95% intervals exclude zero in favor of tau0.7. This remains
+conditional on the two seed23 models and does not include training-seed
+uncertainty. Exact evidence is in
+[tau1](../results/2026-10-31-letter/fresh-beauty-full-s23-t10-v1.json),
+[tau0.7](../results/2026-10-31-letter/fresh-beauty-full-s23-t07-v1.json), and
+the [paired comparison](../results/2026-10-31-letter/fresh-beauty-full-s23-t07-minus-t10-v1.json).
 
 The semantic+CF arm completed87 epochs and selected epoch67. Code R10/N10 is
 0.10843/0.08117 and item diagnostic is0.10811/0.08057. CF-minus-semantic
@@ -330,6 +638,37 @@ selected/latest state file. R10/N10 is0.10488/0.07932, above the paper's
 declared P5-SemID0.0964/0.0730 point. This collision-free catalog again makes
 canonical and original-item metrics equal. Exact cross-node evidence is banked
 at `verified-results/p5-instruments-semid-v1`.
+
+Beauty P5 CID completed all20 epochs /205,340 updates and selected the earliest
+validation Recall@10 maximum at epoch4. After the lifecycle reset removed
+epochs1-19 prediction files, each was replayed from its exact receipt-backed
+validation checkpoint in a clean frozen-runtime process; all metrics and
+prediction hashes matched the frozen history. Recovery evidence and the final
+result were durably bound before canonical publication. The all22,363-user
+test reports Recall@10/NDCG@10 **.06184/.03746**, identical under code and
+original-item identities for this collision-free CID catalog. Exact evidence
+is in [the Beauty P5 CID receipt](../results/2026-10-31-letter/p5-beauty-cid-s42-v1.json).
+
+Instruments P5 TID completed all20 epochs /206,000 updates and selected the earliest validation Recall@10 maximum at epoch3. Its recovery used 7 exact GPU replays and 13 exact-existing validations; every row of all20 validation files and the all24,772-user test was independently recomputed before durable selected/frozen/result verification. Canonical-title Recall@10/NDCG@10 is **0.10899/0.08488**, while the collision-expanded original-item diagnostic is **0.10879/0.08425**. The catalog contains 9,888 canonical titles for 9,922 items, including 31 collision groups and a largest group of 3; code and item identities must not be collapsed. The paper prints P5-TID Recall@10/NDCG@10 `0.0001/0.0000`; this remains a declared reference reconstruction because the exact original recipe is unavailable. Exact public identities are in [the Instruments P5 TID receipt](../results/2026-11-03-letter/p5-instruments-tid-s42-v1.json).
+
+Beauty P5 TID completed all20 epochs /205,340 updates and selected the earliest validation Recall@10 maximum at epoch3. Its recovery used 5 exact GPU replays and 15 exact-existing validations; every row of all20 validation files and the all22,363-user test was independently recomputed before durable selected/frozen/result verification. Canonical-title Recall@10/NDCG@10 is **0.07177/0.04018**, while the collision-expanded original-item diagnostic is **0.07119/0.03989**. The catalog contains 12,073 canonical titles for 12,101 items, including 27 collision groups and a largest group of 3; code and item identities must not be collapsed. The paper prints P5-TID Recall@10/NDCG@10 `0.0432/0.0254`; this remains a declared reference reconstruction because the exact original recipe is unavailable. Exact public identities are in [the Beauty P5 TID receipt](../results/2026-11-03-letter/p5-beauty-tid-s42-v1.json).
+
+Yelp P5 TID completed all20 epochs /351,660 updates and selected the earliest
+validation Recall@10 maximum at epoch3. Its missing validation files for
+epochs1-11 were recomputed on the lease-bound GPU from exact full-state
+checkpoints; surviving epochs12-20 were adopted only after exact prediction,
+checkpoint, accepted-ledger and history-prefix verification. Recovery evidence
+was banked by node0 before the unchanged guardian produced the ordinary broker
+result. Independent audit recomputed every row of all20 validation files and
+the all30,431-user test, then rehashed the durable result and selected/frozen
+full states. Canonical-title Recall@10/NDCG@10 is **.05320/.03059**, while the
+collision-expanded original-item diagnostic is **.03332/.02026**. The large
+gap is expected to be interpreted with the15,336 unique canonical titles for
+20,033 items, including1,436 collision groups and a largest group of149; it
+must not be presented as item-level accuracy. Both measured identities exceed
+the paper's printed P5-TID `.0263/.0155` R10/N10 point, but this remains a
+declared reference reconstruction because the exact original recipe is not
+available. Exact public identities are in [the Yelp P5 TID receipt](../results/2026-11-02-letter/p5-yelp-tid-s42-v1.json).
 
 LC completed all four epochs / 8,240 updates and selected checkpoint6,180
 solely from validation loss. Both fixed20-beam evaluations covered all24,772
@@ -600,6 +939,22 @@ and banked at `verified-results/figure3-beauty-tokenizer-ablation-v3`.
 
 ### Figure 8 one-factor sweep status
 
+All 15 nonbaseline tokenizer downstream cells are now complete and independently
+audited. The shared `L=4`, `N=256`, `alpha=.02`, `beta=.0001`, `K=10`
+baseline is the same full-tokenizer tau0.7 cell in every panel.
+
+| Panel values | Code Recall@10 / NDCG@10 | Item Recall@10 / NDCG@10 |
+| --- | --- | --- |
+| `L=2,4,6,8` | `.11222/.08170; .10859/.08025; .10798/.08161; .10597/.07996` | `.09487/.07262; .10807/.07959; .10758/.08095; .10552/.07929` |
+| `N=64,128,256,512` | `.11093/.08049; .10899/.08048; .10859/.08025; .10903/.08117` | `.11045/.07983; .10859/.07983; .10807/.07959; .10871/.08054` |
+| `alpha=.001,.01,.02,.1` | `.10722/.08035; .11194/.08231; .10859/.08025; .10439/.07873` | `.10665/.07972; .11162/.08170; .10807/.07959; .10399/.07820` |
+| `beta=.00001,.0001,.001,.01` | `.11053/.08185; .10859/.08025; .10786/.08020; .10996/.08150` | `.10984/.08119; .10807/.07959; .10746/.07953; .10964/.08081` |
+| `K=5,10,15,20` | `.11198/.08282; .10859/.08025; .10677/.07925; .11029/.08123` | `.11134/.08214; .10807/.07959; .10625/.07856; .10972/.08056` |
+
+The panels are non-monotonic and single-seed descriptive measurements; no
+test-based optimum is selected. The complete source-bound scorecard is
+[published separately](../results/2026-11-02-letter/figure8-nontemperature-scorecard-v1.json).
+
 The two-level tokenizer arm is the first completed Figure8 sweep result. It
 finished20,000 epochs, selected epoch12,000 and emitted two-token IDs. After20
 collision retries it still has1,121 excess collision items and largest group36,
@@ -609,6 +964,24 @@ trained and evaluated. The exact final bundle was rehashed before node1 GPU1
 was reassigned to the predeclared eight-level arm. Evidence is in
 [the final L2 receipt](../results/2026-10-30-letter/figure8-levels2-final-v1.json)
 and `verified-results/figure8-levels2-final-v1`.
+
+The six-level tokenizer arm completed20,000 epochs and selected epoch16,000.
+Its exported six-token bank has25 excess collision items, largest group3 and
+utilization172/256/256/256/256/256; deterministic repair reduced only three
+additional excess items. This is tokenizer evidence only until its dedicated
+downstream cell runs. Exact evidence is in
+[the final L6 receipt](../results/2026-10-31-letter/figure8-levels6-final-v1.json)
+and `verified-results/figure8-levels6-final-v1`.
+
+The repaired eight-level tokenizer arm completed20,000 epochs and selected
+epoch12,000. Its bank has25 excess collision items, largest group3 and
+utilization194/256/256/256/256/256/256/256. The compatibility chain verifies
+960,478 native-defined tasks plus exactly two corrections at epoch8,200
+level4 and epoch18,261 level2; all80 export tasks were native-defined with
+zero export corrections. The first final bundle omitted attestation ancestors
+and is superseded by the ancestry-complete bundle. Exact evidence is in
+[the final L8 receipt](../results/2026-10-31-letter/figure8-levels8-final-v2.json)
+and `verified-results/figure8-levels8-final-v2`.
 
 The `K=5` diversity-cluster arm also completed20,000 epochs and selected the
 final scheduled checkpoint. Its exported four-token bank has25 excess
@@ -644,6 +1017,44 @@ findings. Exact receipts:
 [alpha0.01](../results/2026-10-30-letter/figure8-alpha0p01-final-v1.json) and
 [beta0.00001](../results/2026-10-30-letter/figure8-beta0p00001-final-v1.json).
 
+The repaired `beta=0.001` arm also completed20,000 epochs and selected
+epoch18,000. Its four-level bank has25 excess collision items, largest group3
+and utilization129/117/256/256. The compatibility audit replayed160,080
+initialization tasks:160,079 were native-defined and bitwise matched, while
+one exact undefined CDF endpoint at epoch16,401 level0 required the admitted
+index guard; export required no correction. Native bitwise execution is not
+claimed past that crash. Exact lineage and durable evidence are in
+[the beta0.001 final receipt](../results/2026-10-31-letter/figure8-beta0p001-final-v2.json)
+and `verified-results/figure8-beta0p001-final-v2`.
+
+The repaired `K=20` arm completed20,000 epochs and selected the final
+checkpoint. Its bank has25 excess collision items, largest group3 and
+utilization147/256/256/256. The admission-bound audit replayed360,200
+initialization tasks:360,199 native-defined tasks matched bitwise, one exact
+undefined CDF endpoint at epoch11,431 level1 used the guard, and all40 export
+tasks were native-defined. Native bitwise execution is not claimed past the
+crash. Exact evidence is in
+[the K20 final receipt](../results/2026-10-31-letter/figure8-clusters20-final-v2.json)
+and `verified-results/figure8-clusters20-final-v2`.
+
+Two codebook-size arms are now independently final. The 128-code arm selected
+epoch20,000 and has utilization103/128/128/128; the 512-code arm selected
+epoch18,000 and has utilization204/512/512/512. Both finish with25 excess
+collision items and largest group3 after deterministic collision repair, down
+from93 and46 respectively. These are tokenizer-only findings until their
+dedicated downstream T5 cells complete. Exact evidence:
+[codes128](../results/2026-10-31-letter/figure8-codes128-final-v1.json) and
+[codes512](../results/2026-10-31-letter/figure8-codes512-final-v1.json).
+
+The 64-code arm is now also independently final. It selected epoch20,000,
+uses all64 codes at every level, and reduces excess collision items from178 to
+28 with largest group3. Its native run repeated the same undefined CDF endpoint
+fault at epoch16,401/level0; the admitted compatibility continuation records
+160,079 native-defined tasks, one correction, zero failures and zero export
+corrections. An older final bundle omitted attestation ancestors and is
+explicitly superseded by the ancestry-complete bundle. Exact evidence is in
+[the codes64 final receipt](../results/2026-10-31-letter/figure8-codes64-final-v2.json).
+
 Downstream evaluation for the 15 nonbaseline tokenizer arms is split across
 immutable `fresh-t5-figure8-tokenizer-v2` and `v3` namespaces; v4 is reserved
 for arms whose tokenizer completion requires the audited k-means endpoint
@@ -658,6 +1069,76 @@ the separate five-arm temperature queue, Figure 8 therefore requires **20
 additional T5 fits** beyond the already completed temperature-0.7 and
 temperature-1.0 baseline fits.
 
+The first new temperature-panel point, `tau=0.6`, completed87 epochs /
+11,223 updates and selected checkpoint8,643 /epoch67 using only its own
+validation loss. Across all24,772 users, code Recall@10/NDCG@10 is
+**.10734/.07918** and the original-item diagnostic is **.10689/.07851**.
+This is one descriptive point in the predeclared seven-temperature grid, not
+a selected winner; the six fixed contrasts against temperature1 remain gated
+on completion of the other four new fits. Exact independently verified
+evidence is in
+[the temperature0.6 receipt](../results/2026-11-02-letter/figure8-temperature-0p6-s42-v1.json)
+and `verified-results/figure8-temperature-0p6-s42-v1`.
+
+The matched `tau=0.8` arm also completed87 epochs /11,223 updates and selected
+checkpoint8,643 /epoch67. Code Recall@10/NDCG@10 is **.11166/.08221** and
+the original-item diagnostic is **.11142/.08157**. Both point estimates exceed
+the measured tau0.6 point, but no temperature is selected from test results and
+no cross-temperature claim is made before the predeclared paired contrasts are
+available. Exact independently verified evidence is in
+[the temperature0.8 receipt](../results/2026-11-02-letter/figure8-temperature-0p8-s42-v1.json)
+and `verified-results/figure8-temperature-0p8-s42-v1`.
+
+The `tau=0.9` arm completed98 epochs /12,642 updates and selected
+checkpoint10,062 /epoch78. Code Recall@10/NDCG@10 is **.11033/.08151** and
+the original-item diagnostic is **.10976/.08082**. Its point estimates fall
+between the measured tau0.8 and tau1 values on Recall@10; this remains
+descriptive until all seven points and the fixed paired contrasts are complete.
+Exact independently verified evidence is in
+[the temperature0.9 receipt](../results/2026-11-02-letter/figure8-temperature-0p9-s42-v1.json)
+and `verified-results/figure8-temperature-0p9-s42-v1`.
+
+The `tau=1.1` arm completed99 epochs /12,771 updates and selected
+checkpoint10,191 /epoch79. Code Recall@10/NDCG@10 is **.10698/.07985** and
+the original-item diagnostic is **.10665/.07924**. It is pointwise below the
+measured tau0.8, tau0.9 and tau1 cells; no winner is selected and the final
+temperature interpretation remains gated on tau1.2 plus the six fixed paired
+contrasts. Exact independently verified evidence is in
+[the temperature1.1 receipt](../results/2026-11-02-letter/figure8-temperature-1p1-s42-v1.json)
+and `verified-results/figure8-temperature-1p1-s42-v1`.
+
+The final new arm, `tau=1.2`, completed96 epochs /12,384 updates and selected
+checkpoint9,804 /epoch76. Code Recall@10/NDCG@10 is **.10653/.07917** and
+the original-item diagnostic is **.10597/.07849**. All seven temperature
+points are now durably complete; interpretation uses the predeclared six
+paired-user contrasts against tau1 rather than selecting the largest test
+point. Exact independently verified evidence is in
+[the temperature1.2 receipt](../results/2026-11-02-letter/figure8-temperature-1p2-s42-v1.json)
+and `verified-results/figure8-temperature-1p2-s42-v1`.
+
+| Temperature | Code R@10 / N@10 | Item R@10 / N@10 |
+| ---: | ---: | ---: |
+| 0.6 | .10734 / .07918 | .10689 / .07851 |
+| 0.7 | .10859 / .08025 | .10807 / .07959 |
+| 0.8 | .11166 / .08221 | .11142 / .08157 |
+| 0.9 | .11033 / .08151 | .10976 / .08082 |
+| 1.0 | .10944 / .08079 | .10879 / .08006 |
+| 1.1 | .10698 / .07985 | .10665 / .07924 |
+| 1.2 | .10653 / .07917 | .10597 / .07849 |
+
+In the predeclared left-minus-tau1 paired-user contrasts, tau0.7 and tau0.9
+have intervals containing zero for code/item Recall@10 and NDCG@10. Tau0.8
+has positive item Recall@10 and code/item NDCG@10 intervals, while code
+Recall@10 still includes zero. Tau0.6 has negative code/item NDCG@10
+intervals but inconclusive Recall@10. Tau1.1 has a negative code Recall@10
+interval; tau1.2 has negative code/item Recall@10 and NDCG@10 intervals.
+These are marginal, unadjusted user-bootstrap intervals conditional on the
+seven trained models and do not include training-seed uncertainty. No
+temperature is promoted to a new recipe. The exact points and all six
+contrasts are in
+[the temperature sweep receipt](../results/2026-11-02-letter/figure8-temperature-sweep-v1.json)
+and `verified-results/figure8-temperature-sweep-v1`.
+
 The first downstream sweep cell, `L=2` at fixed tau0.7, completed61 epochs and
 selected epoch41 solely from validation loss. Its all24,772-user code
 Recall@10/NDCG@10 is **.11222/.08170**, while the deterministic original-item
@@ -669,6 +1150,26 @@ prediction, model-selection decision and durable byte was independently
 reverified in
 [the levels2 downstream receipt](../results/2026-10-30-letter/figure8-downstream-levels2-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-levels2-s42-t0p7-v1`.
+
+The `L=6` downstream cell completed120 epochs and selected checkpoint12,900 /
+epoch100. Code Recall@10/NDCG@10 is **.10798/.08161** and the original-item
+diagnostic is **.10758/.08095**. Its six-level tokenizer uses
+172/256/256/256/256/256 codes and retains25 excess collision items. The result
+is descriptively below the shared full-tokenizer baseline on Recall@10; no
+identifier-length winner or monotonicity claim is made. Exact independently
+verified evidence is in
+[the L6 downstream receipt](../results/2026-10-31-letter/figure8-downstream-levels6-s42-t0p7-v1.json).
+
+The `L=8` downstream cell used the ancestry-complete compatibility-repaired
+tokenizer, completed the full200-epoch cap /25,800 updates, and selected
+checkpoint23,607 /epoch183. Code Recall@10/NDCG@10 is **.10597/.07996** and
+the original-item diagnostic is **.10552/.07929**. It is descriptively below
+the L6 and shared L4 baseline Recall@10 points, so the measured
+identifier-length curve is non-monotonic and does not establish a winner.
+Every prediction, selection, compatibility admission and durable byte was
+independently reverified in
+[the L8 downstream receipt](../results/2026-11-02-letter/figure8-downstream-levels8-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-levels8-s42-t0p7-v1`.
 
 The `alpha=0.001` downstream cell completed at epoch93 after selecting
 checkpoint9,417 /epoch73 solely by validation loss. Its all-user code
@@ -691,6 +1192,112 @@ full-tokenizer tau0.7 baseline, but no cross-arm winner or significance claim
 is made. Exact independently reverified evidence is in
 [the alpha0.01 downstream receipt](../results/2026-10-31-letter/figure8-downstream-alpha0p01-s42-t0p7-v1.json)
 and `verified-results/figure8-downstream-alpha0p01-s42-t0p7-v1`.
+
+The `alpha=0.1` downstream cell also completed at epoch92 and selected
+checkpoint9,288 /epoch72. Code Recall@10/NDCG@10 is **.10439/.07873** and
+the original-item diagnostic is **.10399/.07820**. This single seed is
+descriptively below both the shared full-tokenizer tau0.7 baseline and the
+alpha0.01 arm; no monotonic alpha trend or significance claim is made.
+Every prediction, selection record and durable byte was independently
+reverified in
+[the alpha0.1 downstream receipt](../results/2026-10-31-letter/figure8-downstream-alpha0p1-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-alpha0p1-s42-t0p7-v1`.
+
+The `beta=0.00001` downstream cell completed at epoch87 and selected
+checkpoint8,643 /epoch67. Code Recall@10/NDCG@10 is **.11053/.08185** and
+the original-item diagnostic is **.10984/.08119**. The point is close to the
+full-tokenizer tau0.7 baseline and alpha0.01 arm, but this single seed does not
+establish an optimum or a monotonic beta trend. Every prediction, selection
+record and durable byte was independently reverified in
+[the beta0.00001 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p00001-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-beta0p00001-s42-t0p7-v1`.
+
+The repaired `beta=0.001` downstream cell completed at epoch78 and selected
+checkpoint7,482 /epoch58. Code Recall@10/NDCG@10 is **.10786/.08020** and the
+original-item diagnostic is **.10746/.07953**. It is descriptively below both
+beta0.00001 and the full-tokenizer tau0.7 baseline; no monotonic beta or winner
+claim is made. The admitted tokenizer lineage includes the single disclosed
+undefined-endpoint correction and no export correction. Exact independently
+verified evidence is in
+[the beta0.001 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p001-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-beta0p001-s42-t0p7-v1`.
+
+The `beta=0.01` downstream cell completed at epoch86 and selected
+checkpoint8,514 /epoch66. Code Recall@10/NDCG@10 is **.10996/.08150** and the
+original-item diagnostic is **.10964/.08081**. It is descriptively between
+beta0.00001 and beta0.001, so the three measured points do not establish a
+monotonic beta trend. Exact independently verified evidence is in
+[the beta0.01 downstream receipt](../results/2026-10-31-letter/figure8-downstream-beta0p01-s42-t0p7-v1.json)
+and `verified-results/figure8-downstream-beta0p01-s42-t0p7-v1`.
+
+The `alpha=0.001` downstream cell completed93 epochs and selected
+checkpoint9,417 /epoch73. Code Recall@10/NDCG@10 is **.10722/.08035** and the
+original-item diagnostic is **.10665/.07972**. It is descriptively below the
+alpha0.01 and alpha0.1 points, but the measured alpha sweep remains
+single-seed and no winner or monotonicity claim is made. An earlier compact
+evidence packet is superseded by the full independent run/evaluation/result
+inventory audit in
+[the alpha0.001 downstream receipt](../results/2026-10-31-letter/figure8-downstream-alpha0p001-s42-t0p7-v1.json).
+
+The `K=5` downstream cell completed86 epochs and selected checkpoint8,514 /
+epoch66. Code Recall@10/NDCG@10 is **.11198/.08282** and the original-item
+diagnostic is **.11134/.08214**. The four-level tokenizer retains only25
+excess collision items, so code and item metrics remain close. This single
+seed is descriptive and is not a selected cluster-count winner. Exact durable
+evidence is in
+[the K5 downstream receipt](../results/2026-10-31-letter/figure8-downstream-clusters5-s42-t0p7-v1.json).
+
+The `K=15` downstream cell also completed86 epochs and selected
+checkpoint8,514 /epoch66. Code Recall@10/NDCG@10 is **.10677/.07925** and the
+original-item diagnostic is **.10625/.07856**. It is descriptively below K5
+and the shared K10/full baseline, so the measured cluster-count points do not
+support a monotonic trend or selected winner. Every prediction, selection and
+durable byte was independently reverified in
+[the K15 downstream receipt](../results/2026-10-31-letter/figure8-downstream-clusters15-s42-t0p7-v1.json).
+
+The repaired `K=20` downstream cell completed87 epochs and selected
+checkpoint8,643 /epoch67. Code Recall@10/NDCG@10 is **.11029/.08123** and the
+original-item diagnostic is **.10972/.08056**. It lies above K15 but below K5
+on Recall@10, so the measured cluster-count points remain non-monotonic and do
+not establish a winner. The admitted tokenizer lineage includes one disclosed
+native endpoint correction and zero export corrections. Every prediction,
+selection and durable byte was independently reverified in
+[the K20 downstream receipt](../results/2026-10-31-letter/figure8-downstream-clusters20-s42-t0p7-v1.json).
+
+The `N=128` codebook-size downstream cell completed86 epochs and selected
+checkpoint8,514 /epoch66. Code Recall@10/NDCG@10 is **.10899/.08048** and the
+original-item diagnostic is **.10859/.07983**. The two identities remain close
+because the tokenizer has only25 excess collision items, despite using just
+103/128 first-level codes. This single seed is descriptively near the shared
+`N=256` baseline and does not establish a codebook-size optimum or monotonic
+trend. Every prediction, selection and durable byte was independently
+reverified in
+[the N128 downstream receipt](../results/2026-10-31-letter/figure8-downstream-codes128-s42-t0p7-v1.json).
+
+The `N=512` cell also completed86 epochs and selected checkpoint8,514 /
+epoch66. Code Recall@10/NDCG@10 is **.10903/.08117** and the original-item
+diagnostic is **.10871/.08054**. Together, the measured N128, shared N256
+baseline and N512 points are close and do not establish a monotonic
+codebook-size trend or a selected optimum. N512 has the highest code NDCG@10
+of those three point estimates, but this remains a single-seed descriptive
+comparison. Every prediction, selection and durable byte was independently
+reverified in
+[the N512 downstream receipt](../results/2026-10-31-letter/figure8-downstream-codes512-s42-t0p7-v1.json).
+
+The repaired `N=64` cell completed87 epochs and selected checkpoint8,643 /
+epoch67. Code Recall@10/NDCG@10 is **.11093/.08049** and the original-item
+diagnostic is **.11045/.07983**. It has the highest Recall@10 point estimate
+among the four measured codebook sizes, while N512 has the highest NDCG@10;
+the sweep is therefore non-monotonic and does not establish an optimum. The
+admitted tokenizer lineage includes one disclosed undefined-endpoint
+correction and zero export corrections. Every prediction, selection and
+durable byte was independently reverified in
+[the N64 downstream receipt](../results/2026-10-31-letter/figure8-downstream-codes64-s42-t0p7-v1.json).
+The original downstream admission predated the compatibility-lineage field.
+A post-hoc immutable binding now proves that its staged IDs exactly equal the
+ancestry-complete repaired tokenizer bundle and binds those IDs to the unchanged
+model, predictions and result. This corrects provenance metadata without
+retraining or changing any experiment byte.
 
 ## 📊 Instruments released-ID replay
 

@@ -190,11 +190,125 @@ complete registry, the exact transition set, the unchanged runtime template,
 replacement-GPU receipts and role-specific root evidence. Writer cells use
 ordinary P5 full-state bank checkpoints plus their verified bank
 acknowledgments and receipts. Worker cells use the highest accepted xnode
-ledger head plus its complete package and acknowledgment. Never construct a
-synthetic writer xnode ledger.
+ledger head plus its complete package and acknowledgment, or the distinct
+`p5-uuid-reregistration-worker-durable-root-v2` recovery evidence described
+below. Never construct a synthetic writer xnode ledger.
+
+Sequence-3 publication certificates may retain writer owners only as the
+historical identity fields `cell`, `gpu`, `lease_id`, `owner_node`, and
+`ownership_epoch`. V2 accepts exactly that compact shape without editing or
+fabricating the historical certificate. It reconstructs the successor writer
+lease from the unchanged compact identity, exact old/new private assignments,
+the receipt-verified writer checkpoint/ack/contract, the verified input
+manifest, and the newly computed canonical runtime-manifest hash. The plan
+records hashes of every reconstruction authority. A partial or extended
+unknown owner shape, writer host/GPU/epoch mismatch, old/new binding
+disagreement, foreign writer acknowledgement, changed contract/input, or
+runtime hash mismatch fails closed. Complete historical writer leases remain
+supported and preserve their unrelated fields.
+
+### Receipt-verified writer durable recovery
+
+If node-local ordinary writer bank acknowledgements were erased, do not reuse
+a stale acknowledgement or fabricate one. Use the distinct
+`p5-uuid-reregistration-writer-durable-root-v2` evidence kind. It binds the
+certified old registry event, compact or full historical writer identity,
+exact old/new assignments, durable destination, unchanged external contract,
+an exact checkpoint-directory inventory, and a selection policy.
+
+Every listed checkpoint must be a direct non-symlink child of the declared
+durable destination and have an exact writer-created `bank-receipt.json`
+covering its sealed model, training state, and seal. After receipt and file
+hash verification, v2 opens the trusted sealed training state and requires its
+embedded contract and optimizer-boundary marker to match, plus exact
+step/epoch/phase agreement with the seal. Listed roots must have legal
+monotonic P5 progress. The highest verified checkpoint is selected by default;
+a lower checkpoint requires `intentional_rollback`, a non-empty reason, and
+records every abandoned newer verified checkpoint.
+
+This authority is explicitly `p5-writer-durable-recovery-v1` with
+`historically_accepted=false`; it does not claim that a missing ordinary ack
+ever existed. Writer and worker receipt recoveries are recorded together under
+certificate recovery kind `p5-ownership-durable-recovery-v1`. They retain the
+same all-cell commit and activation-last fence.
+
+### Receipt-verified worker durable recovery
+
+An unacknowledged successor does not prove its parent was historically
+accepted: workers can publish multiple generations before receiving any
+acknowledgment. When the accepted ledger is missing or behind but complete
+Gen2 packages and their writer-created bank receipts survive, use
+`p5-uuid-reregistration-worker-durable-root-v2`. This mode is explicitly
+`p5-xnode-durable-recovery-v1`, not accepted-ledger reconstruction.
+
+The evidence binds the certified old registry event, old lease, durable
+destination root, unchanged contract, exact package inventory, selection
+policy and optional successor observation. Starting at the certified lease
+root, validation requires generation 1..N with no gaps, exact parent seals,
+legal step/epoch/phase transitions, production envelopes owned by the exact
+old lease/event, complete package seals, and exact bank-receipt inventories.
+Unlisted package directories, missing receipts, partial packages, mixed
+leases, divergent parents, changed destinations or foreign events fail
+closed. The old accepted ledger is neither read as authority nor written.
+
+The default selected root is the highest fully receipt-verified contiguous
+package. Selecting a lower generation requires
+`selection.policy=intentional_rollback`, an explicit reason, and records every
+newer verified package as abandoned. A successor observation is optional and
+is recorded only as non-authoritative evidence; it never upgrades a package
+to historical acceptance. The ownership event and certificate label the
+chosen root as receipt-verified durable recovery with
+`historically_accepted=false`. The replacement lease still starts publication
+generation zero at that chosen root and requires the same deterministic
+replacement-GPU continuation, optimizer-memory and 20-beam proofs.
+
+### Replacement-GPU proof runner
+
+Generate each private `p5-replacement-gpu-proof-v1` with
+`replacement_gpu_proof.py`. Its request binds one cell to the chosen
+complete checkpoint, unchanged contract, current host/physical index/UUID,
+preserved microbatch, and exact anchored `native`, `upstream`, `manifest`,
+`recipe`, `model`, `corpus`, and frozen `runtime` inputs. Each input entry has
+`path`, `anchor`, and `anchor_sha256`; the runtime anchor must be the exact
+`p5_run.py`. `contract_sha256` is the file SHA-256, while the checkpoint seal
+must independently bind the canonical JSON contract digest.
+Use `configs/letter-p5-replacement-gpu-proof-request-v1.example.json` as the
+field-complete template and replace every `PRIVATE_*` value.
+
+The output must be a new child below the private binding's
+`control_root/gates`; an existing attempt or any production-run path is
+rejected. The runner does not save, advance, or publish a production run. It
+constructs two independent models and full optimizer/scheduler/sampler
+contexts, cold-loads the same sealed root into each, and verifies bitwise
+model, optimizer, scheduler, sampler, all RNG, training, and validation state.
+Frozen runtimes exposing the newer private locked restore helper use it;
+deployed legacy runtimes exposing only public `restore_checkpoint(...)` use
+that exact public API and capture `rng_state()` immediately after it returns.
+The frozen runtime itself is never modified.
+Before each continuation it restores that copy's checkpoint RNG, then requires
+identical next sampled indices/rows, loss, optimizer update, and resulting
+state. It also requires populated finite optimizer moments and executes actual
+20-return beam generation, including completion of the longest catalog path.
+
+Run only on the privately bound replacement node/GPU:
+
+```bash
+CUDA_VISIBLE_DEVICES="$PHYSICAL_GPU_INDEX" \
+python -B scripts/letter/replacement_gpu_proof.py \
+  --request "$PRIVATE_REPLACEMENT_PROOF_REQUEST"
+```
+
+Use the emitted
+`$CONTROL_ROOT/gates/<fresh-attempt>/p5-replacement-gpu-proof.json` as that
+cell's `proofs` entry in the v2 transition request. Stop without preparing the
+transition on any changed input anchor, checkpoint/contract mismatch,
+host/index/UUID mismatch, absent optimizer memory, continuation difference,
+incomplete beam geometry, or pre-existing attempt directory. CPU unit tests
+exercise orchestration and failure behavior only; they never substitute for
+this bound CUDA receipt.
 
 Preparation verifies registry ancestry and sequence, rejects pending foreign
-intent, and selects each role's latest receipt-bound full-state head. It keeps
+intent, and selects each role's authorized receipt-bound full-state head. It keeps
 the scientific contract, input manifest, control/state source hashes,
 host/index and batch geometry unchanged. It precomputes a new runtime manifest
 at stable canonical paths, binds its SHA-256 into every transitioned lease,
@@ -202,6 +316,14 @@ mints lease IDs and epoch `old+1`, and emits the exact aggregate
 `p5-xnode-crossnode-proof-v1` consumed by the unchanged worker control. The
 event contains that proof's file SHA-256, the broker-v3 release SHA-256,
 `sequence=parent+1`, and one all-cell owner map.
+
+When durable registry restoration begins at a retained sequenced certificate
+rather than the original sequence one, v2 permits that first certificate to
+anchor at its recorded positive sequence only when
+`previous_event_sha256=null` and its event hash and bank receipt validate
+exactly. Every later certificate must increment by exactly one and bind the
+exact preceding event SHA-256. Certificates are never renumbered or mutated;
+gaps, a non-null first parent, or any receipt mismatch fail closed.
 
 Run:
 
@@ -240,23 +362,169 @@ last-published activation manifest. It rejects committed-but-not-activated
 events, sequence mismatch, incomplete activation inventory, stale canonical
 bytes, a different runtime/proof/lease hash, or a release SHA mismatch.
 
-Before starting a worker guardian, archive its old `.xnode` and copy only the
-corresponding staged `registration.json` into a newly created `.xnode`.
-Registrations retain the unchanged control's five fields: `kind`,
-`writer_host`, `lease_sha256`, `event_sha256`, and
-`input_manifest_sha256`. Because node filesystems are separate, copy the
-activated canonical bindings, current certificate/runtime/proof and that
-worker's lease/root bundle to the same bound paths on the worker, verifying
-every hash from `activation/last-published.json`; materialize the staged root
-checkpoint, contract and pointer as the canonical local run root. Do not copy
-the writer's registry lock, intent, durable receipt authority, or another
-cell's registration. Start broker v3 first and guardians only after broker
-status reports the activated sequence.
+Before starting broker v3, inspect every activated resume root's sealed
+`selected_artifact`. The transition root is sufficient for optimizer
+continuation, but final testing still requires the exact earlier selected
+full-state checkpoint when it remains the frozen best model. Use
+`configs/letter-p5-selected-lineage-materialization-v1.example.json` and run
+the following separately on each owner host:
+
+```bash
+python -B scripts/letter/selected_lineage_materialize.py materialize \
+  --request "$PRIVATE_SELECTED_LINEAGE_REQUEST"
+
+python -B scripts/letter/selected_lineage_materialize.py verify \
+  --request "$PRIVATE_SELECTED_LINEAGE_REQUEST"
+```
+
+The request covers every transitioned cell and binds the activated event,
+broker release and exact verified v2 plan. Writer sources must be exact
+receipt-verified checkpoints listed in the plan's durable writer evidence;
+worker sources must be exact receipt- and package-sealed packages listed in
+the plan's durable worker evidence. The tool rechecks the source inventory,
+embedded contract, earliest-best validation lineage and root/selected
+full-state hashes, then atomically creates the canonical run with `latest.json`,
+`selected.json`, validation history and, for workers, only the activated
+five-field registration. It never changes `best_metric`, validation history,
+`selected_artifact`, ownership state, or durable evidence.
+
+Copy each host's `selected-lineage-receipt.json` to the writer and create the
+all-cell deployment receipt:
+
+```bash
+python -B scripts/letter/selected_lineage_materialize.py aggregate \
+  --request "$PRIVATE_SELECTED_LINEAGE_REQUEST" \
+  --receipt "$CELL_1_RECEIPT" --receipt "$CELL_2_RECEIPT" \
+  --output "$PRIVATE_SELECTED_LINEAGE_DEPLOYMENT"
+```
+
+Because node filesystems are separate, first copy the complete canonical file
+inventory named by `activation/last-published.json` to identical bound paths on
+the worker and verify every listed hash. This lets the unchanged full activation
+verifier reject a partial or mixed event even though only worker-owned run roots
+are materialized there. Do not copy the writer's registry lock, intent or
+durable receipt authority. Start broker v3 only after every owner-host
+verification and the exact all-cell aggregate pass. Start guardians only after
+broker status reports the activated sequence.
+
+### Protocol repair after an incompatible activated release
+
+An activated event is not deployable merely because its hashes are internally
+consistent. Before process startup, execute the actual broker and worker
+transport APIs against the staged lease shape. If the activated broker expects
+dynamic bindings while the staged worker protocol has static owner/root
+constants, or if the worker protocol rejects the recovered epoch/root, keep all
+processes stopped. Do not insert a runtime monkeypatch or edit activated bytes.
+
+Use `configs/letter-p5-protocol-repair-v1.example.json` with
+`scripts/letter/p5_protocol_repair.py` to create a new ownership epoch under a
+reviewed runtime and broker release while retaining the exact scientific
+checkpoint roots, host/index/UUID assignments, contracts and inputs:
+
+```bash
+python -B scripts/letter/p5_protocol_repair.py draft \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST" --output "$PRIVATE_REPAIR_DRAFT"
+
+python -B scripts/letter/p5_protocol_repair.py build-readmission \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST"
+
+python -B scripts/letter/p5_protocol_repair.py prepare \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST" --output "$PRIVATE_REPAIR_PLAN"
+
+python -B scripts/letter/p5_protocol_repair.py verify \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST" --plan "$PRIVATE_REPAIR_PLAN"
+
+python -B scripts/letter/p5_protocol_repair.py commit \
+  --request "$PRIVATE_PROTOCOL_REPAIR_REQUEST" --plan "$PRIVATE_REPAIR_PLAN"
+```
+
+The repair must cover exactly the parent event's active transition cells.
+Every active lease gets epoch `parent+1`, a fresh lease ID and the new runtime
+manifest hash; GPU UUID, host, index, batch geometry, root and scientific
+contract remain exact. Inactive owners remain byte-identical and are excluded
+from broker service through the event's exact `active_cells` fence. The repaired
+runtime manifest also binds the restored ownership-registry path explicitly;
+broker v4 must not silently fall back to an empty `XROOT/ownership` directory.
+
+When a recovered root still names an older validation-selected checkpoint, the
+tool creates a separate receipt-verified selected-only package under the new
+lease. Its attestation says `historically_accepted=false`, uses the lease root
+only as context, carries no normal generation or parent-seal claim, and is
+never placed in the outbox, accepted ledger, head pointer or ordinary ack
+directory. Broker v4 may issue the distinct
+`p5-xnode-selected-readmission-ack-v1` only for that exact event-bound
+selection. Normal checkpoints still require ordinary accepted-chain evidence.
+
+Protocol-repair activation v2 binds the new certificate/runtime/proof/bindings,
+all active leases and unchanged roots, clean worker registrations and the
+selected-readmission authority. It preserves the prior activation as immutable
+evidence and publishes the new activation last. An interrupted commit remains
+fenced. Re-running `commit` with the identical plan idempotently recovers the
+prepared-intent, durable-event and committed-certificate crash windows and
+restages canonical files; after a complete stage, `activate` requires the exact
+plan digest and certificate hash. Stale, foreign or partial staging cannot be
+blessed.
 
 Stop on any ancestry/sequence mismatch, pending foreign intent, missing or
 partial full state, stale UUID, failed continuation/memory/geometry proof,
 epoch skip, changed role/host/index/batch/input/runtime source, certificate or
-receipt mismatch, partial cell set, stale canonical file, inherited transport
-state, or broker release mismatch. Never repair a stop by editing a lease,
-inventing a writer ledger, reusing an old registration/outbox, or resuming from
-weights alone.
+receipt mismatch, partial cell set, stale canonical file, absent or divergent
+selected-model lineage, inherited transport state, or broker release mismatch.
+Never repair a stop by editing a lease, resetting selection state, inventing a
+writer ledger, reusing an old registration/outbox, or resuming from weights
+alone.
+
+### Exact validation-history replay recovery
+
+`validation_history_recovery.py` is a separate maintenance overlay for a
+completed P5 run whose sealed `validation-history.json` survives but one or
+more canonical `validation/epoch-NN.jsonl` files do not. It does not change the
+frozen P5 driver, selected model, metrics, test result, checkpoint state, or
+ownership protocol.
+
+Each replay is bound to the current ownership certificate and lease, the
+hash/receipt-authenticated parent ownership event, the exact frozen checkpoint
+and its bank acknowledgement, the frozen checkpoint's embedded 20-entry
+history, the runtime/input identity, and the physical host/GPU UUID. Historical
+checkpoints must appear in the parent event's complete contiguous
+`verified_checkpoints` inventory for writer cells or exact
+`verified_packages` inventory for worker cells. A checkpoint produced after
+the recovered root instead requires its own current-run full-state bank
+acknowledgement for a writer or `p5-xnode-bank-ack-v1` plus the exact package
+receipt for a worker. Current writer validation checkpoints must remain within
+the certified recovery root and final frozen bounds, use the same contract,
+advance monotonically by validation epoch/step, and bind the declared writer.
+Only epoch20 must be the exact validation parent of the final frozen state,
+including the frozen model and full state/sampler transition. Replay is
+accepted only when metrics, all-user 20-beam prediction bytes, and the
+checkpoint's exact prior history prefix match.
+
+If a canonical validation file still exists, `recover` does not repeat model
+inference when its exact SHA already matches the frozen history. It instead
+loads the authority-bound full checkpoint, verifies the unchanged contract,
+optimizer boundary, validation phase/epoch/global step and complete prior
+history prefix, then copies the exact canonical bytes into immutable recovery
+evidence. Missing files still require full bound-GPU replay. Both paths produce
+the same fail-closed receipt schema; `existing_exact_verified` never repairs or
+rewrites the surviving canonical file.
+
+Recovery receipts are immutable and both roles require all 20 epochs. Writer
+publication stops the broker, owns the broker/native-pointer/common-bank locks,
+banks an isolated complete result and binding packet, and only then links the
+canonical files and publishes `results-banked.json`. Downstream writer audit
+must require `verify-complete` and the durable
+`validation-history-recovery-complete.json` gate.
+
+Worker publication is deliberately split. `publish-worker` requires the
+cell's guardian and learner stopped, but leaves the shared broker running for
+other cells. On the bound worker host it rehashes every recovery receipt,
+atomically links all canonical validation files under the native pointer lock,
+validates the complete result inventory, and emits a self-contained evidence
+packet. Node0 alone copies that packet beneath the activation-hashed durable
+root under the common bank lock. `verify-worker-evidence` checks the exact
+durable receipt before writing
+`validation-history-recovery-worker-ready.json`; only then may the unchanged
+guardian restart. The guardian builds the ordinary result snapshot and
+broker-v4 performs its normal accepted-frozen-head result export. Stop on any
+replay, ancestry, package/receipt, GPU, history-prefix, worker-fence,
+canonical-inventory, durable-evidence, result, or binding mismatch.
