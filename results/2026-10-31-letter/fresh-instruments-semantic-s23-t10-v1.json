@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "dataset": "Instruments",
+  "variant": "semantic",
+  "seed": 23,
+  "temperature": 1.0,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.0605118682383336,
+      "ndcg@1": 0.0605118682383336,
+      "recall@5": 0.08703374777975133,
+      "ndcg@5": 0.07380096532647815,
+      "recall@10": 0.10891328919748103,
+      "ndcg@10": 0.08082304100677681
+    },
+    "item": {
+      "recall@1": 0.059260455352817695,
+      "ndcg@1": 0.059260455352817695,
+      "recall@5": 0.08658969804618118,
+      "ndcg@5": 0.07310361715561606,
+      "recall@10": 0.10842887130631358,
+      "ndcg@10": 0.08011363250849315
+    }
+  },
+  "training_epochs": 98,
+  "training_updates": 12642,
+  "selected_epoch": 78,
+  "selected_checkpoint": "checkpoint-10062",
+  "validation_evaluations_checked": 98,
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 18000,
+  "tokenizer_excess_collision_items": 27,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "model_sha256": "7e248283da95e1f8e2a2db1597bc500d84e4abbf68c238c383e1b6d5f94b069c",
+  "predictions_sha256": "75bf36912517df4dd6f1f433f19c4b9f375126e2c1aedb4f39db85ce8ebdb387",
+  "result_sha256": "e4adeb6b8565cee17d8d6454c97cd11093e77afc44d4fbef06f9e42f958537c8",
+  "ack_sha256": "e78d8371d3ccdddc716969996f7c6a3c38797e09d35579c091b3346bf9e025dd",
+  "durable_receipts": {
+    "run": "2593dfe185cfa0399092e4a2978fd7ea1a016833e417381e351abafce2336b4c",
+    "evaluation": "5a3107d2856dac0045f35cea8a48d47fab21115fe62df4ee793f0931a37b4e13",
+    "result": "0c3bb8205a0e48ffc5ae9202335ff4959357e68ecf4a8cc947d87df95a5e4c7e"
+  },
+  "private_evidence_bundle": "verified-results/fresh-instruments-semantic-s23-t10-v1",
+  "durable_receipts_match_immutable_local_inventories": true,
+  "model_inference_performed": false
+}

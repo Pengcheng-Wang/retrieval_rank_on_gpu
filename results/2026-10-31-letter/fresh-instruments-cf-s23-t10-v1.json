@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "dataset": "Instruments",
+  "variant": "cf",
+  "seed": 23,
+  "temperature": 1.0,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.059987082189568865,
+      "ndcg@1": 0.059987082189568865,
+      "recall@5": 0.08558049410624899,
+      "ndcg@5": 0.0728179924261175,
+      "recall@10": 0.10778298078475698,
+      "ndcg@10": 0.07994615177735408
+    },
+    "item": {
+      "recall@1": 0.05881640561924754,
+      "ndcg@1": 0.05881640561924754,
+      "recall@5": 0.08541902147585984,
+      "ndcg@5": 0.07224318334462962,
+      "recall@10": 0.10725819473599225,
+      "ndcg@10": 0.0792446355952341
+    }
+  },
+  "training_epochs": 87,
+  "training_updates": 11223,
+  "selected_epoch": 67,
+  "selected_checkpoint": "checkpoint-8643",
+  "validation_evaluations_checked": 87,
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 18000,
+  "tokenizer_excess_collision_items": 25,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "model_sha256": "f08104fb7404ea876caea7552f89ae0c8f8fa0f77a3a45f76ca30875b0797ade",
+  "predictions_sha256": "8c3eb52954390be32f7e973216af69ddbeec7037074377da7de91334fb907f04",
+  "result_sha256": "b6f49f36c7fd5b3afce8e537dc344fc1a0fcfaf358badfe7e4e706b624ca7a67",
+  "ack_sha256": "e3f285276591f0514254f8ea6a5b44f95dcd751ce93653e133e4ef72dfe79ad4",
+  "durable_receipts": {
+    "run": "8fe292c2fa15cf799069161f81edb363710eb7026480cd33f24d1fc8c4e91b11",
+    "evaluation": "6a82870785860b5f7045ed3ba822663205f0e0805ba2b4510b4fb4b8b23b3905",
+    "result": "18baf00bcb587b9e16413000d3d79abe065d1f67d9729acb9bffd2711217304a"
+  },
+  "private_evidence_bundle": "verified-results/fresh-instruments-cf-s23-t10-v1",
+  "durable_receipts_match_immutable_local_inventories": true,
+  "model_inference_performed": false
+}

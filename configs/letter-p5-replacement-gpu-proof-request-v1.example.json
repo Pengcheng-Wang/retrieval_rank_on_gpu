@@ -1,0 +1,52 @@
+{
+  "kind": "p5-replacement-gpu-proof-request-v1",
+  "cell": "PRIVATE_CELL",
+  "binding": {
+    "host": "PRIVATE_CURRENT_HOST",
+    "gpu": 0,
+    "gpu_uuid": "GPU-PRIVATE-CURRENT-UUID",
+    "control_root": "PRIVATE_ABSOLUTE_XROOT"
+  },
+  "checkpoint": "PRIVATE_ABSOLUTE_CHOSEN_COMPLETE_CHECKPOINT",
+  "contract": "PRIVATE_ABSOLUTE_UNCHANGED_CONTRACT_JSON",
+  "contract_sha256": "PRIVATE_CONTRACT_FILE_SHA256",
+  "inputs": {
+    "native": {
+      "path": "PRIVATE_ABSOLUTE_NATIVE_SOURCE_ROOT",
+      "anchor": "PRIVATE_ABSOLUTE_NATIVE_SOURCE_MANIFEST",
+      "anchor_sha256": "PRIVATE_NATIVE_ANCHOR_SHA256"
+    },
+    "upstream": {
+      "path": "PRIVATE_ABSOLUTE_UPSTREAM_RELEASE_ROOT",
+      "anchor": "PRIVATE_ABSOLUTE_UPSTREAM_RELEASE_RECEIPT",
+      "anchor_sha256": "PRIVATE_UPSTREAM_ANCHOR_SHA256"
+    },
+    "manifest": {
+      "path": "PRIVATE_ABSOLUTE_INPUT_MANIFEST_JSON",
+      "anchor": "PRIVATE_ABSOLUTE_INPUT_MANIFEST_JSON",
+      "anchor_sha256": "PRIVATE_INPUT_MANIFEST_SHA256"
+    },
+    "recipe": {
+      "path": "PRIVATE_ABSOLUTE_RECIPE_JSON",
+      "anchor": "PRIVATE_ABSOLUTE_RECIPE_JSON",
+      "anchor_sha256": "PRIVATE_RECIPE_SHA256"
+    },
+    "model": {
+      "path": "PRIVATE_ABSOLUTE_MODEL_ROOT",
+      "anchor": "PRIVATE_ABSOLUTE_MODEL_ASSET_RECEIPT_JSON",
+      "anchor_sha256": "PRIVATE_MODEL_RECEIPT_SHA256"
+    },
+    "corpus": {
+      "path": "PRIVATE_ABSOLUTE_CORPUS_ROOT",
+      "anchor": "PRIVATE_ABSOLUTE_CORPUS_ADMISSION_JSON",
+      "anchor_sha256": "PRIVATE_CORPUS_ADMISSION_SHA256"
+    },
+    "runtime": {
+      "path": "PRIVATE_ABSOLUTE_RUNTIME_SOURCE_ROOT",
+      "anchor": "PRIVATE_ABSOLUTE_RUNTIME_SOURCE_ROOT/p5_run.py",
+      "anchor_sha256": "PRIVATE_FROZEN_P5_RUN_SHA256"
+    }
+  },
+  "output": "PRIVATE_ABSOLUTE_XROOT/gates/PRIVATE_FRESH_ATTEMPT",
+  "microbatch_size": 1
+}

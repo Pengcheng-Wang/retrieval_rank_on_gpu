@@ -1,0 +1,57 @@
+{
+  "status": "pass",
+  "arm": "clusters-15",
+  "dataset": "Instruments",
+  "seed": 42,
+  "temperature": 0.7,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.05962376877119328,
+      "ndcg@1": 0.05962376877119328,
+      "recall@5": 0.08445018569352494,
+      "ndcg@5": 0.07205997109009124,
+      "recall@10": 0.10677377684482481,
+      "ndcg@10": 0.07925252296224222
+    },
+    "item": {
+      "recall@1": 0.058533828516066526,
+      "ndcg@1": 0.058533828516066526,
+      "recall@5": 0.08380429517196836,
+      "ndcg@5": 0.07132724943294376,
+      "recall@10": 0.10624899079606007,
+      "ndcg@10": 0.07855775599100438
+    }
+  },
+  "training_epochs": 86,
+  "training_updates": 11094,
+  "selected_epoch": 66,
+  "selected_checkpoint": "checkpoint-8514",
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 12000,
+  "tokenizer_utilization": [
+    156,
+    256,
+    256,
+    256
+  ],
+  "tokenizer_excess_collision_items": 25,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "admission_sha256": "305b38dfc439c1e62228349329ff214d0ee774e52cc0b384a019c232a4faf90e",
+  "model_sha256": "677b51bc3ddea044c3b1730467fb1997db3d14ccc9533dab3c7e2c62ba5fcb3b",
+  "predictions_sha256": "b08017879bb355fe93b6566527bb9fda8ae73b7f9aebdbfbcfd483a23648b528",
+  "result_sha256": "1c81cf3613c0605a2afa02990c3c0a1eba505d9e0b979c28dc6a799a6806825e",
+  "ack_sha256": "e084595d8ad60fc143d5a7708ce33dc90adc3290cd6c2ebb7a5cb8f42f409ec7",
+  "durable_receipts": {
+    "run": "ed826e8095dccf983cbff3d1bc180267623d10cdeaad32a225f9531112906790",
+    "evaluation": "8b032b7924a41e7078ab43a0687f04a9577073480f93dd39f9a826b64aab65ef",
+    "result": "70fd8be7006cfe0902d7e8411e9fac132e700dd5dcb03e574a0eeb943b78d624"
+  },
+  "private_evidence_bundle": "verified-results/figure8-downstream-clusters15-s42-t0p7-v1",
+  "selection": "within-arm validation only; test descriptive",
+  "all_predictions_selection_and_durable_bytes_reverified": true,
+  "model_inference_performed": false
+}

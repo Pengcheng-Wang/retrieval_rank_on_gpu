@@ -1,0 +1,57 @@
+{
+  "status": "pass",
+  "arm": "codes-512",
+  "dataset": "Instruments",
+  "seed": 42,
+  "temperature": 0.7,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.06071370902632004,
+      "ndcg@1": 0.06071370902632004,
+      "recall@5": 0.08788147908929436,
+      "ndcg@5": 0.07439116398615801,
+      "recall@10": 0.10903439367027289,
+      "ndcg@10": 0.08117004285204027
+    },
+    "item": {
+      "recall@1": 0.05962376877119328,
+      "ndcg@1": 0.05962376877119328,
+      "recall@5": 0.08755853382851607,
+      "ndcg@5": 0.07376302382447693,
+      "recall@10": 0.1087114484094946,
+      "ndcg@10": 0.08053927653170811
+    }
+  },
+  "training_epochs": 86,
+  "training_updates": 11094,
+  "selected_epoch": 66,
+  "selected_checkpoint": "checkpoint-8514",
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 18000,
+  "tokenizer_utilization": [
+    204,
+    512,
+    512,
+    512
+  ],
+  "tokenizer_excess_collision_items": 25,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "admission_sha256": "113f0cf11b12377b2354ca763948890b68407a71fd70b55de6eaee599114d8c7",
+  "model_sha256": "713262e0ef26b2b7ce3cd722216762ef321641831899eb664a8f8e272fce73af",
+  "predictions_sha256": "16f873e6959bc6069eb18596338b5aba7f33ecde3e02711ce7d9d7d9cb211ed6",
+  "result_sha256": "ba7ed91e57dd35dafa9c2d8391b8b6a267dfb1abda4da4017305bfcb2c5b68eb",
+  "ack_sha256": "d35109e43aaca22b0bb7834fcc813bc62c19fab4b1afeeb1fd74043133752cb1",
+  "durable_receipts": {
+    "run": "a4407b6c67d849cfe0d0204ee28d683bd88025836ba6e96779e903d9e3bc196d",
+    "evaluation": "b9573d8f756538afedd8e6a67bdeb5f107e866f61577c0e94b386222c32a6dff",
+    "result": "466b6325bfaf3f99cbe71e3a6249b28aec04d230e0cbb647606b9f3b69999f0d"
+  },
+  "private_evidence_bundle": "verified-results/figure8-downstream-codes512-s42-t0p7-v1",
+  "selection": "within-arm validation only; test descriptive",
+  "all_predictions_selection_and_durable_bytes_reverified": true,
+  "model_inference_performed": false
+}

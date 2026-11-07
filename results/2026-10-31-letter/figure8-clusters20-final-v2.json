@@ -1,0 +1,118 @@
+{
+  "status": "pass",
+  "arm": "clusters-20",
+  "bundle": "clusters-20-completed-54891942ed07c473",
+  "selected_epoch": 20000,
+  "final_epoch": 20000,
+  "index_sha256": "3f0016603eec91f9a4fe7c13e0aa3e5b43a5cda4c77d0763c64607a6157eed69",
+  "codes_sha256": "2f0cac25aba252e8c50ea35902a4686a5ef92a98c2ea57780e4714fe28ad982e",
+  "collisions": {
+    "before": 71,
+    "after": 25,
+    "largest_group": 3
+  },
+  "utilization_by_level": [
+    147,
+    256,
+    256,
+    256
+  ],
+  "bundle_completed_sha256": "bb2a60a17e31245d5c2c2029e3c493edda4a4ad46d60053f33e3c2f9ca955af2",
+  "run_completed_sha256": "e643c09c1fb117da0d76d6987816b7304b65caa22697cdedb0c7cf2d2ba3b02d",
+  "durable_bank_receipt_sha256": "cda9d516f2eac9ac3221eeb4c0cf0d4eca8a6f11b0ffe6b300c6914d041af222",
+  "files": 100,
+  "kmeans_compatibility_admission_sha256": "3e0e17464303c99cfa08136876912c7438b6fde6e75d36f643f1a315066fab13",
+  "kmeans_compatibility": {
+    "policy": "rq-kmeans-cdf-endpoint-v1",
+    "classification": "compatibility correction at undefined native CDF endpoint indexing",
+    "not_claimed": "bitwise native execution past the deterministic crash",
+    "admission_sha256": "3e0e17464303c99cfa08136876912c7438b6fde6e75d36f643f1a315066fab13",
+    "base_epoch": 11000,
+    "base_state_sha256": "300f6ecd547f8625d26399e8350050533c40cec28a4bd9e56c1e0e6d298ce63d",
+    "final_attestation_sha256": "aeba91739a92506e24cba104b61914688bfaca13fef851deea5f3a066cd16445",
+    "export_attestation_sha256": "cc71b31e729ae8a61036a354f7f9d25286a71ba79948025e6aa2d57f90251df1",
+    "completion_used_compatibility": true,
+    "native_artifact_identity_claimed": false,
+    "selected_model_repair_dependent": true,
+    "selected_state_sha256": "0b436758e2bfa66c32fb47c8aae8945d1609d9345ed3b38e666003fa5fe7fe82",
+    "selected_attestation_sha256": "aeba91739a92506e24cba104b61914688bfaca13fef851deea5f3a066cd16445",
+    "first_training_correction_epoch": 11431,
+    "cumulative_runtime_summary": {
+      "tasks": 360200,
+      "failed_tasks": 0,
+      "corrections": 1,
+      "phases": {
+        "training": 1
+      },
+      "worker_pids": [
+        96195,
+        96196,
+        96197,
+        96198,
+        96199,
+        96200,
+        96201,
+        96202,
+        96203,
+        96204
+      ],
+      "native_defined": 360199,
+      "native_faults": 1
+    },
+    "corrections_by_epoch_level_phase": {
+      "11431": {
+        "training": {
+          "1": 1
+        }
+      }
+    },
+    "export_corrections": 0,
+    "downstream_ids_repair_dependent": true,
+    "original_scientific_recipe_and_selection_unchanged": true,
+    "final_runtime_summary": {
+      "tasks": 360200,
+      "failed_tasks": 0,
+      "corrections": 1,
+      "phases": {
+        "training": 1
+      },
+      "worker_pids": [
+        96195,
+        96196,
+        96197,
+        96198,
+        96199,
+        96200,
+        96201,
+        96202,
+        96203,
+        96204
+      ],
+      "native_defined": 360199,
+      "native_faults": 1
+    },
+    "export_runtime_summary": {
+      "tasks": 40,
+      "failed_tasks": 0,
+      "corrections": 0,
+      "phases": {
+        "export": 0
+      },
+      "worker_pids": [
+        96195,
+        96196,
+        96197,
+        96198,
+        96199,
+        96200,
+        96201,
+        96202,
+        96203,
+        96204
+      ],
+      "native_defined": 40,
+      "native_faults": 0
+    }
+  },
+  "audit_source_sha256": "e530569cd2350ecac23a3cc908ab03375205aaf1095c6f7786f624866927dee3"
+}

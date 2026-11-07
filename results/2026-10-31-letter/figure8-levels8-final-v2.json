@@ -1,0 +1,127 @@
+{
+  "status": "pass",
+  "arm": "levels-8",
+  "selected_epoch": 12000,
+  "final_epoch": 20000,
+  "index_sha256": "4ff7287588f35a22218740a5234edb88eb3c4d24d3a9a6698e4c65ae207ab2e6",
+  "codes_sha256": "af482e3569b50e67a14cb45a6efa43651fc13f5703956fd571039fd4aed33247",
+  "collisions": {
+    "before": 25,
+    "after": 25,
+    "largest_group": 3
+  },
+  "utilization_by_level": [
+    194,
+    256,
+    256,
+    256,
+    256,
+    256,
+    256,
+    256
+  ],
+  "bundle": "levels-8-completed-0dd3bb05d988ad9a",
+  "bundle_completed_sha256": "d55567b1462e4d3a6322753c1f31588126cc13cdfe2a5f451e14cf1b4af76aee",
+  "run_completed_sha256": "fa4434a445e9dd2a20a25cbc6cb33b6ab26f830e0a7788f515d67342d970ac2d",
+  "durable_bank_receipt_sha256": "b8901a05816aa6a79c7ad1e4c09428372f7ed264003c87b6ccfa5282ab129add",
+  "compatibility": {
+    "policy": "rq-kmeans-cdf-endpoint-v1",
+    "classification": "compatibility correction at undefined native CDF endpoint indexing",
+    "not_claimed": "bitwise native execution past the deterministic crash",
+    "admission_sha256": "aeb68758b8bde0f5957c5f740e434eabc801e520499a6748694c85b355510836",
+    "base_epoch": 8000,
+    "base_state_sha256": "eda18886eba15c16d92ba6be23cd6afe11d55ccbdafbfe7b6647e1aa22b00dcc",
+    "final_attestation_sha256": "15bb27e6423232a85c125cea4a8c4014681f2baa1735a97cda5d8879aa49bd2a",
+    "export_attestation_sha256": "3c41dc036599d099ddcff1363af4aad848556acb3ac25df860a6c97e5e024a2b",
+    "completion_used_compatibility": true,
+    "native_artifact_identity_claimed": false,
+    "selected_model_repair_dependent": true,
+    "selected_state_sha256": "45f541c4c23c63329c3732667da515852a4e331ea1ead6d4d5a2562dd0134df9",
+    "selected_attestation_sha256": "2f7d71f7446c13a5650b13f68c18bd5a64872b8a8e895a58791e9a3e4e186bb8",
+    "first_training_correction_epoch": 8200,
+    "cumulative_runtime_summary": {
+      "tasks": 960480,
+      "failed_tasks": 0,
+      "corrections": 2,
+      "phases": {
+        "training": 2
+      },
+      "worker_pids": [
+        837034,
+        837035,
+        837036,
+        837037,
+        837038,
+        837039,
+        837040,
+        837041,
+        837042,
+        837043
+      ],
+      "native_defined": 960478,
+      "native_faults": 2
+    },
+    "corrections_by_epoch_level_phase": {
+      "18261": {
+        "training": {
+          "2": 1
+        }
+      },
+      "8200": {
+        "training": {
+          "4": 1
+        }
+      }
+    },
+    "export_corrections": 0,
+    "downstream_ids_repair_dependent": true,
+    "original_scientific_recipe_and_selection_unchanged": true,
+    "final_runtime_summary": {
+      "tasks": 960480,
+      "failed_tasks": 0,
+      "corrections": 2,
+      "phases": {
+        "training": 2
+      },
+      "worker_pids": [
+        837034,
+        837035,
+        837036,
+        837037,
+        837038,
+        837039,
+        837040,
+        837041,
+        837042,
+        837043
+      ],
+      "native_defined": 960478,
+      "native_faults": 2
+    },
+    "export_runtime_summary": {
+      "tasks": 80,
+      "failed_tasks": 0,
+      "corrections": 0,
+      "phases": {
+        "export": 0
+      },
+      "worker_pids": [
+        837034,
+        837035,
+        837036,
+        837037,
+        837038,
+        837039,
+        837040,
+        837041,
+        837042,
+        837043
+      ],
+      "native_defined": 80,
+      "native_faults": 0
+    }
+  },
+  "audit_source_sha256": "5d449f7d88cfe54011f6fce58a0fc9e30b6be957c09276b4dadfaed262dd0907",
+  "compatibility_verifier_sha256": "485c8dc05a1948fd2fd4b439de62f2bb5bc7e0446f3415f8fc7a2d5542dae296",
+  "private_evidence_bundle": "verified-results/figure8-levels8-final-v2"
+}

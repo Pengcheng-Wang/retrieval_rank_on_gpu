@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "dataset": "Beauty",
+  "variant": "cf",
+  "seed": 23,
+  "temperature": 1.0,
+  "test_users": 22363,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.012297097884899164,
+      "ndcg@1": 0.012297097884899164,
+      "recall@5": 0.03988731386665474,
+      "ndcg@5": 0.026048241400280857,
+      "recall@10": 0.06336359164691678,
+      "ndcg@10": 0.033620105067472206
+    },
+    "item": {
+      "recall@1": 0.01220766444573626,
+      "ndcg@1": 0.01220766444573626,
+      "recall@5": 0.039619013549166034,
+      "ndcg@5": 0.025872819523618883,
+      "recall@10": 0.06327415820775388,
+      "ndcg@10": 0.033503308634181786
+    }
+  },
+  "training_epochs": 98,
+  "training_updates": 12642,
+  "selected_epoch": 78,
+  "selected_checkpoint": "checkpoint-10062",
+  "validation_evaluations_checked": 98,
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 20000,
+  "tokenizer_excess_collision_items": 8,
+  "tokenizer_largest_collision_group": 3,
+  "claim_type": "compatible_backbone_method_replication",
+  "exact_original_llama1_reproduction": false,
+  "model_sha256": "8326f9e2e071e205b780017d01b50f1fd6cbaf98e260852e961ce50a740072b1",
+  "predictions_sha256": "961b8ec8f4f1c7f6de03551ecaba6fb1a97c1b0d1421785be684a73f9f4c6f7e",
+  "result_sha256": "cb4ce9e25ecbb64ef6dc1503582663f594e9eb2d4d5532ca5e35fe9bb2716f0b",
+  "ack_sha256": "6c10791318b6cee3cf2e36f192932146213319f13fc777f1a451daba9a1d08da",
+  "durable_receipts": {
+    "run": "ab64a0928453b2b4c2a7282090c58b8abdb05b6dc5febedd3128fba69c1c339f",
+    "evaluation": "9f602089e773e54372f4e8df14db7b19639d606189de6fb34313404bd7287c44",
+    "result": "b909a6bc79978cf0c679d030a435e46c020ecdec6de8464f3e0f41d8987fd46d"
+  },
+  "private_evidence_bundle": "verified-results/fresh-beauty-cf-s23-t10-v1",
+  "durable_receipts_match_immutable_local_inventories": true,
+  "model_inference_performed": false
+}

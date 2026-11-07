@@ -1,0 +1,118 @@
+{
+  "status": "pass",
+  "dataset": "Instruments",
+  "variant": "diversity",
+  "seed": 17,
+  "temperature": 1.0,
+  "test_users": 24772,
+  "beams": 20,
+  "metrics": {
+    "code": {
+      "recall@1": 0.05986597771677701,
+      "ndcg@1": 0.05986597771677701,
+      "recall@5": 0.08582270305183272,
+      "ndcg@5": 0.07295852154631102,
+      "recall@10": 0.10632972711125464,
+      "ndcg@10": 0.07957141184291316
+    },
+    "item": {
+      "recall@1": 0.05873566930405296,
+      "ndcg@1": 0.05873566930405296,
+      "recall@5": 0.08566123042144357,
+      "ndcg@5": 0.07238916453694552,
+      "recall@10": 0.10556273211690619,
+      "ndcg@10": 0.07880424392815248
+    }
+  },
+  "training_epochs": 86,
+  "selected_epoch": 66.0,
+  "validation_evaluations_checked": 86,
+  "tokenizer_epochs": 20000,
+  "tokenizer_selected_epoch": 20000,
+  "compatibility_corrections": 0,
+  "export_corrections": 0,
+  "lineage": {
+    "kind": "fresh-id-compatible-rebuild",
+    "track_id": "letter-openllama7b-v2-method-replication",
+    "claim_type": "compatible_backbone_method_replication",
+    "synthetic_fixture": false,
+    "exact_original_llama1_reproduction": false,
+    "dataset": "Instruments",
+    "variant": "diversity",
+    "semantic_encoder": {
+      "model_id": "openlm-research/open_llama_7b_v2",
+      "revision": "e5961def23172a2384543940e773ab676033c963",
+      "dimension": 4096,
+      "dtype": "float32",
+      "role": "item semantic encoder only; NOT the downstream T5 generator"
+    },
+    "downstream_generator": {
+      "backend": "native LETTER-TIGER",
+      "initialization": "author random T5 configuration",
+      "d_model": 128,
+      "d_ff": 1024,
+      "d_kv": 64,
+      "num_heads": 6,
+      "num_layers": 4,
+      "dropout_rate": 0.1,
+      "max_history_items": 20,
+      "model_max_length": 512
+    },
+    "method_model_identity_applies_to": "semantic_encoder_only_in_this_T5_track",
+    "method_spec_sha256": "f7ddc830ee5e96ac4e9a8d8395d1bb0cc66d1104cf350e98c73688002ab6fa2f",
+    "execution_sha256": "fceeeefb3c28b689d50ba25ee9810211478a1cdb3cb144ae2a11dcf0ba70990a",
+    "tokenizer_recipe_sha256": "0b85ba628c9a7f679472f9bdb1d228528cb9933df750c66a552b168ece9c7482",
+    "input_provenance": {
+      "semantic_sha256": "430bcca5fe448d9ab016685747516969262ae121deaec1606988836c3b8d4933",
+      "embedding_receipt_sha256": "ff2f000ee187a91df4ef978a3fac40910129669997b68ce8e6bf5210e58ddb38",
+      "semantic_config_sha256": "823592160ba770ada0ef3029088c2fef38a58545bc2f1cdf7a2365a823d4113d",
+      "semantic_completed_sha256": "b1bee963521ac22a868b38bbf4610af6d21fe8615e1f257bd79a4416e85624cf",
+      "cf_sha256": "be837526785d710588c24901e3639d7a1d9a79b1fe8dc48d963cedc4241df52a",
+      "cf_config_sha256": "f92a34af6f178d4879e057e06629988b82f33491a594c5f850892ca630f93383",
+      "cf_completed_sha256": "ad05418628c53295e34b64de91301e2bec927f707af32cb82523eb0108eb4b82",
+      "teacher_sha256": "1f3f6a1936c2fb38f6a6d2bbb58615f8348d988adc0360751834e1e5f134f308"
+    },
+    "rq": {
+      "rq_run_id": "openllama-v2-rq-Instruments-diversity-s42",
+      "run_config_sha256": "33dfbf5b19288dfcafe89dd1024c83667c199d8f6475a4884243971202f04da1",
+      "run_completed_sha256": "c20d589d25dbe58b0f7f72a7869f8de4d696b3e15dc82a0b6d89bad65d0ab727",
+      "bundle_completed_sha256": "843dbc808a70b1bf9e50e049b099ca305100f7b1150a458346785261d8806081",
+      "final_epoch": 20000,
+      "final_state_sha256": "e93b7ef31379dc5e58a3bd91e0f18a9f47109719a459d9bbd052059a7e7a46c4",
+      "selected_epoch": 20000,
+      "selected_checkpoint": "checkpoints/epoch-20000",
+      "selected_state_sha256": "e93b7ef31379dc5e58a3bd91e0f18a9f47109719a459d9bbd052059a7e7a46c4",
+      "selected_receipt_sha256": "a6dcdcef8317ca1da837c00d409112ce2bed311a905f6f091d2297502e5c9ebd",
+      "index_sha256": "1ec3c957d5d1f1c2ffff1afa3b8d471c1cf7af136229b34f174775a43414102a",
+      "codes_sha256": "e7d422b179a60a2f561617cd35b8bc2fd3ffef77ee53d8462fc3aac1a4d72698",
+      "export_sha256": "a0b314dc673fe1488fdfb44d3288afd96c3864c2373b6f1e0ae2633e27110824",
+      "collisions": {
+        "items": 9922,
+        "unique_sids": 9896,
+        "excess_collision_items": 26,
+        "collision_groups": 24,
+        "items_in_collision_groups": 50,
+        "largest_group": 3
+      }
+    },
+    "durable_proof": {
+      "bank_receipt_sha256": "1a8c4a45d460a82af9a9b62a213d64b2d76d42d0112f975035b89e4bf8d18eb6",
+      "bundle_completed_sha256": "843dbc808a70b1bf9e50e049b099ca305100f7b1150a458346785261d8806081",
+      "run_completed_sha256": "c20d589d25dbe58b0f7f72a7869f8de4d696b3e15dc82a0b6d89bad65d0ab727",
+      "verification": "all durable bundle bytes checked under node0 shared bank lock"
+    },
+    "index_sha256": "1ec3c957d5d1f1c2ffff1afa3b8d471c1cf7af136229b34f174775a43414102a",
+    "codes_sha256": "e7d422b179a60a2f561617cd35b8bc2fd3ffef77ee53d8462fc3aac1a4d72698"
+  },
+  "model_sha256": "522b19d1706818a9362831329e6167b991022f9cafcf0fbc554b57da734f407f",
+  "predictions_sha256": "01d23647b7920ea60d702f917e55a62810bbed54173be5c26e0f84d889950325",
+  "result_sha256": "b901fc9d1bbdd1a01c2ee915f525f35ca240f97c7ec456bf965b60ebec7b7b07",
+  "bank_receipt_files_sha256": {
+    "runs/openllama-v2-fresh-t5-Instruments-diversity-s17-t10-v1": "cfd868b24b3969e6c64ea0a10899c7ca03bf335219fc505cd12acfe8467c0b70",
+    "evaluations/openllama-v2-fresh-t5-Instruments-diversity-s17-t10-v1/evaluation-attempt-001": "83b21dfcab619de17b42802b734b3b08b41d9ed46684bea6f36b9cb21fe17b56",
+    "results/openllama-v2-fresh-t5-Instruments-diversity-s17-t10-v1": "c6179e641e4f8b32641ea240fff7299ed556ca266a383351ee358c30ae654212"
+  },
+  "durable_receipts_match_immutable_local_inventories": true,
+  "model_inference_performed": false,
+  "audit_source_sha256": "abb098cd9ea98d172fb354ca71a1c1e0b7fe6665ef1dca7913e45d672661c533"
+}

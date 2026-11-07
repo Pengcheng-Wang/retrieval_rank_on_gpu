@@ -256,6 +256,48 @@ def test_ack_is_bound_to_owner_and_every_native_state_file(workspace):
         module.validate_ack(bad, current, header)
 
 
+def test_selected_readmission_ack_is_explicitly_nonhistorical(workspace):
+    module = protocol(workspace)
+    run, current, next_ = package_fixture(module, workspace)
+    package = module.publish_checkpoint(run, next_, current)
+    receipt = {"files": module.file_manifest(package)}
+    checkpoint = module.checkpoint_header(next_)
+    ack = {
+        "kind": "p5-xnode-selected-readmission-ack-v1",
+        "status": "verified",
+        "writer_host": module.WRITER_HOST,
+        "cell": current["cell"],
+        "lease_id": current["lease_id"],
+        "lease_sha256": module.digest(current),
+        "ownership_epoch": current["ownership_epoch"],
+        "registry_event_sha256": "c" * 64,
+        "checkpoint": checkpoint,
+        "destination": "private-selected-readmission",
+        "bank_receipt": receipt,
+        "bank_receipt_sha256": module.digest(receipt),
+        "readmission": {
+            "kind": "p5-selected-lineage-readmission-v1",
+            "historically_accepted": False,
+            "wire_generation": 0,
+            "root_seal_sha256": current["root"]["seal_sha256"],
+            "source_event_sha256": "d" * 64,
+            "selected_lineage_deployment_sha256": "e" * 64,
+            "package_seal_sha256": module.sha(package / "package-seal.json"),
+        },
+    }
+
+    assert module.validate_ack(ack, current, checkpoint)
+
+    bad = copy.deepcopy(ack)
+    bad["readmission"]["historically_accepted"] = True
+    with pytest.raises(ValueError, match="readmission|historical"):
+        module.validate_ack(bad, current, checkpoint)
+    bad = copy.deepcopy(ack)
+    bad["readmission"]["root_seal_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="readmission|root"):
+        module.validate_ack(bad, current, checkpoint)
+
+
 def test_probe_packages_cannot_be_accepted_as_production(workspace):
     module = protocol(workspace)
     run, current, next_ = package_fixture(module, workspace)
