@@ -173,6 +173,10 @@ prefixes, not all training examples.
 | P5 CID, declared reference | Instruments | Original item = canonical string | 0.09624 | 0.07409 |
 | P5 SemID, declared reference | Instruments | Original item = canonical string | 0.10488 | 0.07932 |
 | P5 CID, declared reference | Beauty | Original item = canonical string | 0.06184 | 0.03746 |
+| P5 TID, declared reference | Instruments | Canonical title string | 0.10899 | 0.08488 |
+| P5 TID, declared reference | Instruments | Original-item diagnostic | 0.10879 | 0.08425 |
+| P5 TID, declared reference | Beauty | Canonical title string | 0.07177 | 0.04018 |
+| P5 TID, declared reference | Beauty | Original-item diagnostic | 0.07119 | 0.03989 |
 | P5 TID, declared reference | Yelp | Canonical title string | 0.05320 | 0.03059 |
 | P5 TID, declared reference | Yelp | Original-item diagnostic | 0.03332 | 0.02026 |
 | LC, native position-set constraints | Instruments | Code | 0.11610 | 0.08972 |
@@ -644,6 +648,10 @@ result were durably bound before canonical publication. The all22,363-user
 test reports Recall@10/NDCG@10 **.06184/.03746**, identical under code and
 original-item identities for this collision-free CID catalog. Exact evidence
 is in [the Beauty P5 CID receipt](../results/2026-10-31-letter/p5-beauty-cid-s42-v1.json).
+
+Instruments P5 TID completed all20 epochs /206,000 updates and selected the earliest validation Recall@10 maximum at epoch3. Its recovery used 7 exact GPU replays and 13 exact-existing validations; every row of all20 validation files and the all24,772-user test was independently recomputed before durable selected/frozen/result verification. Canonical-title Recall@10/NDCG@10 is **0.10899/0.08488**, while the collision-expanded original-item diagnostic is **0.10879/0.08425**. The catalog contains 9,888 canonical titles for 9,922 items, including 31 collision groups and a largest group of 3; code and item identities must not be collapsed. The paper prints P5-TID Recall@10/NDCG@10 `0.0001/0.0000`; this remains a declared reference reconstruction because the exact original recipe is unavailable. Exact public identities are in [the Instruments P5 TID receipt](../results/2026-11-03-letter/p5-instruments-tid-s42-v1.json).
+
+Beauty P5 TID completed all20 epochs /205,340 updates and selected the earliest validation Recall@10 maximum at epoch3. Its recovery used 5 exact GPU replays and 15 exact-existing validations; every row of all20 validation files and the all22,363-user test was independently recomputed before durable selected/frozen/result verification. Canonical-title Recall@10/NDCG@10 is **0.07177/0.04018**, while the collision-expanded original-item diagnostic is **0.07119/0.03989**. The catalog contains 12,073 canonical titles for 12,101 items, including 27 collision groups and a largest group of 3; code and item identities must not be collapsed. The paper prints P5-TID Recall@10/NDCG@10 `0.0432/0.0254`; this remains a declared reference reconstruction because the exact original recipe is unavailable. Exact public identities are in [the Beauty P5 TID receipt](../results/2026-11-03-letter/p5-beauty-tid-s42-v1.json).
 
 Yelp P5 TID completed all20 epochs /351,660 updates and selected the earliest
 validation Recall@10 maximum at epoch3. Its missing validation files for

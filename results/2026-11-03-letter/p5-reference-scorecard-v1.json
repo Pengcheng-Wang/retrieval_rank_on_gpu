@@ -1,0 +1,144 @@
+{
+  "claim_type": "declared_P5_reference_reconstruction",
+  "exact_original_letter_recipe_claim": false,
+  "kind": "letter-p5-reference-scorecard-v1",
+  "limitations": [
+    "Exact original LETTER P5 recipes are unavailable.",
+    "Title identifiers collide, so code and item metrics differ.",
+    "Measured values are single-seed declared references."
+  ],
+  "metric_policy": {
+    "beams": 20,
+    "identities": [
+      "canonical code/title string",
+      "collision-expanded original item"
+    ],
+    "seen_item_exclusion": false,
+    "selection": "validation Recall@10 only",
+    "users": "all"
+  },
+  "rows": [
+    {
+      "code": {
+        "ndcg@10": 0.07409,
+        "recall@10": 0.09624
+      },
+      "dataset": "Instruments",
+      "identifier": "CID",
+      "item": {
+        "ndcg@10": 0.07409,
+        "recall@10": 0.09624
+      },
+      "paper_reference": {
+        "ndcg@10": 0.0751,
+        "recall@10": 0.0987
+      },
+      "source": null
+    },
+    {
+      "code": {
+        "ndcg@10": 0.07932,
+        "recall@10": 0.10488
+      },
+      "dataset": "Instruments",
+      "identifier": "SemID",
+      "item": {
+        "ndcg@10": 0.07932,
+        "recall@10": 0.10488
+      },
+      "paper_reference": {
+        "ndcg@10": 0.073,
+        "recall@10": 0.0964
+      },
+      "source": null
+    },
+    {
+      "code": {
+        "ndcg@10": 0.08487928547345144,
+        "ndcg@5": 0.07900934857140106,
+        "recall@10": 0.1089940255126756,
+        "recall@5": 0.0906265138059099
+      },
+      "dataset": "Instruments",
+      "identifier": "TID",
+      "item": {
+        "ndcg@10": 0.08425051456172628,
+        "ndcg@5": 0.07841925847691955,
+        "recall@10": 0.10879218472468917,
+        "recall@5": 0.09054577749071532
+      },
+      "paper_reference": {
+        "ndcg@10": 0.0,
+        "ndcg@5": 0.0,
+        "recall@10": 0.0001,
+        "recall@5": 0.0
+      },
+      "source": "p5-instruments-tid-s42-v1.json"
+    },
+    {
+      "code": {
+        "ndcg@10": 0.03745866618445789,
+        "ndcg@5": 0.031730791992737276,
+        "recall@10": 0.06184322318114743,
+        "recall@5": 0.04400125206814828
+      },
+      "dataset": "Beauty",
+      "identifier": "CID",
+      "item": {
+        "ndcg@10": 0.03745866618445789,
+        "ndcg@5": 0.031730791992737276,
+        "recall@10": 0.06184322318114743,
+        "recall@5": 0.04400125206814828
+      },
+      "paper_reference": null,
+      "source": "p5-beauty-cid-s42-v1.json"
+    },
+    {
+      "code": {
+        "ndcg@10": 0.04018038337699346,
+        "ndcg@5": 0.031876902959506556,
+        "recall@10": 0.07177033492822966,
+        "recall@5": 0.04605822116889505
+      },
+      "dataset": "Beauty",
+      "identifier": "TID",
+      "item": {
+        "ndcg@10": 0.039889646490242854,
+        "ndcg@5": 0.03163920011603717,
+        "recall@10": 0.0711890175736708,
+        "recall@5": 0.04565577069266199
+      },
+      "paper_reference": {
+        "ndcg@10": 0.0254,
+        "ndcg@5": 0.0132,
+        "recall@10": 0.0432,
+        "recall@5": 0.0182
+      },
+      "source": "p5-beauty-tid-s42-v1.json"
+    },
+    {
+      "code": {
+        "ndcg@10": 0.030593143148640225,
+        "ndcg@5": 0.024995007815180745,
+        "recall@10": 0.05320232657487431,
+        "recall@5": 0.03578587624461897
+      },
+      "dataset": "Yelp",
+      "identifier": "TID",
+      "item": {
+        "ndcg@10": 0.020263177292093554,
+        "ndcg@5": 0.017058576408275062,
+        "recall@10": 0.03332128421675265,
+        "recall@5": 0.02336433242417272
+      },
+      "paper_reference": {
+        "ndcg@10": 0.0155,
+        "ndcg@5": 0.013,
+        "recall@10": 0.0263,
+        "recall@5": 0.0184
+      },
+      "source": "p5-yelp-tid-s42-v1.json"
+    }
+  ],
+  "status": "pass"
+}
