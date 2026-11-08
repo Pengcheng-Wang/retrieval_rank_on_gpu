@@ -1,0 +1,493 @@
+{
+  "candidate_pool": {
+    "artifact_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+    "coverage": {
+      "test": {
+        "fixed_pool_hstu_large": {
+          "100": 0.7017857142857142,
+          "200": 0.7875,
+          "50": 0.5920634920634921,
+          "500": 0.8823412698412698
+        },
+        "hstu": {
+          "100": 0.6767857142857143,
+          "200": 0.7726190476190476,
+          "50": 0.5702380952380952,
+          "500": 0.8757936507936508
+        },
+        "rank_interleaved_union_diagnostic": {
+          "100": 0.6974206349206349,
+          "200": 0.7845238095238095,
+          "50": 0.5827380952380953,
+          "500": 0.8809523809523809
+        },
+        "sasrec": {
+          "100": 0.656547619047619,
+          "200": 0.7509920634920635,
+          "50": 0.5468253968253968,
+          "500": 0.8561507936507936
+        }
+      },
+      "validation": {
+        "fixed_pool_hstu_large": {
+          "100": 0.704,
+          "200": 0.793,
+          "50": 0.597,
+          "500": 0.892
+        },
+        "hstu": {
+          "100": 0.69,
+          "200": 0.778,
+          "50": 0.575,
+          "500": 0.879
+        },
+        "rank_interleaved_union_diagnostic": {
+          "100": 0.717,
+          "200": 0.795,
+          "50": 0.603,
+          "500": 0.881
+        },
+        "sasrec": {
+          "100": 0.67,
+          "200": 0.769,
+          "50": 0.571,
+          "500": 0.856
+        }
+      }
+    },
+    "full_last_event_diagnostic": {
+      "fixed_pool_hstu_large": {
+        "100": 0.7021523178807947,
+        "200": 0.7884105960264901,
+        "50": 0.5928807947019867,
+        "500": 0.8839403973509934
+      },
+      "hstu": {
+        "100": 0.6789735099337748,
+        "200": 0.7735099337748345,
+        "50": 0.5710264900662252,
+        "500": 0.8763245033112583
+      },
+      "hstu-large": {
+        "100": 0.7021523178807947,
+        "200": 0.7884105960264901,
+        "50": 0.5928807947019867,
+        "500": 0.8839403973509934
+      },
+      "rank_interleaved_union_diagnostic": {
+        "100": 0.7006622516556291,
+        "200": 0.7862582781456954,
+        "50": 0.5860927152317881,
+        "500": 0.8809602649006623
+      },
+      "sasrec": {
+        "100": 0.6587748344370861,
+        "200": 0.7539735099337749,
+        "50": 0.5508278145695364,
+        "500": 0.8561258278145696
+      }
+    },
+    "history_exclusion": true,
+    "source": "HSTU-large epoch100 exact full-catalog retrieval",
+    "target_injection": false
+  },
+  "complete_run_wall_time": [
+    {
+      "maximum_complete_run_wall_seconds": 49.0,
+      "mean_complete_run_wall_seconds": 48.5,
+      "minimum_complete_run_wall_seconds": 48.0,
+      "model": "torchrec-dlrm",
+      "seeds": 2
+    },
+    {
+      "maximum_complete_run_wall_seconds": 61.0,
+      "mean_complete_run_wall_seconds": 58.0,
+      "minimum_complete_run_wall_seconds": 55.0,
+      "model": "torchrec-dcn",
+      "seeds": 2
+    },
+    {
+      "maximum_complete_run_wall_seconds": 83.0,
+      "mean_complete_run_wall_seconds": 80.0,
+      "minimum_complete_run_wall_seconds": 77.0,
+      "model": "din",
+      "seeds": 2
+    },
+    {
+      "maximum_complete_run_wall_seconds": 72.0,
+      "mean_complete_run_wall_seconds": 69.0,
+      "minimum_complete_run_wall_seconds": 66.0,
+      "model": "twin",
+      "seeds": 2
+    },
+    {
+      "maximum_complete_run_wall_seconds": 154.0,
+      "mean_complete_run_wall_seconds": 151.5,
+      "minimum_complete_run_wall_seconds": 149.0,
+      "model": "transact",
+      "seeds": 2
+    }
+  ],
+  "data": {
+    "catalog_rows": 3883,
+    "maximum_history": 200,
+    "num_item_embeddings": 3953,
+    "partition_disjoint": true,
+    "test_queries": 5040,
+    "test_target": "last event",
+    "training_examples": 50000,
+    "training_maximum_request_gap_seconds": 67337688,
+    "training_target_cold_count": 0,
+    "users": 6040,
+    "validation_queries": 1000,
+    "validation_target": "last event"
+  },
+  "environment": {
+    "cuda": "12.9",
+    "device_name": "NVIDIA A100-SXM4-80GB",
+    "fbgemm_gpu": "1.8.0+cu126",
+    "numpy": "2.2.6",
+    "python": "3.12.3",
+    "torch": "2.13.0+cu129",
+    "torchrec": "1.8.0",
+    "triton": "3.7.1"
+  },
+  "interpretation": {
+    "astra_review": "Exact GPT-6-Astra/MAX capability remains unavailable; no substitute is labeled Astra and no numeric one-million-token claim is made.",
+    "independent_retriever_holdout": "Both validation and test use each user's last event, which the official HSTU training split never observes. Users are partitioned before ranker selection so the prior second-last-event leakage is excluded.",
+    "no_mfu_or_energy": true,
+    "no_production_claims": true,
+    "no_serving_qps_or_p99": true,
+    "no_single_leaderboard_across_roles": true,
+    "no_target_injection": true,
+    "retriever_selection_reuse": "HSTU-large was selected before this extension from the completed HSTU benchmark on the same last-event task. Ranker selection/test users are disjoint, but retriever-family selection is not evaluated on a new dataset.",
+    "substitute_review": "GPT-6.1 Sol with MAX reasoning and long context independently reviewed implementation, numerical aggregates, provenance, and conclusions. Findings were fixed and the affected experiment matrix was rerun."
+  },
+  "learning_gates": [
+    {
+      "mean_best_learned_validation_ndcg_at_10": 0.12420325648069566,
+      "mean_difference_from_epoch_zero": -0.057304829205661795,
+      "mean_epoch_zero_validation_ndcg_at_10": 0.18150808568635746,
+      "model": "torchrec-dlrm",
+      "passed_seeds": 0,
+      "seeds": 2
+    },
+    {
+      "mean_best_learned_validation_ndcg_at_10": 0.13567693386605856,
+      "mean_difference_from_epoch_zero": -0.04583115182029891,
+      "mean_epoch_zero_validation_ndcg_at_10": 0.18150808568635746,
+      "model": "torchrec-dcn",
+      "passed_seeds": 0,
+      "seeds": 2
+    },
+    {
+      "mean_best_learned_validation_ndcg_at_10": 0.1524117529271316,
+      "mean_difference_from_epoch_zero": -0.02909633275922585,
+      "mean_epoch_zero_validation_ndcg_at_10": 0.18150808568635746,
+      "model": "din",
+      "passed_seeds": 0,
+      "seeds": 2
+    },
+    {
+      "mean_best_learned_validation_ndcg_at_10": 0.15444263325047364,
+      "mean_difference_from_epoch_zero": -0.027065452435883805,
+      "mean_epoch_zero_validation_ndcg_at_10": 0.18150808568635746,
+      "model": "twin",
+      "passed_seeds": 0,
+      "seeds": 2
+    },
+    {
+      "mean_best_learned_validation_ndcg_at_10": 0.17881418601076376,
+      "mean_difference_from_epoch_zero": -0.0026938996755936917,
+      "mean_epoch_zero_validation_ndcg_at_10": 0.18150808568635746,
+      "model": "transact",
+      "passed_seeds": 0,
+      "seeds": 2
+    }
+  ],
+  "limitations": [
+    "MovieLens-1M is a small public sequential recommendation adaptation, not a production traffic reproduction.",
+    "The DIN-style arm uses softmax-normalized attention, PReLU instead of Dice, and no mini-batch-aware regularization; it is not a canonical DIN reproduction.",
+    "TWIN is a structural adaptation without the production feature cache, 10^4-10^5 event histories, or Kuaishou data.",
+    "TransAct preserves Pinterest's public module but uses MovieLens ratings as action types and a learned user embedding instead of Pinterest's production batch embedding.",
+    "Exact GPT-6-Astra/MAX was unavailable; no substitute is labeled Astra and no numeric one-million-token context claim is made."
+  ],
+  "models": {
+    "din": {
+      "base_model_class": "rrbench.industry_models.DINRanker",
+      "implementation": "DIN-style normalized-attention adaptation",
+      "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+      "parameter_count": 256807,
+      "upstream_class": null
+    },
+    "torchrec-dcn": {
+      "base_model_class": "rrbench.industry_models.TorchRecSequenceRanker",
+      "implementation": "TorchRec DLRM_DCN",
+      "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+      "parameter_count": 498466,
+      "upstream_class": "torchrec.models.dlrm.DLRM_DCN"
+    },
+    "torchrec-dlrm": {
+      "base_model_class": "rrbench.industry_models.TorchRecSequenceRanker",
+      "implementation": "TorchRec DLRM",
+      "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+      "parameter_count": 461986,
+      "upstream_class": "torchrec.models.dlrm.DLRM"
+    },
+    "transact": {
+      "base_model_class": "rrbench.industry_models.TransActRanker",
+      "implementation": "Official TransAct module plus ranking head",
+      "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+      "parameter_count": 389876,
+      "upstream_class": "transact.TransAct"
+    },
+    "twin": {
+      "base_model_class": "rrbench.industry_models.TWINRanker",
+      "implementation": "TWIN-style structural adaptation",
+      "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+      "parameter_count": 249510,
+      "upstream_class": null
+    }
+  },
+  "provenance": {
+    "query_ranks": "query-ranks.npz",
+    "rejected_protocols": "rejected-protocols.json",
+    "run_provenance": "run-provenance.json"
+  },
+  "quality_aggregate": [
+    {
+      "implementation": "TorchRec DLRM",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.4123581336696091,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7528373266078184,
+      "mean_conditional_ndcg_at_10": 0.22888787602314936,
+      "mean_conditional_ndcg_at_200": 0.342393829168137,
+      "mean_conditional_ndcg_at_50": 0.3045152512033791,
+      "mean_parameters": 461986.0,
+      "mean_unconditional_hr_at_10": 0.327,
+      "mean_unconditional_hr_at_200": 0.793,
+      "mean_unconditional_hr_at_50": 0.597,
+      "mean_unconditional_ndcg_at_10": 0.18150808568635746,
+      "mean_unconditional_ndcg_at_200": 0.27151830653033265,
+      "mean_unconditional_ndcg_at_50": 0.2414805942042796,
+      "model": "torchrec-dlrm",
+      "seeds": 2,
+      "split": "validation",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.793
+    },
+    {
+      "implementation": "TorchRec DLRM",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.41421012849584277,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7518266565885614,
+      "mean_conditional_ndcg_at_10": 0.2369479931338423,
+      "mean_conditional_ndcg_at_200": 0.3499674419245048,
+      "mean_conditional_ndcg_at_50": 0.31205160213985017,
+      "mean_parameters": 461986.0,
+      "mean_unconditional_hr_at_10": 0.3261904761904762,
+      "mean_unconditional_hr_at_200": 0.7875,
+      "mean_unconditional_hr_at_50": 0.5920634920634921,
+      "mean_unconditional_ndcg_at_10": 0.18659654459290081,
+      "mean_unconditional_ndcg_at_200": 0.2755993605155475,
+      "mean_unconditional_ndcg_at_50": 0.245740636685132,
+      "model": "torchrec-dlrm",
+      "seeds": 2,
+      "split": "test",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.7875
+    },
+    {
+      "implementation": "TorchRec DLRM_DCN",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.4123581336696091,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7528373266078184,
+      "mean_conditional_ndcg_at_10": 0.22888787602314936,
+      "mean_conditional_ndcg_at_200": 0.342393829168137,
+      "mean_conditional_ndcg_at_50": 0.3045152512033791,
+      "mean_parameters": 498466.0,
+      "mean_unconditional_hr_at_10": 0.327,
+      "mean_unconditional_hr_at_200": 0.793,
+      "mean_unconditional_hr_at_50": 0.597,
+      "mean_unconditional_ndcg_at_10": 0.18150808568635746,
+      "mean_unconditional_ndcg_at_200": 0.27151830653033265,
+      "mean_unconditional_ndcg_at_50": 0.2414805942042796,
+      "model": "torchrec-dcn",
+      "seeds": 2,
+      "split": "validation",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.793
+    },
+    {
+      "implementation": "TorchRec DLRM_DCN",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.41421012849584277,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7518266565885614,
+      "mean_conditional_ndcg_at_10": 0.2369479931338423,
+      "mean_conditional_ndcg_at_200": 0.3499674419245048,
+      "mean_conditional_ndcg_at_50": 0.31205160213985017,
+      "mean_parameters": 498466.0,
+      "mean_unconditional_hr_at_10": 0.3261904761904762,
+      "mean_unconditional_hr_at_200": 0.7875,
+      "mean_unconditional_hr_at_50": 0.5920634920634921,
+      "mean_unconditional_ndcg_at_10": 0.18659654459290081,
+      "mean_unconditional_ndcg_at_200": 0.2755993605155475,
+      "mean_unconditional_ndcg_at_50": 0.245740636685132,
+      "model": "torchrec-dcn",
+      "seeds": 2,
+      "split": "test",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.7875
+    },
+    {
+      "implementation": "DIN-style normalized-attention adaptation",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.4123581336696091,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7528373266078184,
+      "mean_conditional_ndcg_at_10": 0.22888787602314936,
+      "mean_conditional_ndcg_at_200": 0.342393829168137,
+      "mean_conditional_ndcg_at_50": 0.3045152512033791,
+      "mean_parameters": 256807.0,
+      "mean_unconditional_hr_at_10": 0.327,
+      "mean_unconditional_hr_at_200": 0.793,
+      "mean_unconditional_hr_at_50": 0.597,
+      "mean_unconditional_ndcg_at_10": 0.18150808568635746,
+      "mean_unconditional_ndcg_at_200": 0.27151830653033265,
+      "mean_unconditional_ndcg_at_50": 0.2414805942042796,
+      "model": "din",
+      "seeds": 2,
+      "split": "validation",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.793
+    },
+    {
+      "implementation": "DIN-style normalized-attention adaptation",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.41421012849584277,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7518266565885614,
+      "mean_conditional_ndcg_at_10": 0.2369479931338423,
+      "mean_conditional_ndcg_at_200": 0.3499674419245048,
+      "mean_conditional_ndcg_at_50": 0.31205160213985017,
+      "mean_parameters": 256807.0,
+      "mean_unconditional_hr_at_10": 0.3261904761904762,
+      "mean_unconditional_hr_at_200": 0.7875,
+      "mean_unconditional_hr_at_50": 0.5920634920634921,
+      "mean_unconditional_ndcg_at_10": 0.18659654459290081,
+      "mean_unconditional_ndcg_at_200": 0.2755993605155475,
+      "mean_unconditional_ndcg_at_50": 0.245740636685132,
+      "model": "din",
+      "seeds": 2,
+      "split": "test",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.7875
+    },
+    {
+      "implementation": "TWIN-style structural adaptation",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.4123581336696091,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7528373266078184,
+      "mean_conditional_ndcg_at_10": 0.22888787602314936,
+      "mean_conditional_ndcg_at_200": 0.342393829168137,
+      "mean_conditional_ndcg_at_50": 0.3045152512033791,
+      "mean_parameters": 249510.0,
+      "mean_unconditional_hr_at_10": 0.327,
+      "mean_unconditional_hr_at_200": 0.793,
+      "mean_unconditional_hr_at_50": 0.597,
+      "mean_unconditional_ndcg_at_10": 0.18150808568635746,
+      "mean_unconditional_ndcg_at_200": 0.27151830653033265,
+      "mean_unconditional_ndcg_at_50": 0.2414805942042796,
+      "model": "twin",
+      "seeds": 2,
+      "split": "validation",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.793
+    },
+    {
+      "implementation": "TWIN-style structural adaptation",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.41421012849584277,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7518266565885614,
+      "mean_conditional_ndcg_at_10": 0.2369479931338423,
+      "mean_conditional_ndcg_at_200": 0.3499674419245048,
+      "mean_conditional_ndcg_at_50": 0.31205160213985017,
+      "mean_parameters": 249510.0,
+      "mean_unconditional_hr_at_10": 0.3261904761904762,
+      "mean_unconditional_hr_at_200": 0.7875,
+      "mean_unconditional_hr_at_50": 0.5920634920634921,
+      "mean_unconditional_ndcg_at_10": 0.18659654459290081,
+      "mean_unconditional_ndcg_at_200": 0.2755993605155475,
+      "mean_unconditional_ndcg_at_50": 0.245740636685132,
+      "model": "twin",
+      "seeds": 2,
+      "split": "test",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.7875
+    },
+    {
+      "implementation": "Official TransAct module plus ranking head",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.4123581336696091,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7528373266078184,
+      "mean_conditional_ndcg_at_10": 0.22888787602314936,
+      "mean_conditional_ndcg_at_200": 0.342393829168137,
+      "mean_conditional_ndcg_at_50": 0.3045152512033791,
+      "mean_parameters": 389876.0,
+      "mean_unconditional_hr_at_10": 0.327,
+      "mean_unconditional_hr_at_200": 0.793,
+      "mean_unconditional_hr_at_50": 0.597,
+      "mean_unconditional_ndcg_at_10": 0.18150808568635746,
+      "mean_unconditional_ndcg_at_200": 0.27151830653033265,
+      "mean_unconditional_ndcg_at_50": 0.2414805942042796,
+      "model": "transact",
+      "seeds": 2,
+      "split": "validation",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.793
+    },
+    {
+      "implementation": "Official TransAct module plus ranking head",
+      "mean_best_epoch": 0.0,
+      "mean_conditional_hr_at_10": 0.41421012849584277,
+      "mean_conditional_hr_at_200": 1.0,
+      "mean_conditional_hr_at_50": 0.7518266565885614,
+      "mean_conditional_ndcg_at_10": 0.2369479931338423,
+      "mean_conditional_ndcg_at_200": 0.3499674419245048,
+      "mean_conditional_ndcg_at_50": 0.31205160213985017,
+      "mean_parameters": 389876.0,
+      "mean_unconditional_hr_at_10": 0.3261904761904762,
+      "mean_unconditional_hr_at_200": 0.7875,
+      "mean_unconditional_hr_at_50": 0.5920634920634921,
+      "mean_unconditional_ndcg_at_10": 0.18659654459290081,
+      "mean_unconditional_ndcg_at_200": 0.2755993605155475,
+      "mean_unconditional_ndcg_at_50": 0.245740636685132,
+      "model": "transact",
+      "seeds": 2,
+      "split": "test",
+      "std_unconditional_ndcg_at_10": 0.0,
+      "target_coverage_at_200": 0.7875
+    }
+  ],
+  "study": "Industrial recommendation ranking structures on a fixed HSTU retrieval pool v1",
+  "training_negatives": {
+    "checkpoint_sha256": "f045cf2901edefb87f86840062dc17bdd17d82a34380b0371cf2210ab76ce6ef",
+    "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+    "examples": 50000,
+    "history_exclusion": true,
+    "missing_target_rank": 201,
+    "negatives_per_example": 32,
+    "output_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79",
+    "search": "exact HSTU-large epoch100 full-catalog normalized inner product",
+    "search_k": 200,
+    "target_recall_at_search_k": 0.87978,
+    "target_removed_from_negatives": true
+  }
+}

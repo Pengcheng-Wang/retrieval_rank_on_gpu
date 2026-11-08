@@ -1,0 +1,31 @@
+{
+  "repository_requested": "https://github.com/facebookresearch/generative-recommenders",
+  "repository_canonical": "https://github.com/meta-recsys/generative-recommenders",
+  "commit": "9afe62cccfbb1e893780313b89a2d43185c5f66d",
+  "tree": "e9e60a19ea978e7d2824e35758198479a4460952",
+  "commit_date": "2024-04-17T15:57:44-07:00",
+  "retrieved_at": "2026-11-07",
+  "license": "Apache-2.0",
+  "import_method": "direct Git blob extraction from the pinned tree",
+  "source_manifest_sha256": "ab86cee99681c6979c5e290bfe7e3204572b7db50a0c28cb275e7b4ba31d41f4",
+  "modifications": [],
+  "original_file_count": 43,
+  "original_file_bytes": 234956,
+  "import_verification": "All 43 original files byte-identical to the pinned Git blobs before commit.",
+  "scope": "First public paper-era release for Section 4.1.1 MovieLens and Amazon experiments. It contains no released production data, production checkpoints, M-FALCON serving stack, or optimized HSTU kernels.",
+  "known_public_release_issues": [
+    "The first README reports incorrect MovieLens-1M HSTU and HSTU-large headline rows; the PMLR paper and current README are used as the target source.",
+    "The Amazon Gin files bind removed parameter train_fn.item_feature_embedding_dim; upstream removed those bindings in commit 88acd0308bb549e005ae6532ee54585457e1b4a4."
+  ],
+  "paper": {
+    "title": "Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations",
+    "publication": "Proceedings of the 41st International Conference on Machine Learning, PMLR 235:58484-58509, 2024",
+    "arxiv": "2402.17152v3",
+    "arxiv_source_sha256": "64c7e4b41f01ec8a71c7ba83376db454cfa5f0d48a57ad411e8e40c24e4031a8"
+  },
+  "later_upstream_review": {
+    "commit": "acc36be02236750cd98d99246f7d7ef1412edd0e",
+    "commit_date": "2026-11-05T13:34:47-08:00",
+    "purpose": "Historical comparison only. Later code adds optimized Triton/CUDA operators, DLRMv3, and HSTU Ultra; it is not the source used for the paper-era public reproduction."
+  }
+}

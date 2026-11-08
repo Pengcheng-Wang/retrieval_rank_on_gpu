@@ -8,5 +8,8 @@ scripts/letter/bigrec_*.py text eol=crlf
 *.cuh text eol=lf
 *.csv text eol=lf
 third_party/silvertorch/** -text
+third_party/generative-recommenders/** -text
+third_party/transact/** -text
+third_party/transact/UPSTREAM.json text eol=lf
 results/**/*.json text eol=lf
 results/**/*.md text eol=lf

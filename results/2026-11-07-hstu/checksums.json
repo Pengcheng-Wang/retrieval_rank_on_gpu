@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "bytes": 9033,
+      "path": "efficiency.csv",
+      "sha256": "1c7a1ed7c4604aced3326ef7f193c5934eb61c4e70a6aefe5a1067095c386c9e"
+    },
+    {
+      "bytes": 10313,
+      "path": "protocol.json",
+      "sha256": "afc5d824b8e92fa871ebdfe2abd399f4f89dbad8bfeb5fd5d6117112f299c928"
+    },
+    {
+      "bytes": 1707,
+      "path": "quality.csv",
+      "sha256": "5703301e3d0c9b16d8a6ab9417c89ca802b9deba7f1922daf69fda329a8ed9bf"
+    },
+    {
+      "bytes": 1291,
+      "path": "README.md",
+      "sha256": "457170d631016cf9c3e27cb2caef70e7d9048fa1cf0c5b553b8a2d7cfb301c88"
+    },
+    {
+      "bytes": 246016,
+      "path": "scale-probes.json",
+      "sha256": "7ec4080aa0805840dc75b1d33e0130641a1865f799ab5778daddc352f517dc42"
+    },
+    {
+      "bytes": 307450,
+      "path": "summary.json",
+      "sha256": "e3b11ab9c609edfbd393e6db2fd254fb31b01e13e07f0b8b05e871dd1bdaabb5"
+    }
+  ]
+}

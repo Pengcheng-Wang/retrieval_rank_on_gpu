@@ -1,0 +1,43 @@
+{
+  "repository": "https://github.com/pinterest/transformer_user_action",
+  "commit": "2c8b6c93b679949b9581cf592c46ddcba55f3d09",
+  "license": "Apache-2.0",
+  "import_method": "direct Git blob extraction from the pinned tree",
+  "original_file_count": 5,
+  "original_file_bytes": 21408,
+  "files": [
+    {
+      "path": [
+        "LICENSE"
+      ],
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": [
+        "README.md"
+      ],
+      "sha256": "40a7b5f91aecd37b817a74fbd81a47019ebe0ad0aca18989fe27021a339ac70a"
+    },
+    {
+      "path": [
+        "transact_code",
+        "test_run_transact.py"
+      ],
+      "sha256": "9f1fdd8d03336cca5edf68374149b375826a91451b106c56dd527095c56f562a"
+    },
+    {
+      "path": [
+        "transact_code",
+        "transact.py"
+      ],
+      "sha256": "ad8d540f4e87ff1c575a88bbd78347289ab8b934b3f94123c6bd08ca35428e99"
+    },
+    {
+      "path": [
+        "transact_code",
+        "transact_config.py"
+      ],
+      "sha256": "829541cbf0a2dc54cad25c215daf92a2dfd6adbc701204a8a8bf5373e46651f4"
+    }
+  ]
+}

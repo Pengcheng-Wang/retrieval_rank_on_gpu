@@ -1,6 +1,7 @@
 # GPU retrieval and recommendation ranking
 
-_A public-code SilverTorch reproduction and a controlled FAISS/TorchRec benchmark study._
+_Public-code SilverTorch and HSTU reproductions with controlled retrieval,
+TorchRec, and industrial ranking experiments._
 
 ---
 
@@ -21,6 +22,17 @@ Its paper targets are not measured results. The
 [execution harness](docs/letter-execution.md) records input/runtime gates,
 resume corrections and remaining model-access requirements.
 
+The separate **HSTU sequential recommendation track** pins Meta's first
+public ICML 2024 source release, distinguishes it from later Triton/CUDA,
+DLRMv3 and HSTU Ultra work, and runs its released MovieLens configurations
+without changing the earlier SilverTorch evidence.
+
+The **industrial ranking extension** researches production model roles beyond
+HSTU/SASRec, then runs actual TorchRec DLRM/DCN, the unchanged official
+Pinterest TransAct module, and explicitly labeled DIN/TWIN adaptations on one
+fixed HSTU-large candidate pool. Its result tables contain only this
+repository's own experiments; paper numbers are citation-only context.
+
 | Document | Purpose |
 | --- | --- |
 | [LETTER paper study](docs/letter-study.md) | Method, official-code audit, recovered author recipes, dataset integrity and reproduction boundaries |
@@ -28,6 +40,11 @@ resume corrections and remaining model-access requirements.
 | [LETTER source and protocol manifest](configs/letter-reproduction-v1.json) | Pinned sources, data hashes, published targets and planned settings; not experiment results |
 | [LETTER execution harness](docs/letter-execution.md) | Verified author-code adapters, isolated legacy environment, full input audits and preemption-safe continuation |
 | [LETTER initial measured result](docs/letter-results.md) | First completed Instruments released-ID replay, paper comparison, original-item diagnostic and remaining coverage |
+| [HSTU paper and source study](docs/hstu-study.md) | Original algorithm, public-code boundary, paper-era versus later kernels, audited sequence/evaluation semantics and frozen reproduction gates |
+| [HSTU measured findings](docs/hstu-results.md) | Final-epoch HSTU/SASRec reproduction, cold/catalog accounting, clean A100 model timing, BF16 fidelity and later Triton attention contrast |
+| [Industrial recommender research](docs/industry-recommenders-study.md) | DLRM/DCNv2, DIN/DIEN/BST, TWIN, TransAct, PinnerFormer, Monolith and generative-system roles, source availability and the frozen matched-ranking protocol |
+| [Industrial ranker measured findings](docs/industry-recommenders-results.md) | Own-run two-seed quality gates, candidate ceilings, A100 timing/memory, BF16 timing boundary, complete-run wall time and preserved negative outcomes |
+| [GPT-6.1 Sol independent review](docs/industry-review-gpt61.md) | MAX-reasoning, long-context review findings, implemented corrections, rerun scope and numerical verification |
 | [SilverTorch explained](docs/silvertorch-study.md) | Architecture, algorithms, model choices, and what the published gains mean |
 | [Benchmark protocol](docs/benchmark-protocol.md) | Fairness, metrics, datasets, numerical contracts, and experiment matrix |
 | [Upstream audit](docs/upstream-audit.md) | Public-code boundaries and independently reproduced correctness hazards |
@@ -56,6 +73,10 @@ $env:PYTHONPATH = "$PWD\src"
 python -m pytest tests\test_core.py tests\test_movielens.py -q
 python -m rrbench.cli --help
 python scripts\verify_upstream.py
+python scripts\verify_hstu_upstream.py
+python scripts\verify_transact_upstream.py
+python -m pytest tests\test_hstu_adapter.py -q
+python -m pytest tests\test_industry_extension.py -q
 ```
 
 Requires Python 3.10+, PyTorch, NumPy, and pytest. The optional dependencies in
@@ -88,6 +109,98 @@ environments/gpu/.venv/bin/python -m pytest tests -q
 `build_silvertorch.sh` discovers CUDA development headers shipped in installed
 NVIDIA wheels. It does not install an operating-system toolkit or modify
 upstream code. CUDA compilation is Linux-only in this study.
+
+### HSTU paper-era environment
+
+The separate HSTU environment preserves the first public upstream snapshot and
+does not modify the SilverTorch stack:
+
+```bash
+export UV_CACHE_DIR="$PWD/.local/hstu-uv-cache"
+uv sync --project environments/hstu
+python scripts/verify_hstu_upstream.py
+python -m pytest tests/test_hstu_adapter.py -q
+
+ROOT="$PWD"
+PY="$ROOT/environments/hstu/.venv/bin/python"
+cd third_party/generative-recommenders
+mkdir -p tmp
+PYTHONPATH="$ROOT/scripts/hstu:$PWD" HSTU_REPRO_SEED=42 \
+  "$PY" -c "from data.preprocessor import get_common_preprocessors; get_common_preprocessors()['ml-1m'].preprocess_rating()"
+PYTHONPATH="$ROOT/scripts/hstu:$PWD" HSTU_REPRO_SEED=42 \
+  CUDA_VISIBLE_DEVICES=0 "$PY" train.py \
+  --gin_config_file=configs/ml-1m/hstu-sampled-softmax-n128-final.gin \
+  --master_port=12345
+```
+
+MovieLens remains research-only and is not committed or redistributed. The
+[HSTU study](docs/hstu-study.md), [measured findings](docs/hstu-results.md),
+and [aggregate package](results/2026-11-07-hstu/README.md) document exact
+source, split, cold coverage, model geometry, numerical results, and later
+kernel boundaries.
+
+### Industrial ranking extension
+
+The GPU environment already pins the executed TorchRec versions. The official
+TransAct source is vendored unchanged and independently verifiable:
+
+```bash
+python scripts/verify_transact_upstream.py
+PYTHONPATH="$PWD/src" environments/gpu/.venv/bin/python \
+  -m pytest tests/test_industry_extension.py -q
+```
+
+After preparing MovieLens through the HSTU commands above, create the
+chronological ranker data and the label-independent candidate pool:
+
+```bash
+ROOT="$PWD"
+GPU_PY="$ROOT/environments/gpu/.venv/bin/python"
+HSTU_PY="$ROOT/environments/hstu/.venv/bin/python"
+
+PYTHONPATH="$ROOT/src" "$HSTU_PY" scripts/industry/prepare_data.py \
+  --sequences third_party/generative-recommenders/tmp/ml-1m/sasrec_format.csv \
+  --catalog third_party/generative-recommenders/tmp/processed/ml-1m/movies.csv \
+  --output runs/industry/ranking-data.npz \
+  --receipt runs/industry/ranking-data-receipt.json
+
+cd third_party/generative-recommenders
+PYTHONPATH="$ROOT/scripts/hstu:$ROOT/src:$PWD" CUDA_VISIBLE_DEVICES=0 \
+  "$HSTU_PY" "$ROOT/scripts/hstu/prepare_industry_candidates.py" \
+  --sasrec-checkpoint "$SASREC_EPOCH100" \
+  --hstu-checkpoint "$HSTU_EPOCH100" \
+  --hstu-large-checkpoint "$HSTU_LARGE_EPOCH100" \
+  --output "$ROOT/runs/industry/candidates.npz" \
+  --receipt "$ROOT/runs/industry/candidates-receipt.json"
+
+PYTHONPATH="$ROOT/scripts/hstu:$ROOT/src:$PWD" CUDA_VISIBLE_DEVICES=0 \
+  "$HSTU_PY" "$ROOT/scripts/hstu/prepare_industry_training_negatives.py" \
+  --checkpoint "$HSTU_LARGE_EPOCH100" \
+  --data "$ROOT/runs/industry/ranking-data.npz" \
+  --output "$ROOT/runs/industry/training-negatives.npz" \
+  --receipt "$ROOT/runs/industry/training-negatives-receipt.json"
+cd "$ROOT"
+
+PYTHONPATH="$ROOT/src" CUDA_VISIBLE_DEVICES=0 "$GPU_PY" \
+  scripts/industry/train_ranker.py --model torchrec-dlrm --seed 17 \
+  --data runs/industry/ranking-data.npz \
+  --candidates runs/industry/candidates.npz \
+  --training-negatives runs/industry/training-negatives.npz \
+  --protocol configs/industry-ranking-v1.json \
+  --output-dir runs/industry/torchrec-dlrm-seed17
+```
+
+Repeat the frozen model/seed matrix from
+[`configs/industry-ranking-v1.json`](configs/industry-ranking-v1.json). The
+[measured report](docs/industry-recommenders-results.md) and
+[checksummed aggregate](results/2026-11-08-industry-ranking/README.md) document
+the executed results. No target is injected into the candidate pool.
+All learned models are zero-initialized residuals over HSTU-large retrieval
+rank, so epoch 0 is an explicit no-ranker baseline and can win selection.
+The final implementation and aggregates were independently reviewed with
+GPT-6.1 Sol using MAX reasoning and long context after exact Astra was found
+unavailable; review-triggered fixes were rerun rather than applied only to
+prose.
 
 ### Representative commands
 

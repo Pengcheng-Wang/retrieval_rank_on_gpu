@@ -1,0 +1,292 @@
+[
+  {
+    "base_model_class": "rrbench.industry_models.DINRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "4c7d90d32168945453dae40516613213f9a53a86c10b807013c3888ffd922f10",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "din",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 256807,
+    "result_sha256": "02e3faca131635532076066788c7451638906e11c353ef7e3e90c21f389de943",
+    "seed": 17,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": null
+  },
+  {
+    "base_model_class": "rrbench.industry_models.DINRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "e951046e5a9c6392879e2bda03747c0cef5a77bbf2c03bee6ce19286eefc413b",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "din",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 256807,
+    "result_sha256": "646633327827c18af08a81e8416a9540d59c1e5f0e0ba17ec640d40b6ad7a7cd",
+    "seed": 42,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": null
+  },
+  {
+    "base_model_class": "rrbench.industry_models.TorchRecSequenceRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "3881536da0f56a5c56e6fd91071fd647b42cb66cfb086a23cf9ba1388356e74e",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "torchrec-dcn",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 498466,
+    "result_sha256": "cc3cad0dc1c1ccb2070c0fdcc2a4db3bbf5dc8401e760bcadc57eb55b1c9a563",
+    "seed": 17,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": "torchrec.models.dlrm.DLRM_DCN"
+  },
+  {
+    "base_model_class": "rrbench.industry_models.TorchRecSequenceRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "eb03047810197e0993ad01b970ae00755ba534381bdb46e074d20998c71809ce",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "torchrec-dcn",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 498466,
+    "result_sha256": "a15d7423ee573271c2159216435ee70199b5cf1d31783e3e3d256813b40d6a2c",
+    "seed": 42,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": "torchrec.models.dlrm.DLRM_DCN"
+  },
+  {
+    "base_model_class": "rrbench.industry_models.TorchRecSequenceRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "2212bdd0ee93b183a783ce2e273249723d20c5ee11e805d283bea71235459a06",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "torchrec-dlrm",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 461986,
+    "result_sha256": "00a4cfe02061c451a6d504ce5b9cc165ef922294badbf806cca287487d59a0ab",
+    "seed": 17,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": "torchrec.models.dlrm.DLRM"
+  },
+  {
+    "base_model_class": "rrbench.industry_models.TorchRecSequenceRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "f7173a6152d5aba500a46cbe23cc7f5ec35307a04cacd270d530078402b0609b",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "torchrec-dlrm",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 461986,
+    "result_sha256": "30f3a611fe42e1dbbd6fbfaa25cb60071f433a485c8e921d15b5b83b4bc79d62",
+    "seed": 42,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": "torchrec.models.dlrm.DLRM"
+  },
+  {
+    "base_model_class": "rrbench.industry_models.TransActRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "f7a8edb28c50347df37071e455ee184982e61bbba47ff0bff6d2e4a340cd71eb",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "transact",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 389876,
+    "result_sha256": "8820c72c07f319cf80f5f7848f0a6bb681895bb69e2b46fc6dcd66896dc3cbec",
+    "seed": 17,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": "transact.TransAct"
+  },
+  {
+    "base_model_class": "rrbench.industry_models.TransActRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "65464d041ee20b7ec3e22b72bb411432f15a1d9c74383b3d888fd1c0239d3fd5",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "transact",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 389876,
+    "result_sha256": "8c0f8484d2243a9d9c78e89b863d8ec06638b0aff911e9dbc891e1966b151a4d",
+    "seed": 42,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": "transact.TransAct"
+  },
+  {
+    "base_model_class": "rrbench.industry_models.TWINRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "0e4b307a6d2371d87c777bed94a20358752b5fd0e21197b1bb44fe83ece7cc7e",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "twin",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 249510,
+    "result_sha256": "d740ce05d1c98a72be17882621df65a06a95cf3c8cf4a874c1483db5d6ed0a96",
+    "seed": 17,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": null
+  },
+  {
+    "base_model_class": "rrbench.industry_models.TWINRanker",
+    "best_epoch": 0,
+    "checkpoint_sha256": "d7d348fae631ce0dc183b44df801fe586b190b93681f25cddb60b82cf55158aa",
+    "environment": {
+      "cuda": "12.9",
+      "device_name": "NVIDIA A100-SXM4-80GB",
+      "fbgemm_gpu": "1.8.0+cu126",
+      "numpy": "2.2.6",
+      "python": "3.12.3",
+      "torch": "2.13.0+cu129",
+      "torchrec": "1.8.0",
+      "triton": "3.7.1"
+    },
+    "inputs": {
+      "candidates_sha256": "767e22cf3cab8a840ae23ec392921a8c7e4e78e4f46fdb892c7ab9f3e9b6f823",
+      "data_sha256": "41a4978484afc2adc07ad907cde78ae0579d34d72d806d71089b7d5d24ed4fe0",
+      "protocol_sha256": "208b5715510a255fb8784e5f696c9dcf221c0a033b90d48b36d446b52aa9f540",
+      "training_negatives_sha256": "1496b9a1d456060b413ce0bfcfaee067cabda4a8ce241ada586cc53816e98f79"
+    },
+    "model": "twin",
+    "model_class": "rrbench.industry_models.RetrievalResidualRanker",
+    "parameter_count": 249510,
+    "result_sha256": "6751919738ad12fe07232b47f08142a1670cb0391af0876d47721f69aadafb08",
+    "seed": 42,
+    "selected_residual_weight": 0.0,
+    "training_maximum_gap_seconds": 67337688,
+    "upstream_class": null
+  }
+]

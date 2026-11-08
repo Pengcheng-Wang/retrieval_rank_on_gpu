@@ -1,0 +1,209 @@
+{
+  "study": "Industrial recommendation ranking structures on a fixed HSTU retrieval pool v1",
+  "status": "Frozen before candidate-pool generation, model training, or GPU execution",
+  "research_question": "How do canonical and modern industrial ranking structures compare when they rerank the same label-independent candidates produced by the already reproduced HSTU and SASRec retrievers?",
+  "role_boundary": {
+    "retrieval": [
+      "HSTU",
+      "HSTU-large",
+      "SASRec"
+    ],
+    "ranking": [
+      "TorchRec DLRM",
+      "TorchRec DLRM_DCN",
+      "DIN-style normalized-attention adaptation",
+      "TWIN-style",
+      "official TransAct module plus a public-data ranking head"
+    ],
+    "policy": "Retrieval and ranking metrics are reported in separate tables. A ranker cannot recover a target absent from the fixed candidate pool."
+  },
+  "sources": {
+    "torchrec": {
+      "tag": "v1.8.0-rc1",
+      "commit": "0ea0ec09512930dbcbf6d24cb65132a77835bce8",
+      "classes": [
+        "torchrec.models.dlrm.DLRM",
+        "torchrec.models.dlrm.DLRM_DCN"
+      ]
+    },
+    "transact": {
+      "repository": "https://github.com/pinterest/transformer_user_action",
+      "commit": "2c8b6c93b679949b9581cf592c46ddcba55f3d09",
+      "license": "Apache-2.0",
+      "modifications": []
+    },
+    "din": {
+      "paper": "https://arxiv.org/abs/1706.06978",
+      "implementation": "Independent DIN-style PyTorch adaptation with candidate-conditioned local activation, softmax-normalized attention, PReLU activations, and no mini-batch-aware regularization. It is not a canonical DIN reproduction."
+    },
+    "twin": {
+      "paper": "https://arxiv.org/abs/2302.02352",
+      "implementation": "Independent short-history structural adaptation using one shared relevance metric for GSU top-k selection and ESU attention."
+    }
+  },
+  "data": {
+    "dataset": "MovieLens-1M prepared by the pinned HSTU preprocessor",
+    "users": 6040,
+    "events": 1000209,
+    "catalog_rows": 3883,
+    "split": {
+      "training_positions": "All positions before each user's last two events; deterministic user-balanced hash sample.",
+      "validation": "Last event for a frozen deterministic 1000-user partition.",
+      "test": "Last event for the complementary 5040 users.",
+      "maximum_history": 200,
+      "recent_transact_history": 50
+    },
+    "event_semantics": "Every rating event remains an interaction, matching the public HSTU task. Ratings are used only as action-type payloads and summary features.",
+    "statistics": "Candidate popularity and recency normalization are fitted from training positions only. The persisted training maximum request gap is invariant to validation/test timestamps."
+  },
+  "candidate_pool": {
+    "retrievers": [
+      "HSTU epoch100",
+      "HSTU-large epoch100",
+      "SASRec epoch100"
+    ],
+    "construction": "The fixed ranker pool is HSTU-large epoch100 exact full-catalog top500, excluding prior history and without target injection. HSTU, SASRec, and a rank-interleaved three-retriever union remain diagnostic retrieval outputs only.",
+    "stored_cap": 500,
+    "ranking_cap": 200,
+    "reported_coverage_caps": [
+      50,
+      100,
+      200,
+      500
+    ],
+    "pilot_gate": "A 100-user implementation pilot rejected a fixed-width three-way interleave because truncating the union could reduce an individual retriever's ceiling. HSTU-large was frozen from the prior immutable study before ranker execution. The same MovieLens last-event benchmark was used in that prior retriever comparison, so this extension is not a fresh holdout for retriever-family selection."
+  },
+  "training": {
+    "seeds": [
+      17,
+      42
+    ],
+    "maximum_examples": 50000,
+    "per_user_position_cap": 10,
+    "hard_negatives_per_context": 32,
+    "hard_negative_search_depth": 200,
+    "negative_source": "Exact HSTU-large epoch100 full-catalog candidates for each training context; target removed after retrieval and retained only as the supervised positive.",
+    "epochs": 10,
+    "context_batch_size": 64,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "selection_population": "Frozen deterministic 1000-user last-event validation partition.",
+    "selection_metric": "Candidate-pool NDCG@10.",
+    "checkpoint_policy": "Epoch 0 is the exact frozen retrieval-rank prior. Best validation checkpoint is selected prospectively from epochs 0-10; full validation and test run once after selection."
+  },
+  "models": {
+    "common_reranking_contract": "Every learned model predicts a residual over -log(HSTU-large retrieval rank). The residual scalar is initialized to zero, so epoch 0 exactly preserves the candidate order and a learned ranker is retained only if validation improves.",
+    "torchrec-dlrm": {
+      "information": "User ID, candidate ID, latest-history item ID, and four dense training-only summary features.",
+      "embedding_dimension": 32
+    },
+    "torchrec-dcn": {
+      "information": "Same as DLRM; three low-rank cross layers.",
+      "embedding_dimension": 32,
+      "cross_layers": 3,
+      "low_rank_dimension": 32
+    },
+    "din": {
+      "information": "DIN-style candidate-conditioned softmax attention over up to 200 history item embeddings plus user embedding and dense summaries. This differs from canonical DIN's unnormalized interest-intensity aggregation, Dice activations, and mini-batch-aware regularization.",
+      "embedding_dimension": 32
+    },
+    "twin": {
+      "information": "Shared target-history relevance score for full-history top20 GSU selection and ESU softmax pooling.",
+      "embedding_dimension": 32,
+      "esu_items": 20
+    },
+    "transact": {
+      "information": "Unchanged official TransAct module over the most recent 50 item/rating/time actions, candidate embedding concatenation, and a learned batch user embedding in the ranking head.",
+      "item_embedding_dimension": 32,
+      "action_embedding_dimension": 16,
+      "layers": 2,
+      "heads": 2,
+      "latest_embeddings": 4
+    }
+  },
+  "evaluation": {
+    "quality_metrics": [
+      "candidate coverage at 50/100/200/500",
+      "conditional HR@10/50/200",
+      "conditional NDCG@10/50/200",
+      "unconditional HR/NDCG where retrieval misses count as zero",
+      "equal-user means"
+    ],
+    "efficiency": {
+      "scoring_shape": "batch16 x 200 candidates with exact history shape and precision",
+      "warmup": 10,
+      "samples": 50,
+      "measurements": [
+        "synchronized mean/p50/p95 batch latency",
+        "candidate scores per second",
+        "peak allocated and reserved memory",
+        "training-step latency"
+      ]
+    }
+  },
+  "non_admitted": {
+    "BST": "Superseded in this finite matrix by official TransAct code; covered in research.",
+    "DIEN": "Adds an auxiliary interest-extraction objective and AUGRU, expanding the matrix without official maintained code.",
+    "PinnerFormer": "Dense all-action future objective and production batch embedding pipeline unavailable.",
+    "Monolith": "Online-training system rather than a matched offline ranking architecture.",
+    "OneRec": "The original production paper is arXiv:2502.18965. Its private Kuaishou production stack remains unavailable.",
+    "OpenOneRec": "The later Apache-2.0 OpenOneRec research release provides foundation models, RecIF-Bench and a full-stack training pipeline, but its 1.7B/8B generative instruction-following task is not a matched candidate ranker for this finite MovieLens panel.",
+    "OneTrans": "No public implementation at the reviewed paper version."
+  },
+  "rejected_protocols": [
+    {
+      "id": "fixed-width-interleave-v0",
+      "reason": "Truncating a three-retriever interleave reduced HSTU-large candidate coverage.",
+      "excluded_from_final": true,
+      "operational_artifacts_preserved_outside_git": true
+    },
+    {
+      "id": "slow-npz-v0",
+      "reason": "Compressed NPZ arrays were decompressed on every batch and no epoch completed.",
+      "excluded_from_final": true,
+      "operational_artifacts_preserved_outside_git": true
+    },
+    {
+      "id": "second-last-validation-v0",
+      "reason": "Second-last-event labels had been observed by the official HSTU autoregressive training split.",
+      "excluded_from_final": true,
+      "operational_artifacts_preserved_outside_git": true
+    },
+    {
+      "id": "random-negatives-v1",
+      "reason": "Random catalog negatives did not match the hard HSTU candidate distribution used at evaluation.",
+      "excluded_from_final": true,
+      "operational_artifacts_preserved_outside_git": true
+    },
+    {
+      "id": "hard-negatives-no-prior-v2",
+      "reason": "The protocol discarded the strong retrieval order and forced an uninitialized ranker to replace it.",
+      "excluded_from_final": true,
+      "operational_artifacts_preserved_outside_git": true
+    },
+    {
+      "id": "hard-negative-depth64-v3",
+      "reason": "Missing training targets were assigned rank 65 instead of using the final evaluation depth of 200.",
+      "excluded_from_final": true,
+      "operational_artifacts_preserved_outside_git": true
+    },
+    {
+      "id": "held-out-normalization-v4",
+      "reason": "Recency normalization scanned validation/test request times instead of fitting on training positions only.",
+      "excluded_from_final": true,
+      "operational_artifacts_preserved_outside_git": true
+    }
+  ],
+  "interpretation": {
+    "no_production_claims": true,
+    "no_single_leaderboard_across_roles": true,
+    "no_target_injection": true,
+    "independent_retriever_holdout": "Both validation and test use each user's last event, which the official HSTU training split never observes. Users are partitioned before ranker selection so the prior second-last-event leakage is excluded.",
+    "retriever_selection_reuse": "HSTU-large was selected before this extension from the completed HSTU benchmark on the same last-event task. Ranker selection/test users are disjoint, but retriever-family selection is not evaluated on a new dataset.",
+    "no_serving_qps_or_p99": true,
+    "no_mfu_or_energy": true,
+    "astra_review": "Exact GPT-6-Astra/MAX capability remains unavailable; no substitute is labeled Astra and no numeric one-million-token claim is made.",
+    "substitute_review": "GPT-6.1 Sol with MAX reasoning and long context independently reviewed implementation, numerical aggregates, provenance, and conclusions. Findings were fixed and the affected experiment matrix was rerun."
+  }
+}

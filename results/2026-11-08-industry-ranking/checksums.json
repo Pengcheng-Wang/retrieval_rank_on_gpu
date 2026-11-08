@@ -1,0 +1,18 @@
+{
+  "README.md": "e257895980221f37e4c2ea2f09d757e7af2f8bf428183492ba4edd22984a5407",
+  "efficiency-aggregate.csv": "21893ef4673046851aaf810615be9aae8c3f3211b3fac64d4ac3ec8a532d6109",
+  "efficiency.csv": "af6b28305374d03b16676a03d28ab8803d07aa0a3d5e15153c8a468afaae1d80",
+  "learning-gates-aggregate.csv": "0727a8cc7a40595b27f5b877fb977dc257c84b37edcdae445a580828bfde2f64",
+  "learning-gates.csv": "836b498057d402fd9a510cb70f9b8088a7f7216a5b0e49e634c78fbdf470521f",
+  "protocol.json": "8537d054bf61dd5d5a56e5e1f0ee521a2f50ba7f00571de70c0fd17ec4d9639d",
+  "quality-aggregate.csv": "86229e4de02dd63c78953652a69a4d3afe2a62656193c223b7336141e650bc3f",
+  "quality.csv": "5443014483e1d2c9c40c3be624cc0f08a95bb8066ee234631d93d607cf4c9ddf",
+  "query-ranks.npz": "34915df9f415abcfda9bc54dbaf41a57f4ce6043fb17926179f29660b469b1fa",
+  "rejected-protocols.json": "ae73ad2ad8c397d6c36412f9ff221e41419bd40b4b1becf43c8de00a54908eab",
+  "run-provenance.json": "114ed32d6ebd9ec65c89542ef687dcf26bb0a34c8499d6d4ef035c0cfd75e5f8",
+  "run-wall-time-aggregate.csv": "6a90ba8852a8079233da967aad3bf8a9bd4b64d049cfb58a2eca9dd70d1b0754",
+  "run-wall-time.csv": "55f37cb6919c2f2202bc079d81e7a7125ff50eedf2ef78d9daffa70c8c4cdbb0",
+  "summary.json": "7907f37666f4a14146a5cef81258512f60fc3fbe522b0e931e1b3d26b75361d5",
+  "timing-samples.json": "8862c4df7c075cb09c0ceac44cd472cf3b3cbdb2ca33f535e5962b7c0241ca2a",
+  "training-curves.csv": "116972a8c13bf77d3d1e3f205f3ed9589cee44766125d552d6a865a13ded4951"
+}
