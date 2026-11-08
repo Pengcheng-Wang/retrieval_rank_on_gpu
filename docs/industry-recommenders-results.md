@@ -33,11 +33,16 @@ target appeared in HSTU-large's exact top 200 for 87.978% of them. The target
 was removed from every negative list and supplied only as the supervised
 positive.
 
+Item popularity and recency-gap normalization are fitted only on these
+training positions. The measured training maximum request gap is `67,337,688`
+seconds; changing validation/test timestamps cannot alter it.
+
 The model identity receipts confirm actual
 `torchrec.models.dlrm.DLRM`, actual `torchrec.models.dlrm.DLRM_DCN`, and the
 unchanged upstream `transact.TransAct` module. DIN and TWIN are independent
-paper-derived implementations because no reusable licensed official release
-was available.
+paper-derived adaptations because no reusable licensed official release was
+available. The DIN-style arm uses softmax-normalized attention, PReLU, and no
+mini-batch-aware regularization; it is not a canonical DIN reproduction.
 
 ## Retrieval ceiling
 
@@ -73,9 +78,9 @@ checkpoint is admitted only if it improves validation NDCG@10 over epoch 0.
 |---|---:|---:|---:|---:|
 | TorchRec DLRM | 0.18151 | 0.12420 | -0.05730 | 0/2 |
 | TorchRec DLRM_DCN | 0.18151 | 0.13568 | -0.04583 | 0/2 |
-| DIN | 0.18151 | 0.15241 | -0.02910 | 0/2 |
+| DIN-style normalized-attention adaptation | 0.18151 | 0.15241 | -0.02910 | 0/2 |
 | TWIN-style | 0.18151 | 0.15444 | -0.02707 | 0/2 |
-| Official TransAct module + head | 0.18151 | 0.17886 | -0.00265 | 0/2 |
+| Official TransAct module + head | 0.18151 | 0.17881 | -0.00269 | 0/2 |
 
 **No learned ranker passed the frozen validation gate.** TransAct came closest,
 but both seeds still underperformed the retrieval prior. Therefore every
@@ -116,16 +121,19 @@ These are offline batch measurements, not serving QPS or p99.
 
 | Model | FP32 mean | FP32 p95 | FP32 scores/s | Peak allocated | Training step |
 |---|---:|---:|---:|---:|---:|
-| TorchRec DLRM | **0.928 ms** | 0.941 ms | 3.45M | 30.4 MiB | **3.458 ms** |
-| TWIN-style | 1.031 ms | 1.055 ms | 3.10M | 41.8 MiB | 3.922 ms |
-| TorchRec DLRM_DCN | 1.097 ms | 1.132 ms | 2.92M | 34.2 MiB | 4.197 ms |
-| DIN | 2.996 ms | 3.015 ms | 1.07M | 646.2 MiB | 5.392 ms |
-| TransAct | 10.771 ms | 10.911 ms | 0.30M | 384.0 MiB | 13.710 ms |
+| TorchRec DLRM | **0.922 ms** | 0.932 ms | 3.47M | 26.9 MiB | **3.481 ms** |
+| TWIN-style | 1.052 ms | 1.070 ms | 3.04M | 39.9 MiB | 3.960 ms |
+| TorchRec DLRM_DCN | 1.080 ms | 1.107 ms | 2.96M | 30.4 MiB | 4.030 ms |
+| DIN-style adaptation | 3.031 ms | 3.058 ms | 1.06M | 644.3 MiB | 5.434 ms |
+| TransAct | 10.943 ms | 11.118 ms | 0.29M | 381.0 MiB | 13.715 ms |
 
 Training-step timing uses batch `64 x 33` candidates, 3 warmups, and 20
-independent synchronized samples. DIN's explicit candidate-by-history
-activation expansion consumed the most FP32 inference memory. TransAct had the
-largest measured training allocation at 997.2 MiB.
+independent synchronized samples. The DIN-style arm's explicit candidate-by-history
+activation expansion consumed the most FP32 inference memory. These memory
+values come from a freshly reconstructed selected checkpoint after the
+training optimizer and gradients were released; training-step memory uses a
+new benchmark optimizer. TransAct had the largest measured training allocation
+at 997.2 MiB.
 
 ### Complete-run wall time
 
@@ -136,10 +144,10 @@ measurements, checkpointing, and serialized durable publication:
 | Model | Mean complete run |
 |---|---:|
 | TorchRec DLRM | 48.5 s |
-| TWIN-style | 57.5 s |
-| TorchRec DLRM_DCN | 69.0 s |
-| DIN | 80.0 s |
-| TransAct | 150.5 s |
+| TorchRec DLRM_DCN | 58.0 s |
+| TWIN-style | 69.0 s |
+| DIN-style adaptation | 80.0 s |
+| TransAct | 151.5 s |
 
 Runs were concurrent across separate A100s, so these rows are per-run wall time
 and must not be summed into allocation wall time.
@@ -150,11 +158,11 @@ BF16 timing was not uniformly faster:
 
 | Model | BF16 mean | Change versus FP32 |
 |---|---:|---:|
-| DLRM | 1.131 ms | 21.8% slower |
-| DLRM_DCN | 1.398 ms | 27.4% slower |
-| TWIN-style | 1.273 ms | 23.5% slower |
-| DIN | 2.043 ms | 31.8% faster |
-| TransAct | 5.144 ms | 52.2% faster |
+| DLRM | 1.128 ms | 22.3% slower |
+| DLRM_DCN | 1.376 ms | 27.3% slower |
+| TWIN-style | 1.292 ms | 22.8% slower |
+| DIN-style adaptation | 2.044 ms | 32.6% faster |
+| TransAct | 5.148 ms | 53.0% faster |
 
 Top-10 overlap is 1.0 because the selected residual scale is zero and the
 retrieval prior determines the output. It is therefore **not** evidence that a
@@ -180,7 +188,14 @@ learned BF16 ranker is quality-equivalent to FP32.
    top-200 ranks matching evaluation depth.
 7. The final residual protocol admitted epoch 0 and reran all 10 model/seed
    cells. Every learned arm failed the validation expansion gate.
-8. The first aggregate transfer was rejected after local hash/JSON validation
+8. Independent GPT-6.1 Sol MAX/long-context review found that recency
+   normalization scanned held-out timestamps. The final matrix was rerun after
+   fitting the normalizer from training positions only.
+9. The same review found weak duplicate/mixed-input aggregation guards and
+   insufficient observation-level provenance. Final aggregation now requires
+   one exact model/seed cell, matching input/protocol hashes and populations,
+   verifies checkpoint/result identities, and commits compact per-query ranks.
+10. The first aggregate transfer was rejected after local hash/JSON validation
    detected SSH debug lines interleaved into the base64 stream. The final
    archive was filtered, archive-hash checked, file-hash checked, and JSON
    parsed before replacing the local copy.
@@ -206,7 +221,10 @@ The checksummed package is
 [`results/2026-11-08-industry-ranking`](../results/2026-11-08-industry-ranking/README.md).
 It includes every per-seed result, raw independent timing sample, learning
 gate, training curve, run-wall receipt, candidate ceiling, hard-negative
-receipt, protocol, implementation identity, and SHA-256 manifest.
+receipt, compact per-query ranks and partition membership, sanitized per-run
+input/result/checkpoint provenance, rejected-protocol manifest, protocol,
+implementation identity, and SHA-256 manifest.
 
-Exact GPT-6-Astra/MAX was unavailable. No substitute is labeled Astra and no
-numeric one-million-token context claim is made.
+Exact GPT-6-Astra/MAX was unavailable. GPT-6.1 Sol with MAX reasoning and long
+context performed the disclosed substitute review. It is not labeled Astra,
+and no numeric one-million-token context claim is made.

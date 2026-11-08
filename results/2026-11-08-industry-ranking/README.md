@@ -14,6 +14,12 @@ research report, not copied into these result tables.
 - `training-curves.csv`: prospective checkpoint-selection evidence.
 - `learning-gates.csv`: per-seed epoch-0 versus best learned validation gate.
 - `learning-gates-aggregate.csv`: two-seed gate summary.
+- `query-ranks.npz`: compact per-query partition membership, target presence,
+  and selected target rank for every model/seed.
+- `run-provenance.json`: sanitized input/result/checkpoint hashes, package
+  versions, model identities, selected epochs, and normalization receipts.
+- `rejected-protocols.json`: stable identifiers and reasons for superseded
+  experiment protocols whose operational artifacts remain outside Git.
 - `run-wall-time.csv`: bounded end-to-end run receipts, including training,
   evaluation, timing, checkpointing, and durable publication.
 - `run-wall-time-aggregate.csv`: two-seed complete-run wall-time means.

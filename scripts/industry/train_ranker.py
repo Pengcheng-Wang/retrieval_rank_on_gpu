@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import gc
 import hashlib
 import importlib.metadata
 import json
 import math
 import random
 import statistics
+import sys
 import time
 from pathlib import Path
 from typing import Any, Iterator
@@ -16,7 +18,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from rrbench.industry_data import dense_features
+from rrbench.industry_data import dense_features, training_maximum_gap
 from rrbench.industry_models import make_industry_model
 
 
@@ -46,18 +48,6 @@ def _batch_indices(
         np.random.default_rng(shuffle_seed).shuffle(indices)
     for start in range(0, size, batch_size):
         yield indices[start : start + batch_size]
-
-
-def _maximum_gap(data: Any) -> int:
-    maximum = 1
-    for split in ("train", "validation", "test"):
-        lengths = data[f"{split}_lengths"]
-        request_times = data[f"{split}_request_times"]
-        timestamps = data[f"{split}_timestamps"]
-        rows = np.arange(len(lengths))
-        latest = timestamps[rows, np.zeros(len(rows), dtype=np.int64)]
-        maximum = max(maximum, int(np.max(np.maximum(request_times - latest, 0))))
-    return maximum
 
 
 def _to_device_batch(
@@ -152,6 +142,7 @@ def _evaluate(
     batch_size: int,
     maximum_gap: int,
     indices: np.ndarray | None = None,
+    include_observations: bool = False,
 ) -> dict[str, Any]:
     candidates_all = np.asarray(
         candidates_file[f"{candidate_split}_candidates"]
@@ -203,11 +194,18 @@ def _evaluate(
             present[offset : offset + size] = batch_present.cpu().numpy()
             ranks[offset : offset + size] = batch_ranks.cpu().numpy()
             offset += size
-    return _candidate_metrics(
+    result = _candidate_metrics(
         ranks=ranks,
         present=present,
         candidate_count=200,
     )
+    if include_observations:
+        result["observations"] = {
+            "query_indices": indices.astype(np.int32).tolist(),
+            "target_present": present.astype(np.uint8).tolist(),
+            "target_rank": np.where(present, ranks, 0).astype(np.uint16).tolist(),
+        }
+    return result
 
 
 def _training_batch(
@@ -281,6 +279,10 @@ def _measure_forward(
         "history_length": int(batch["histories"].shape[1]),
         "candidate_scores_per_second": (
             batch["candidates"].numel() * 1000.0 / statistics.fmean(durations)
+        ),
+        "memory_scope": (
+            "selected checkpoint model plus fixed inference batch after the "
+            "training optimizer and gradients were released"
         ),
     }
     if device.type == "cuda":
@@ -403,6 +405,10 @@ def _benchmark(
             * 1000.0
             / statistics.fmean(durations)
         ),
+        "memory_scope": (
+            "selected checkpoint model plus a fresh benchmark optimizer and "
+            "fixed training batch"
+        ),
     }
     if device.type == "cuda":
         training["peak_allocated_mib"] = (
@@ -426,6 +432,7 @@ def main() -> None:
     parser.add_argument("--data", type=Path, required=True)
     parser.add_argument("--candidates", type=Path, required=True)
     parser.add_argument("--training-negatives", type=Path, required=True)
+    parser.add_argument("--protocol", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--batch-size", type=int, default=64)
@@ -461,7 +468,7 @@ def main() -> None:
     data["train_negatives"] = hard_negatives["negatives"]
     data["train_negative_ranks"] = hard_negatives["negative_ranks"]
     data["train_target_ranks"] = hard_negatives["target_ranks"]
-    maximum_gap = _maximum_gap(data)
+    maximum_gap = training_maximum_gap(data)
     users = int(
         max(
             np.asarray(data["train_users"]).max(),
@@ -482,6 +489,7 @@ def main() -> None:
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=0.001, weight_decay=0.0001
     )
+    diagnostic_limits = None
     if args.maximum_eval_users is None:
         validation_indices = np.asarray(
             data["test_user_partition_validation_indices"]
@@ -496,8 +504,20 @@ def main() -> None:
             args.maximum_eval_users,
             len(candidates_file["test_targets"]),
         )
-        validation_indices = np.arange(evaluation_size, dtype=np.int64)
-        test_indices = validation_indices
+        if evaluation_size < 2:
+            raise ValueError("A diagnostic evaluation requires at least two users.")
+        validation_size = max(1, evaluation_size // 2)
+        validation_indices = np.arange(validation_size, dtype=np.int64)
+        test_indices = np.arange(
+            validation_size, evaluation_size, dtype=np.int64
+        )
+    if args.maximum_train_examples is not None or args.maximum_eval_users is not None:
+        diagnostic_limits = {
+            "maximum_train_examples": args.maximum_train_examples,
+            "maximum_eval_users": args.maximum_eval_users,
+            "validation_queries": len(validation_indices),
+            "test_queries": len(test_indices),
+        }
     selection = validation_indices
     initial_validation = _evaluate(
         model=model,
@@ -607,6 +627,7 @@ def main() -> None:
         batch_size=args.eval_batch_size,
         maximum_gap=maximum_gap,
         indices=validation_indices,
+        include_observations=True,
     )
     test = _evaluate(
         model=model,
@@ -618,6 +639,15 @@ def main() -> None:
         batch_size=args.eval_batch_size,
         maximum_gap=maximum_gap,
         indices=test_indices,
+        include_observations=True,
+    )
+    model_class = f"{type(model).__module__}.{type(model).__name__}"
+    base_model_class = f"{type(model.base).__module__}.{type(model.base).__name__}"
+    upstream_class = getattr(model, "upstream_class", None)
+    parameter_count = sum(parameter.numel() for parameter in model.parameters())
+    parameter_bytes = sum(
+        parameter.numel() * parameter.element_size()
+        for parameter in model.parameters()
     )
     checkpoint_path = args.output_dir / "model.pt"
     result_path = args.output_dir / "result.json"
@@ -631,58 +661,90 @@ def main() -> None:
             "data_sha256": _sha256(args.data),
             "candidates_sha256": _sha256(args.candidates),
             "training_negatives_sha256": _sha256(args.training_negatives),
+            "protocol_sha256": _sha256(args.protocol),
         },
         checkpoint_path,
     )
+    benchmark_result = None
+    optimizer.zero_grad(set_to_none=True)
+    del optimizer
+    del model
+    gc.collect()
+    if device.type == "cuda":
+        torch.cuda.empty_cache()
+    if not args.skip_benchmark:
+        benchmark_model = make_industry_model(
+            args.model,
+            users=users,
+            items=items,
+            device=device,
+            seed=args.seed,
+            dimension=32,
+            maximum_gap_seconds=maximum_gap,
+        )
+        benchmark_model.load_state_dict(best_state, strict=True)
+        benchmark_result = _benchmark(
+            model=benchmark_model,
+            data=data,
+            candidates_file=candidates_file,
+            device=device,
+            maximum_gap=maximum_gap,
+        )
+        del benchmark_model
+        gc.collect()
+        if device.type == "cuda":
+            torch.cuda.empty_cache()
+
+    def package_version(name: str) -> str | None:
+        try:
+            return importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            return None
+
     result = {
         "model": args.model,
         "seed": args.seed,
         "device": str(device),
         "environment": {
+            "python": sys.version.split()[0],
+            "numpy": np.__version__,
             "torch": torch.__version__,
             "cuda": torch.version.cuda,
-            "torchrec": (
-                importlib.metadata.version("torchrec")
-                if args.model.startswith("torchrec")
-                else None
-            ),
+            "torchrec": package_version("torchrec"),
+            "fbgemm_gpu": package_version("fbgemm-gpu"),
+            "triton": package_version("triton"),
             "device_name": (
                 torch.cuda.get_device_name(0) if device.type == "cuda" else None
             ),
         },
-        "model_class": f"{type(model).__module__}.{type(model).__name__}",
-        "upstream_class": getattr(
-            model, "model_class", getattr(model, "upstream_class", None)
-        ),
-        "parameter_count": sum(
-            parameter.numel() for parameter in model.parameters()
-        ),
-        "parameter_bytes": sum(
-            parameter.numel() * parameter.element_size()
-            for parameter in model.parameters()
-        ),
+        "model_class": model_class,
+        "base_model_class": base_model_class,
+        "upstream_class": upstream_class,
+        "parameter_count": parameter_count,
+        "parameter_bytes": parameter_bytes,
         "best_epoch": best_epoch,
+        "selected_residual_weight": float(best_state["residual_weight"]),
         "selection_metric": "unconditional_ndcg@10",
         "evaluation_split": {
-            "validation": "last event for a frozen deterministic 1000-user partition",
-            "test": "last event for the complementary users",
+            "validation": (
+                "last event for a frozen deterministic 1000-user partition"
+                if diagnostic_limits is None
+                else f"diagnostic last-event partition ({len(validation_indices)} users)"
+            ),
+            "test": (
+                "last event for the complementary users"
+                if diagnostic_limits is None
+                else f"diagnostic disjoint last-event partition ({len(test_indices)} users)"
+            ),
             "upstream_retriever_training_overlap": False,
         },
+        "diagnostic_limits": diagnostic_limits,
+        "training_maximum_gap_seconds": maximum_gap,
         "best_selection_metric": best_metric,
         "epochs": epoch_results,
         "validation": validation,
         "test": test,
-        "benchmark": (
-            None
-            if args.skip_benchmark
-            else _benchmark(
-                model=model,
-                data=data,
-                candidates_file=candidates_file,
-                device=device,
-                maximum_gap=maximum_gap,
-            )
-        ),
+        "benchmark": benchmark_result,
         "inputs": {
             "data": str(args.data),
             "data_sha256": _sha256(args.data),
@@ -690,6 +752,8 @@ def main() -> None:
             "candidates_sha256": _sha256(args.candidates),
             "training_negatives": str(args.training_negatives),
             "training_negatives_sha256": _sha256(args.training_negatives),
+            "protocol": str(args.protocol),
+            "protocol_sha256": _sha256(args.protocol),
         },
         "training_negative_source": "exact HSTU-large epoch100 candidate retrieval",
         "checkpoint": str(checkpoint_path),

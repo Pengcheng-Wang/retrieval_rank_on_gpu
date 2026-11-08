@@ -10,10 +10,12 @@ import pytest
 import torch
 
 from rrbench.industry_data import (
-    prepare_ranking_data,
     hard_negative_ids_and_ranks,
+    prepare_ranking_data,
     rank_interleaved_union,
     select_hard_negatives,
+    training_maximum_gap,
+    validate_run_matrix,
 )
 from rrbench.industry_models import RetrievalResidualRanker, make_industry_model
 
@@ -123,6 +125,75 @@ def test_epoch_zero_residual_exactly_preserves_retrieval_rank() -> None:
     )
 
 
+def test_training_normalization_ignores_held_out_timestamps() -> None:
+    data = {
+        "train_request_times": np.asarray([30, 50]),
+        "train_timestamps": np.asarray([[20, 10], [35, 25]]),
+        "validation_request_times": np.asarray([60]),
+        "validation_timestamps": np.asarray([[55, 45]]),
+        "test_request_times": np.asarray([70]),
+        "test_timestamps": np.asarray([[65, 55]]),
+    }
+    assert training_maximum_gap(data) == 15
+    data["validation_request_times"][0] = 100_000_000
+    data["test_request_times"][0] = 200_000_000
+    assert training_maximum_gap(data) == 15
+
+
+def _run_record(
+    model: str,
+    seed: int,
+    *,
+    data_sha: str = "data",
+) -> dict[str, object]:
+    return {
+        "model": model,
+        "seed": seed,
+        "inputs": {
+            "data_sha256": data_sha,
+            "candidates_sha256": "candidates",
+            "training_negatives_sha256": "negatives",
+            "protocol_sha256": "protocol",
+        },
+        "diagnostic_limits": None,
+        "validation": {"queries": 1000},
+        "test": {"queries": 5040},
+    }
+
+
+def test_run_matrix_rejects_duplicates_and_mismatched_inputs() -> None:
+    expected = {("a", 17), ("b", 42)}
+    hashes = {
+        "data_sha256": "data",
+        "candidates_sha256": "candidates",
+        "training_negatives_sha256": "negatives",
+        "protocol_sha256": "protocol",
+    }
+    validate_run_matrix(
+        [_run_record("a", 17), _run_record("b", 42)],
+        expected_cells=expected,
+        expected_hashes=hashes,
+        validation_queries=1000,
+        test_queries=5040,
+    )
+    with pytest.raises(RuntimeError, match="Run matrix mismatch|Duplicate"):
+        validate_run_matrix(
+            [_run_record("a", 17), _run_record("a", 17)],
+            expected_cells=expected,
+            expected_hashes=hashes,
+            validation_queries=1000,
+            test_queries=5040,
+        )
+    with pytest.raises(RuntimeError, match="data_sha256"):
+        validate_run_matrix(
+            [_run_record("a", 17, data_sha="wrong"), _run_record("b", 42)],
+            expected_cells=expected,
+            expected_hashes=hashes,
+            validation_queries=1000,
+            test_queries=5040,
+        )
+
+
 @pytest.mark.parametrize("name", ["din", "twin", "transact"])
 def test_sequence_rankers_have_finite_forward_and_backward(name: str) -> None:
     torch.manual_seed(3)
@@ -194,9 +265,21 @@ def test_committed_industry_results_are_valid_and_checksummed() -> None:
     summary = json.loads((root / "summary.json").read_text())
     assert summary["candidate_pool"]["target_injection"] is False
     assert summary["training_negatives"]["search_k"] == 200
+    assert summary["environment"]["torchrec"] == "1.8.0"
+    assert summary["data"]["training_maximum_request_gap_seconds"] > 0
     assert all(
         row["passed_seeds"] == 0 for row in summary["learning_gates"]
     )
+    provenance = json.loads((root / "run-provenance.json").read_text())
+    assert len(provenance) == 10
+    assert all(row["inputs"]["protocol_sha256"] for row in provenance)
+    rejected = json.loads((root / "rejected-protocols.json").read_text())
+    assert any(row["id"] == "held-out-normalization-v4" for row in rejected)
+    with np.load(root / "query-ranks.npz") as ranks:
+        assert len(ranks.files) == 60
+        validation = ranks["torchrec_dlrm_seed17_validation_indices"]
+        test = ranks["torchrec_dlrm_seed17_test_indices"]
+        assert not set(validation.tolist()).intersection(test.tolist())
     assert (
         summary["models"]["torchrec-dlrm"]["upstream_class"]
         == "torchrec.models.dlrm.DLRM"

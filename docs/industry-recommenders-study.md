@@ -32,14 +32,14 @@ and adds a separate, fixed-candidate ranking experiment.
 |---|---|---|---|---|
 | DLRM | Meta describes a production-oriented recommendation model and open-sourced reference implementation [1] | Sparse embedding bags, dense tower, pairwise feature interaction, over-architecture | Public model; production feature schema and traffic are private | Actual `torchrec.models.dlrm.DLRM` |
 | DCN V2 | Google reports web-scale ranking deployments [2] | Learned explicit bounded-degree crosses, including low-rank mixtures | Public layers/paper; production data and full systems are private | Actual TorchRec `DLRM_DCN` with three low-rank cross layers |
-| DIN | Alibaba reports deployment in its display-ad ranking system [3] | Candidate-conditioned local activation over behavior embeddings | Author repository has no declared license; production features are private | Independent implementation from the paper; no copied source |
+| DIN | Alibaba reports deployment in its display-ad ranking system [3] | Candidate-conditioned local activation over behavior embeddings | Author repository has no declared license; production features are private | DIN-style normalized-attention adaptation; no copied source and not a canonical reproduction |
 | DIEN | Alibaba models evolving interests with an auxiliary next-behavior loss and AUGRU [4] | Interest extractor plus target-aware recurrent evolution | No maintained licensed official stack suitable for this panel | Researched, not admitted to keep the finite matrix interpretable |
 | BST | Alibaba applies a Transformer to target-aware behavior ranking [5] | Behavior Transformer plus nonsequential features | No official implementation located | Researched predecessor; official TransAct is the admitted Transformer arm |
 | TWIN | Kuaishou reports a deployed lifelong-behavior CTR system [6] | Same target-behavior relevance metric in a coarse GSU and exact ESU | No official public code, feature cache, or long-history dataset | Independent structural adaptation, explicitly not a production reproduction |
 | TransAct | Pinterest reports deployment of realtime action modeling alongside batch user embeddings [7] | Candidate-concatenated action Transformer, random recency mask, max/latest outputs | Official Apache-2.0 module is public; data, batch embeddings, heads, and serving are not | Official module unchanged, wrapped in a public-data ranking head |
 | PinnerFormer | Pinterest reports deployed batch user representations [8] | Long-sequence Transformer with dense all-action future prediction | No complete official training stack or production feature stream | Researched; not synthesized as an “official” baseline |
 | Monolith | ByteDance describes online training, collisionless embeddings, and production serving [9] | System architecture rather than one interchangeable ranker | Archived public system code exists, but an offline MovieLens model comparison is not equivalent | Not admitted to the model leaderboard |
-| OneRec / OneTrans | Recent papers claim unified industrial generation or sequence/feature interaction [10, 11] | Generative retrieve-and-rank or unified Transformer formulations | No reviewed public production stack, checkpoints, tokenizer/RL environment, or matched data | Research context only; no invented reproduction |
+| OneRec / OpenOneRec / OneTrans | Recent work covers private production generation, open recommendation foundation models, and unified sequence/feature interaction [10-12] | Generative recommendation or unified Transformer formulations | The original OneRec production stack remains private; OpenOneRec is public but targets 1.7B/8B instruction-following foundation models rather than matched candidate ranking | Research context only; no invented equivalent or forced leaderboard cell |
 
 “Used in industry” in the table means that the primary paper reports a
 production deployment or production-motivated system. It does not mean that
@@ -73,7 +73,7 @@ fixed and changes only the interaction structure to TorchRec's real
 `DLRM_DCN`, with three low-rank cross layers. That isolates the architecture
 contrast without granting DCN richer features.
 
-### DIN
+### DIN-style normalized-attention adaptation
 
 For candidate embedding \(e_c\) and historical embedding \(e_i\), the local
 activation unit scores
@@ -84,8 +84,11 @@ a_i = \operatorname{MLP}([e_i, e_c, e_i-e_c, e_i \odot e_c]).
 
 Softmax-normalized weights pool the history specifically for the candidate.
 The scorer then consumes the candidate, pooled interest, their elementwise
-interaction, user embedding, and matched dense features. The implementation is
-independent because the author repository does not grant a reusable license.
+interaction, user embedding, and matched dense features. This is intentionally
+labeled an adaptation: canonical DIN preserves interest intensity through
+unnormalized activation weights, uses Dice activations, and includes
+mini-batch-aware regularization. The author repository does not grant a
+reusable license, so no source was copied.
 
 ### TWIN-style adaptation
 
@@ -139,12 +142,14 @@ The machine-readable protocol is
   target is removed from the negative list after retrieval and supplied only
   as the supervised positive.
 
-The official HSTU training split observes every event except each user's last
-one, with autoregressive supervision inside the retained sequence. A draft
+The official HSTU training split excludes each user's last event, then retains
+at most a 200-event history plus its training target. Autoregressive
+supervision covers shifted positions inside that retained window. A draft
 extension that used the second-last event for validation therefore gave the
-retriever prior exposure to the validation label. The direct code audit
-rejected that result. Both final ranker partitions use last events that HSTU
-never observed, and users are disjoint between selection and test.
+retriever prior exposure to the validation label for users whose retained
+window included it. The direct code audit rejected that result. Both final
+ranker partitions use last events that HSTU never observed, and users are
+disjoint between selection and test.
 
 ### Candidate ceiling
 
@@ -178,6 +183,8 @@ outcome is the unchanged retrieval baseline.
 
 - Seeds: 17 and 42.
 - Optimizer: AdamW, learning rate `1e-3`, weight decay `1e-4`.
+- Item popularity and recency-gap normalization are fitted only on the 50,000
+  training positions. Validation/test timestamps cannot change the normalizer.
 - Maximum learned epochs: 10, with epoch 0 admitted as the frozen retrieval
   prior.
 - Checkpoint selection: unconditional validation NDCG@10 on the frozen
@@ -203,15 +210,19 @@ official HSTU-large exact retrieval.
   `2c8b6c93b679949b9581cf592c46ddcba55f3d09`, Apache-2.0.
 - All five original TransAct files are verified against
   [`third_party/transact-source-sha256.json`](../third_party/transact-source-sha256.json).
-- DIN and TWIN code in this repository is independently authored from the
-  cited papers. No source was copied from an unlicensed repository.
+- DIN-style and TWIN-style code in this repository is independently authored
+  from the cited papers. No source was copied from an unlicensed repository.
 
 ## Review limitation
 
 The exact GPT-6-Astra model with MAX reasoning and an independently exposed
-numeric one-million-token context was not available in this runtime. No
-substitute review is mislabeled as Astra, and no numeric `1M` context claim is
-made.
+numeric one-million-token context was not available in this runtime. A
+GPT-6.1 Sol reviewer with MAX reasoning and long context independently checked
+the implementation, experiment design, numerical aggregates, provenance, and
+conclusions. Its findings triggered a training-only normalization fix,
+stronger aggregation guards, clearer DIN labeling, and expanded committed
+provenance. No substitute is mislabeled as Astra, and no numeric `1M` context
+claim is made.
 
 ## Primary sources
 
@@ -241,8 +252,12 @@ made.
    <https://arxiv.org/abs/2209.07663>; code:
    <https://github.com/bytedance/monolith>.
 10. “OneRec: Unifying Retrieve and Rank with Generative Recommender and
-    Preference Alignment,” arXiv:2506.13695,
-    <https://arxiv.org/abs/2506.13695>.
-11. “OneTrans: Unified Feature Interaction and Sequence Modeling with One
+    Iterative Preference Alignment,” arXiv:2502.18965,
+    <https://arxiv.org/abs/2502.18965>.
+11. “OpenOneRec: An Open Foundation Model and Benchmark to Accelerate
+    Generative Recommendation,” arXiv:2512.24762,
+    <https://arxiv.org/abs/2512.24762>; code:
+    <https://github.com/Kuaishou-OneRec/OpenOneRec>.
+12. “OneTrans: Unified Feature Interaction and Sequence Modeling with One
     Transformer in Industrial Recommender,” arXiv:2510.26104,
     <https://arxiv.org/abs/2510.26104>.

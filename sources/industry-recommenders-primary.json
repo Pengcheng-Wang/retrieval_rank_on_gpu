@@ -67,9 +67,24 @@
     {
       "model": "OneRec",
       "role": "end-to-end generative recommendation with reinforcement learning",
+      "paper": "https://arxiv.org/abs/2502.18965",
+      "official_code": null,
+      "experiment_policy": "The original production paper reports a private Kuaishou deployment; its production tokenizer, reinforcement-learning environment and checkpoints are not public."
+    },
+    {
+      "model": "OneRec Technical Report",
+      "role": "broader Kuaishou OneRec system report",
       "paper": "https://arxiv.org/abs/2506.13695",
       "official_code": null,
-      "experiment_policy": "Not admitted: no public production stack, tokenization, reinforcement-learning environment, or checkpoints."
+      "experiment_policy": "Context only; it is not the paper titled 'Unifying Retrieve and Rank with Generative Recommender and Iterative Preference Alignment'."
+    },
+    {
+      "model": "OpenOneRec",
+      "role": "open generative recommendation foundation models and benchmark",
+      "paper": "https://arxiv.org/abs/2512.24762",
+      "official_code": "https://github.com/Kuaishou-OneRec/OpenOneRec",
+      "license": "Apache-2.0",
+      "experiment_policy": "Not admitted to the matched candidate-ranking matrix because its 1.7B/8B Qwen3 foundation models, RecIF-Bench and instruction-following objectives are a different task and scale. The public release is not equated with the original private production OneRec stack."
     },
     {
       "model": "OneTrans",

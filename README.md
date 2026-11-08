@@ -44,6 +44,7 @@ repository's own experiments; paper numbers are citation-only context.
 | [HSTU measured findings](docs/hstu-results.md) | Final-epoch HSTU/SASRec reproduction, cold/catalog accounting, clean A100 model timing, BF16 fidelity and later Triton attention contrast |
 | [Industrial recommender research](docs/industry-recommenders-study.md) | DLRM/DCNv2, DIN/DIEN/BST, TWIN, TransAct, PinnerFormer, Monolith and generative-system roles, source availability and the frozen matched-ranking protocol |
 | [Industrial ranker measured findings](docs/industry-recommenders-results.md) | Own-run two-seed quality gates, candidate ceilings, A100 timing/memory, BF16 timing boundary, complete-run wall time and preserved negative outcomes |
+| [GPT-6.1 Sol independent review](docs/industry-review-gpt61.md) | MAX-reasoning, long-context review findings, implemented corrections, rerun scope and numerical verification |
 | [SilverTorch explained](docs/silvertorch-study.md) | Architecture, algorithms, model choices, and what the published gains mean |
 | [Benchmark protocol](docs/benchmark-protocol.md) | Fairness, metrics, datasets, numerical contracts, and experiment matrix |
 | [Upstream audit](docs/upstream-audit.md) | Public-code boundaries and independently reproduced correctness hazards |
@@ -185,6 +186,7 @@ PYTHONPATH="$ROOT/src" CUDA_VISIBLE_DEVICES=0 "$GPU_PY" \
   --data runs/industry/ranking-data.npz \
   --candidates runs/industry/candidates.npz \
   --training-negatives runs/industry/training-negatives.npz \
+  --protocol configs/industry-ranking-v1.json \
   --output-dir runs/industry/torchrec-dlrm-seed17
 ```
 
@@ -195,6 +197,10 @@ Repeat the frozen model/seed matrix from
 the executed results. No target is injected into the candidate pool.
 All learned models are zero-initialized residuals over HSTU-large retrieval
 rank, so epoch 0 is an explicit no-ranker baseline and can win selection.
+The final implementation and aggregates were independently reviewed with
+GPT-6.1 Sol using MAX reasoning and long context after exact Astra was found
+unavailable; review-triggered fixes were rerun rather than applied only to
+prose.
 
 ### Representative commands
 

@@ -5,9 +5,10 @@ import csv
 import hashlib
 import math
 import sys
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 import numpy as np
 
@@ -259,7 +260,13 @@ def prepare_ranking_data(
         **{f"validation_{key}": value for key, value in validation_arrays.items()},
         **{f"test_{key}": value for key, value in test_arrays.items()},
     )
-    maximum_gap = int(
+    training_maximum_gap_seconds = int(
+        max(
+            example.request_time - example.history_timestamps[-1]
+            for example in train_examples
+        )
+    )
+    all_split_diagnostic_maximum_gap_seconds = int(
         max(
             example.request_time - example.history_timestamps[-1]
             for example in train_examples + validation + test
@@ -277,7 +284,10 @@ def prepare_ranking_data(
         "test_examples": len(test),
         "negative_count": negatives,
         "maximum_history": max_history,
-        "maximum_request_gap_seconds": maximum_gap,
+        "training_maximum_request_gap_seconds": training_maximum_gap_seconds,
+        "all_split_diagnostic_maximum_request_gap_seconds": (
+            all_split_diagnostic_maximum_gap_seconds
+        ),
         "maximum_popularity": int(popularity.max()),
         "training_target_cold_count": int(
             sum(popularity[example.target_item] == 0 for example in train_examples)
@@ -318,6 +328,52 @@ def dense_features(
     dense[:, :, 2] = gap_feature[:, None]
     dense[:, :, 3] = popularity_feature
     return dense
+
+
+def training_maximum_gap(data: Mapping[str, np.ndarray]) -> int:
+    request_times = np.asarray(data["train_request_times"])
+    latest_history_times = np.asarray(data["train_timestamps"])[:, 0]
+    return max(
+        1,
+        int(np.max(np.maximum(request_times - latest_history_times, 0))),
+    )
+
+
+def validate_run_matrix(
+    runs: Sequence[Mapping[str, Any]],
+    *,
+    expected_cells: set[tuple[str, int]],
+    expected_hashes: Mapping[str, str],
+    validation_queries: int,
+    test_queries: int,
+) -> None:
+    observed_cells = [
+        (str(run["model"]), int(run["seed"]))
+        for run in runs
+    ]
+    counts = Counter(observed_cells)
+    duplicates = sorted(cell for cell, count in counts.items() if count != 1)
+    if len(runs) != len(expected_cells) or set(observed_cells) != expected_cells:
+        raise RuntimeError(
+            "Run matrix mismatch: "
+            f"expected {sorted(expected_cells)}, observed {sorted(observed_cells)}"
+        )
+    if duplicates:
+        raise RuntimeError(f"Duplicate run cells: {duplicates}")
+    for run in runs:
+        cell = (str(run["model"]), int(run["seed"]))
+        inputs = run["inputs"]
+        for key, expected in expected_hashes.items():
+            if inputs.get(key) != expected:
+                raise RuntimeError(
+                    f"{cell} used {key}={inputs.get(key)!r}, expected {expected!r}"
+                )
+        if run.get("diagnostic_limits") is not None:
+            raise RuntimeError(f"Diagnostic run cannot enter final aggregate: {cell}")
+        if int(run["validation"]["queries"]) != validation_queries:
+            raise RuntimeError(f"Unexpected validation population for {cell}")
+        if int(run["test"]["queries"]) != test_queries:
+            raise RuntimeError(f"Unexpected test population for {cell}")
 
 
 def fingerprint_arrays(arrays: Iterable[np.ndarray]) -> str:

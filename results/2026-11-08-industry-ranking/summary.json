@@ -100,9 +100,9 @@
       "seeds": 2
     },
     {
-      "maximum_complete_run_wall_seconds": 72.0,
-      "mean_complete_run_wall_seconds": 69.0,
-      "minimum_complete_run_wall_seconds": 66.0,
+      "maximum_complete_run_wall_seconds": 61.0,
+      "mean_complete_run_wall_seconds": 58.0,
+      "minimum_complete_run_wall_seconds": 55.0,
       "model": "torchrec-dcn",
       "seeds": 2
     },
@@ -114,16 +114,16 @@
       "seeds": 2
     },
     {
-      "maximum_complete_run_wall_seconds": 60.0,
-      "mean_complete_run_wall_seconds": 57.5,
-      "minimum_complete_run_wall_seconds": 55.0,
+      "maximum_complete_run_wall_seconds": 72.0,
+      "mean_complete_run_wall_seconds": 69.0,
+      "minimum_complete_run_wall_seconds": 66.0,
       "model": "twin",
       "seeds": 2
     },
     {
-      "maximum_complete_run_wall_seconds": 153.0,
-      "mean_complete_run_wall_seconds": 150.5,
-      "minimum_complete_run_wall_seconds": 148.0,
+      "maximum_complete_run_wall_seconds": 154.0,
+      "mean_complete_run_wall_seconds": 151.5,
+      "minimum_complete_run_wall_seconds": 149.0,
       "model": "transact",
       "seeds": 2
     }
@@ -136,6 +136,7 @@
     "test_queries": 5040,
     "test_target": "last event",
     "training_examples": 50000,
+    "training_maximum_request_gap_seconds": 67337688,
     "training_target_cold_count": 0,
     "users": 6040,
     "validation_queries": 1000,
@@ -144,18 +145,23 @@
   "environment": {
     "cuda": "12.9",
     "device_name": "NVIDIA A100-SXM4-80GB",
+    "fbgemm_gpu": "1.8.0+cu126",
+    "numpy": "2.2.6",
+    "python": "3.12.3",
     "torch": "2.13.0+cu129",
-    "torchrec": null
+    "torchrec": "1.8.0",
+    "triton": "3.7.1"
   },
   "interpretation": {
-    "astra_review": "Exact GPT-6-Astra/MAX capability remains unavailable; no substitute may be mislabeled and no numeric one-million-token claim may be made.",
+    "astra_review": "Exact GPT-6-Astra/MAX capability remains unavailable; no substitute is labeled Astra and no numeric one-million-token claim is made.",
     "independent_retriever_holdout": "Both validation and test use each user's last event, which the official HSTU training split never observes. Users are partitioned before ranker selection so the prior second-last-event leakage is excluded.",
     "no_mfu_or_energy": true,
     "no_production_claims": true,
     "no_serving_qps_or_p99": true,
     "no_single_leaderboard_across_roles": true,
     "no_target_injection": true,
-    "retriever_selection_reuse": "HSTU-large was selected before this extension from the completed HSTU benchmark on the same last-event task. Ranker selection/test users are disjoint, but retriever-family selection is not evaluated on a new dataset."
+    "retriever_selection_reuse": "HSTU-large was selected before this extension from the completed HSTU benchmark on the same last-event task. Ranker selection/test users are disjoint, but retriever-family selection is not evaluated on a new dataset.",
+    "substitute_review": "GPT-6.1 Sol with MAX reasoning and long context independently reviewed implementation, numerical aggregates, provenance, and conclusions. Findings were fixed and the affected experiment matrix was rerun."
   },
   "learning_gates": [
     {
@@ -191,8 +197,8 @@
       "seeds": 2
     },
     {
-      "mean_best_learned_validation_ndcg_at_10": 0.17886177098378953,
-      "mean_difference_from_epoch_zero": -0.002646314702567945,
+      "mean_best_learned_validation_ndcg_at_10": 0.17881418601076376,
+      "mean_difference_from_epoch_zero": -0.0026938996755936917,
       "mean_epoch_zero_validation_ndcg_at_10": 0.18150808568635746,
       "model": "transact",
       "passed_seeds": 0,
@@ -201,42 +207,52 @@
   ],
   "limitations": [
     "MovieLens-1M is a small public sequential recommendation adaptation, not a production traffic reproduction.",
-    "DIN is independently implemented from the paper because the author repository has no declared license.",
+    "The DIN-style arm uses softmax-normalized attention, PReLU instead of Dice, and no mini-batch-aware regularization; it is not a canonical DIN reproduction.",
     "TWIN is a structural adaptation without the production feature cache, 10^4-10^5 event histories, or Kuaishou data.",
     "TransAct preserves Pinterest's public module but uses MovieLens ratings as action types and a learned user embedding instead of Pinterest's production batch embedding.",
     "Exact GPT-6-Astra/MAX was unavailable; no substitute is labeled Astra and no numeric one-million-token context claim is made."
   ],
   "models": {
     "din": {
-      "implementation": "DIN independent implementation",
+      "base_model_class": "rrbench.industry_models.DINRanker",
+      "implementation": "DIN-style normalized-attention adaptation",
       "model_class": "rrbench.industry_models.RetrievalResidualRanker",
       "parameter_count": 256807,
       "upstream_class": null
     },
     "torchrec-dcn": {
+      "base_model_class": "rrbench.industry_models.TorchRecSequenceRanker",
       "implementation": "TorchRec DLRM_DCN",
       "model_class": "rrbench.industry_models.RetrievalResidualRanker",
       "parameter_count": 498466,
       "upstream_class": "torchrec.models.dlrm.DLRM_DCN"
     },
     "torchrec-dlrm": {
+      "base_model_class": "rrbench.industry_models.TorchRecSequenceRanker",
       "implementation": "TorchRec DLRM",
       "model_class": "rrbench.industry_models.RetrievalResidualRanker",
       "parameter_count": 461986,
       "upstream_class": "torchrec.models.dlrm.DLRM"
     },
     "transact": {
+      "base_model_class": "rrbench.industry_models.TransActRanker",
       "implementation": "Official TransAct module plus ranking head",
       "model_class": "rrbench.industry_models.RetrievalResidualRanker",
       "parameter_count": 389876,
       "upstream_class": "transact.TransAct"
     },
     "twin": {
+      "base_model_class": "rrbench.industry_models.TWINRanker",
       "implementation": "TWIN-style structural adaptation",
       "model_class": "rrbench.industry_models.RetrievalResidualRanker",
       "parameter_count": 249510,
       "upstream_class": null
     }
+  },
+  "provenance": {
+    "query_ranks": "query-ranks.npz",
+    "rejected_protocols": "rejected-protocols.json",
+    "run_provenance": "run-provenance.json"
   },
   "quality_aggregate": [
     {
@@ -328,7 +344,7 @@
       "target_coverage_at_200": 0.7875
     },
     {
-      "implementation": "DIN independent implementation",
+      "implementation": "DIN-style normalized-attention adaptation",
       "mean_best_epoch": 0.0,
       "mean_conditional_hr_at_10": 0.4123581336696091,
       "mean_conditional_hr_at_200": 1.0,
@@ -350,7 +366,7 @@
       "target_coverage_at_200": 0.793
     },
     {
-      "implementation": "DIN independent implementation",
+      "implementation": "DIN-style normalized-attention adaptation",
       "mean_best_epoch": 0.0,
       "mean_conditional_hr_at_10": 0.41421012849584277,
       "mean_conditional_hr_at_200": 1.0,

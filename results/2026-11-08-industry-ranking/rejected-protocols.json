@@ -1,0 +1,44 @@
+[
+  {
+    "excluded_from_final": true,
+    "id": "fixed-width-interleave-v0",
+    "operational_artifacts_preserved_outside_git": true,
+    "reason": "Truncating a three-retriever interleave reduced HSTU-large candidate coverage."
+  },
+  {
+    "excluded_from_final": true,
+    "id": "slow-npz-v0",
+    "operational_artifacts_preserved_outside_git": true,
+    "reason": "Compressed NPZ arrays were decompressed on every batch and no epoch completed."
+  },
+  {
+    "excluded_from_final": true,
+    "id": "second-last-validation-v0",
+    "operational_artifacts_preserved_outside_git": true,
+    "reason": "Second-last-event labels had been observed by the official HSTU autoregressive training split."
+  },
+  {
+    "excluded_from_final": true,
+    "id": "random-negatives-v1",
+    "operational_artifacts_preserved_outside_git": true,
+    "reason": "Random catalog negatives did not match the hard HSTU candidate distribution used at evaluation."
+  },
+  {
+    "excluded_from_final": true,
+    "id": "hard-negatives-no-prior-v2",
+    "operational_artifacts_preserved_outside_git": true,
+    "reason": "The protocol discarded the strong retrieval order and forced an uninitialized ranker to replace it."
+  },
+  {
+    "excluded_from_final": true,
+    "id": "hard-negative-depth64-v3",
+    "operational_artifacts_preserved_outside_git": true,
+    "reason": "Missing training targets were assigned rank 65 instead of using the final evaluation depth of 200."
+  },
+  {
+    "excluded_from_final": true,
+    "id": "held-out-normalization-v4",
+    "operational_artifacts_preserved_outside_git": true,
+    "reason": "Recency normalization scanned validation/test request times instead of fitting on training positions only."
+  }
+]
