@@ -1,0 +1,15 @@
+{
+  "README.md": "18da6b0cc9438c4e1ffa002ee6730dbcff38ef1bf7c50a05603ef6b6172dff42",
+  "efficiency-aggregate.csv": "8ffd84c59c2d9f2a4cc9e7bc943ed7cb34625a3712a87ebfcfb84e8fe33f2377",
+  "efficiency.csv": "cca663f913360ada484db3cbce60cd53bec6a8b520c70d52c2004e9fe7b41a19",
+  "learning-gates-aggregate.csv": "73a5ee7e70e5cf5b8699f52dd3fe965b439a8b4c55dd958d03792e5098e1fdac",
+  "learning-gates.csv": "1142c339002adc03485307361b35b77c075cd724fb9d670cda67e0aed2c9dd04",
+  "protocol.json": "6edb69c4a3b09734cce75205e6a0326f4d0637c7de749642ff5b7a5e37c526e3",
+  "quality-aggregate.csv": "fe1b2b7af5064d9f55b0d12a149a0a8f17c34027f288442c5918f27138f4fba1",
+  "quality.csv": "ddb81b99c46477936153ab3e567f86035899da6b8ff36c9ec1152971d28747f7",
+  "run-wall-time-aggregate.csv": "d77ba8604e6990f8ad6e2394563d214578e0ce382f364c0c8aadb8f939c7c82b",
+  "run-wall-time.csv": "3e1671ba4e2f8675f110efef5c120fb6715f01aae48d6a09aca4317dc20117f1",
+  "summary.json": "c6a44c265fb1e74d438fdfc4c6b8a014e15b3e265ccd7ad6fe4ad34985d28d10",
+  "timing-samples.json": "8a9825bddf715aed3946c4821e576a25b03edfc0e3f67f594c6ec58938953a4f",
+  "training-curves.csv": "acd7800adc421ab628fd1d72966326eb6babdebdafc2149e5fd9a19d12004d62"
+}

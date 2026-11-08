@@ -1,0 +1,82 @@
+{
+  "retrieved_at": "2026-11-08",
+  "sources": [
+    {
+      "model": "DLRM",
+      "role": "tabular ranking and CTR prediction",
+      "paper": "https://arxiv.org/abs/1906.00091",
+      "official_code": "https://github.com/facebookresearch/dlrm/tree/9bc1bc3602aea22afad3206910cec50f2dbe7364",
+      "experiment_code": "TorchRec DLRM at v1.8.0-rc1 commit 0ea0ec09512930dbcbf6d24cb65132a77835bce8"
+    },
+    {
+      "model": "DCN V2",
+      "role": "explicit feature-cross ranking",
+      "paper": "https://arxiv.org/abs/2008.13535",
+      "official_code": "https://www.tensorflow.org/recommenders/api_docs/python/tfrs/layers/dcn/Cross",
+      "experiment_code": "TorchRec DLRM_DCN at v1.8.0-rc1 commit 0ea0ec09512930dbcbf6d24cb65132a77835bce8"
+    },
+    {
+      "model": "DIN",
+      "role": "candidate-aware behavior attention ranking",
+      "paper": "https://arxiv.org/abs/1706.06978",
+      "author_code": "https://github.com/zhougr1993/DeepInterestNetwork/tree/9765f96202f849e59ff260c8b46931a0ddf01d77",
+      "code_policy": "The author repository has no declared license, so no source is copied; the experiment is an independent implementation from the paper."
+    },
+    {
+      "model": "DIEN",
+      "role": "interest extraction and target-aware interest evolution ranking",
+      "paper": "https://arxiv.org/abs/1809.03672",
+      "official_code": null,
+      "experiment_policy": "Researched but not admitted because its auxiliary next-behavior objective and AUGRU would expand the finite matrix without a maintained licensed official stack."
+    },
+    {
+      "model": "BST",
+      "role": "target-aware Transformer ranking",
+      "paper": "https://arxiv.org/abs/1905.06874",
+      "official_code": null,
+      "experiment_policy": "Studied as a predecessor; TransAct is admitted instead because it has newer production evidence and official Apache-2.0 code."
+    },
+    {
+      "model": "TWIN",
+      "role": "consistent two-stage long-history target attention",
+      "paper": "https://arxiv.org/abs/2302.02352",
+      "official_code": null,
+      "code_policy": "Independent structural adaptation; no production feature cache, 100K history, or Kuaishou data claim."
+    },
+    {
+      "model": "TransAct",
+      "role": "realtime short-history Transformer ranking combined with batch user embeddings",
+      "paper": "https://arxiv.org/abs/2306.00248",
+      "official_code": "https://github.com/pinterest/transformer_user_action/tree/2c8b6c93b679949b9581cf592c46ddcba55f3d09",
+      "license": "Apache-2.0"
+    },
+    {
+      "model": "PinnerFormer",
+      "role": "batch long-term user representation",
+      "paper": "https://arxiv.org/abs/2205.04507",
+      "official_code": null,
+      "experiment_policy": "Not admitted because its dense all-action future-engagement objective and production batch embedding pipeline are unavailable."
+    },
+    {
+      "model": "Monolith",
+      "role": "online training and collisionless embedding system",
+      "paper": "https://arxiv.org/abs/2209.07663",
+      "official_code": "https://github.com/bytedance/monolith",
+      "experiment_policy": "System-level online-learning comparison is incompatible with a frozen offline MovieLens ranking panel."
+    },
+    {
+      "model": "OneRec",
+      "role": "end-to-end generative recommendation with reinforcement learning",
+      "paper": "https://arxiv.org/abs/2506.13695",
+      "official_code": null,
+      "experiment_policy": "Not admitted: no public production stack, tokenization, reinforcement-learning environment, or checkpoints."
+    },
+    {
+      "model": "OneTrans",
+      "role": "unified sequence and feature-interaction Transformer",
+      "paper": "https://arxiv.org/abs/2510.26104",
+      "official_code": null,
+      "experiment_policy": "Not admitted: accepted WWW 2026 paper has no public implementation or industrial data."
+    }
+  ]
+}

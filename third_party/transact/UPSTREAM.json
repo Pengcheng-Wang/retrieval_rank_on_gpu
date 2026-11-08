@@ -1,0 +1,12 @@
+{
+  "repository": "https://github.com/pinterest/transformer_user_action",
+  "commit": "2c8b6c93b679949b9581cf592c46ddcba55f3d09",
+  "commit_date": "2023-04-12T17:34:35-07:00",
+  "retrieved_at": "2026-11-08",
+  "license": "Apache-2.0",
+  "import_method": "direct Git blob extraction from the pinned tree",
+  "modifications": [],
+  "original_file_count": 5,
+  "original_file_bytes": 21408,
+  "scope": "Complete official public TransAct PyTorch module and test at the reviewed commit. Production Pinterest data, batch user embeddings, feature schema, multitask heads, and serving stack are not included."
+}
