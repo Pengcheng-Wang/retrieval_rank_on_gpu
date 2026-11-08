@@ -21,6 +21,11 @@ Its paper targets are not measured results. The
 [execution harness](docs/letter-execution.md) records input/runtime gates,
 resume corrections and remaining model-access requirements.
 
+The separate **HSTU sequential recommendation track** pins Meta's first
+public ICML 2024 source release, distinguishes it from later Triton/CUDA,
+DLRMv3 and HSTU Ultra work, and runs its released MovieLens configurations
+without changing the earlier SilverTorch evidence.
+
 | Document | Purpose |
 | --- | --- |
 | [LETTER paper study](docs/letter-study.md) | Method, official-code audit, recovered author recipes, dataset integrity and reproduction boundaries |
@@ -28,6 +33,8 @@ resume corrections and remaining model-access requirements.
 | [LETTER source and protocol manifest](configs/letter-reproduction-v1.json) | Pinned sources, data hashes, published targets and planned settings; not experiment results |
 | [LETTER execution harness](docs/letter-execution.md) | Verified author-code adapters, isolated legacy environment, full input audits and preemption-safe continuation |
 | [LETTER initial measured result](docs/letter-results.md) | First completed Instruments released-ID replay, paper comparison, original-item diagnostic and remaining coverage |
+| [HSTU paper and source study](docs/hstu-study.md) | Original algorithm, public-code boundary, paper-era versus later kernels, audited sequence/evaluation semantics and frozen reproduction gates |
+| [HSTU measured findings](docs/hstu-results.md) | Final-epoch HSTU/SASRec reproduction, cold/catalog accounting, clean A100 model timing, BF16 fidelity and later Triton attention contrast |
 | [SilverTorch explained](docs/silvertorch-study.md) | Architecture, algorithms, model choices, and what the published gains mean |
 | [Benchmark protocol](docs/benchmark-protocol.md) | Fairness, metrics, datasets, numerical contracts, and experiment matrix |
 | [Upstream audit](docs/upstream-audit.md) | Public-code boundaries and independently reproduced correctness hazards |
@@ -56,6 +63,8 @@ $env:PYTHONPATH = "$PWD\src"
 python -m pytest tests\test_core.py tests\test_movielens.py -q
 python -m rrbench.cli --help
 python scripts\verify_upstream.py
+python scripts\verify_hstu_upstream.py
+python -m pytest tests\test_hstu_adapter.py -q
 ```
 
 Requires Python 3.10+, PyTorch, NumPy, and pytest. The optional dependencies in
@@ -88,6 +97,35 @@ environments/gpu/.venv/bin/python -m pytest tests -q
 `build_silvertorch.sh` discovers CUDA development headers shipped in installed
 NVIDIA wheels. It does not install an operating-system toolkit or modify
 upstream code. CUDA compilation is Linux-only in this study.
+
+### HSTU paper-era environment
+
+The separate HSTU environment preserves the first public upstream snapshot and
+does not modify the SilverTorch stack:
+
+```bash
+export UV_CACHE_DIR="$PWD/.local/hstu-uv-cache"
+uv sync --project environments/hstu
+python scripts/verify_hstu_upstream.py
+python -m pytest tests/test_hstu_adapter.py -q
+
+ROOT="$PWD"
+PY="$ROOT/environments/hstu/.venv/bin/python"
+cd third_party/generative-recommenders
+mkdir -p tmp
+PYTHONPATH="$ROOT/scripts/hstu:$PWD" HSTU_REPRO_SEED=42 \
+  "$PY" -c "from data.preprocessor import get_common_preprocessors; get_common_preprocessors()['ml-1m'].preprocess_rating()"
+PYTHONPATH="$ROOT/scripts/hstu:$PWD" HSTU_REPRO_SEED=42 \
+  CUDA_VISIBLE_DEVICES=0 "$PY" train.py \
+  --gin_config_file=configs/ml-1m/hstu-sampled-softmax-n128-final.gin \
+  --master_port=12345
+```
+
+MovieLens remains research-only and is not committed or redistributed. The
+[HSTU study](docs/hstu-study.md), [measured findings](docs/hstu-results.md),
+and [aggregate package](results/2026-11-07-hstu/README.md) document exact
+source, split, cold coverage, model geometry, numerical results, and later
+kernel boundaries.
 
 ### Representative commands
 

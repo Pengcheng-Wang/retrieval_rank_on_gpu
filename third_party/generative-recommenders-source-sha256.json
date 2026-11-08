@@ -1,0 +1,326 @@
+{
+  "repository": "https://github.com/meta-recsys/generative-recommenders",
+  "commit": "9afe62cccfbb1e893780313b89a2d43185c5f66d",
+  "tree": "e9e60a19ea978e7d2824e35758198479a4460952",
+  "license": "Apache-2.0",
+  "import_method": "direct Git blob extraction from the pinned tree",
+  "original_file_count": 43,
+  "original_file_bytes": 234956,
+  "files": [
+    {
+      "path": [
+        ".gitignore"
+      ],
+      "sha256": "371558d70383fbddf0b93d7397f4659555205013f51fc110a475c80fa910492f"
+    },
+    {
+      "path": [
+        "CODE_OF_CONDUCT.md"
+      ],
+      "sha256": "b161b3e2ec4712ebf69efc38ef796d2c701a323aac51cf11759d38e9c56c39bd"
+    },
+    {
+      "path": [
+        "CONTRIBUTING.md"
+      ],
+      "sha256": "0f03d3824212d8e3168f8071a5ac5503cb0463c38246306f19f9965c65dc6bf0"
+    },
+    {
+      "path": [
+        "LICENSE"
+      ],
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": [
+        "README.md"
+      ],
+      "sha256": "e9e7b1a0c31907e3ffc2b1d641381fa4b03d4c99eeddbc0a904057a17e612ede"
+    },
+    {
+      "path": [
+        "configs",
+        "amzn-books",
+        "hstu-sampled-softmax-n512-final.gin"
+      ],
+      "sha256": "9f3109b06394480c4ff54317052be6b05daa569794f135ae01da245315bc3883"
+    },
+    {
+      "path": [
+        "configs",
+        "amzn-books",
+        "hstu-sampled-softmax-n512-large-final.gin"
+      ],
+      "sha256": "4a2f783ce9a5f169c5cfb8c9a25c514ad66920a2b68844c060939f80de214296"
+    },
+    {
+      "path": [
+        "configs",
+        "amzn-books",
+        "sasrec-sampled-softmax-n512-final.gin"
+      ],
+      "sha256": "4b20383d95cd983db0400de475bd281b3770c7c01d177317b2bf8fc010b9b209"
+    },
+    {
+      "path": [
+        "configs",
+        "ml-1m",
+        "hstu-sampled-softmax-n128-final.gin"
+      ],
+      "sha256": "cdd4c0b69eff000cd49b4d1aa88d0e99a61f8f1ea5c970869134145964ed3189"
+    },
+    {
+      "path": [
+        "configs",
+        "ml-1m",
+        "hstu-sampled-softmax-n128-large-final.gin"
+      ],
+      "sha256": "4a73c2f2c5460f078d152c40fb14fa1a41da7f2f99c43d6b2b92b8ea82481b8b"
+    },
+    {
+      "path": [
+        "configs",
+        "ml-1m",
+        "sasrec-sampled-softmax-n128-final.gin"
+      ],
+      "sha256": "1b5881d78ee1a9563d1eb3be7364e181b074339913d08a1b56e19fafc9c70cc5"
+    },
+    {
+      "path": [
+        "configs",
+        "ml-20m",
+        "hstu-sampled-softmax-n128-final.gin"
+      ],
+      "sha256": "414f492b6e57fde7ea8ef5ae26421d7195fb3a5c4907a2bc3f2ce6b1ffd7d5db"
+    },
+    {
+      "path": [
+        "configs",
+        "ml-20m",
+        "hstu-sampled-softmax-n128-large-final.gin"
+      ],
+      "sha256": "46a08570ed3267449f50c21bc594cf0a574cdbd65acb4513629695631117b9d4"
+    },
+    {
+      "path": [
+        "configs",
+        "ml-20m",
+        "sasrec-sampled-softmax-n128-final.gin"
+      ],
+      "sha256": "41c23e3aabff7303b155144aef8f2d3886914b3b49f9e6e87e66c8f4a96daa8d"
+    },
+    {
+      "path": [
+        "data",
+        "dataset.py"
+      ],
+      "sha256": "61c650e34c29f670841b1542d79113896abda4106f4e1a3d039264a06c23c33d"
+    },
+    {
+      "path": [
+        "data",
+        "eval.py"
+      ],
+      "sha256": "c9bcc6e1e13a8a81ec320a3bddb1fb6068e215cc9b21daaceebd051c453fe8a4"
+    },
+    {
+      "path": [
+        "data",
+        "item_features.py"
+      ],
+      "sha256": "3ca1b8ff26768d4644368beefdb8ca92c584bb6daef43981c3287381a0279d87"
+    },
+    {
+      "path": [
+        "data",
+        "preprocessor.py"
+      ],
+      "sha256": "da93a91d5b7c121c0f1ffcd072c80778cd46acf6cf30db8b93c8623a4d4642eb"
+    },
+    {
+      "path": [
+        "data",
+        "reco_dataset.py"
+      ],
+      "sha256": "8c94900ef1a94c3929125b2a2b6848bf2eb002b2cfeb5c0f97109fb61dd11264"
+    },
+    {
+      "path": [
+        "indexing",
+        "__init__.py"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": [
+        "indexing",
+        "candidate_index.py"
+      ],
+      "sha256": "53cc8fa43b5140a2561800af02c0425703796a4741184af995e09576db8ce1a6"
+    },
+    {
+      "path": [
+        "indexing",
+        "mips_top_k.py"
+      ],
+      "sha256": "66062c7d9c832810953d7d7fc1188f65d8bf8bb4ebaba930cc407b5e50cebfc4"
+    },
+    {
+      "path": [
+        "indexing",
+        "utils.py"
+      ],
+      "sha256": "12608a55fa4aa2808f0e7d8a60357f320be62fdbde21d0feca24df604ddb8064"
+    },
+    {
+      "path": [
+        "modeling",
+        "__init__.py"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": [
+        "modeling",
+        "initialization.py"
+      ],
+      "sha256": "3c4b0fc389ebdeb594b6ad54e173163249cbd327457760875d1ec28b677dd62a"
+    },
+    {
+      "path": [
+        "modeling",
+        "ndp_module.py"
+      ],
+      "sha256": "f43e66bcf8bf5b846ff96986fb089caff48ced3e6f513f39e6d5b88dd0001cd6"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "__init__.py"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "autoregressive_losses.py"
+      ],
+      "sha256": "5872a0b09e1a191e678708018053f3afc5ae25a052819c572c9cf9ec31c2326c"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "embedding_modules.py"
+      ],
+      "sha256": "3891bd6b9f91033a58fcf77bd7469433abc601048e20ffb61f4c7d2cd61ceab4"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "encoder_utils.py"
+      ],
+      "sha256": "17dc4d24d71cbe55006ad3d47a88e502fe386c78ebf04d80c4542d53f4a89bf9"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "features.py"
+      ],
+      "sha256": "e6fb54a17287377db97e50118f977423dcb98dff10082c9e68844c0a9e4dfe43"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "hstu.py"
+      ],
+      "sha256": "66da5e4eaca30e96672879b39af3b2fb54a60cc8ab2bda90f12dd9767bffd5f8"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "input_features_preprocessors.py"
+      ],
+      "sha256": "775adf49054113c65d8b229215b78d69f1f7e419ca1611f1b13a78422da7ee57"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "output_postprocessors.py"
+      ],
+      "sha256": "4ed07d0889ea6a474dc3a49cafc8513a9e68582f1f3934d023e2ea3820bd783a"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "sasrec.py"
+      ],
+      "sha256": "1b24fc408f4e592227468a916081fc2b9f40a8ecea4762b10fba5ccc61dedc82"
+    },
+    {
+      "path": [
+        "modeling",
+        "sequential",
+        "utils.py"
+      ],
+      "sha256": "ab441c1f2b5ea1960773e50e3cf96f75f3cc1419416cd52c6b0325a0b53fa4df"
+    },
+    {
+      "path": [
+        "modeling",
+        "similarity",
+        "dot_product.py"
+      ],
+      "sha256": "7f3ada10540709e0842a0135acc79cf6fb75220e8f0a6f95d15edbfe96b2f6f1"
+    },
+    {
+      "path": [
+        "modeling",
+        "similarity",
+        "mol.py"
+      ],
+      "sha256": "b908e4da081ce3d362e42a156ef2ca8ce9dfcab6dab8eb1503a58b8167925d17"
+    },
+    {
+      "path": [
+        "modeling",
+        "similarity_module.py"
+      ],
+      "sha256": "f9995968b4bfd284084ea202101897648adcef30c88fb82c45276cc5bc1d5eab"
+    },
+    {
+      "path": [
+        "modeling",
+        "similarity_utils.py"
+      ],
+      "sha256": "85f141c30307dd1da74fd1eae7f4664bfba28286bab0e8992574bc2d685dca0b"
+    },
+    {
+      "path": [
+        "preprocess_public_data.py"
+      ],
+      "sha256": "d4556f938e2e99196b6ea43b288ba3c73a2bd5064fe5b5af6c1c2145c174ea73"
+    },
+    {
+      "path": [
+        "train.py"
+      ],
+      "sha256": "4ecae587a2d158e111a1ca03f97c3c46db4d8706833f3aa4f70d7b4dfddcc85a"
+    },
+    {
+      "path": [
+        "trainer",
+        "data_loader.py"
+      ],
+      "sha256": "fe44eabe17a1d1cdc78fa2579270adbe5fe80c3a6502758ef08f04bc2a971677"
+    }
+  ]
+}

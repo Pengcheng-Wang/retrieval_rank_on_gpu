@@ -1,0 +1,33 @@
+[project]
+name = "hstu-paper-reproduction-env"
+version = "0.1.0"
+description = "Isolated CUDA environment for the paper-era public HSTU reproduction"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch==2.13.0+cu129",
+    "triton==3.7.1",
+    "numpy==2.2.6",
+    "fbgemm-gpu==1.8.0+cu126",
+    "gin-config==0.5.0",
+    "absl-py==2.3.1",
+    "pandas==3.0.5",
+    "tensorboard==2.21.0",
+    "fvcore==0.1.5.post20221221",
+    "iopath==0.1.10",
+    "ninja==1.13.0",
+    "pytest>=8.3,<10",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu129"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu129" }
+fbgemm-gpu = { index = "pytorch-cu126" }

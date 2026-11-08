@@ -1,0 +1,245 @@
+{
+  "data": {
+    "primary": {
+      "catalog": "All 3883 rows in movies.dat, including 3706 items observed in ratings; exhaustive evaluation excludes prior history.",
+      "coverage": {
+        "cold_heldout_events": 2,
+        "heldout_events": 6040,
+        "training_events": 994169,
+        "training_observed_items": 3704,
+        "warm_heldout_events": 6038,
+        "warm_heldout_fraction": 0.9996688741721854
+      },
+      "license": "Research use with attribution; no redistribution or commercial use without permission.",
+      "maximum_history": 200,
+      "name": "MovieLens-1M",
+      "published_shape": {
+        "evaluation_catalog_rows": 3883,
+        "maximum_item_id": 3952,
+        "rated_items": 3706,
+        "ratings": 1000209,
+        "users": 6040
+      },
+      "semantics": "Every rating event is treated as an interaction/positive next-item target by the released loss; rating value is not used to filter training supervision.",
+      "source": "https://files.grouplens.org/datasets/movielens/ml-1m.zip",
+      "split": "For each user, training drops the latest interaction and predicts next items throughout the remaining chronological sequence; evaluation predicts the latest interaction from prior history."
+    },
+    "secondary_scale_probes": [
+      {
+        "gate": "Run only after the primary reproduction is durable and a measured one-epoch estimate fits a finite four-hour execution cap.",
+        "name": "MovieLens-20M",
+        "purpose": "Real 20,000,263-event sequence-scale probe with 26,744 released-code items; not a million-item catalog."
+      },
+      {
+        "gate": "Preprocess and audit first; admit at most one fixed epoch only if download/preparation and measured throughput fit a finite four-hour execution cap.",
+        "name": "Amazon Books",
+        "purpose": "Released-code catalog probe with expected 695,762 retained items, still below one million.",
+        "required_adapter": "Remove the stale train_fn.item_feature_embedding_dim binding from the first-public-commit Gin file, matching upstream repair commit 88acd0308bb549e005ae6532ee54585457e1b4a4. Preserve and report this deviation."
+      }
+    ]
+  },
+  "environment": {
+    "fbgemm_gpu": "1.8.0+cu126",
+    "hardware": "NVIDIA A100-SXM4-80GB, one task-owned GPU per paper-era training run",
+    "isolation": "Task-owned uv environment under node-local scratch; no mutation of the shared base image.",
+    "lock": "environments/hstu/uv.lock",
+    "manifest": "environments/hstu/pyproject.toml",
+    "python": "3.12",
+    "readme_deviation": "The unpinned paper-era README lists Apex and broad scientific packages. Apex is not imported by the released execution path and is omitted rather than installing an arbitrary ABI-sensitive build.",
+    "torch": "2.13.0+cu129",
+    "triton": "3.7.1"
+  },
+  "evaluation": {
+    "descriptive_reproduction_tolerance": {
+      "HR@10_absolute": 0.02,
+      "NDCG@10_absolute": 0.01,
+      "interpretation": "A transparent descriptive gate, not statistical equivalence or evidence for private production claims."
+    },
+    "excluded_diagnostics": {
+      "hr@5000": "The released evaluator searches at most 2500 items, so the synthetic miss rank 2501 makes HR@5000 trivially true.",
+      "mrr": "The released evaluator assigns misses rank 2501 rather than zero reciprocal rank."
+    },
+    "metrics": [
+      "HR@10",
+      "NDCG@10",
+      "HR@50",
+      "NDCG@50",
+      "HR@200",
+      "NDCG@200"
+    ],
+    "primary_population": "All 6040 MovieLens-1M users",
+    "primary_targets": {
+      "hstu": {
+        "HR@10": 0.3097,
+        "HR@200": 0.7716,
+        "HR@50": 0.5754,
+        "NDCG@10": 0.172,
+        "NDCG@200": 0.2606,
+        "NDCG@50": 0.2307
+      },
+      "hstu-large": {
+        "HR@10": 0.3294,
+        "HR@200": 0.7839,
+        "HR@50": 0.5935,
+        "NDCG@10": 0.1893,
+        "NDCG@200": 0.2771,
+        "NDCG@50": 0.2481
+      },
+      "sasrec": {
+        "HR@10": 0.2853,
+        "HR@200": 0.7528,
+        "HR@50": 0.5474,
+        "NDCG@10": 0.1603,
+        "NDCG@200": 0.2498,
+        "NDCG@50": 0.2185
+      }
+    }
+  },
+  "failure_policy": {
+    "no_backend_or_precision_fallback": true,
+    "no_gpu_scale_before_smoke": true,
+    "no_test_selected_rescue": true,
+    "preserve_partial_and_failed_attempts": true,
+    "unsupported_is_not_zero": true
+  },
+  "official_models": [
+    {
+      "blocks": 2,
+      "config": "configs/ml-1m/sasrec-sampled-softmax-n128-final.gin",
+      "embedding_dim": 50,
+      "heads": 1,
+      "id": "sasrec",
+      "negatives": 128
+    },
+    {
+      "blocks": 2,
+      "config": "configs/ml-1m/hstu-sampled-softmax-n128-final.gin",
+      "embedding_dim": 50,
+      "heads": 1,
+      "id": "hstu",
+      "negatives": 128
+    },
+    {
+      "blocks": 8,
+      "config": "configs/ml-1m/hstu-sampled-softmax-n128-large-final.gin",
+      "embedding_dim": 50,
+      "heads": 2,
+      "id": "hstu-large",
+      "negatives": 128
+    }
+  ],
+  "public_code_boundaries": {
+    "later_additions": [
+      "Triton ragged HSTU attention beginning in later 2024 history",
+      "CUDA/Hopper attention kernels and DLRMv3 in later revisions",
+      "HSTU Ultra and FP8 paths added in 2026"
+    ],
+    "not_released_at_the_pin": [
+      "Optimized HSTU kernels used for the paper throughput figures",
+      "M-FALCON serving implementation",
+      "Production feature/event construction",
+      "Private data, checkpoints, trillion-parameter configurations, and load generators"
+    ],
+    "released": [
+      "MovieLens-1M, MovieLens-20M, and Amazon Books preprocessing",
+      "HSTU and SASRec model implementations",
+      "Frozen Gin configurations",
+      "Sampled-softmax training and exhaustive full-catalog evaluation"
+    ]
+  },
+  "review": {
+    "capability_policy": "If the exact model is not offered by the runtime, record that limitation and do not silently substitute another model.",
+    "context_tier": "largest available",
+    "numeric_context_claim": "No 1M-token claim unless independently exposed.",
+    "reasoning_effort": "max",
+    "required_model": "gpt-6-astra"
+  },
+  "scope": {
+    "non_goals": [
+      "Reproducing Meta private trillion-parameter models, private features, streaming data, online A/B tests, or business metrics",
+      "Treating the public MovieLens task as production ranking",
+      "Relabeling prior SilverTorch, MS MARCO, KuaiRand, TorchRec, or query-adaptation outcomes",
+      "Inventing serving QPS, p99 SLOs, MFU, energy, causal parameter-count effects, or million-item evidence"
+    ],
+    "primary_question": "Can the first public Meta HSTU release reproduce its released MovieLens-1M next-item results against its matched SASRec baseline, and what are the measured model-versus-kernel costs on an A100?"
+  },
+  "sources": {
+    "later_code_review": {
+      "commit": "acc36be02236750cd98d99246f7d7ef1412edd0e",
+      "use": "Historical and separately labeled kernel comparison only; never substituted for the paper-era model reproduction."
+    },
+    "paper": {
+      "arxiv": "2402.17152v3",
+      "arxiv_source_sha256": "64c7e4b41f01ec8a71c7ba83376db454cfa5f0d48a57ad411e8e40c24e4031a8",
+      "publication": "Proceedings of the 41st International Conference on Machine Learning, PMLR 235:58484-58509, 2024",
+      "title": "Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations"
+    },
+    "paper_era_code": {
+      "commit": "9afe62cccfbb1e893780313b89a2d43185c5f66d",
+      "license": "Apache-2.0",
+      "policy": "All 43 upstream files remain byte-identical; runtime controls live outside the vendored tree.",
+      "repository": "https://github.com/meta-recsys/generative-recommenders",
+      "source_manifest_sha256": "ab86cee99681c6979c5e290bfe7e3204572b7db50a0c28cb275e7b4ba31d41f4",
+      "tree": "e9e60a19ea978e7d2824e35758198479a4460952"
+    }
+  },
+  "stages": [
+    {
+      "id": "cpu-audit",
+      "requirements": [
+        "Verify all 43 upstream hashes",
+        "Audit prepared rows, chronological ordering, held-out targets, item coverage, history lengths, and exact counts",
+        "Run adapter unit tests"
+      ]
+    },
+    {
+      "id": "gpu-smoke-100",
+      "requirements": [
+        "Exactly 100 deterministic users",
+        "One epoch each for HSTU and SASRec using real official code",
+        "Real forward, backward, optimizer, exhaustive evaluation, checkpoint write, and reload",
+        "No nonfinite loss or metric; at least 8 GiB observed headroom"
+      ]
+    },
+    {
+      "id": "ml1m-full",
+      "requirements": [
+        "Run SASRec, HSTU, and HSTU-large official configurations independently",
+        "One GPU per process; no cross-model shared writes",
+        "Persist logs, final checkpoints, manifests, and aggregate JSON through one publisher"
+      ]
+    },
+    {
+      "id": "gpu-characterization",
+      "requirements": [
+        "Report exact batch, sequence, and candidate shapes",
+        "Measure independent warm inference and training-step samples",
+        "Record precision mode, synchronized wall time, throughput, and peak allocated/reserved memory",
+        "Keep unprofiled timing separate from profiler traces"
+      ]
+    },
+    {
+      "id": "later-kernel-contrast",
+      "requirements": [
+        "Use the reviewed later upstream commit only after primary evidence is durable",
+        "Compare official PyTorch and Triton HSTU attention on A100-compatible shapes",
+        "Do not attach later kernel speed to paper-era model quality or HSTU Ultra production claims"
+      ]
+    }
+  ],
+  "status": "Frozen before data preparation, model execution, or GPU yield",
+  "study": "HSTU paper-era public reproduction and GPU characterization v1",
+  "training": {
+    "batch_size": 128,
+    "checkpoint_policy": "Final epoch 100 is the primary checkpoint. The repeatedly observed holdout curve is reported but never used to select a best test epoch.",
+    "epochs": 101,
+    "learning_rate": 0.001,
+    "negative_sampling": "128 uniform local catalog negatives per positive",
+    "optimizer": "AdamW",
+    "seed": 42,
+    "seed_adapter": "scripts/hstu/sitecustomize.py seeds Python, NumPy, and PyTorch in every launched interpreter without editing upstream.",
+    "temperature": 0.05,
+    "tf32": true,
+    "weight_decay": 0
+  }
+}

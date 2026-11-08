@@ -1,0 +1,49 @@
+{
+  "retrieved_at": "2026-11-07",
+  "sources": [
+    {
+      "kind": "authoritative_publication",
+      "title": "Actions Speak Louder than Words: Trillion-Parameter Sequential Transducers for Generative Recommendations",
+      "url": "https://proceedings.mlr.press/v235/zhai24a.html",
+      "publication": "Proceedings of the 41st International Conference on Machine Learning, PMLR 235:58484-58509, 2024"
+    },
+    {
+      "kind": "paper_source",
+      "url": "https://export.arxiv.org/e-print/2402.17152v3",
+      "version": "v3",
+      "sha256": "64c7e4b41f01ec8a71c7ba83376db454cfa5f0d48a57ad411e8e40c24e4031a8"
+    },
+    {
+      "kind": "official_code_paper_era",
+      "url": "https://github.com/meta-recsys/generative-recommenders/tree/9afe62cccfbb1e893780313b89a2d43185c5f66d",
+      "commit": "9afe62cccfbb1e893780313b89a2d43185c5f66d",
+      "tree": "e9e60a19ea978e7d2824e35758198479a4460952",
+      "source_manifest_sha256": "ab86cee99681c6979c5e290bfe7e3204572b7db50a0c28cb275e7b4ba31d41f4"
+    },
+    {
+      "kind": "official_code_later_review",
+      "url": "https://github.com/meta-recsys/generative-recommenders/tree/acc36be02236750cd98d99246f7d7ef1412edd0e",
+      "commit": "acc36be02236750cd98d99246f7d7ef1412edd0e",
+      "archive_sha256": "67c91fe53fb390c793349dc4fd9bf013d1ed9a729745dc80e61492254d4c97db",
+      "note": "Reviewed to distinguish later Triton/CUDA/DLRMv3/HSTU-Ultra changes; not used for the paper-era reproduction."
+    },
+    {
+      "kind": "paper_era_config_repair",
+      "url": "https://github.com/meta-recsys/generative-recommenders/commit/88acd0308bb549e005ae6532ee54585457e1b4a4",
+      "commit": "88acd0308bb549e005ae6532ee54585457e1b4a4",
+      "note": "Removes the stale Amazon Gin binding to train_fn.item_feature_embedding_dim from the first public release."
+    },
+    {
+      "kind": "dataset_terms",
+      "url": "https://files.grouplens.org/datasets/movielens/ml-1m-README.txt",
+      "note": "Research use with attribution; redistribution and commercial use require permission."
+    },
+    {
+      "kind": "later_hstu_ultra_publication",
+      "title": "Bending the Scaling Law Curve in Large-Scale Recommendation Systems",
+      "doi": "10.1145/3770855.3818322",
+      "publication": "KDD 2026",
+      "note": "Later work associated by the current official repository with HSTU Ultra; separate from the ICML 2024 HSTU paper."
+    }
+  ]
+}
